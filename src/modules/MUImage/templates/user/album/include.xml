@@ -1,0 +1,8 @@
+{* purpose of this template: albums xml inclusion template in user area *}
+<album id="{$item.id}" createdon="{$item.createdDate|dateformat}" updatedon="{$item.updatedDate|dateformat}">
+    <id>{$item.id}</id>
+    <title><![CDATA[{$item.title}]]></title>
+    <description><![CDATA[{$item.description}]]></description>
+    <parent_id>{$item.parent_id}</parent_id>
+    <parent>{if isset($item.Parent) && $item.Parent ne null}{$item.Parent.title|default:""}{/if}</parent>
+</album>

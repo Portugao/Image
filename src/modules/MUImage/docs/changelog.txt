@@ -1,0 +1,4 @@
+CHANGELOG
+---------
+
+Changes in MUImage 1.0.0

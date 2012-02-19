@@ -1,0 +1,9 @@
+{* purpose of this template: pictures view xml view in user area *}
+{muimageTemplateHeaders contentType='text/xml'}<?xml version="1.0" encoding="{charset}" ?>
+<pictures>
+{foreach item='item' from=$items}
+    {include file='user/picture/include.xml'}
+{foreachelse}
+    <noPicture />
+{/foreach}
+</pictures>

@@ -1,0 +1,6 @@
+{* purpose of this template: pictures view csv view in admin area *}
+{muimageTemplateHeaders contentType='text/comma-separated-values; charset=iso-8859-15' asAttachment=true filename='Pictures.csv'}
+"{gt text='Title'}";"{gt text='Description'}";"{gt text='Show title'}";"{gt text='Show description'}";"{gt text='Image upload'}";"{gt text='Image view'}""{gt text='Album'}"
+{foreach item='picture' from=$items}
+"{$picture.title|replace:"\"":""}";"{$picture.description|replace:"\"":""}";"{$picture.showTitle|yesno:true}";"{$picture.showDescription|yesno:true}";"{$picture.imageUpload}";"{$picture.imageView|replace:"\"":""}"{if isset($picture.Album) && $picture.Album ne null}{$picture.Album.title|default:""}{/if}{/foreach}
+

@@ -1,0 +1,4 @@
+{* purpose of this template: pictures display xml view in user area *}
+{muimageTemplateHeaders contentType='text/xml'}<?xml version="1.0" encoding="{charset}" ?>
+{getbaseurl assign='baseurl'}
+{include file='user/picture/include.xml' item=$picture}

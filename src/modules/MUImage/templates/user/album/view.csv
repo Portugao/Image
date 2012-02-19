@@ -1,0 +1,6 @@
+{* purpose of this template: albums view csv view in user area *}
+{muimageTemplateHeaders contentType='text/comma-separated-values; charset=iso-8859-15' asAttachment=true filename='Albums.csv'}
+"{gt text='Title'}";"{gt text='Description'}";"{gt text='Parent_id'}""{gt text='Parent'}"
+{foreach item='album' from=$items}
+"{$album.title|replace:"\"":""}";"{$album.description|replace:"\"":""}";"{$album.parent_id|replace:"\"":""}"{if isset($album.Parent) && $album.Parent ne null}{$album.Parent.title|default:""}{/if}{/foreach}
+
