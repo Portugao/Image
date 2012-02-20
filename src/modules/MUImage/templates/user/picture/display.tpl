@@ -11,7 +11,7 @@
 <dl id="MUImage_body">
     <dt>{gt text='Description'}</dt>
     <dd>{$picture.description}</dd>
-    <dt>{gt text='Show title'}</dt>
+{*    <dt>{gt text='Show title'}</dt>
     <dd>{assign var='itemid' value=$picture.id}
 <a id="toggleshowtitle{$itemid}" href="javascript:void(0);" style="display: none">
 {if $picture.showTitle}
@@ -38,7 +38,7 @@
 </a>
 <noscript><div id="noscriptshowdescription{$itemid}">
     {$picture.showDescription|yesno:true}</div></noscript>
-</dd>
+</dd> *}
     <dt>{gt text='Image upload'}</dt>
     <dd>  <a href="{$picture.imageUploadFullPathURL}" title="{$picture.title|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
   {if $picture.imageUploadMeta.isImage}
@@ -57,7 +57,7 @@
         <a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$picture.Album.id}">
             {$picture.Album.title|default:""}
         </a>
-        <a id="albumItem{$picture.Album.id}Display" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$picture.Album.id theme='Printer' forcelongurl=true}" title="{gt text='Open quick view window'}" style="display: none">
+       {* <a id="albumItem{$picture.Album.id}Display" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$picture.Album.id theme='Printer' forcelongurl=true}" title="{gt text='Open quick view window'}" style="display: none">
             {icon type='view' size='extrasmall' __alt='Quick view'}
         </a>
         <script type="text/javascript" charset="utf-8">
@@ -66,7 +66,7 @@
                 muimageInitInlineWindow($('albumItem{{$picture.Album.id}}Display'), '{{$picture.Album.title|replace:"'":""}}');
             });
         /* ]]> */
-        </script>
+        </script> *}
       {else}
         {$picture.Album.title|default:""}
       {/if}

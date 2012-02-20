@@ -3,11 +3,12 @@
 {if isset($items) && $items ne null}
 {* <ul class="relatedItemList Picture"> *}
 {foreach name='relLoop' item='item' from=$items}
-<div class="picture_view">
+<div class="muimage_picture_view">
+<div class="muimage_picture_view_header">
    {* <li> *}
-   {* <a href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}"> *}       
+    <a href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}" title="{gt text='Details'}">      
         {$item.title}
-   {* </a> *}
+   </a>
    {* <a id="pictureItem{$item.id}Display" href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id theme='Printer' forcelongurl=true}" title="{gt text='Open quick view window'}" style="display: none">
         {icon type='view' size='extrasmall' __alt='Quick view'}
     </a>
@@ -17,8 +18,10 @@
             muimageInitInlineWindow($('pictureItem{{$item.id}}Display'), '{{$item.title|replace:"'":""}}');
         });
     /* ]]> */
-    </script> *}
-    <br />
+    </script> 
+    <br /> *}
+</div>
+<div class="muimage_picture_view_content">
 {if $item.imageUpload ne '' && isset($item.imageUploadFullPathURL)}
     <a href="{$item.imageUploadFullPathURL}" title="{$item.title|replace:"\"":""}"{if $item.imageUploadMeta.isImage} rel="imageviewer[item]"{/if}>
     <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:100:70}" width="100" height="70" alt="{$item.title|replace:"\"":""}" />
@@ -26,6 +29,7 @@
 {/if}
 
    {* </li> *}
+</div>   
 </div>   
 {/foreach}
 {* </ul> *}
