@@ -1,0 +1,19 @@
+
+
+CUSTOMISATIONS
+--------------
+
+
+MUImage - Manual additions and amendments
+
+changed files
+
+
+*styles/stayle.css
+*templates/user/aldum/display.tpl
+*templates/user/picture/include_displayItemListMany.tpl
+
+implemented classes
+
+*lib/MUImage/Controller/User.php
+*lib/MUImage/Util/View.php
