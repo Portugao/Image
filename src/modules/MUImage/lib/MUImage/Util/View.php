@@ -16,6 +16,10 @@
  */
 class MUImage_Util_View extends MUImage_Util_Base_View
 {
+	/**
+	 * 
+	 * Counting of total pictures
+	 */
     public static function countPictures() {
     	
     	$view = new Zikula_Request_Http();
@@ -30,6 +34,10 @@ class MUImage_Util_View extends MUImage_Util_Base_View
     	return $count;
     }
     
+    /**
+     * 
+     * Counting of total albums
+     */
     public static function countAlbums() {
     	
     	$view = new Zikula_Request_Http();
@@ -42,6 +50,24 @@ class MUImage_Util_View extends MUImage_Util_Base_View
     	    $count = $repository->selectCount();
     	}
     	return $count;
+    }
+    
+    public static function getImage() {
+    	
+    	$view = new Zikula_Request_Http();
+    	$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
+    	if ($id != 0) {  	
+    	    $repository = MUImage_Util_View::getPictureRepository();
+    	    $where = 'tbl.album_id = ' . DataUtil::formatForStore($id);
+    	    $image = $repository->selectWhere();
+    	    
+    	   /* $album = new MUImage_Entity_Album();
+    	    $album->setId($id);
+    	    $album_id = $album->getId();
+    	    $image = $album->picture;*/
+    	    
+    	}
+    	return $image;
     }
     
     /**

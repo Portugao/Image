@@ -28,14 +28,20 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
     {
     	$view = new Zikula_Request_Http();
     	$id = $view->getGet()->filter('id', 0 , FILTER_SANITIZE_STRING);
+    	// DEBUG: permission check aspect starts
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', $id.'::', ACCESS_READ));
+        // DEBUG: permission check aspect ends
     	
     	if ($id != 0) {
 
     		$count = MUImage_Util_View::countPictures();
     		$count2 = MUImage_Util_View::countAlbums();
     		
+    		$image = MUImage_Util_View::getImage();
+    		
     		$this->view->assign('numpictures', $count);
     		$this->view->assign('numalbums', $count2);
+    		$this->view->assign('image', $image);
     	}
     	
     	return parent::display($args);
