@@ -118,10 +118,10 @@
     {$childAlbum.description}
     </div>
     <div class="muimage_album_image">
-    {$childAlbum.id|muimageGetFirstAlbumImage:$childAlbum.id}
+    {$image.title}
     </div>
     <div class="muimage_album_bottom">
-    {$childAlbum.description}
+    
     </div>
     </div>
     {/foreach}
