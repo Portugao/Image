@@ -22,10 +22,8 @@
     <fieldset>
         <legend>{gt text='Content'}</legend>
         <div class="z-formrow">
-            {formlabel for='title' __text='Title' mandatorysym='1'}
-            {formtextinput group='picture' id='title' mandatory=true readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass='required validate-unique'}
-            {muimageValidationError id='title' class='required'}
-            {muimageValidationError id='title' class='validate-unique'}
+            {formlabel for='title' __text='Title'}
+            {formtextinput group='picture' id='title' mandatory=false readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass=''}
         </div>
         <div class="z-formrow">
             {formlabel for='description' __text='Description'}

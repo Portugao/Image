@@ -70,10 +70,12 @@
     {/strip}</p>
 {/if}    
     </div>
-    <div id="muimage_pictures">
+    <div id="basic_accordion">
+    <h3 class="z-acc-header">{gt text='Pictures'}</h3>
+    <div id="muimage_pictures" class="z-acc-content">
     <div id="muimage_pictures_header">
     <div id="muimage_pictures_header_left">
-    <h3>{gt text='Pictures'}</h3>
+
     </div>
     <div class="muimage_add_picture">
     {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
@@ -81,6 +83,10 @@
     {gt text='Create picture' assign='createTitle'}
     <a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album="`$album.id`" returnTo='userDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
         {$createTitle}
+    </a> | 
+    {gt text='Create pictures' assign='createPictures'}
+    <a href="{modurl modname='MUImage' type='user' func='multiupload' album="`$album.id`" returnTo='userDisplayAlbum'}" title="{$createPictures}" class="z-icon-es-add">
+        {$createPictures}
     </a>
     </p>
     {/if}
@@ -89,13 +95,15 @@
     <div id="muimage_pictures_content">
     {if isset($album.picture) && $album.picture ne null}
     {include file='user/picture/include_displayItemListMany.tpl' items=$album.picture}
+    {else}
+    {gt text='No pictures'}
     {/if}
     </div>
     </div>
-    <div id="muimage_albums">
+    <h3 class="z-acc-header">{gt text='SubAlbums'}</h3> 
+    <div id="muimage_albums" class="z-acc-content">
     <div id="muimage_albums_header">
     <div id="muimage_albums_header_left">
-    <h3>{gt text='SubAlbums'}</h3> 
     </div>
     <div id="muimage_add_album">
     {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
@@ -128,7 +136,7 @@
     {else}
     {gt text='No SubAlbums'}
     {/if}
-    
+    </div>
     </div>
     <div style="clear: both">
   {*  <dt>{gt text='Parent'}</dt>
@@ -156,7 +164,7 @@
     {/if}
     </dd> *}
     <div id="muimage_body_footer">
-    <h6>{gt text='Total number of albums:'} {$numalbums} | {gt text='Total number of pictures:'} {$numpictures}</h6>   
+    {gt text='Total number of albums:'} {$numalbums} | {gt text='Total number of pictures:'} {$numpictures}  
     </div>
 </div>
    {* {include file='user/include_standardfields_display.tpl' obj=$album} *}
@@ -184,4 +192,10 @@
 </div>
 </div>
 {include file='user/footer.tpl'}
+<script type="text/javascript" charset="utf-8">
+/* <![CDATA[ */
 
+var accordion = new Zikula.UI.Accordion('basic_accordion');
+
+/* ]]> */
+</script>

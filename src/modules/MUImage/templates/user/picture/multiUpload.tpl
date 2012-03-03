@@ -21,41 +21,30 @@
         {if $mode ne 'create'}
             {assign var='mandatorySym' value='0'}
         {/if} *}
-        {formlabel for='imageUpload' __text='Image upload' mandatorysym=0}<br />{* break required for Google Chrome *}
+        {formlabel for='imageUpload1' __text='Image upload' mandatorysym=0}<br />{* break required for Google Chrome *}
             {if $mode eq 'create'}
-                {formuploadinput group='picture[0]' id='imageUpload' mandatory=false readOnly=false cssClass=''}
+                {formuploadinput group='picture' id='imageUpload1' mandatory=false readOnly=false cssClass=''}
             {else}
-                {formuploadinput group='picture[0]' id='imageUpload' mandatory=false readOnly=false cssClass=''}
+                {formuploadinput group='picture' id='imageUpload1' mandatory=false readOnly=false cssClass=''}
             {/if}
                 <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
-            {muimageValidationError id='imageUpload' class=''}
+            {muimageValidationError id='imageUpload1' class=''}
           </div>
     
         <div class="z-formrow">
-        {formlabel for='imageUpload' __text='Image upload' mandatorysym=0}<br />{* break required for Google Chrome *}
+        {formlabel for='imageUpload2' __text='Image upload' mandatorysym=0}<br />{* break required for Google Chrome *}
             {if $mode eq 'create'}
-                {formuploadinput group='picture[1]' id='imageUpload' mandatory=false readOnly=false cssClass=''}
+                {formuploadinput group='picture' id='imageUpload2' mandatory=false readOnly=false cssClass=''}
             {else}
-                {formuploadinput group='picture[1]' id='imageUpload' mandatory=false readOnly=false cssClass=''}
+                {formuploadinput group='picture' id='imageUpload2' mandatory=false readOnly=false cssClass=''}
             {/if}
                 <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
-            {muimageValidationError id='imageUpload' class=''}
+            {muimageValidationError id='imageUpload2' class=''}
           </div>
-          
       </fieldset>
           {* include possible submit actions *}
     <div class="z-buttons z-formbuttons">
-    {if $mode eq 'edit'}
-        {formbutton id='btnUpdate' commandName='update' __text='Update picture' class='z-bt-save'}
-      {if !$inlineUsage}
-        {gt text='Really delete this picture?' assign='deleteConfirmMsg'}
-        {formbutton id='btnDelete' commandName='delete' __text='Delete picture' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
-      {/if}
-    {elseif $mode eq 'create'}
         {formbutton id='btnCreate' commandName='create' __text='Create picture' class='z-bt-ok'}
-    {else}
-        {formbutton id='btnUpdate' commandName='update' __text='OK' class='z-bt-ok'}
-    {/if}
         {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
     </div>
     
