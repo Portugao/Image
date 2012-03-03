@@ -158,7 +158,7 @@ button.muimageInlineButton {
 
 #albumLeftBox {
     float: left;
-    widht: 60%;
+    width: 60%;
 }
 
 #muimage_pictures {
@@ -185,7 +185,7 @@ button.muimageInlineButton {
 
 .muimage_add_picture {
     float: right;
-    width: 30%;
+    width: 90%;
     text-align: right;
     padding: 0 10px 0;
 }
@@ -372,6 +372,13 @@ button.muimageInlineButton {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; 
+}
+
+/*-----------JQUERY--------------*/
+
+#basic_accordion h3 {
+     float: left;
+    width: 98%;
 }
 
 
