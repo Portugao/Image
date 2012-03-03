@@ -260,6 +260,9 @@ class MUImage_Controller_Base_User extends Zikula_AbstractController
         if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
             $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
         }
+        
+        $idFields = ModUtil::apiFunc($this->name, 'selection', 'getIdFields', array('ot' => $objectType));
+                
         // retrieve identifier of the object we wish to delete
         $idValues = MUImage_Util_Controller::retrieveIdentifier($this->request, $args, $objectType, $idFields);
         $hasIdentifier = MUImage_Util_Controller::isValidIdentifier($idValues);
@@ -296,52 +299,6 @@ class MUImage_Controller_Base_User extends Zikula_AbstractController
 
         // fetch and return the appropriate template
         return MUImage_Util_View::processTemplate($this->view, 'user', $objectType, 'delete', $args);
-    }
-
-    /**
-     * This is a custom method. Documentation for this will be improved in later versions.
-     *
-     * @return mixed Output.
-     */
-    public function zipUpload($args)
-    {
-        // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_OVERVIEW));
-        // DEBUG: permission check aspect ends
-
-        // parameter specifying which type of objects we are treating
-        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
-        $utilArgs = array('controller' => 'user', 'action' => 'zipUpload');
-        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
-        }
-        /** TODO: custom logic */
-
-        // return template
-        return $this->view->fetch('user/zipUpload.tpl');
-    }
-
-    /**
-     * This is a custom method. Documentation for this will be improved in later versions.
-     *
-     * @return mixed Output.
-     */
-    public function multiUpload($args)
-    {
-        // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_OVERVIEW));
-        // DEBUG: permission check aspect ends
-
-        // parameter specifying which type of objects we are treating
-        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
-        $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
-        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
-        }
-        /** TODO: custom logic */
-
-        // return template
-        return $this->view->fetch('user/multiUpload.tpl');
     }
 
     /**
