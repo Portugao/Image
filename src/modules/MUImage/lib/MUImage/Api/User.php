@@ -16,5 +16,31 @@
  */
 class MUImage_Api_User extends MUImage_Api_Base_User
 {
-    // feel free to add own api methods here
+    /**
+     * get available User panel links
+     *
+     * @return array Array of admin links
+     */
+    public function getlinks()
+    {
+        $links = array();
+
+        if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
+            $links[] = array('url'   => ModUtil::url($this->name, 'admin', 'main'),
+                'text'  => $this->__('Backend'),
+                'title' => $this->__('Switch to administration area.'),
+                'class' => 'z-icon-es-options');
+        }
+        if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_READ)) {
+            $links[] = array('url'   => ModUtil::url($this->name, 'user', 'view', array('ot' => 'album')),
+                'text'  => $this->__('Albums'),
+                'title' => $this->__('Album list'));
+        }
+        if (SecurityUtil::checkPermission($this->name . ':Picture:', '::', ACCESS_READ)) {
+            $links[] = array('url'   => ModUtil::url($this->name, 'user', 'view', array('ot' => 'picture')),
+                'text'  => $this->__('Pictures'),
+                'title' => $this->__('Picture list'));
+        }
+        return $links;
+    }
 }
