@@ -9,11 +9,18 @@ MUImage - Manual additions and amendments
 changed files
 
 
-*styles/stayle.css
+*styles/style.css
 *templates/user/aldum/display.tpl
 *templates/user/picture/include_displayItemListMany.tpl
 
 implemented classes
 
+*lib/MUImage/Api/Selection.php
+*lib/MUImage/Api/User.php
 *lib/MUImage/Controller/User.php
 *lib/MUImage/Util/View.php
+
+added files
+
+*templates/user/picture/include_displayItemListMany2.tpl
+*templates/user/picture/include_displayItemListMany3.tpl
