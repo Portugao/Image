@@ -26,7 +26,7 @@ class MUImage_Controller_Base_Admin extends Zikula_AbstractController
     protected function postInitialize()
     {
         // Set caching to true by default.
-        $this->view->setCaching(Zikula_View::CACHE_ENABLED);
+        $this->view->setCaching(Zikula_View::CACHE_DISABLED);
     }
 
     /**

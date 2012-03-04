@@ -37,11 +37,9 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
     		$count = MUImage_Util_View::countPictures();
     		$count2 = MUImage_Util_View::countAlbums();
     		
-    		$image = MUImage_Util_View::getImage();
-    		
     		$this->view->assign('numpictures', $count);
     		$this->view->assign('numalbums', $count2);
-    		$this->view->assign('image', $image);
+
     	}
     	
     	return parent::display($args);
@@ -73,6 +71,35 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 
         // execute form using supplied template and page event handler
         return $view->execute('user/' . $objectType . '/zipUpload.tpl', new $handlerClass());
+    }
+    
+        /**
+     * This method provides a generic item list overview.
+     *
+     * @param string  $ot           Treated object type.
+     * @param string  $sort         Sorting field.
+     * @param string  $sortdir      Sorting direction.
+     * @param int     $pos          Current pager position.
+     * @param int     $num          Amount of entries to display.
+     * @param string  $tpl          Name of alternative template (for alternative display options, feeds and xml output)
+     * @param boolean $raw          Optional way to display a template instead of fetching it (needed for standalone output)
+     * @return mixed Output.
+     */
+    public function view($args)
+    {
+    	$objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+    	
+    	if ($objectType == 'album') {
+            // DEBUG: permission check aspect starts
+            $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', '::', ACCESS_READ));
+            // DEBUG: permission check aspect ends
+    	}
+        if ($objectType == 'picture') {
+            // DEBUG: permission check aspect starts
+            $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Picture:', '::', ACCESS_READ));
+            // DEBUG: permission check aspect ends
+    	}
+    	return parent::view($args);
     }
 
     /**
@@ -109,6 +136,23 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
     public function editMulti($args)
     {
 
-    	return ModUtil::func($this->name, 'user', 'view');
+        // DEBUG: permission check aspect starts
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_OVERVIEW));
+        // DEBUG: permission check aspect ends
+            // parameter specifying which type of objects we are treating
+        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
+        $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
+        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
+            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
+        }
+       // create new Form reference
+        $view = FormUtil::newForm($this->name, $this);
+
+        // build form handler class name
+        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_EditMulti';
+
+        // execute form using supplied template and page event handler
+        return $view->execute('user/' . $objectType . '/editMulti.tpl', new $handlerClass());
+    
     }
 }
