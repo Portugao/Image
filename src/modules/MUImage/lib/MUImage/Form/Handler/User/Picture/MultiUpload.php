@@ -125,18 +125,19 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
     			$this->uploadFields = array($key => false);
     			//$upload    			
     			$entityData = $this->handleUploads($entityData, $entity);
+    			  			
+    			if ($entityData == false) {
+    				return false;
+    			}
+    			
     			$entityData['imageUpload'] = $entityData[$key];
     			unset($entityData[$key]);
     			$entityData['imageUploadMeta'] = $entityData[$key . 'Meta'];
     			unset($entityData[$key . 'Meta']);
-    			
-    			if ($entityData == false) {
-    				return false;
-    			}
+    			//$entityData['Album'] = $albumid;
 
     			$entity->setTitle($this->__('Please enter title...'));
     			$entity->setImageUpload($entityData['imageUpload']);
-    			//$entity->setImageUpload('hallo');
     			
                 // assign fetched data
                 $entity->merge($entityData);
@@ -158,11 +159,13 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
                         }
                     }
                 }
+                
+                $this->addDefaultMessage($args, $success);
    			}
     		}
     		
-    		$url = ModUtil::url($this->name, 'user', 'editMulti', array('ot' => 'picture'));
-    		return $this->view->redirect($url);
+    		return ModUtil::func($this->name, 'user', 'editMulti', array('ot' => 'picture'));
+
     		
     	}
     	
@@ -189,7 +192,7 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
         $message = '';
         switch ($args['commandName']) {
             case 'create':
-                $message = $this->__('Done! Picture created.');
+                $message = $this->__('Done! Image uploaded.');
                 break;
             case 'update':
                 $message = $this->__('Done! Picture updated.');
@@ -199,7 +202,26 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
                 break;
         }
         return $message;
+    } 
+    
+    /**
+     * Add success or error message to session.
+     *
+     * @param Array   $args    arguments from handleCommand method.
+     * @param Boolean $success true if this is a success, false for default error.
+     */
+    protected function addDefaultMessage($args, $success = false)
+    {
+        $message = $this->getDefaultMessage($args, $success);
+        if (!empty($message)) {
+            if ($success === true) {
+                LogUtil::registerStatus($message);
+            } else {
+                LogUtil::registerError($message);
+            }
+        }
     }
+    
     /**
      * Input data processing called by handleCommand method.
      */
@@ -304,7 +326,8 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
             default:
                 return $this->getDefaultReturnUrl($args, $obj);
         }
-    }
+    }    
+
 
     /**
      * Reassign options chosen by the user to avoid unwanted form state resets.
