@@ -15,32 +15,21 @@
 
     <fieldset>
         <legend>{gt text='Content'}</legend>  
-    
         <div class="z-formrow">
-       {* {assign var='mandatorySym' value='1'}
-        {if $mode ne 'create'}
-            {assign var='mandatorySym' value='0'}
-        {/if} *}
         {formlabel for='imageUpload1' __text='Image upload' mandatorysym=0}<br />{* break required for Google Chrome *}
-            {if $mode eq 'create'}
                 {formuploadinput group='picture' id='imageUpload1' mandatory=false readOnly=false cssClass=''}
-            {else}
-                {formuploadinput group='picture' id='imageUpload1' mandatory=false readOnly=false cssClass=''}
-            {/if}
                 <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
-            {muimageValidationError id='imageUpload1' class=''}
-          </div>
-    
+         </div>
         <div class="z-formrow">
         {formlabel for='imageUpload2' __text='Image upload' mandatorysym=0}<br />{* break required for Google Chrome *}
-            {if $mode eq 'create'}
                 {formuploadinput group='picture' id='imageUpload2' mandatory=false readOnly=false cssClass=''}
-            {else}
-                {formuploadinput group='picture' id='imageUpload2' mandatory=false readOnly=false cssClass=''}
-            {/if}
                 <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
-            {muimageValidationError id='imageUpload2' class=''}
-          </div>
+         </div>
+        <div class="z-formrow">
+        {formlabel for='imageUpload3' __text='Image upload' mandatorysym=0}<br />{* break required for Google Chrome *}
+                {formuploadinput group='picture' id='imageUpload3' mandatory=false readOnly=false cssClass=''}
+                <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
+        </div>         
       </fieldset>
           {* include possible submit actions *}
     <div class="z-buttons z-formbuttons">

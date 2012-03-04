@@ -120,13 +120,13 @@
     {foreach item='childAlbum' from=$album.children}
     <div class="muimage_album_container">
     <div class="muimage_album_title">
-    <a href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$childAlbum.id`"}">{$childAlbum.title}</a>
+    <a title="{$childAlbum.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$childAlbum.id`"}">{$childAlbum.title|truncate:30}</a>
     </div>
     <div class="muimage_album_description">
     {$childAlbum.description}
     </div>
     <div class="muimage_album_image">
-    {$image.title}
+    {include file='user/picture/include_displayItemListMany2.tpl' items=$childAlbum.picture}
     </div>
     <div class="muimage_album_bottom">
     

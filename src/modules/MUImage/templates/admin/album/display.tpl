@@ -50,15 +50,14 @@
 
     <dt>{gt text='Description'}</dt>
     <dd>{$album.description}</dd>
-    
+    <dt>{gt text='SubAlbums'}</dt>    
     {foreach item='childAlbum' from=$album.children}
     <div class="album_container">
-    ID {$childAlbum.id}<br />
+    {$childAlbum.title}<br />
     </div>
     {/foreach}
-    <dt>{gt text='Parent_id'}</dt>
-    <dd>{$album.parent_id}</dd>
-    <dt>{gt text='Parent'}</dt>
+
+    <dt>{gt text='Main album'}</dt>
     <dd>
     {if isset($album.Parent) && $album.Parent ne null}
       {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}

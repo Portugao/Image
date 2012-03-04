@@ -32,7 +32,7 @@
     {foreach item='album' from=$items}
     <div class="muimage_view_album_container">
     <div class="muimage_view_album_title">
-    <a href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title}</a>
+    <a title="{$album.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:30}</a>
     <div class="muimage_view_album_title_action">
     {if count($album._actions) gt 0}
         {strip}
@@ -46,13 +46,13 @@
     </div>
     </div>
     <div class="muimage_view_album_description">
-    {$album.description}
+    {$album.description|truncate:100}
     </div>
     <div class="muimage_view_album_image">
-    {$album.id|muimageGetFirstAlbumImage:$childAlbum.id}
+    {include file='user/picture/include_displayItemListMany3.tpl' items=$album.picture}
     </div>
     <div class="muimage_view_album_bottom">
-    {$album.description}
+ 
     </div>
     </div>
     {/foreach}

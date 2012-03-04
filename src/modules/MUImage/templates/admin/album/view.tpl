@@ -34,7 +34,6 @@
     <colgroup>
         <col id="ctitle" />
         <col id="cdescription" />
-        <col id="cparent_id" />
         <col id="cparent" />
         <col id="citemactions" />
     </colgroup>
@@ -45,9 +44,6 @@
         </th>
         <th id="hdescription" scope="col" class="z-left">
             {sortlink __linktext='Description' sort='description' currentsort=$sort sortdir=$sdir all=$all modname='MUImage' type='admin' func='view' ot='album'}
-        </th>
-        <th id="hparent_id" scope="col" class="z-right">
-            {sortlink __linktext='Parent_id' sort='parent_id' currentsort=$sort sortdir=$sdir all=$all modname='MUImage' type='admin' func='view' ot='album'}
         </th>
         <th id="hparent" scope="col" class="z-left">
             {sortlink __linktext='Parent' sort='parent' currentsort=$sort sortdir=$sdir all=$all modname='MUImage' type='admin' func='view' ot='album'}
@@ -63,10 +59,7 @@
             {$album.title|notifyfilters:'muimage.filterhook.albums'}
         </td>
         <td headers="hdescription" class="z-left">
-            {$album.description}
-        </td>
-        <td headers="hparent_id" class="z-right">
-            {$album.parent_id}
+            {$album.description|truncate:100}
         </td>
         <td headers="hparent" class="z-left">
             {if isset($album.Parent) && $album.Parent ne null}
