@@ -16,13 +16,11 @@
  */
 class MUImage_Controller_User extends MUImage_Controller_Base_User
 {
-	    /**
+	 /**
      * This method provides a generic item detail view.
      *
-     * @param string  $ot           Treated object type.
-     * @param string  $tpl          Name of alternative template (for alternative display options, feeds and xml output)
-     * @param boolean $raw          Optional way to display a template instead of fetching it (needed for standalone output)
-     * @return mixed Output.
+     * @param string  $id           Check for entity
+     * @return parent function
      */
     public function display($args)
     {
@@ -45,45 +43,12 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
     	return parent::display($args);
     	
     }
-    
-    /**
-     * This is a custom method. Documentation for this will be improved in later versions.
-     *
-     * @return mixed Output.
-     */
-    public function zipUpload($args)
-    {
-        // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_OVERVIEW));
-        // DEBUG: permission check aspect ends
-
-        // parameter specifying which type of objects we are treating
-        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
-        $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
-        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
-        }
-       // create new Form reference
-        $view = FormUtil::newForm($this->name, $this);
-
-        // build form handler class name
-        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_ZipUpload';
-
-        // execute form using supplied template and page event handler
-        return $view->execute('user/' . $objectType . '/zipUpload.tpl', new $handlerClass());
-    }
-    
-        /**
+   
+     /**
      * This method provides a generic item list overview.
      *
-     * @param string  $ot           Treated object type.
-     * @param string  $sort         Sorting field.
-     * @param string  $sortdir      Sorting direction.
-     * @param int     $pos          Current pager position.
-     * @param int     $num          Amount of entries to display.
-     * @param string  $tpl          Name of alternative template (for alternative display options, feeds and xml output)
-     * @param boolean $raw          Optional way to display a template instead of fetching it (needed for standalone output)
-     * @return mixed Output.
+     * @param string  $objectType   Treated object type.
+     * @return parent function.
      */
     public function view($args)
     {
@@ -101,6 +66,33 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
     	}
     	return parent::view($args);
     }
+    
+    /**
+     * This is a custom method. Documentation for this will be improved in later versions.
+     *
+     * @return mixed Output.
+     */
+    public function zipUpload($args)
+    {
+        // DEBUG: permission check aspect starts
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_ADD));
+        // DEBUG: permission check aspect ends
+
+        // parameter specifying which type of objects we are treating
+        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+        $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
+        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
+            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
+        }
+       // create new Form reference
+        $view = FormUtil::newForm($this->name, $this);
+
+        // build form handler class name
+        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_ZipUpload';
+
+        // execute form using supplied template and page event handler
+        return $view->execute('user/' . $objectType . '/zipUpload.tpl', new $handlerClass());
+    }
 
     /**
      * This is a custom method. Documentation for this will be improved in later versions.
@@ -110,7 +102,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
     public function multiUpload($args)
     {
         // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_OVERVIEW));
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
         // DEBUG: permission check aspect ends
             // parameter specifying which type of objects we are treating
         $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
@@ -137,11 +129,11 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
     {
 
         // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_OVERVIEW));
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
         // DEBUG: permission check aspect ends
             // parameter specifying which type of objects we are treating
         $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
-        $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
+        $utilArgs = array('controller' => 'user', 'action' => 'editMulti');
         if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
             $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
         }
@@ -149,10 +141,10 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
         $view = FormUtil::newForm($this->name, $this);
 
         // build form handler class name
-        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_EditMulti';
+        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_Edit';
 
         // execute form using supplied template and page event handler
-        return $view->execute('user/' . $objectType . '/editMulti.tpl', new $handlerClass());
+        return $view->execute('user/' . $objectType . '/edit.tpl', new $handlerClass());
     
     }
 }

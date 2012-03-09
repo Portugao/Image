@@ -12,5 +12,8 @@
 
 {/foreach}
 {* </ul> *}
+{else}
+<h2>{gt text='No pictures'}</h2>
 {/if}
+
 

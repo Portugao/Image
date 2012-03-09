@@ -17,31 +17,4 @@
 class MUImage_Api_Selection extends MUImage_Api_Base_Selection
 {
     
-    /**
-     * Select a list of entities by different criteria.
-     *
-     * @param string  $args['ot']             The object type to retrieve (optional)
-     * @param string  $args['where']          The where clause to use when retrieving the collection (optional) (default='').
-     * @param string  $args['orderBy']        The order-by clause to use when retrieving the collection (optional) (default='').
-     * @param integer $args['currentPage']    Where to start selection
-     * @param integer $args['resultsPerPage'] Amount of items to select
-     * @param boolean $args['useJoins']       Whether to include joining related objects (optional) (default=true).
-     *
-     * @return Array with retrieved collection and amount of total records affected by this query.
-     */
-    public function getEntitiesPaginated($args)
-    {
-    	$request = new Zikula_Request_Http();
-    	$type = $request->getGet()->filter('type', 'user');
-    	$objectType = $request->getGet()->filter('ot', 'album');
-    	
-    	if ($type == 'user' && $objectType == 'album') {
-    		$args['where'] = "tbl.parent_id is NULL";;
-    	}
-    	else {
-    		$args['where'] = '';
-    	} 
-        
-        return parent::getEntitiesPaginated($args); 
-    }
 }

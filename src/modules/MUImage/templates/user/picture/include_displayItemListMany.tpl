@@ -6,8 +6,12 @@
 <div class="muimage_picture_view">
 <div class="muimage_picture_view_header">
    {* <li> *}
-    <a href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}" title="{gt text='Details'}">      
+    <a class="muimage_picture_view_header_left" href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}" title="{gt text='Details'}">      
+   {if $item.title ne ''}
         {$item.title}
+   {else}
+   {gt text='No title'}
+   {/if}
    </a>
    {* <a id="pictureItem{$item.id}Display" href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id theme='Printer' forcelongurl=true}" title="{gt text='Open quick view window'}" style="display: none">
         {icon type='view' size='extrasmall' __alt='Quick view'}
@@ -20,6 +24,10 @@
     /* ]]> */
     </script> 
     <br /> *}
+    {checkpermission component='MUImage:Picture:' instance='.*' level='ACCESS_EDIT' assign='authEdit'}
+    {if $authEdit}
+    <a title="Edit {$item.title}" class="muimage_picture_view_header_right" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}"><img src="images/icons/extrasmall/xedit.png" /></a>
+    {/if}
 </div>
 <div class="muimage_picture_view_content">
 {if $item.imageUpload ne '' && isset($item.imageUploadFullPathURL)}

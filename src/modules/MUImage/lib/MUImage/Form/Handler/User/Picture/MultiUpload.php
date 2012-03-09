@@ -52,6 +52,7 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
      */
     public function initialize(Zikula_Form_View $view)
     {
+    	
 
         // everything okay, no initialization errors occured
         return true;
@@ -111,12 +112,15 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
     	
     	if ($args['commandName'] == 'create') {
     		
+    		$entityClass = $this->name . '_Entity_' . ucfirst($this->objectType);
+            $repository = $this->entityManager->getRepository($entityClass);
+    		
             // fetch posted data input values as an associative array
             $formData = $this->view->getValues();
             $data = $formData[$this->objectTypeLower];		
 
     		foreach ($data as $key => $value) {
-   			if ($value != '') {
+    			if ($value['size'] > 0) {
 
     			$entity = new MUImage_Entity_Picture();
     			
@@ -130,11 +134,16 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
     				return false;
     			}
     			
+    			// save the entered datas to the allowed upload field
     			$entityData['imageUpload'] = $entityData[$key];
     			unset($entityData[$key]);
     			$entityData['imageUploadMeta'] = $entityData[$key . 'Meta'];
-    			unset($entityData[$key . 'Meta']);
-    			//$entityData['Album'] = $albumid;
+    			unset($entityData[$key . 'Meta']);			
+    			
+    			// get the selected album as object
+    			$albumrepository = MUImage_Util_View::getAlbumRepository();
+    			$album = $albumrepository->selectById($albumid);
+    			$entityData['Album'] = $album;
 
     			$entity->setTitle($this->__('Please enter title...'));
     			$entity->setImageUpload($entityData['imageUpload']);
@@ -148,25 +157,23 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
     		    $this->performUpdate($args);
 
                 $success = true;
-                    if ($args['commandName'] == 'create') {
-                    // store new identifier
-                    foreach ($this->idFields as $idField) {
-                        $this->idValues[$idField] = $entity[$idField];
-                        // check if the insert has worked, might become obsolete due to exception usage
-                        if (!$this->idValues[$idField]) {
-                            $success = false;
-                            break;
-                        }
-                    }
-                }
                 
+                // default message
                 $this->addDefaultMessage($args, $success);
-   			}
+                //collect the ids of the inserted entities
+                $idcollection[] = MUImage_Util_Model::getId($id);
+    			}
+    			else {
+    				continue;
+    			}
     		}
-    		
-    		return ModUtil::func($this->name, 'user', 'editMulti', array('ot' => 'picture'));
+    	
+    	$pictureids = serialize($idcollection);	
+    	SessionUtil::setVar('pictureids', $pictureids);
 
-    		
+        $url = ModUtil::url($this->name, 'user', 'editMulti');
+        return $this->view->redirect($url);
+		
     	}
     	
         if ($args['commandName'] == 'cancel') {
@@ -227,7 +234,6 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
      */
     public function fetchInputData(Zikula_Form_View $view, &$args)
     {
-        MUImage_Form_Handler_User_Base_Edit::fetchInputData($view, $args);
 
         // get treated entity reference from persisted member var
         $entity = $this->entityRef;

@@ -37,8 +37,12 @@
     {if $mode ne 'create'}
         {include file='user/include_standardfields_edit.tpl' obj=$album}
     {/if}
+    {if $children eq 0 && $mode eq 'create'}
+    <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$children}">
+    <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
+    {else}
     {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'}
-
+    {/if}
     {* include display hooks *}
     {if $mode eq 'create'}
         {notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=null assign='hooks'}

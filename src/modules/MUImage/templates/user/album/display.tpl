@@ -37,7 +37,7 @@
 {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
 <p class="manageLink">
     {gt text='Create album' assign='createTitle'}
-    <a href="{modurl modname='MUImage' type='user' func='edit' ot='album' children="`$album.id`" returnTo='userDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
+    <a href="{modurl modname='MUImage' type='user' func='edit' ot='album' returnTo='userDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
         {$createTitle}
     </a>
 </p>
@@ -126,7 +126,11 @@
     {$childAlbum.description}
     </div>
     <div class="muimage_album_image">
+    {if isset($childAlbum.picture)}
     {include file='user/picture/include_displayItemListMany2.tpl' items=$childAlbum.picture}
+    {else}
+    <h2>{gt text='No pictures'}</h2>
+    {/if}
     </div>
     <div class="muimage_album_bottom">
     

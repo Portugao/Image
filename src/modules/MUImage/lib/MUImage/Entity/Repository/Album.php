@@ -18,5 +18,5 @@
  */
 class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Album
 {
-    // feel free to add your own methods here, like for example reusable DQL queries
+
 }

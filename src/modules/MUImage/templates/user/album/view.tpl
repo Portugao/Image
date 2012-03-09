@@ -30,6 +30,7 @@
     </div>
     {if isset($items)}
     {foreach item='album' from=$items}
+    {if $album.parent eq NULL}
     <div class="muimage_view_album_container">
     <div class="muimage_view_album_title">
     <a title="{$album.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:30}</a>
@@ -52,9 +53,10 @@
     {include file='user/picture/include_displayItemListMany3.tpl' items=$album.picture}
     </div>
     <div class="muimage_view_album_bottom">
- 
+    {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$album.children}
     </div>
     </div>
+    {/if}
     {/foreach}
     {else}
     {gt text='No SubAlbums'}

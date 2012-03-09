@@ -17,5 +17,20 @@
  */
 class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 {
-    // feel free to extend the base handler class here
+	    /**
+     * Initialize form handler.
+     *
+     * This method takes care of all necessary initialisation of our data and form states.
+     *
+     * @return boolean False in case of initialization errors, otherwise true.
+     */
+    public function initialize(Zikula_Form_View $view)
+    {
+    	
+    	$children = $this->request->getGet()->filter('children', 0, FILTER_SANITIZE_NUMBER_INT);
+    	
+    	$this->view->assign('children', $children);
+    	
+    	return parent::initialize($view);
+    }
 }

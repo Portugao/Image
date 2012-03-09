@@ -16,6 +16,20 @@
  */
 class MUImage_Util_View extends MUImage_Util_Base_View
 {
+	
+	/**
+	 * 
+	 * Returning the albums
+	 */
+	
+	public static function getAlbums() {
+		
+		$repository = MUImage_Util_View::getAlbumRepository();
+		$albums = $repository->selectWhere();
+		
+		return $albums;
+	} 
+	
 	/**
 	 * 
 	 * Counting of total pictures

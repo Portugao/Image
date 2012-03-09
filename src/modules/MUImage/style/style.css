@@ -132,7 +132,7 @@ button.muimageInlineButton {
 #muimage_body_header {
     background: #eee;
     float: left;
-    padding: 5px;
+    padding: 1%;
     margin: 0 0 5px;
     width: 98%;
     border: #333 1px solid;
@@ -165,7 +165,7 @@ button.muimageInlineButton {
 #muimage_pictures {
     background: #eee;
     float: left;
-    padding: 5px;
+    padding: 1%;
     margin: 0 0 5px;
     width: 98%;
     border: #333 1px solid;
@@ -206,8 +206,18 @@ button.muimageInlineButton {
     background: #ddd;
     font-size: 0.8em;
     padding: 5px;
-    overflow: auto;
+  /*  overflow: auto; neu */
+    line-height: 1.0em;
+}
 
+.muimage_picture_view_header_left {
+   width: 74px;
+   float: left;
+}
+
+.muimage_picture_view_header_right {
+   width: 16px;
+   float: right;
 }
 
 .muimage_picture_view_content {
@@ -291,7 +301,7 @@ button.muimageInlineButton {
 #muimage_albums {
     background: #eee;
     float: left;
-    padding: 5px;
+    padding: 1%;
     margin: 0 0 5px;
     width: 98%;
     border: #333 1px solid;
@@ -335,11 +345,15 @@ button.muimageInlineButton {
     font-weight: bolder;
 }
 
+.muimage_album_title a {
+   padding: 0 0 0 5px;
+}
+
 .muimage_album_description {
     background: #ccc;
-    padding: 5px 0;
+    padding: 5px;
     height: 30px;
-    width: 100%;
+    width: 190px;
     overflow: auto;
     float: left;
     font-size: 0.9em;
@@ -366,7 +380,7 @@ button.muimageInlineButton {
 #muimage_body_footer {
     background: #eee;
     float: left;
-    padding: 5px;
+    padding: 1%;
     margin: 0 0 5px;
     width: 98%;
     border: #333 1px solid;

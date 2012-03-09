@@ -134,6 +134,10 @@ class MUImage_Controller_Base_User extends Zikula_AbstractController
         // build ModUrl instance for display hooks
         $currentUrlObject = new Zikula_ModUrl($this->name, 'user', 'view', ZLanguage::getLanguageCode(), $currentUrlArgs);
 
+        if ($objectType == 'album') {
+        	$albumcount = count($entities);
+        	$this->view->assign('albumcount', $albumcount);
+        }
         // assign the object data, sorting information and details for creating the pager
         $this->view->assign('items', $entities)
             ->assign('sort', $sort)

@@ -17,5 +17,34 @@
  */
 class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_Picture_Base_Edit
 {
-    // feel free to extend the base handler class here
+    /**
+     * Initialize form handler.
+     *
+     * This method takes care of all necessary initialisation of our data and form states.
+     *
+     * @return boolean False in case of initialization errors, otherwise true.
+     */
+    public function initialize(Zikula_Form_View $view)
+    {
+    	
+    	$pictureids = SessionUtil::getVar('pictureids');
+    	$pictures = unserialize($pictureids);
+    	
+        parent::initialize($view);
+
+        $entity = $this->entityRef;
+
+        if ($this->mode == 'edit') {
+        } else {
+            if ($this->hasTemplateId !== true) {
+                $entity['album'] = $this->retrieveRelatedObjects('album', 'album', false);
+            }
+        }
+
+        // save entity reference for later reuse
+        $this->entityRef = $entity;
+
+        // everything okay, no initialization errors occured
+        return true;
+    }    
 }
