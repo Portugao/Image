@@ -62,9 +62,19 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
      */
     public function postPersistCallback()
     {
-    	$this->getId();
-    	$id = $this->id;
-    	MUImage_Util_Model::getId($id);
+    	if (!SessionUtil::getVar('muimagepictureids')) {
+    		$idcollection[] = $this->id;
+    		$pictureids = serialize($idcollection);
+    		SessionUtil::setVar('muimagepictureids', $pictureids);
+    	}
+    	else {
+    		$pictureids = SessionUtil::getVar('muimagepictureids');
+    		$idcollection = unserialize($pictureids);
+    		$idcollection[] = $this->id;
+    		$pictureids = serialize($idcollection);
+    		SessionUtil::setVar('muimagepictureids', $pictureids);		
+    	}
+    	
         $this->performPostPersistCallback();
     }
 

@@ -129,7 +129,7 @@ class MUImage_Block_Base_ItemList extends Zikula_Controller_AbstractBlock
         );
         list($entities, $objectCount) = ModUtil::apiFunc('MUImage', 'selection', 'getEntitiesPaginated', $selectionArgs);
 
-        $this->view->setCaching(true);
+        //$this->view->setCaching(true);
 
         // assign block vars and fetched data
         $this->view->assign('vars', $vars)

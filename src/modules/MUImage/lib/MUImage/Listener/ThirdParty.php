@@ -51,5 +51,6 @@ class MUImage_Listener_ThirdParty
         // intended is using the add() method to add a plugin like below
         $types = $event->getSubject();
         $types->add('MUImage_ContentType_ItemList');
+        $types->add('MUImage_ContentType_OneItem');
     }
 }

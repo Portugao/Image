@@ -25,9 +25,14 @@
 function smarty_function_muimageSelectorObjectTypes($params, $view)
 {
     $result = array();
-
+    
+    if ($params['object'] == 'picture') {
+        $result[] = array('text' => $view->__('Picture'), 'value' => 'picture');	
+    }
+    else {
     $result[] = array('text' => $view->__('Albums'), 'value' => 'album');
     $result[] = array('text' => $view->__('Pictures'), 'value' => 'picture');
+    }
 
     if (array_key_exists('assign', $params)) {
         $view->assign($params['assign'], $result);

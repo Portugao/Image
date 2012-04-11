@@ -15,9 +15,13 @@ changed files
 
 implemented classes
 
-*lib/MUImage/Api/Selection.php
+
 *lib/MUImage/Api/User.php
 *lib/MUImage/Controller/User.php
+*lib/MUImage/Entity/Album.php
+*lib/MUImage/Entity/Picture.php
+*lib/MUImage/Form/Handler/User/Edit.php
+
 *lib/MUImage/Util/View.php
 
 added files

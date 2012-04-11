@@ -16,5 +16,29 @@
  */
 class MUImage_Util_Image extends MUImage_Util_Base_Image
 {
-    // feel free to add your own convenience methods here
+    public static function getMetaDatas($imageurl) {
+        $Exif = exif_read_data("Bilder/DSC00033.JPG", 0, true);
+            if($Exif === false) { 
+                $metadatas = 'No metadatas available';
+            }
+            else
+            {
+             $metadatas = '';
+            foreach($Exif as $key => $Abschnitt)
+            {
+              foreach($Abschnitt as $Name => $Wert)
+              {
+                  if ($key == 'EXIF' && ($Name != 'MakerNote' && $Name != 'ComponentsConfiguration')) {
+                  	if ($Name == 'FNumber'){
+                  		$Wert = (int)$Wert / 10;
+                  	}
+                      $metadatas .= "$Name: $Wert<br>\n";
+                  }
+              }	
+            }
+            }
+           
+          
+          return $metadatas;
+      } 
 }

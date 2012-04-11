@@ -52,7 +52,7 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
      */
     public function initialize(Zikula_Form_View $view)
     {
-    	
+    	SessionUtil::delVar('muimagepictureids');
 
         // everything okay, no initialization errors occured
         return true;
@@ -144,7 +144,8 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
     			$albumrepository = MUImage_Util_View::getAlbumRepository();
     			$album = $albumrepository->selectById($albumid);
     			$entityData['Album'] = $album;
-
+    			
+                // set a default title and the correct data for imageupload
     			$entity->setTitle($this->__('Please enter title...'));
     			$entity->setImageUpload($entityData['imageUpload']);
     			
@@ -160,18 +161,16 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
                 
                 // default message
                 $this->addDefaultMessage($args, $success);
-                //collect the ids of the inserted entities
-                $idcollection[] = MUImage_Util_Model::getId($id);
+ 
     			}
     			else {
     				continue;
     			}
     		}
-    	
-    	$pictureids = serialize($idcollection);	
-    	SessionUtil::setVar('pictureids', $pictureids);
-
-        $url = ModUtil::url($this->name, 'user', 'editMulti');
+        $pictureids = SessionUtil::getVar('muimagepictureids');
+        $pictures = unserialize($pictureids);
+        $id = $pictures[0];
+        $url = ModUtil::url($this->name, 'user', 'editMulti',array('ot' => 'picture', 'id' => $id, 'album' => $albumid));
         return $this->view->redirect($url);
 		
     	}
@@ -271,7 +270,7 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
     /**
      * Get url to redirect to.
      */
-    protected function getRedirectUrl($args, $obj, $repeatCreateAction = false)
+    private function getRedirectUrl($args, $obj, $repeatCreateAction = false)
     {
         if ($this->inlineUsage == true) {
             $urlArgs = array('idp' => $this->idPrefix,

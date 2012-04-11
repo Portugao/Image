@@ -16,8 +16,5 @@
  */
 class MUImage_Util_Model extends MUImage_Util_Base_Model
 {
-    public static function getId($id) {
-    	
-    	return $id;
-    }
+
 }

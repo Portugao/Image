@@ -13,38 +13,9 @@
 
 /**
  * This handler class handles the page events of the Form called by the MUImage_user_edit() function.
- * It aims on the picture object type.
+ * It aims on the album object type.
  */
 class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_Picture_Base_Edit
 {
-    /**
-     * Initialize form handler.
-     *
-     * This method takes care of all necessary initialisation of our data and form states.
-     *
-     * @return boolean False in case of initialization errors, otherwise true.
-     */
-    public function initialize(Zikula_Form_View $view)
-    {
-    	
-    	$pictureids = SessionUtil::getVar('pictureids');
-    	$pictures = unserialize($pictureids);
-    	
-        parent::initialize($view);
-
-        $entity = $this->entityRef;
-
-        if ($this->mode == 'edit') {
-        } else {
-            if ($this->hasTemplateId !== true) {
-                $entity['album'] = $this->retrieveRelatedObjects('album', 'album', false);
-            }
-        }
-
-        // save entity reference for later reuse
-        $this->entityRef = $entity;
-
-        // everything okay, no initialization errors occured
-        return true;
-    }    
+    // feel free to extend the base handler class here
 }

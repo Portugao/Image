@@ -141,10 +141,10 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
         $view = FormUtil::newForm($this->name, $this);
 
         // build form handler class name
-        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_Edit';
+        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_EditMulti';
 
         // execute form using supplied template and page event handler
-        return $view->execute('user/' . $objectType . '/edit.tpl', new $handlerClass());
+        return $view->execute('user/' . $objectType . '/editMulti.tpl', new $handlerClass());
     
     }
 }

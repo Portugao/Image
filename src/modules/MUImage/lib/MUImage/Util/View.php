@@ -94,6 +94,5 @@ class MUImage_Util_View extends MUImage_Util_Base_View
      $repository = $entityManager->getRepository('MUImage_Entity_Album');
     
      return $repository;
-    }
-    
+    }   
 }

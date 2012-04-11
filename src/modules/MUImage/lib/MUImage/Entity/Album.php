@@ -26,6 +26,114 @@ use DoctrineExtensions\StandardFields\Mapping\Annotation as ZK;
  */
 class MUImage_Entity_Album extends MUImage_Entity_Base_Album
 {
+	
+    /**
+     * Collect available actions for this entity.
+     */
+    protected function prepareItemActions()
+    {
+        if (!empty($this->_actions)) {
+            return;
+        }
+
+        $currentType = FormUtil::getPassedValue('type', 'user', 'GETPOST', FILTER_SANITIZE_STRING);
+        $currentFunc = FormUtil::getPassedValue('func', 'main', 'GETPOST', FILTER_SANITIZE_STRING);
+        $dom = ZLanguage::getModuleDomain('MUImage');
+        if ($currentType == 'admin') {
+            if (in_array($currentFunc, array('main', 'view'))) {
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'preview',
+                        'linkTitle' => __('Open preview page', $dom),
+                        'linkText' => __('Preview', $dom)
+                    );
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'admin', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'display',
+                        'linkTitle' => str_replace('"', '', $this['title']),
+                        'linkText' => __('Details', $dom)
+                    );
+            }
+
+            if (in_array($currentFunc, array('main', 'view', 'display'))) {
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
+
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'edit',
+                        'linkTitle' => __('Edit', $dom),
+                        'linkText' => __('Edit', $dom)
+                    );
+                  /*  $this->_actions[] = array(
+                        'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'astemplate' => $this['id'])),
+                        'icon' => 'saveas',
+                        'linkTitle' => __('Reuse for new item', $dom),
+                        'linkText' => __('Reuse', $dom)
+                    ); */
+                }
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE)) {
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'admin', 'func' => 'delete', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'delete',
+                        'linkTitle' => __('Delete', $dom),
+                        'linkText' => __('Delete', $dom)
+                    );
+                }
+            }
+            if ($currentFunc == 'display') {
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'admin', 'func' => 'view', 'arguments' => array('ot' => 'album')),
+                        'icon' => 'back',
+                        'linkTitle' => __('Back to overview', $dom),
+                        'linkText' => __('Back to overview', $dom)
+                    );
+            }
+        }
+        if ($currentType == 'user') {
+            if (in_array($currentFunc, array('main', 'view'))) {
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'display',
+                        'linkTitle' => str_replace('"', '', $this['title']),
+                        'linkText' => __('Details', $dom)
+                    );
+            }
+
+            if (in_array($currentFunc, array('main', 'view', 'display'))) {
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
+
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'edit',
+                        'linkTitle' => __('Edit', $dom),
+                        'linkText' => __('Edit', $dom)
+                    );
+                  /*  $this->_actions[] = array(
+                        'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'astemplate' => $this['id'])),
+                        'icon' => 'saveas',
+                        'linkTitle' => __('Reuse for new item', $dom),
+                        'linkText' => __('Reuse', $dom)
+                    );*/
+                }
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE)) {
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'user', 'func' => 'delete', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'delete',
+                        'linkTitle' => __('Delete', $dom),
+                        'linkText' => __('Delete', $dom)
+                    );
+                }
+            }
+            if ($currentFunc == 'display') {
+                    $this->_actions[] = array(
+                        'url' => array('type' => 'user', 'func' => 'view', 'arguments' => array('ot' => 'album')),
+                        'icon' => 'back',
+                        'linkTitle' => __('Back to overview', $dom),
+                        'linkText' => __('Back to overview', $dom)
+                    );
+            }
+        }
+    }
 
     /**
      * Post-Process the data after the entity has been constructed by the entity manager.
