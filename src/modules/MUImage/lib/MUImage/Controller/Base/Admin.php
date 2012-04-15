@@ -247,6 +247,9 @@ class MUImage_Controller_Base_Admin extends Zikula_AbstractController
         if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
             $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
         }
+        
+        $idFields = ModUtil::apiFunc($this->name, 'selection', 'getIdFields', array('ot' => $objectType));
+        
         // retrieve identifier of the object we wish to delete
         $idValues = MUImage_Util_Controller::retrieveIdentifier($this->request, $args, $objectType, $idFields);
         $hasIdentifier = MUImage_Util_Controller::isValidIdentifier($idValues);
