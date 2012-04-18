@@ -10,7 +10,7 @@ changed files
 
 
 *styles/style.css
-*templates/user/aldum/display.tpl
+*templates/user/album/display.tpl
 *templates/user/picture/include_displayItemListMany.tpl
 
 implemented classes
@@ -21,10 +21,18 @@ implemented classes
 *lib/MUImage/Entity/Album.php
 *lib/MUImage/Entity/Picture.php
 *lib/MUImage/Form/Handler/User/Edit.php
+*lib/MUImage/Form/Handler/User/Base/Edit.php
+*lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php
+*lib/MUImage/Form/Handler/User/Picture/EditMulti.php
+*lib/MUImage/Form/Handler/User/Picture/MultiUpload.php
 
+*lib/MUImage/Util/Image.php
 *lib/MUImage/Util/View.php
 
 added files
 
+*templates/user/picture/editMulti.tpl
+*templates/user/picture/multiUpload.tpl
+*templates/user/picture/zipUpload.tpl
 *templates/user/picture/include_displayItemListMany2.tpl
 *templates/user/picture/include_displayItemListMany3.tpl
