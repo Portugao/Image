@@ -26,7 +26,6 @@ function smarty_function_muimageSelectorTemplates($params, $view)
 {
     $result = array();
 
-    $result[] = array('text' => $view->__('Only content'), 'value' => 'itemlist_displaycontent.tpl');    
     $result[] = array('text' => $view->__('Only item titles'), 'value' => 'itemlist_display.tpl');
     $result[] = array('text' => $view->__('With description'), 'value' => 'itemlist_display_description.tpl');
 
