@@ -76,7 +76,7 @@
     </dd>
 </dl>
     {include file='user/include_standardfields_display.tpl' obj=$picture}
-
+    {$picture.title|muimageImageMeta:$picture.imageUploadFullPathURL}
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
 {if count($picture._actions) gt 0}
     <p>{strip}

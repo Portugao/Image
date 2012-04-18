@@ -123,7 +123,7 @@
                 <a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$picture.Album.id}">
                     {$picture.Album.title|default:""}
                 </a>
-                <a id="albumItem{$picture.id}_rel_{$picture.Album.id}Display" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$picture.Album.id theme='Printer' forcelongurl=true}" title="{gt text='Open quick view window'}" style="display: none">
+               {* <a id="albumItem{$picture.id}_rel_{$picture.Album.id}Display" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$picture.Album.id theme='Printer' forcelongurl=true}" title="{gt text='Open quick view window'}" style="display: none">
                     {icon type='view' size='extrasmall' __alt='Quick view'}
                 </a>
                 <script type="text/javascript" charset="utf-8">
@@ -132,7 +132,7 @@
                         muimageInitInlineWindow($('albumItem{{$picture.id}}_rel_{{$picture.Album.id}}Display'), '{{$picture.Album.title|replace:"'":""}}');
                     });
                 /* ]]> */
-                </script>
+                </script> *}
             {else}
                 {gt text='Not set.'}
             {/if}
