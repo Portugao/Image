@@ -1,9 +1,9 @@
 {* purpose of this template: footer for user area *}
 
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
-<p class="z-center">
+{* <p class="z-center">
     Powered by <a href="http://modulestudio.de" title="Get the MOST out of Zikula!">ModuleStudio 0.5.4</a>
-</p>
+</p> *}
 {elseif isset($smarty.get.func) && $smarty.get.func eq 'edit'}
 {pageaddvar name='stylesheet' value='styles/core.css'}
 {pageaddvar name='stylesheet' value='modules/MUImage/style/style.css'}
