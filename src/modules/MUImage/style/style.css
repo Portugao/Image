@@ -268,6 +268,16 @@ button.muimageInlineButton {
     font-weight: bolder;
 }
 
+.muimage_display_album_title_action {
+    background: #ddd;
+    padding: 5px  5px 0;
+    float: right;
+    width: 40%;
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: bolder;
+}
+
 .muimage_view_album_description {
     background: #ccc;
     padding: 5px 0;
@@ -388,6 +398,21 @@ button.muimageInlineButton {
     -moz-border-radius: 3px;
     border-radius: 3px; 
 }
+
+/*-----------PICTURE STYLE IN DISPLAY--------*/
+
+#MUImage_body_left {
+    float: left;
+    width: 45%;
+    padding: 0 2% 0 0;
+}
+
+#MUImage_body_right {
+    float: right;
+    width: 45%;
+    padding: 0 0 0 2%;
+}
+
 
 /*-----------JQUERY--------------*/
 
