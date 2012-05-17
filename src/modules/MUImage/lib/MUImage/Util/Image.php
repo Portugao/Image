@@ -17,7 +17,7 @@
 class MUImage_Util_Image extends MUImage_Util_Base_Image
 {
     public static function getMetaDatas($imageurl) {
-        $Exif = exif_read_data("Bilder/DSC00033.JPG", 0, true);
+        $Exif = exif_read_data($imageurl,'IFD0', true);
             if($Exif === false) { 
                 $metadatas = 'No metadatas available';
             }
@@ -37,7 +37,6 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
               }	
             }
             }
-           
           
           return $metadatas;
       } 
