@@ -8,7 +8,8 @@
     <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.pictures.filter'}</h2>
 
 
-<dl id="MUImage_body">
+<div id="MUImage_body">
+<div id="MUImage_body_left">
     <dt>{gt text='Description'}</dt>
     <dd>{$picture.description}</dd>
 {*    <dt>{gt text='Show title'}</dt>
@@ -50,7 +51,27 @@
 </dd>
     <dt>{gt text='Image view'}</dt>
     <dd>{$picture.imageView}</dd>
-    <dt>{gt text='Album'}</dt>
+    {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
+{if count($picture._actions) gt 0}
+    <p>{strip}
+    {foreach item='option' from=$picture._actions}
+        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
+            {$option.linkText|safetext}
+        </a>
+    {/foreach}
+    {/strip}</p>
+{/if}
+</div>
+{* include display hooks *}
+{notifydisplayhooks eventname='muimage.ui_hooks.pictures.display_view' id=$picture.id urlobject=$currentUrlObject assign='hooks'}
+{foreach key='hookname' item='hook' from=$hooks}
+    {$hook}
+{/foreach}
+
+{/if}
+</div>
+<div id="MUImage_body_right">
+    <h2>{gt text='Album'}</h2>
     <dd>
     {if isset($picture.Album) && $picture.Album ne null}
       {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
@@ -74,34 +95,26 @@
         {gt text='No set.'}
     {/if}
     </dd>
-</dl>
     {include file='user/include_standardfields_display.tpl' obj=$picture}
-    {$picture.title|muimageImageMeta:$picture.imageUploadFullPathURL}
-{if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
-{if count($picture._actions) gt 0}
-    <p>{strip}
-    {foreach item='option' from=$picture._actions}
-        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
-            {$option.linkText|safetext}
-        </a>
-    {/foreach}
-    {/strip}</p>
-{/if}
+    <div class="z-panels" id="panel">
+    <h2 class="z-panel-header z-panel-indicator z-pointer z-panel-active">{gt text='Meta Datas'}</h2>
+    <div class="z-panel-content z-panel-active" style="overflow: visible;">
 
-{* include display hooks *}
-{notifydisplayhooks eventname='muimage.ui_hooks.pictures.display_view' id=$picture.id urlobject=$currentUrlObject assign='hooks'}
-{foreach key='hookname' item='hook' from=$hooks}
-    {$hook}
-{/foreach}
-
-{/if}
-
+    </div>
+    </div>
 </div>
 </div>
 {include file='user/footer.tpl'}
 
 <script type="text/javascript" charset="utf-8">
 /* <![CDATA[ */
+             
+    var panel = new Zikula.UI.Panels('panel', {
+    headerSelector: 'h3',
+    headerClassName: 'z-panel-header z-panel-indicator',
+    contentClassName: 'z-panel-content'
+    });             
+             
     document.observe('dom:loaded', function() {
         {{assign var='itemid' value=$picture.id}}
         muimageInitToggle('picture', 'showTitle', '{{$itemid}}');

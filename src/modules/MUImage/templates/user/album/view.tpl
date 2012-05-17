@@ -53,7 +53,8 @@
     {include file='user/picture/include_displayItemListMany3.tpl' items=$album.picture}
     </div>
     <div class="muimage_view_album_bottom">
-    {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$album.children}
+    {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$album.children}<br />
+    {* {gt text='Amount of pictures'}: {$album.title|muimageCountAlbumPictures:$album.id} *}
     </div>
     </div>
     {/if}

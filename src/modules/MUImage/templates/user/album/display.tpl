@@ -109,7 +109,7 @@
     {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
     <p class="manageLink">
     {gt text='Create subalbum' assign='createTitle'}
-    <a href="{modurl modname='MUImage' type='user' func='edit' ot='album' children="`$album.id`" returnTo='userDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
+    <a href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent="`$album.id`" returnTo='userDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
         {$createTitle}
     </a>
     </p>
@@ -121,6 +121,17 @@
     <div class="muimage_album_container">
     <div class="muimage_album_title">
     <a title="{$childAlbum.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$childAlbum.id`"}">{$childAlbum.title|truncate:30}</a>
+    <div class="muimage_display_album_title_action">
+    {if count($childAlbum._actions) gt 0}
+        {strip}
+        {foreach item='option' from=$childAlbum._actions}
+        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
+              {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
+        </a>
+        {/foreach}
+        {/strip}
+    {/if}
+    </div>
     </div>
     <div class="muimage_album_description">
     {$childAlbum.description}
@@ -133,7 +144,7 @@
     {/if}
     </div>
     <div class="muimage_album_bottom">
-    
+    {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$childAlbum.children}
     </div>
     </div>
     {/foreach}
