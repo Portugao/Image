@@ -16,5 +16,44 @@
  */
 class MUImage_Controller_Admin extends MUImage_Controller_Base_Admin
 {
-    // feel free to add your own controller methods here
+
+	/**
+	 * This method takes care of the application configuration.
+	 *
+	 * @return string Output
+	 */
+	public function album()
+	{
+		$this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN));
+
+		// Create new Form reference
+		$view = FormUtil::newForm($this->name, $this);
+
+		// Execute form using supplied template and page event handler
+		return $view->execute('admin/album.tpl', new MUImage_Form_Handler_Admin_Base_Album());
+	}
+
+	/**
+	 * This method takes care of the application configuration.
+	 *
+	 * @return string Output
+	 */
+	public function import()
+	{
+		$step = MUImage_Util_View::getStep();
+		$this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN));
+
+		// Create new Form reference
+		$view = FormUtil::newForm($this->name, $this);
+
+		if ($step == 'first') {
+			// Execute form using supplied template and page event handler
+			return $view->execute('admin/import.tpl', new MUImage_Form_Handler_Admin_Base_Import());
+		}
+
+		if ($step == 'albums') {
+			// Execute form using supplied template and page event handler
+			return $view->execute('admin/albums.tpl', new MUImage_Form_Handler_Admin_Base_Import());
+		}
+	}
 }
