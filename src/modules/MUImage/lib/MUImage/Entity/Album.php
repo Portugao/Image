@@ -101,7 +101,12 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
 
             if (in_array($currentFunc, array('main', 'view', 'display'))) {
                 if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
-
+                  /*  $this->_actions[] = array(
+                        'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'display',
+                        'linkTitle' => str_replace('"', '', $this['title']),
+                        'linkText' => __('Details', $dom)
+                    );*/
                     $this->_actions[] = array(
                         'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
                         'icon' => 'edit',
@@ -125,12 +130,12 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
                 }
             }
             if ($currentFunc == 'display') {
-                    $this->_actions[] = array(
+                  /*  $this->_actions[] = array(
                         'url' => array('type' => 'user', 'func' => 'view', 'arguments' => array('ot' => 'album')),
                         'icon' => 'back',
                         'linkTitle' => __('Back to overview', $dom),
                         'linkText' => __('Back to overview', $dom)
-                    );
+                    );*/
             }
         }
     }
