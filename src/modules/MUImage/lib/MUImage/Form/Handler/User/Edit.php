@@ -27,9 +27,11 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
     public function initialize(Zikula_Form_View $view)
     {
     	
-    	$children = $this->request->getGet()->filter('children', 0, FILTER_SANITIZE_NUMBER_INT);
+    	$parent = $this->request->getGet()->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
     	
-    	$this->view->assign('children', $children);
+    	if ($parent) {
+    	$this->view->assign('parent', $parent);
+    	}
     	
     	return parent::initialize($view);
     }

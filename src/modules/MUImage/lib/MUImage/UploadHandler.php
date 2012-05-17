@@ -16,5 +16,27 @@
  */
 class MUImage_UploadHandler extends MUImage_Base_UploadHandler
 {
-    // feel free to add your upload handler enhancements here
+	/**
+	 * Process a file upload.
+	 *
+	 * @param string $objectType Currently treated entity type.
+	 * @param string $fileData   Form data array.
+	 * @param string $fieldName  Name of upload field.
+	 *
+	 * @return array Resulting file name and collected meta data.
+	 */
+	public function performFileUpload($objectType, $fileData, $fieldName)
+	{
+		if ($objectType == 'picture') {
+			$fileSize = filesize($sourceFilePath) / (1024 * 1024); // in MB
+			$maxSize = 1;
+			if ($fileSize > $maxSize) {
+				return LogUtil::registerError(__('Error! Your file is too big. Please keep it smaller than %s megabytes.', array($maxSize), $dom));
+			}
+		}
+
+		return parent::performFileUpload($objectType, $fileData, $fieldName);
+
+
+	}
 }
