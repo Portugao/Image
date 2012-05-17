@@ -16,6 +16,16 @@
  */
 class MUImage_Util_View extends MUImage_Util_Base_View
 {
+	/**
+	 * 
+	 * Returning the step of import
+	 */
+	public static function getStep() {
+		$view = new Zikula_Request_Http();
+		$step = $view->getGet()->filter('step', 'first', FILTER_SANITIZE_STRING);
+		
+		return $step;
+	}
 	
 	/**
 	 * 
@@ -28,7 +38,31 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 		$albums = $repository->selectWhere();
 		
 		return $albums;
-	} 
+	}
+
+	/**
+	 * Counting pictures of an album
+	 */
+	
+	public static function countAlbumPictures($albumid) {
+		
+		$view = new Zikula_Request_Http();
+		$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
+		$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
+		
+		$repository = MUImage_Util_View::getAlbumRepository();
+		$album = $repository->selectById();
+		
+		/*foreach ($album[picture] as $value) {
+		$pictures[] = $value;
+		}*/
+		//$count = count($album[picture]);
+		$count = 0;
+		
+		//LogUtil::registerStatus($album);
+		
+		return $count;
+	}
 	
 	/**
 	 * 
