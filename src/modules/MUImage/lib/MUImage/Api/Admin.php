@@ -41,11 +41,11 @@ class MUImage_Api_Admin extends MUImage_Api_Base_Admin
                 'text'  => $this->__('Pictures'),
                 'title' => $this->__('Picture list'));
         }
-            if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
+         /*   if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             $links[] = array('url'   => ModUtil::url($this->name, 'admin', 'import'),
                 'text'  => $this->__('Import'),
                 'title' => $this->__('Import from other modules'));
-        }
+        }*/ //TODO import function
         if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             $links[] = array('url'   => ModUtil::url($this->name, 'admin', 'config'),
                 'text'  => $this->__('Configuration'),
