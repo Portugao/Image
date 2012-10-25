@@ -103,7 +103,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	}
 
 	/**
-	 *
+	 *this method checks if an user may create another main album
+	 * return true or false
 	 */
 	public static function otherUserMainAlbums() {
 		$numberMainAlbums = ModUtil::getVar('MUImage', 'numberParentAlbums');
@@ -133,7 +134,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	}
 
 	/**
-	 *
+	 * this method checks if an user may create another subalbum
+	 * return true or false
 	 */
 	public static function otherUserSubAlbums() {
 		$numberSubAlbums = ModUtil::getVar('MUImage', 'numberSubAlbums');
@@ -145,10 +147,10 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			}
 			else {
 				$albumrepository = MUImage_Util_Model::getAlbumRepository();
-				$where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
-				$where .= ' AND ';
-				$where .= 'tbl.parent_id > 0';
-				$subalbumcount = $albumrepository->selectCount($where);
+				$where2 = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+				$where2 .= ' AND ';
+				$where2 .= 'tbl.parent_id > 0';
+				$subalbumcount = $albumrepository->selectCount($where2);
 				if ($subalbumcount < $numberSubAlbums) {
 					return true;
 				}
@@ -163,7 +165,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	}
 
 	/**
-	 *
+	 *this method checks if an user may create another picture
+	 * return true or false
 	 */
 	public static function otherUserPictures() {
 		$numberPictures = ModUtil::getVar('MUImage', 'numberPictures');
@@ -176,8 +179,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			else {
 
 				$picturerepository = MUImage_Util_Model::getPictureRepository();
-				$where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
-				$picturecount = $picturerepository->selectCount($where);
+				$where3 = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+				$picturecount = $picturerepository->selectCount($where3);
 				if ($picturecount < $numberPictures) {
 					return true;
 				}
@@ -188,6 +191,27 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 		}
 		else {
 			return true;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public static function myAlbum($id) {
+		$view = new Zikula_Request_Http();
+		$albumrepository = MUImage_Util_Model::getAlbumRepository();
+		$myAlbum = $albumrepository->selectById($id);
+		
+		if (in_array(2, UserUtil::getGroupsForUser(UserUtil::getVar('uid')))) {
+			return true;
+		}
+		else {
+		if (UserUtil::getVar('uid') == $myAlbum->getCreatedUserId()) {
+			return true;
+		}
+		else {
+			return false;
+		}
 		}
 	}
 
