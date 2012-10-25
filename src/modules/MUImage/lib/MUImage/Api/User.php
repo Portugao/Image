@@ -45,17 +45,17 @@ class MUImage_Api_User extends MUImage_Api_Base_User
                 'text'  => $this->__('Create Album'),
                 'title' => $this->__('Create a main album'));
 		}
-		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserSubAlbums() == true && $func == 'display' && $ot == 'album') {
+		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserSubAlbums() == true && $func == 'display' && $ot == 'album' && MUImage_Util_View::myAlbum($id) == true) {
 			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'album', 'album' => $id, 'returnTo' => 'userDisplayAlbum')),
                 'text'  => $this->__('Create SubAlbum'),
                 'title' => $this->__('Create a sub album'));
 		}
-		if (SecurityUtil::checkPermission($this->name . ':Picture:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserPictures() == true && $func == 'display' && $ot == 'album' && $id > 0) {
+		if (SecurityUtil::checkPermission($this->name . ':Picture:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserPictures() == true && $func == 'display' && $ot == 'album' && $id > 0 && MUImage_Util_View::myAlbum($id) == true) {
 		 $links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'picture', 'album' => $id, 'returnTo' => 'userDisplayAlbum')),
 		 'text'  => $this->__('Create Picture'),
 		 'title' => $this->__('Load up a Picture'));
 		}
-		if (SecurityUtil::checkPermission($this->name . ':Picture:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserPictures() == true && $func == 'display' && $ot == 'album' && $id > 0) {
+		if (SecurityUtil::checkPermission($this->name . ':Picture:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserPictures() == true && $func == 'display' && $ot == 'album' && $id > 0 && MUImage_Util_View::myAlbum($id) == true) {
 		 $links[] = array('url'   => ModUtil::url($this->name, 'user', 'multiupload', array('ot' => 'picture', 'album' => $id, 'returnTo' => 'userDisplayAlbum')),
 		 'text'  => $this->__('Create Pictures'),
 		 'title' => $this->__('Load up few Pictures'));
