@@ -79,7 +79,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
         // DEBUG: permission check aspect ends
 
         // parameter specifying which type of objects we are treating
-        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
         $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
         if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
             $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
