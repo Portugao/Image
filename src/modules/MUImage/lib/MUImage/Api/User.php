@@ -16,31 +16,50 @@
  */
 class MUImage_Api_User extends MUImage_Api_Base_User
 {
-    /**
-     * get available User panel links
-     *
-     * @return array Array of admin links
-     */
-    public function getlinks()
-    {
-        $links = array();
+	/**
+	 * get available User panel links
+	 *
+	 * @return array Array of admin links
+	 */
+	public function getlinks()
+	{
+		$links = array();
 
-        if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
-            $links[] = array('url'   => ModUtil::url($this->name, 'admin', 'main'),
+		$func = $this->request->getGet()->filter('func', 'main', FILTER_SANITIZE_STRING);
+		$ot = $this->request->getGet()->filter('ot', '', FILTER_SANITIZE_STRING);
+		$id = $this->request->getGet()->filter('id' , 0 , FILTER_SANITIZE_NUMBER_INT);
+
+		if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
+			$links[] = array('url'   => ModUtil::url($this->name, 'admin', 'main'),
                 'text'  => $this->__('Backend'),
                 'title' => $this->__('Switch to administration area.'),
                 'class' => 'z-icon-es-options');
-        }
-        if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_READ)) {
-            $links[] = array('url'   => ModUtil::url($this->name, 'user', 'view', array('ot' => 'album')),
+		}
+		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_READ)) {
+			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'view', array('ot' => 'album')),
                 'text'  => $this->__('Albums'),
                 'title' => $this->__('Album list'));
-        }
-        if (SecurityUtil::checkPermission($this->name . ':Picture:', '::', ACCESS_READ)) {
-            $links[] = array('url'   => ModUtil::url($this->name, 'user', 'view', array('ot' => 'picture')),
-                'text'  => $this->__('Pictures'),
-                'title' => $this->__('Picture list'));
-        }
-        return $links;
-    }
+		}
+		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserMainAlbums() == true && $func == 'view' && $ot == 'album') {
+			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'album')),
+                'text'  => $this->__('Create Album'),
+                'title' => $this->__('Create a main album'));
+		}
+		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserSubAlbums() == true && $func == 'display' && $ot == 'album') {
+			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'album', 'album' => $id, 'returnTo' => 'userDisplayAlbum')),
+                'text'  => $this->__('Create SubAlbum'),
+                'title' => $this->__('Create a sub album'));
+		}
+		if (SecurityUtil::checkPermission($this->name . ':Picture:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserPictures() == true && $func == 'display' && $ot == 'album' && $id > 0) {
+		 $links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'picture', 'album' => $id, 'returnTo' => 'userDisplayAlbum')),
+		 'text'  => $this->__('Create Picture'),
+		 'title' => $this->__('Load up a Picture'));
+		}
+		if (SecurityUtil::checkPermission($this->name . ':Picture:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserPictures() == true && $func == 'display' && $ot == 'album' && $id > 0) {
+		 $links[] = array('url'   => ModUtil::url($this->name, 'user', 'multiupload', array('ot' => 'picture', 'album' => $id, 'returnTo' => 'userDisplayAlbum')),
+		 'text'  => $this->__('Create Pictures'),
+		 'title' => $this->__('Load up few Pictures'));
+		}
+		return $links;
+	}
 }
