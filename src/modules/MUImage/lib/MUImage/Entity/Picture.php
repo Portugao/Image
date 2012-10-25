@@ -38,6 +38,11 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
      */
     public function postLoadCallback()
     {
+    	$view = new Zikula_Request_Http();
+    	$func = $view->getGet()->filter('func', 'main', FILTER_SANITIZE_STRING);
+    	if ($func == 'display' && ModUtil::getVar('MUImage', 'countImageView') == true) {
+    		$this->setImageView($this->getImageView() + 1);
+    	}
         $this->performPostLoadCallback();
     }
 
