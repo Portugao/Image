@@ -40,7 +40,8 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
     {
     	$view = new Zikula_Request_Http();
     	$func = $view->getGet()->filter('func', 'main', FILTER_SANITIZE_STRING);
-    	if ($func == 'display' && ModUtil::getVar('MUImage', 'countImageView') == true) {
+    	$ot = $view->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+    	if ($func == 'display' && $ot == 'picture' && ModUtil::getVar('MUImage', 'countImageView') == true) {
     		$this->setImageView($this->getImageView() + 1);
     	}
         $this->performPostLoadCallback();
