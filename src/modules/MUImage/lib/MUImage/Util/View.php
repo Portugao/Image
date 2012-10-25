@@ -17,116 +17,178 @@
 class MUImage_Util_View extends MUImage_Util_Base_View
 {
 	/**
-	 * 
+	 *
 	 * Returning the step of import
 	 */
 	public static function getStep() {
 		$view = new Zikula_Request_Http();
 		$step = $view->getGet()->filter('step', 'first', FILTER_SANITIZE_STRING);
-		
+
 		return $step;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Returning the albums
 	 */
-	
+
 	public static function getAlbums() {
-		
-		$repository = MUImage_Util_View::getAlbumRepository();
+
+		$repository = MUImage_Util_Model::getAlbumRepository();
 		$albums = $repository->selectWhere();
-		
+
 		return $albums;
 	}
 
 	/**
 	 * Counting pictures of an album
 	 */
-	
+
 	public static function countAlbumPictures($albumid) {
-		
+
 		$view = new Zikula_Request_Http();
 		$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
 		$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
-		
-		$repository = MUImage_Util_View::getAlbumRepository();
+
+		$repository = MUImage_Util_Model::getAlbumRepository();
 		$album = $repository->selectById();
-		
+
 		/*foreach ($album[picture] as $value) {
-		$pictures[] = $value;
-		}*/
+		 $pictures[] = $value;
+		 }*/
 		//$count = count($album[picture]);
 		$count = 0;
-		
+
 		//LogUtil::registerStatus($album);
-		
+
 		return $count;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Counting of total pictures
 	 */
-    public static function countPictures() {
-    	
-    	$view = new Zikula_Request_Http();
-    	$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
-    	if ($id != 0) {
-    		
-    		$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
-    		
-    		$repository = MUImage_Util_View::getPictureRepository();
-    	    $count = $repository->selectCount();
-    	}
-    	return $count;
-    }
-    
-    /**
-     * 
-     * Counting of total albums
-     */
-    public static function countAlbums() {
-    	
-    	$view = new Zikula_Request_Http();
-    	$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
-    	if ($id != 0) {
-    		
-    		$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
-    		
-    		$repository = MUImage_Util_View::getAlbumRepository();
-    	    $count = $repository->selectCount();
-    	}
-    	return $count;
-    }
-    
-    /**
-	*
-	 This method is for getting a repository for pictures
-	*
-	*/
-    
-    public static function getPictureRepository() {
-    
-     $serviceManager = ServiceUtil::getManager();
-     $entityManager = $serviceManager->getService('doctrine.entitymanager');
-     $repository = $entityManager->getRepository('MUImage_Entity_Picture');
-    
-     return $repository;
-    }
-    
-    /**
-	*
-	 This method is for getting a repository for albums
-	*
-	*/
-    
-    public static function getAlbumRepository() {
-    
-     $serviceManager = ServiceUtil::getManager();
-     $entityManager = $serviceManager->getService('doctrine.entitymanager');
-     $repository = $entityManager->getRepository('MUImage_Entity_Album');
-    
-     return $repository;
-    }   
+	public static function countPictures()
+	{
+			
+		$view = new Zikula_Request_Http();
+		$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
+		if ($id != 0) {
+
+			$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
+
+			$repository = MUImage_Util_Model::getPictureRepository();
+			$count = $repository->selectCount();
+		}
+		return $count;
+	}
+
+	/**
+	 *
+	 * Counting of total albums
+	 */
+	public static function countAlbums()
+	{
+			
+		$view = new Zikula_Request_Http();
+		$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
+		if ($id != 0) {
+
+			$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
+
+			$repository = MUImage_Util_Model::getAlbumRepository();
+			$count = $repository->selectCount();
+		}
+		return $count;
+	}
+
+	/**
+	 *
+	 */
+	public static function otherUserMainAlbums() {
+		$numberMainAlbums = ModUtil::getVar('MUImage', 'numberParentAlbums');
+		if ($numberMainAlbums != '') {
+			$uid = UserUtil::getVar('uid');
+			$gid = UserUtil::getGroupsForUser($uid);
+			if (in_array(2, $gid)) {
+				return true;
+			}
+			else {
+				$albumrepository = MUImage_Util_Model::getAlbumRepository();
+				$where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+				$where .= ' AND ';
+				$where .= 'tbl.parent_id IS NULL';
+				$albumcount = $albumrepository->selectCount($where);
+				if ($albumcount < $numberMainAlbums) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		else {
+			return true;
+		}
+	}
+
+	/**
+	 *
+	 */
+	public static function otherUserSubAlbums() {
+		$numberSubAlbums = ModUtil::getVar('MUImage', 'numberSubAlbums');
+		if ($numberSubAlbums != '') {
+			$uid = UserUtil::getVar('uid');
+			$gid = UserUtil::getGroupsForUser($uid);
+			if (in_array(2, $gid)) {
+				return true;
+			}
+			else {
+				$albumrepository = MUImage_Util_Model::getAlbumRepository();
+				$where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+				$where .= ' AND ';
+				$where .= 'tbl.parent_id > 0';
+				$subalbumcount = $albumrepository->selectCount($where);
+				if ($subalbumcount < $numberSubAlbums) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		else {
+			return true;
+		}
+	}
+
+	/**
+	 *
+	 */
+	public static function otherUserPictures() {
+		$numberPictures = ModUtil::getVar('MUImage', 'numberPictures');
+		if ($numberPictures != '') {
+			$uid = UserUtil::getVar('uid');
+			$gid = UserUtil::getGroupsForUser($uid);
+			if (in_array(2, $gid)) {
+				return true;
+			}
+			else {
+
+				$picturerepository = MUImage_Util_Model::getPictureRepository();
+				$where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+				$picturecount = $picturerepository->selectCount($where);
+				if ($picturecount < $numberPictures) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		else {
+			return true;
+		}
+	}
+
 }
