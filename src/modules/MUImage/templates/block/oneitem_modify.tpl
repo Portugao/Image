@@ -3,7 +3,7 @@
 <div class="z-formrow">
     <label for="MUImage_objecttype">{gt text='Object type'}:</label>
     <select id="MUImage_objecttype" name="objecttype" size="1">
-        <option value="movie"{if $objectType eq 'movie'} selected="selected"{/if}>{gt text='Movies'}</option>
+        <option value="picture"{if $objectType eq 'picture'} selected="selected"{/if}>{gt text='Pictures'}</option>
     </select>
 </div>
 
@@ -20,7 +20,7 @@
 <div class="z-formrow">
     <label for="MUImage_template">{gt text='Template File'}:</label>
     <select id="MUImage_template" name="template">
-        <option value="oneitem_displaycontent.tpl"{if $template eq 'oneitem_displaycontent.tpl'} selected="selected"{/if}>{gt text='Only the flashfile'}</option>
+        <option value="oneitem_displaycontent.tpl"{if $template eq 'oneitem_displaycontent.tpl'} selected="selected"{/if}>{gt text='Only the picture'}</option>
         <option value="oneitem_display.tpl"{if $template eq 'oneitem_display.tpl'} selected="selected"{/if}>{gt text='Only item titles'}</option>
         <option value="oneitem_display_description.tpl"{if $template eq 'oneitem_display_description.tpl'} selected="selected"{/if}>{gt text='With description'}</option>
     </select>
