@@ -6,8 +6,8 @@
 <div class="z-frontendcontainer">
     <h2>{$templateTitle}</h2>
 
-    <p class="z-warningmsg">{gt text='Do you really want to delete this album ?'}</p>
-
+    <p class="z-warningmsg">{gt text='Do you really want to delete this album?'}</p>
+    <p class="z-warningmsg">{gt text='Notcice. If you delete this album, you will also delete existing main albums, sub albums and all thier pictures!'}</p>
     <form class="z-form" action="{modurl modname='MUImage' type='user' func='delete' ot='album' id=$album.id}" method="post">
         <div>
             <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
