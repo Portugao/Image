@@ -41,12 +41,12 @@ class MUImage_Api_User extends MUImage_Api_Base_User
                 'title' => $this->__('Album list'));
 		}
 		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserMainAlbums() == true && $func == 'view' && $ot == 'album') {
-			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'album')),
+			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'album', 'parent' => 0, 'returnTo' => 'userDisplayAlbum')),
                 'text'  => $this->__('Create Album'),
                 'title' => $this->__('Create a main album'));
 		}
 		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserSubAlbums() == true && $func == 'display' && $ot == 'album' && MUImage_Util_View::myAlbum($id) == true) {
-			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'album', 'album' => $id, 'returnTo' => 'userDisplayAlbum')),
+			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'album', 'parent' => $id, 'returnTo' => 'userDisplayAlbum')),
                 'text'  => $this->__('Create SubAlbum'),
                 'title' => $this->__('Create a sub album'));
 		}
