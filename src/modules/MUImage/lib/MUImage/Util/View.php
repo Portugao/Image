@@ -104,15 +104,23 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
 	/**
 	 *this method checks if an user may create another main album
-	 * return true or false
+	 * return true or false or the contingent
+	 * @param $kind           $kind   kind of check 1 for controlling links, other for get contingent
 	 */
-	public static function otherUserMainAlbums() {
+	public static function otherUserMainAlbums($kind = 1) {
+		$dom = ZLanguage::getModuleDomain('MUImage');
 		$numberMainAlbums = ModUtil::getVar('MUImage', 'numberParentAlbums');
 		if ($numberMainAlbums != '') {
 			$uid = UserUtil::getVar('uid');
 			$gid = UserUtil::getGroupsForUser($uid);
 			if (in_array(2, $gid)) {
-				return true;
+				if ($kind == 1) {
+					return true;
+				}
+				else {
+					$out = __('unlimited', $dom);
+					return $out;
+				}
 			}
 			else {
 				$albumrepository = MUImage_Util_Model::getAlbumRepository();
@@ -120,16 +128,34 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 				$where .= ' AND ';
 				$where .= 'tbl.parent_id IS NULL';
 				$albumcount = $albumrepository->selectCount($where);
-				if ($albumcount < $numberMainAlbums) {
-					return true;
+				if ($kind == 1) {
+					if ($albumcount < $numberMainAlbums) {
+						return true;
+					}
+					else {
+						return false;
+					}
 				}
 				else {
-					return false;
+					$contingentMainAlbums = $numberMainAlbums - $albumcount;
+					if ($contingentMainAlbums > 0) {
+						$out = $contingentMainAlbums;
+					}
+					else {
+						$out = 0;
+					}
+					return $out;
 				}
 			}
 		}
 		else {
-			return true;
+			if ($kind == 1) {
+				return true;
+			}
+			else {
+				$out = __('unlimited', $dom);
+				return $out;
+			}
 		}
 	}
 
@@ -137,13 +163,19 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 * this method checks if an user may create another subalbum
 	 * return true or false
 	 */
-	public static function otherUserSubAlbums() {
+	public static function otherUserSubAlbums($kind = 1) {
 		$numberSubAlbums = ModUtil::getVar('MUImage', 'numberSubAlbums');
 		if ($numberSubAlbums != '') {
 			$uid = UserUtil::getVar('uid');
 			$gid = UserUtil::getGroupsForUser($uid);
 			if (in_array(2, $gid)) {
-				return true;
+				if ($kind == 1) {
+					return true;
+				}
+				else {
+					$out = __('unlimited', $dom);
+					return $out;
+				}
 			}
 			else {
 				$albumrepository = MUImage_Util_Model::getAlbumRepository();
@@ -151,16 +183,34 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 				$where2 .= ' AND ';
 				$where2 .= 'tbl.parent_id > 0';
 				$subalbumcount = $albumrepository->selectCount($where2);
-				if ($subalbumcount < $numberSubAlbums) {
-					return true;
+				if ($kind == 1) {
+					if ($subalbumcount < $numberSubAlbums) {
+						return true;
+					}
+					else {
+						return false;
+					}
 				}
 				else {
-					return false;
+					$contingentSubAlbums = $numberSubAlbums - $subalbumcount;
+					if ($contingentMainAlbums > 0) {
+						$out = $contingentSubAlbums;
+					}
+					else {
+						$out = 0;
+					}
+					return $out;
 				}
 			}
 		}
 		else {
-			return true;
+			if ($kind == 1) {
+				return true;
+			}
+			else {
+				$out = __('unlimited', $dom);
+				return $out;
+			}
 		}
 	}
 
@@ -168,51 +218,113 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 *this method checks if an user may create another picture
 	 * return true or false
 	 */
-	public static function otherUserPictures() {
+	public static function otherUserPictures($kind = 1) {
 		$numberPictures = ModUtil::getVar('MUImage', 'numberPictures');
 		if ($numberPictures != '') {
 			$uid = UserUtil::getVar('uid');
 			$gid = UserUtil::getGroupsForUser($uid);
 			if (in_array(2, $gid)) {
-				return true;
-			}
-			else {
-
-				$picturerepository = MUImage_Util_Model::getPictureRepository();
-				$where3 = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
-				$picturecount = $picturerepository->selectCount($where3);
-				if ($picturecount < $numberPictures) {
+				if ($kind == 1) {
 					return true;
 				}
 				else {
-					return false;
+					$out = __('unlimited', $dom);
+					return $out;
+				}
+			}
+			else {
+				$picturerepository = MUImage_Util_Model::getPictureRepository();
+				$where3 = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+				$picturecount = $picturerepository->selectCount($where3);
+				if ($kind == 1) {
+					if ($picturecount < $numberPictures) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				else {
+					$contingentPictures = $numberPictures - $picturecount;
+					if ($contingentPictures> 0) {
+						$out = $contingentPictures;
+					}
+					else {
+						$out = 0;
+					}
+					return $out;
 				}
 			}
 		}
 		else {
-			return true;
+			if ($kind == 1) {
+				return true;
+			}
+			else {
+				$out = __('unlimited', $dom);
+				return $out;
+			}
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public static function myAlbum($id) {
 		$view = new Zikula_Request_Http();
 		$albumrepository = MUImage_Util_Model::getAlbumRepository();
 		$myAlbum = $albumrepository->selectById($id);
-		
+
 		if (in_array(2, UserUtil::getGroupsForUser(UserUtil::getVar('uid')))) {
 			return true;
 		}
 		else {
-		if (UserUtil::getVar('uid') == $myAlbum->getCreatedUserId()) {
-			return true;
+			if (UserUtil::getVar('uid') == $myAlbum->getCreatedUserId()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	public static function contingent() {
+
+		$dom = ZLanguage::getModuleDomain('MUImage');
+
+		$uid = UserUtil::getVar('uid');
+		$mainAlbum = ModUtil::getVar('MUImage', 'numberParentAlbums');
+		if ($mainAlbum != '') {
+			$numberMain = self::otherUserMainAlbums(2);
 		}
 		else {
-			return false;
+			$numberMain = __('Main Albums: unlimited', $dom);
 		}
+
+		$subAlbum = ModUtil::getVar('MUImage', 'numberSubAlbums');
+		if ($subAlbum != '') {
+			$numberSub = self::otherUserSubAlbums(2);
 		}
+		else {
+			$numberSub = __('Sub Albums: unlimited', $dom);
+		}
+
+		$pictures = ModUtil::getVar('MUImage', 'numberPictures');
+		if ($pictures != '') {
+            $numberPictures = self::otherUserPictures(2);
+		}
+		else {
+			$numberPictures = __('Pictures: unlimited', $dom);
+		}
+
+		$out = __('Your Quota: ', $dom);
+		$out .= __('Main Albums: ', $dom) . $numberMain . ', ' . __('Sub Albums: ', $dom) . $numberSub . ', ' . __('Pictures: ', $dom) . $numberPictures;
+
+		return $out;
+
 	}
 
 }
