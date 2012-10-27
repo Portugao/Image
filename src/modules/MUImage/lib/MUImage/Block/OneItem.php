@@ -152,7 +152,7 @@ class MUImage_Block_OneItem extends Zikula_Controller_AbstractBlock
 
         // set default values for all params which are not properly set
         if (!isset($vars['objectType']) || empty($vars['objectType'])) {
-            $vars['objectType'] = 'movie';
+            $vars['objectType'] = 'picture';
         }
         if (!isset($vars['id']) || $vars['id'] == '') {
             $vars['id'] = 0;
@@ -190,7 +190,7 @@ class MUImage_Block_OneItem extends Zikula_Controller_AbstractBlock
         // Get current content
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
-        $vars['objectType'] = $this->request->getPost()->filter('objecttype', 'movie', FILTER_SANITIZE_STRING);
+        $vars['objectType'] = $this->request->getPost()->filter('objecttype', 'picture', FILTER_SANITIZE_STRING);
         $vars['id'] = (int) $this->request->getPost()->filter('id', 0, FILTER_SANITIZE_STRING);
         $vars['showtitle'] = (int) $this->request->getPost()->filter('showtitle', 0, FILTER_SANITIZE_STRING);
         $vars['template'] = $this->request->getPost()->get('template', '');
