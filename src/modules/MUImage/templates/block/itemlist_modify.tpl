@@ -27,6 +27,8 @@
     <select id="MUImage_template" name="template">
         <option value="itemlist_display.tpl"{if $template eq 'itemlist_display.tpl'} selected="selected"{/if}>{gt text='Only item titles'}</option>
         <option value="itemlist_display_description.tpl"{if $template eq 'itemlist_display_description.tpl'} selected="selected"{/if}>{gt text='With description'}</option>
+        <option value="itemlist_Thumbs_display.tpl"{if $template eq 'itemlist_Thumbs_display.tpl'} selected="selected"{/if}>{gt text='Thumbnails'}</option>
+ 
     </select>
 </div>
 
