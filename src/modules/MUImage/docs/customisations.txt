@@ -21,6 +21,7 @@ implemented classes
 *lib/MUImage/Api/Base/Import.php
 
 *lib/MUImage/Controller/Admin.php
+*lib/MUImage/Controller/Ajax.php
 *lib/MUImage/Controller/User.php
 
 *lib/MUImage/Entity/Album.php
