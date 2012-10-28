@@ -266,6 +266,27 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			}
 		}
 	}
+	
+	/**
+	 *
+	 */
+	public static function myPicture($id) {
+		$view = new Zikula_Request_Http();
+		$picturerepository = MUImage_Util_Model::getPictureRepository();
+		$myPicture = $picturerepository->selectById($id);
+
+		if (in_array(2, UserUtil::getGroupsForUser(UserUtil::getVar('uid')))) {
+			return true;
+		}
+		else {
+			if (UserUtil::getVar('uid') == $myPicture->getCreatedUserId()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}	
 
 	/**
 	 *
