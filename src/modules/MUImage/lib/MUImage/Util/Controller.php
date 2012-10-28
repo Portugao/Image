@@ -16,5 +16,40 @@
  */
 class MUImage_Util_Controller extends MUImage_Util_Base_Controller
 {
-    // feel free to add your own convenience methods here
+    /**
+     * Get allowed filesize
+     */
+    
+    public static function maxSize() 
+    {
+
+    	$maxSize = ModUtil::getVar('MUTicket', 'fileSize');
+    	
+    	$dom = ZLanguage::getModuleDomain('MUTicket');
+
+		if ($maxSize > 0) {
+
+				$maxSizeKB = $maxSize / 1024;
+
+				if ($maxSizeKB < 1024) {
+					$maxSizeKB = DataUtil::formatNumber($maxSizeKB);
+
+					$allowedSize = $maxSizeKB . ' KB';
+					return $allowedSize;
+
+				}
+
+				$maxSizeMB = $maxSizeKB / 1024;
+				$maxSizeMB = DataUtil::formatNumber($maxSizeMB);
+
+				$allowedSize = $maxSizeMB . ' MB';
+				return $allowedSize;
+
+		}
+		else {
+			$allowedSize = __('No limit', $dom);
+		}
+		
+		return $allowedSize;
+    }
 }
