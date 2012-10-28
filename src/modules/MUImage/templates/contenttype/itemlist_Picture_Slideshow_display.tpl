@@ -18,7 +18,7 @@
 <div id="muimage-block-slideshow">
 {foreach item='item' from=$items}
 <div class="muimage-block-slideshow-pictures">
-<a href="{$item.imageUploadFullPathURL}" title="{$item.title|replace:"\"":""}"{if $item.imageUploadMeta.isImage} rel="imageviewer[block]"{/if}>
+<a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$vars.selectalbum}" title="{gt text='Visit the album'}">
     {if $item.imageUploadMeta.isImage}
     {if $item.imageUploadMeta.format eq 'landscape'}
         <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:160:120}" width="160px" height="120px" alt="{$item.title|replace:"\"":""}" />
@@ -47,25 +47,25 @@
         var fn = {
              loop: function() {
                  fn.blend();
-                 setTimeout(fn.loop, 3000);
+                 setTimeout(fn.loop, 4000);
              },
              blend: function() {                
                  var current = img.filter(".current")
-                                  .fadeOut(3000)
+                                  .fadeOut(4000)
                                   .removeClass("current");
                  current = (current.next().length) ?
                          current.next() : img.first();
-                 current.fadeIn(3000).addClass("current");
+                 current.fadeIn(4000).addClass("current");
                          
         }
         }
         img.first().addClass("current").fadeIn(4000, function() {
-             setTimeout(fn.loop, 5000);    
+             setTimeout(fn.loop, 4000);    
         });        
         }
     
     MU(document).ready( function() { 
-        slideshow( MU("#muimage-block-slideshow .muimage-block-slideshow-pictures "));
+        slideshow( MU(".muimage-block-slideshow-pictures "));
         }); 
 
     /* ]]> */
