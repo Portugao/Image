@@ -49,6 +49,7 @@ class MUImage_Base_Installer extends Zikula_AbstractInstaller
         $this->setVar('numberParentAlbums', 1);
         $this->setVar('numberSubAlbums', 2);
         $this->setVar('numberPictures', 20);
+        $this->setVar('fileSize', '');
 
         // create the default data for MUImage
         $this->createDefaultData();
