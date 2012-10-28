@@ -41,12 +41,12 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
         $dom = ZLanguage::getModuleDomain('MUImage');
         if ($currentType == 'admin') {
             if (in_array($currentFunc, array('main', 'view'))) {
-                    $this->_actions[] = array(
+                   /* $this->_actions[] = array(
                         'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
                         'icon' => 'preview',
                         'linkTitle' => __('Open preview page', $dom),
                         'linkText' => __('Preview', $dom)
-                    );
+                    ); */
                     $this->_actions[] = array(
                         'url' => array('type' => 'admin', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
                         'icon' => 'display',
