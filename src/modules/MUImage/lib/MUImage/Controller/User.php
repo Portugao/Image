@@ -16,135 +16,183 @@
  */
 class MUImage_Controller_User extends MUImage_Controller_Base_User
 {
-	 /**
-     * This method provides a generic item detail view.
-     *
-     * @param string  $id           Check for entity
-     * @return parent function
-     */
-    public function display($args)
-    {
-    	$view = new Zikula_Request_Http();
-    	$id = $view->getGet()->filter('id', 0 , FILTER_SANITIZE_STRING);
-    	// DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', $id.'::', ACCESS_READ));
-        // DEBUG: permission check aspect ends
-    	
-    	if ($id != 0) {
+	/**
+	 * This method provides a generic item detail view.
+	 *
+	 * @param string  $id           Check for entity
+	 * @return parent function
+	 */
+	public function display($args)
+	{
+		$view = new Zikula_Request_Http();
+		$id = $view->getGet()->filter('id', 0 , FILTER_SANITIZE_STRING);
+		// DEBUG: permission check aspect starts
+		$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', $id.'::', ACCESS_READ));
+		// DEBUG: permission check aspect ends
+		 
+		if ($id != 0) {
 
-    		$count = MUImage_Util_View::countPictures();
-    		$count2 = MUImage_Util_View::countAlbums();
-    		
-    		$this->view->assign('numpictures', $count);
-    		$this->view->assign('numalbums', $count2);
+			$count = MUImage_Util_View::countPictures();
+			$count2 = MUImage_Util_View::countAlbums();
 
-    	}
-    	
-    	return parent::display($args);
-    	
-    }
-   
-     /**
-     * This method provides a generic item list overview.
-     *
-     * @param string  $objectType   Treated object type.
-     * @return parent function.
-     */
-    public function view($args)
-    {
-    	$objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
-    	
-    	if ($objectType == 'album') {
-            // DEBUG: permission check aspect starts
-            $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', '::', ACCESS_READ));
-            // DEBUG: permission check aspect ends
-    	}
-        if ($objectType == 'picture') {
-            // DEBUG: permission check aspect starts
-            $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Picture:', '::', ACCESS_READ));
-            // DEBUG: permission check aspect ends
-    	}
-    	return parent::view($args);
-    }
-    
-    /**
-     * This is a custom method. Documentation for this will be improved in later versions.
-     *
-     * @return mixed Output.
-     */
-    public function zipUpload($args)
-    {
-        // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_ADD));
-        // DEBUG: permission check aspect ends
+			$this->view->assign('numpictures', $count);
+			$this->view->assign('numalbums', $count2);
 
-        // parameter specifying which type of objects we are treating
-        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
-        $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
-        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
-        }
-       // create new Form reference
-        $view = FormUtil::newForm($this->name, $this);
+		}
+		 
+		return parent::display($args);
+		 
+	}
+	 
+	/**
+	 * This method provides a generic item list overview.
+	 *
+	 * @param string  $objectType   Treated object type.
+	 * @return parent function.
+	 */
+	public function view($args)
+	{
+		$objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+		 
+		if ($objectType == 'album') {
+			// DEBUG: permission check aspect starts
+			$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', '::', ACCESS_READ));
+			// DEBUG: permission check aspect ends
+		}
+		if ($objectType == 'picture') {
+			// DEBUG: permission check aspect starts
+			$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Picture:', '::', ACCESS_READ));
+			// DEBUG: permission check aspect ends
+		}
+		return parent::view($args);
+	}
 
-        // build form handler class name
-        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_ZipUpload';
+	/**
+	 * This is a custom method. Documentation for this will be improved in later versions.
+	 *
+	 * @return mixed Output.
+	 */
+	public function zipUpload($args)
+	{
+		// DEBUG: permission check aspect starts
+		$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_ADD));
+		// DEBUG: permission check aspect ends
 
-        // execute form using supplied template and page event handler
-        return $view->execute('user/' . $objectType . '/zipUpload.tpl', new $handlerClass());
-    }
+		// parameter specifying which type of objects we are treating
+		$objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
+		$utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
+		if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
+			$objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
+		}
+		// create new Form reference
+		$view = FormUtil::newForm($this->name, $this);
 
-    /**
-     * This is a custom method. Documentation for this will be improved in later versions.
-     *
-     * @return mixed Output.
-     */
-    public function multiUpload($args)
-    {
-        // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
-        // DEBUG: permission check aspect ends
-            // parameter specifying which type of objects we are treating
-        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
-        $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
-        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
-        }
-       // create new Form reference
-        $view = FormUtil::newForm($this->name, $this);
+		// build form handler class name
+		$handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_ZipUpload';
 
-        // build form handler class name
-        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_MultiUpload';
+		// execute form using supplied template and page event handler
+		return $view->execute('user/' . $objectType . '/zipUpload.tpl', new $handlerClass());
+	}
 
-        // execute form using supplied template and page event handler
-        return $view->execute('user/' . $objectType . '/multiUpload.tpl', new $handlerClass());
-    }
-    
-    /**
-     * This is a custom method. Documentation for this will be improved in later versions.
-     *
-     * @return mixed Output.
-     */
-    public function editMulti($args)
-    {
+	/**
+	 * This is a custom method. Documentation for this will be improved in later versions.
+	 *
+	 * @return mixed Output.
+	 */
+	public function multiUpload($args)
+	{
+		// DEBUG: permission check aspect starts
+		$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
+		// DEBUG: permission check aspect ends
+		// parameter specifying which type of objects we are treating
+		$objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
+		$utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
+		if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
+			$objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
+		}
+		// create new Form reference
+		$view = FormUtil::newForm($this->name, $this);
 
-        // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
-        // DEBUG: permission check aspect ends
-            // parameter specifying which type of objects we are treating
-        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
-        $utilArgs = array('controller' => 'user', 'action' => 'editMulti');
-        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
-        }
-       // create new Form reference
-        $view = FormUtil::newForm($this->name, $this);
+		// build form handler class name
+		$handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_MultiUpload';
 
-        // build form handler class name
-        $handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_EditMulti';
+		// execute form using supplied template and page event handler
+		return $view->execute('user/' . $objectType . '/multiUpload.tpl', new $handlerClass());
+	}
 
-        // execute form using supplied template and page event handler
-        return $view->execute('user/' . $objectType . '/editMulti.tpl', new $handlerClass());
-    
-    }
+	/**
+	 * This is a custom method. Documentation for this will be improved in later versions.
+	 *
+	 * @return mixed Output.
+	 */
+	public function editMulti($args)
+	{
+
+		// DEBUG: permission check aspect starts
+		$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
+		// DEBUG: permission check aspect ends
+		// parameter specifying which type of objects we are treating
+		$objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
+		$utilArgs = array('controller' => 'user', 'action' => 'editMulti');
+		if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
+			$objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
+		}
+		// create new Form reference
+		$view = FormUtil::newForm($this->name, $this);
+
+		// build form handler class name
+		$handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_EditMulti';
+
+		// execute form using supplied template and page event handler
+		return $view->execute('user/' . $objectType . '/editMulti.tpl', new $handlerClass());
+
+	}
+
+	/**
+	 * This method provides a generic handling of simple delete requests.
+	 *
+	 * @param string  $ot           Treated object type.
+	 * @param int     $id           Identifier of entity to be deleted.
+	 * @param boolean $confirmation Confirm the deletion, else a confirmation page is displayed.
+	 * @param string  $tpl          Name of alternative template (for alternative display options, feeds and xml output)
+	 * @param boolean $raw          Optional way to display a template instead of fetching it (needed for standalone output)
+	 * @return mixed Output.
+	 */
+	public function delete($args)
+	{
+		$id = $this->request->getGet()->filter('id' , 0, FILTER_SANITIZE_NUMBER_INT);
+		$ot = $this->request->getGet()->filter('ot' , 'album', FILTER_SANITIZE_STRING);
+
+		if ($id > 0) {
+			if ($ot = 'album') {
+				$albumrepository = MUImage_Util_Model::getAlbumRepository();
+				$album = $albumrepository->selectById($id);
+				if ($album->getCreatedUserId() == UserUtil::getVar('uid')) {
+					// nothing to do
+				}
+				else {
+					$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'album', 'id' => $id));
+					LogUtil::registerError(__('Yu have no permissions to delete this album!'));
+					System::redirect($url);
+				}
+
+			}
+			 
+			if ($ot = 'picture') {
+				$picturerepository = MUImage_Util_Model::getPictureRepository();
+				$picture = $picturerepository->selectById($id);
+				if ($picture->getCreatedUserId() == UserUtil::getVar('uid')) {
+					// nothing to do
+				}
+				else {
+					$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'piture', 'id' => $id));
+					LogUtil::registerError(__('Yu have no permissions to delete this picture!'));
+					System::redirect($url);
+				}
+
+			}
+		}
+
+		return parent::delete($args);
+	}
 }
