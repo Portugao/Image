@@ -458,12 +458,16 @@ button.muimageInlineButton {
     position: relative;
 }
 
-.muimage-block-slideshow-pictues {
+.muimage-block-slideshow-pictures {
     position: absolute;
 }
 
-.muimage-block-slideshow-pictues a {
+#slideshow-link {
     display: block;
+    float: left;
+    clear: both;
+    position: relative;
+    margin: 170px 0 0 0;
 }
 
 
