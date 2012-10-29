@@ -17,6 +17,7 @@
 class MUImage_ContentType_Base_ItemList extends Content_AbstractContentType
 {
     private $objectType;
+    private $albums;
     private $sorting;
     private $amount;
     private $template;
@@ -51,6 +52,8 @@ class MUImage_ContentType_Base_ItemList extends Content_AbstractContentType
         }
 
         $this->objectType = $data['objectType'];
+        
+        $this->albums = $data['albums'];
 
         if (!isset($data['sorting'])) {
             $data['sorting'] = 'default';
@@ -110,6 +113,10 @@ class MUImage_ContentType_Base_ItemList extends Content_AbstractContentType
             'currentPage'    => 1,
             'resultsPerPage' => $resultsPerPage
         );
+        
+        if ($this->objectType == 'picture') {
+        	$selectionArgs['where'] .= 'tbl.album = \'' . DataUtil::formatForStore($this->albums) . '\'';
+        }
         list($entities, $objectCount) = ModUtil::apiFunc('MUImage', 'selection', 'getEntitiesPaginated', $selectionArgs);
 
         //$this->view->setCaching(true);
@@ -146,6 +153,7 @@ class MUImage_ContentType_Base_ItemList extends Content_AbstractContentType
     public function getDefaultData()
     {
         return array('objectType' => 'album',
+            'albums' => '',
             'sorting'    => 'default',
             'amount'     => 1,
             'template'   => 'itemlist_display.tpl',
