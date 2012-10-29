@@ -7,6 +7,12 @@
 </div>
 
 <div class="z-formrow">
+    {formlabel for='MUImage_albums' __text='Album'}
+    {muimageSelectorAlbums assign='albums'}
+    {formdropdownlist id='MUImage_albums' dataField='albums' group='data' mandatory=true items=$albums}
+</div>
+
+<div class="z-formrow">
     {formlabel __text='Sorting'}
     <div>
         {formradiobutton id='MUImage_srandom' value='random' dataField='sorting' group='data' mandatory=true}

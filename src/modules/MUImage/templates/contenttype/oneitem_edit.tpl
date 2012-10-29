@@ -10,16 +10,23 @@
     {muimageSelectorAlbums assign='Albums'}
     {formdropdownlist id='MUImage_album' dataField='album' group='data' mandatory=true items=$Albums}
 </div>
-<div class="z-formrow">
+{* <div class="z-formrow">
     {formlabel for='MUImage_picture' __text='Picture'}
     {muimageSelectorPictures assign='Picture'}
     {formdropdownlist id='MUImage_picture' dataField='picture' group='data' mandatory=true items=$Albums}
-</div>
+</div> *}
 <div class="z-formrow">
     {formlabel for='MUImage_id' __text='Id'}
     {formtextinput id='MUImage_id' dataField='id' group='data' mandatory=true maxLength=2}
 </div>
-
+<div class="z-formrow">
+    {formlabel for='MUImage_width' __text='Width'}
+    {formtextinput id='MUImage_width' dataField='width' group='data' mandatory=true maxLength=5}
+</div>
+<div class="z-formrow">
+    {formlabel for='MUImage_height' __text='Height'}
+    {formtextinput id='MUImage_height' dataField='height' group='data' mandatory=true maxLength=5}
+</div>
 <div class="z-formrow">
     {formlabel for='MUImage_template' __text='Template File'}
     {muimageSelectorTemplates assign='allTemplates'}

@@ -1,6 +1,7 @@
 {* Purpose of this template: Display pictures within an external context *}
 {pageaddvar name='javascript' value='jquery'}
 {pageaddvar name='javascript' value='jquery-ui'}
+{pageaddvar name='stylesheet' value='modules/MUImage/style/style.css'}
 <div style="display: none">
 {foreach item='item' from=$items}
     {if $item.imageUploadMeta.isImage}

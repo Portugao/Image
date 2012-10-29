@@ -1,5 +1,6 @@
 {* Purpose of this template: Display pictures within an external context *}
-
+{pageaddvar name='javascript' value='zikula.imageviewer'}
+<div style="width: 100%;">
 {foreach item='item' from=$items}
 <div style="background: #bbb; width: 60px; height: 60px; float: left; padding: 0px; margin: 3px; border: #333 1px solid;">
 <a href="{$item.imageUploadFullPathURL}" title="{$item.title|replace:"\"":""}"{if $item.imageUploadMeta.isImage} rel="imageviewer[block]"{/if}>
@@ -16,3 +17,4 @@
 </a>
 </div>
 {/foreach}
+</div>
