@@ -18,6 +18,8 @@ class MUImage_ContentType_OneItem extends Content_AbstractContentType
 {
     private $objectType;
     private $id;
+    private $width;
+    private $height;
     private $template;
 
     public function getModule()
@@ -51,6 +53,8 @@ class MUImage_ContentType_OneItem extends Content_AbstractContentType
         
         $this->objectType = 'picture';      
         $this->id = $data['id'];
+        $this->width = $data['width'];
+        $this->height = $data['height'];
         $this->template = $data['template'];
 
     }
@@ -73,7 +77,7 @@ class MUImage_ContentType_OneItem extends Content_AbstractContentType
 
         //$this->view->setCaching(true);
 
-        $data = array('objectType' => $this->objectType, 'id' => $this->id, 'template' => $this->template);
+        $data = array('objectType' => $this->objectType, 'id' => $this->id, 'width' => $this->width, 'height' => $this->height, 'template' => $this->template);
 
         // assign block vars and fetched data
         $this->view->assign('vars', $data)
@@ -106,6 +110,8 @@ class MUImage_ContentType_OneItem extends Content_AbstractContentType
     {
         return array('objectType' => 'picture',
                      'id' => null,
+                     'width' => 120,
+                     'height' => 90, 
                      'template' => 'oneitem_display.tpl');
     }
 
