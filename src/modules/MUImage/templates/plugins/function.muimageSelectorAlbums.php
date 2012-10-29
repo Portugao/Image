@@ -24,14 +24,14 @@
  */
 function smarty_function_muimageSelectorAlbums($params, $view)
 {
-    $repository = MUImage_Util_View::getAlbumRepository();
+    $repository = MUImage_Util_Model::getAlbumRepository();
     $albums = $repository->selectWhere();
 	
 	$result = array();
 	
 	foreach ($albums as $album) {
 
-    $result[] = array('text' => $album['title'], 'value' => $album['title']);
+    $result[] = array('text' => $album['title'], 'value' => $album['id']);
 
     }
 
