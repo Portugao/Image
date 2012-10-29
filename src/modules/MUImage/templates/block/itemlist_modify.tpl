@@ -9,6 +9,15 @@
 </div>
 
 <div class="z-formrow">
+    <label for="MUImage_selectalbum">{gt text='Album'}:</label>
+    <select id="MUImage_selectalbum" name="selectalbum" size="1">
+    {foreach item='item' from=$albums}
+        <option value={$item.id} {if $selectalbum eq $item.id} selected="selected"{/if}>{gt text=$item.title}</option>
+    {/foreach}
+    </select>
+</div>
+
+<div class="z-formrow">
     <label for="MUImage_sorting">{gt text='Sorting'}:</label>
     <select id="MUImage_sorting" name="sorting">
         <option value="random"{if $sorting eq 'random'} selected="selected"{/if}>{gt text='Random'}</option>
@@ -27,9 +36,9 @@
     <select id="MUImage_template" name="template">
         <option value="itemlist_display.tpl"{if $template eq 'itemlist_display.tpl'} selected="selected"{/if}>{gt text='Only item titles'}</option>
         <option value="itemlist_display_description.tpl"{if $template eq 'itemlist_display_description.tpl'} selected="selected"{/if}>{gt text='With description'}</option>
-        <option value="itemlist_Thumbs_display.tpl"{if $template eq 'itemlist_Thumbs_display.tpl'} selected="selected"{/if}>{gt text='Thumbnails'}</option>
- 
-    </select>
+        <option value="itemlist_Thumbs_display.tpl"{if $template eq 'itemlist_Thumbs_display.tpl'} selected="selected"{/if}>{gt text='Thumbnails'}</option>   
+        <option value="itemlist_Slideshow_display.tpl"{if $template eq 'itemlist_Slideshow_display.tpl'} selected="selected"{/if}>{gt text='Slideshow'}</option>
+       </select>
 </div>
 
 <div class="z-formrow">
