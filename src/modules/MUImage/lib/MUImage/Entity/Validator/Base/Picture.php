@@ -48,10 +48,10 @@ class MUImage_Entity_Validator_Base_Picture extends MUImage_Validator
             $errorInfo['message'] = __f('Error! Length of field value must not be higher than %2$s (%1$s).', array('imageUpload', 255), $dom);
             return $errorInfo;
         }
-        if (!$this->isStringNotEmpty('imageUpload')) {
+       /* if (!$this->isStringNotEmpty('imageUpload')) {
             $errorInfo['message'] = __f('Error! Field value must not be empty (%s).', array('imageUpload'), $dom);
             return $errorInfo;
-        }
+        }*/
         if (!$this->isValidInteger('imageView')) {
             $errorInfo['message'] = __f('Error! Field value may only contain digits (%s).', array('imageView'), $dom);
             return $errorInfo;
