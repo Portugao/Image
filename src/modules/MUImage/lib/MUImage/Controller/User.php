@@ -26,10 +26,11 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	{
 		$view = new Zikula_Request_Http();
 		$id = $view->getGet()->filter('id', 0 , FILTER_SANITIZE_STRING);
+		$ot = $view->getGet()->filter('ot','album' , FILTER_SANITIZE_STRING);
 		// DEBUG: permission check aspect starts
 		$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', $id.'::', ACCESS_READ));
 		// DEBUG: permission check aspect ends
-		 
+			
 		if ($id != 0) {
 
 			$count = MUImage_Util_View::countPictures();
@@ -39,11 +40,24 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 			$this->view->assign('numalbums', $count2);
 
 		}
-		 
+		// we get the picture object
+		$picturerepository = MUImage_Util_Model::getPictureRepository();
+		$picture = $picturerepository->selectById($id);
+		// if object is a picture, we want to count views, the picture id is not the actuel userid
+		// or the user is not loggedin we add to 1 to view
+		if ($ot == 'picture' && ModUtil::getVar('MUImage', 'countImageView') == true && ($picture->getCreatedUserId() != $coredata.user.uid || UserUtil::isLoggedIn() == false)) {
+			$picture->setImageView($picture->getImageView() + 1);
+
+			$serviceManager = $this->getServiceManager();
+			$entityManager = $serviceManager->getService('doctrine.entitymanager');
+
+			$entityManager->flush();
+		}
+			
 		return parent::display($args);
-		 
+			
 	}
-	 
+
 	/**
 	 * This method provides a generic item list overview.
 	 *
@@ -53,7 +67,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	public function view($args)
 	{
 		$objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
-		 
+			
 		if ($objectType == 'album') {
 			// DEBUG: permission check aspect starts
 			$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', '::', ACCESS_READ));
@@ -64,6 +78,12 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 			$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Picture:', '::', ACCESS_READ));
 			// DEBUG: permission check aspect ends
 		}
+
+		if ($objectType == 'picture') {
+			$url = ModUtil::url($this->name, 'user', 'view', array('ot' => 'album'));
+			System::redirect($url);
+		}
+
 		return parent::view($args);
 	}
 
@@ -163,35 +183,48 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 		$id = $this->request->getGet()->filter('id' , 0, FILTER_SANITIZE_NUMBER_INT);
 		$ot = $this->request->getGet()->filter('ot' , 'album', FILTER_SANITIZE_STRING);
 
+		// we get the usergroups for the calling user
+		$usergroups = (UserUtil::getGroupsForUser(UserUtil::getVar('uid')));
+
 		if ($id > 0) {
-			if ($ot = 'album') {
+			if ($ot == 'album') {
 				$albumrepository = MUImage_Util_Model::getAlbumRepository();
 				$album = $albumrepository->selectById($id);
 				if ($album->getCreatedUserId() == UserUtil::getVar('uid')) {
 					// nothing to do
 				}
 				else {
-					$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'album', 'id' => $id));
-					LogUtil::registerError(__('Yu have no permissions to delete this album!'));
-					System::redirect($url);
+					// if user is no admin
+					if (!in_array(2, $usergroups)) {
+						$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'album', 'id' => $id));
+						LogUtil::registerError(__('You have no permissions to delete this album!'));
+						System::redirect($url);
+					}
 				}
-
 			}
-			 
-			if ($ot = 'picture') {
+
+			if ($ot == 'picture') {
 				$picturerepository = MUImage_Util_Model::getPictureRepository();
 				$picture = $picturerepository->selectById($id);
 				if ($picture->getCreatedUserId() == UserUtil::getVar('uid')) {
-					// nothing to do
+					$album = $picture->getAlbum();
+					$albumid = $album->getId();
+					$this->view->assign('albumid', $albumid);
 				}
 				else {
-					$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'piture', 'id' => $id));
-					LogUtil::registerError(__('Yu have no permissions to delete this picture!'));
-					System::redirect($url);
+					// if user is no admin
+					if (!in_array(2, $usergroups)) {
+						$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'piture', 'id' => $id));
+						LogUtil::registerError(__('You have no permissions to delete this picture!'));
+						System::redirect($url);
+					}
 				}
 
 			}
+
 		}
+
+		// TODO in next version MUImage_Util_View::checkForBlocksAndContent($id);
 
 		return parent::delete($args);
 	}
