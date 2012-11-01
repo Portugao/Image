@@ -23,9 +23,9 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
     public static function maxSize() 
     {
 
-    	$maxSize = ModUtil::getVar('MUTicket', 'fileSize');
+    	$maxSize = ModUtil::getVar('MUImage', 'fileSize');
     	
-    	$dom = ZLanguage::getModuleDomain('MUTicket');
+    	$dom = ZLanguage::getModuleDomain('MUImage');
 
 		if ($maxSize > 0) {
 

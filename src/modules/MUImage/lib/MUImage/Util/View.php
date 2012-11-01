@@ -266,7 +266,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			}
 		}
 	}
-	
+
 	/**
 	 *
 	 */
@@ -286,7 +286,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 				return false;
 			}
 		}
-	}	
+	}
 
 	/**
 	 *
@@ -335,7 +335,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
 		$pictures = ModUtil::getVar('MUImage', 'numberPictures');
 		if ($pictures != '') {
-            $numberPictures = self::otherUserPictures(2);
+			$numberPictures = self::otherUserPictures(2);
 		}
 		else {
 			$numberPictures = __('Pictures: unlimited', $dom);
@@ -348,4 +348,19 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
 	}
 
+	/**
+	 * @param   $id          $id  of album or picture
+	 * @param   $kind        $kind check for 1 = album or 2 = picture
+	 * 
+	 *  assign to template
+	 */
+	public static function checkForBlocksAndContent($id = 0, $kind = 1) {
+		$serviceManager = ServiceUtil::getManager();
+		$view = new Zikula_View($serviceManager);
+		if ($id > 0) {
+			$block = BlockUtil::getBlockInfo($id, 'content');
+			LogUtil::registerStatus($block);				
+			$view->assign('muimageblock', $block);
+		}
+	}
 }
