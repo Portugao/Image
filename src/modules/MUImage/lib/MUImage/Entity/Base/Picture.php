@@ -157,7 +157,7 @@ abstract class MUImage_Entity_Base_Picture extends Zikula_EntityAccess
     /**
      * Bidirectional - Many picture [pictures] are linked by one album [album] (OWNING SIDE).
      *
-     * @ORM\ManyToOne(targetEntity="MUImage_Entity_Album", inversedBy="picture", cascade={"all"})
+     * @ORM\ManyToOne(targetEntity="MUImage_Entity_Album", inversedBy="picture")
      * @ORM\JoinTable(name="muimage_album")
      * @var MUImage_Entity_Album $album.
      */

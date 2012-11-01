@@ -127,7 +127,7 @@ abstract class MUImage_Entity_Base_Album extends Zikula_EntityAccess
     /**
      * Bidirectional - Many children [albums] are linked by one parent [album] (OWNING SIDE).
      *
-     * @ORM\ManyToOne(targetEntity="MUImage_Entity_Album", inversedBy="children", cascade={"all"})
+     * @ORM\ManyToOne(targetEntity="MUImage_Entity_Album", inversedBy="children")
      * @ORM\JoinTable(name="muimage_album",
      *      joinColumns={@ORM\JoinColumn(name="id", referencedColumnName="id" )},
      *      inverseJoinColumns={@ORM\JoinColumn(name="parent_id", referencedColumnName="id" )}
