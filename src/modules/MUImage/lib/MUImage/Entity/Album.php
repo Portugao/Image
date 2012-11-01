@@ -90,23 +90,23 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
             }
         }
         if ($currentType == 'user') {
-            if (in_array($currentFunc, array('main', 'view'))) {
+           /* if (in_array($currentFunc, array('main', 'view'))) {
                     $this->_actions[] = array(
                         'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
                         'icon' => 'display',
                         'linkTitle' => str_replace('"', '', $this['title']),
                         'linkText' => __('Details', $dom)
                     );
-            }
+            }*/
 
             if (in_array($currentFunc, array('main', 'view', 'display'))) {
                 if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
-                  /*  $this->_actions[] = array(
+                    $this->_actions[] = array(
                         'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
                         'icon' => 'display',
                         'linkTitle' => str_replace('"', '', $this['title']),
                         'linkText' => __('Details', $dom)
-                    );*/
+                    );
                     $this->_actions[] = array(
                         'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
                         'icon' => 'edit',
