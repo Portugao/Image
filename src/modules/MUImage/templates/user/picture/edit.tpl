@@ -50,6 +50,7 @@
 {/if}
 
             <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
+            <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
             {if $mode ne 'create'}
                   <div class="z-formnote">
                       {gt text='Current file'}:
