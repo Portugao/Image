@@ -57,7 +57,7 @@ class MUImage_Block_OneItem extends Zikula_Controller_AbstractBlock
     public function display($blockinfo)
     {
         // only show block content if the user has the required permissions
-        if (!SecurityUtil::checkPermission('MUImage:OneItemBlock:', "$blockinfo[title]::", ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission('MUImage:OneItemBlock:', "$blockinfo[bid]::", ACCESS_OVERVIEW)) {
             return false;
         }
 

@@ -76,7 +76,7 @@ class MUImage_Block_ItemList extends MUImage_Block_Base_ItemList
 	public function display($blockinfo)
 	{
 		// only show block content if the user has the required permissions
-		if (!SecurityUtil::checkPermission('MUImage:ItemListBlock:', "$blockinfo[title]::", ACCESS_OVERVIEW)) {
+		if (!SecurityUtil::checkPermission('MUImage:ItemListBlock:', "$blockinfo[bid]::", ACCESS_OVERVIEW)) {
 			return false;
 		}
 
@@ -150,7 +150,7 @@ class MUImage_Block_ItemList extends MUImage_Block_Base_ItemList
             'resultsPerPage' => $vars['amount']
 		);
 
-		if ($objectType == 'picture') {
+		if ($objectType == 'picture' && $vars['selectalbum'] > 0) {
 			$selectionArgs['where'] .= 'tbl.album = \'' . DataUtil::formatForStore($vars['selectalbum']) . '\'';
 		}
 
