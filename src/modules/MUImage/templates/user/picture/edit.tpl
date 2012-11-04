@@ -65,7 +65,7 @@
             {/if}
             {muimageValidationError id='imageUpload' class='required'}
         </div>
-        <div class="z-formrow">
+        <div class="z-formrow" style="display: none;">
             {formlabel for='imageView' __text='Image view' mandatorysym='1'}
             {formintinput group='picture' id='imageView' mandatory=true __title='Enter the image view of the picture' maxLength=11 cssClass='required validate-digits'}
             {muimageValidationError id='imageView' class='required'}
@@ -84,7 +84,7 @@
     {else}
         {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=$picture.id assign='hooks'}
     {/if}
-    {if is_array($hooks) && isset($hooks[0])}
+  {*  {if is_array($hooks) && isset($hooks[0])} *}
         <fieldset>
             <legend>{gt text='Hooks'}</legend>
             {foreach key='hookName' item='hook' from=$hooks}
@@ -93,7 +93,7 @@
             </div>
             {/foreach}
         </fieldset>
-    {/if}
+   {* {/if} *}
 
     {* include return control *}
     {if $mode eq 'create'}

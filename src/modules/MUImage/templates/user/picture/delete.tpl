@@ -7,7 +7,6 @@
     <h2>{$templateTitle}</h2>
 
     <p class="z-warningmsg">{gt text='Do you really want to delete this picture ?'}</p>
-
     <form class="z-form" action="{modurl modname='MUImage' type='user' func='delete' ot='picture' id=$picture.id}" method="post">
         <div>
             <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
@@ -17,7 +16,7 @@
                 <div class="z-buttons z-formbuttons">
                     {gt text='Delete' assign='deleteTitle'}
                     {button src='14_layer_deletelayer.png' set='icons/small' text=$deleteTitle title=$deleteTitle class='z-btred'}
-                    <a href="{modurl modname='MUImage' type='user' func='view' ot='picture'}">{icon type='cancel' size='small' __alt='Cancel' __title='Cancel'} {gt text='Cancel'}</a>
+                    <a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$albumid}">{icon type='cancel' size='small' __alt='Cancel' __title='Cancel'} {gt text='Cancel'}</a>
                 </div>
             </fieldset>
 

@@ -4,10 +4,10 @@
 {gt text='Album list' assign='templateTitle'}
 {pagesetvar name='title' value=$templateTitle}
 <div class="z-frontendcontainer">
-    <h2>{$templateTitle}</h2>
+    <div id="album_title"><h2>{$templateTitle}</h2><p class="z-informationmsg">{$func|muimageContingent} </p></div>
 
     <div id="album_header">
-    {checkpermissionblock component='MUImage::' instance='.*' level="ACCESS_ADD"}
+  {*  {checkpermissionblock component='MUImage::' instance='.*' level="ACCESS_ADD"}
         {gt text='Create album' assign='createTitle'}
         <a href="{modurl modname='MUImage' type='user' func='edit' ot='album'}" title="{$createTitle}" class="z-icon-es-add">
             {$createTitle}
@@ -27,6 +27,7 @@
             {$linkTitle}
         </a>
     {/if}
+    *}
     </div>
     {if isset($items)}
     {foreach item='album' from=$items}
@@ -35,7 +36,7 @@
     <div class="muimage_view_album_title">
     <a title="{$album.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:30}</a>
     <div class="muimage_view_album_title_action">
-    {if count($album._actions) gt 0}
+    {if count($album._actions) gt 0 && $coredata.user.uid eq $album.createdUserId}
         {strip}
         {foreach item='option' from=$album._actions}
         <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
