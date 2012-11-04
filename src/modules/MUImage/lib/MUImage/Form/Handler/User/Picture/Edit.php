@@ -17,5 +17,58 @@
  */
 class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_Picture_Base_Edit
 {
-    // feel free to extend the base handler class here
+	/**
+	 * Initialize form handler.
+	 *
+	 * This method takes care of all necessary initialisation of our data and form states.
+	 *
+	 * @return boolean False in case of initialization errors, otherwise true.
+	 */
+	public function initialize(Zikula_Form_View $view)
+	{
+			
+		$fileSize = MUImage_Util_Controller::maxSize();
+			
+		$this->view->assign('fileSize', $fileSize);
+			
+		parent::initialize($view);
+	}
+
+	/**
+	 * Get the default redirect url. Required if no returnTo parameter has been supplied.
+	 * This method is called in handleCommand so we know which command has been performed.
+	 */
+	protected function getDefaultReturnUrl($args, $obj)
+	{
+		$picturerepository = MUImage_Util_Model::getPictureRepository();
+		$picture = $picturerepository->selectById($this->idValues['id']);
+		if ($picture) {
+			$album = $picture->getAlbum();
+			$albumid = $album->getId();
+		}
+		else {
+			$viewArgs = array('ot' => 'album');
+			$url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
+			return $url;
+		}
+			
+		// redirect to the album if existing
+		if ($albumid > 0) {
+			$viewArgs = array('ot' => 'album', 'id' => $albumid);
+			$url = ModUtil::url($this->name, 'user', 'display', $viewArgs);
+			return $url;
+		}
+		else {
+			$viewArgs = array('ot' => 'album');
+			$url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
+			return  $url;
+		}
+
+
+		if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
+			// redirect to the detail page of treated picture
+			$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'picture', 'id' => $this->idValues['id']));
+		}
+		return $url;
+	}
 }

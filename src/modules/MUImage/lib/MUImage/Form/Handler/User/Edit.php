@@ -17,22 +17,66 @@
  */
 class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 {
-	    /**
-     * Initialize form handler.
-     *
-     * This method takes care of all necessary initialisation of our data and form states.
-     *
-     * @return boolean False in case of initialization errors, otherwise true.
-     */
-    public function initialize(Zikula_Form_View $view)
-    {
-    	
-    	$parent = $this->request->getGet()->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
-    	
-    	if ($parent) {
-    	$this->view->assign('parent', $parent);
-    	}
-    	
-    	return parent::initialize($view);
-    }
+	/**
+	 * Initialize form handler.
+	 *
+	 * This method takes care of all necessary initialisation of our data and form states.
+	 *
+	 * @return boolean False in case of initialization errors, otherwise true.
+	 */
+	public function initialize(Zikula_Form_View $view)
+	{
+			
+		$parent = $this->request->getGet()->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
+		$id = $this->request->getGet()->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+		$ot = $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+		$album = $this->request->getGet()->filter('album', 0, FILTER_SANITIZE_NUMBER_INT);
+
+		// if a user want to create an album
+		if ($id == 0) {
+			if ($parent == 0 && $ot == 'album') {
+				if (MUImage_Util_View::otherUserMainAlbums() == false) {
+					$url = ModUtil::url($this->name, 'user', 'view', array('ot' => 'album'));
+					LogUtil::registerError(__('You do not have quotas to create a main album!'));
+					return System::redirect($url);
+				}
+			}
+			// if a user want to create an sub album
+			if ($parent > 0 && $ot == 'album') {
+				if (MUImage_Util_View::otherUserSubAlbums() == false) {
+					$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $parent));
+					LogUtil::registerError(__('You do not have quotas to create a sub album!'));
+					return System::redirect($url);
+				}
+			}
+			// if a user want to create a picture
+			if ($album > 0 && $ot == 'picture') {
+				if (MUImage_Util_View::otherUserPictures() == false) {
+					$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $album));
+					LogUtil::registerError(__('You do not have quotas to create pictures!'));
+					return System::redirect($url);
+				}
+			}
+
+			if ($parent) {
+				$this->view->assign('parent', $parent);
+			}
+		}
+		else {
+			// if a user want to edit an album
+			if ($ot == 'album' && MUImage_Util_View::myAlbum($id) == false) {
+				$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $id));
+				LogUtil::registerError(__('You do not have permissions to edit this album!'));
+				return System::redirect($url);
+			}
+			// if a user want to edit a picture	
+			if ($ot == 'picture' && MUImage_Util_View::myPicture($id) == false) {
+				$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'picture', 'id' => $id));
+				LogUtil::registerError(__('You do not have permissions to edit this picture!'));
+				return System::redirect($url);
+			}
+		}
+		return parent::initialize($view);
+
+	}
 }
