@@ -37,7 +37,7 @@
     {if $mode ne 'create'}
         {include file='user/include_standardfields_edit.tpl' obj=$album}
     {/if}
-    {if $parent ne 0 && $mode eq 'create'}
+    {if $mode eq 'create'}
     <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$parent}">
     <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
     {else}
@@ -49,7 +49,7 @@
     {else}
         {notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=$album.id assign='hooks'}
     {/if}
-    {if is_array($hooks) && isset($hooks[0])}
+   {* {if is_array($hooks) && isset($hooks[0])} *}
         <fieldset>
             <legend>{gt text='Hooks'}</legend>
             {foreach key='hookName' item='hook' from=$hooks}
@@ -58,7 +58,7 @@
             </div>
             {/foreach}
         </fieldset>
-    {/if}
+   {* {/if} *}
 
     {* include return control *}
     {if $mode eq 'create'}
@@ -76,7 +76,7 @@
     {if $mode eq 'edit'}
         {formbutton id='btnUpdate' commandName='update' __text='Update album' class='z-bt-save'}
       {if !$inlineUsage}
-        {gt text='Really delete this album?' assign='deleteConfirmMsg'}
+        {gt text='Really delete this album? Notice: If you delete this album you will delete also its sub albums and pictures of these albums too!' assign='deleteConfirmMsg'}
         {formbutton id='btnDelete' commandName='delete' __text='Delete album' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
       {/if}
     {elseif $mode eq 'create'}

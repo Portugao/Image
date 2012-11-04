@@ -28,12 +28,14 @@
 {/if} *}
 <h3>{gt text='Main Album'}</h3>
 
-{if isset($album.parent) && $album.parent ne null}
+{if isset($album.parent) && $album.parent ne null && count($album.parent) > 0}
     {include file='user/album/include_displayItemListOne.tpl' item=$album.parent}
+{else}
+{gt text='No main album'}
 {/if}
 
-{if !isset($album.parent) || $album.parent eq null}
-{checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
+{* {if !isset($album.parent) || $album.parent eq null}
+{checkpermission component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
 {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
 <p class="manageLink">
     {gt text='Create album' assign='createTitle'}
@@ -42,7 +44,7 @@
     </a>
 </p>
 {/if}
-{/if}
+{/if} *}
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
 
 
@@ -57,71 +59,56 @@
 </div>
 {/if}
 </div>
-
 <div id="MUImage_body">
+    {if $album.createdUserId eq $coredata.user.uid}
+    {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
     <div id="muimage_body_header">
-{if count($album._actions) gt 0}
-    <p>{strip}
-    {foreach item='option' from=$album._actions}
+        {if count($album._actions) gt 0}
+            <p>{strip}
+        {foreach item='option' from=$album._actions}
+        {if $option.icon ne 'display'}
         <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
             {$option.linkText|safetext}
         </a>
-    {/foreach}
-    {/strip}</p>
-{/if}    
+        {/if}
+        {/foreach}
+            {/strip}</p>
+        {/if}    
     </div>
+    {/checkpermissionblock} 
+    {/if}    
     <div id="basic_accordion">
     <h3 class="z-acc-header">{gt text='Pictures'}</h3>
     <div id="muimage_pictures" class="z-acc-content">
-    <div id="muimage_pictures_header">
+   <div id="muimage_pictures_header">
     <div id="muimage_pictures_header_left">
 
     </div>
-    <div class="muimage_add_picture">
-    {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
-    <p class="manageLink">
-    {gt text='Create picture' assign='createTitle'}
-    <a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album="`$album.id`" returnTo='userDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
-        {$createTitle}
-    </a> | 
-    {gt text='Create pictures' assign='createPictures'}
-    <a href="{modurl modname='MUImage' type='user' func='multiupload' album="`$album.id`" returnTo='userDisplayAlbum'}" title="{$createPictures}" class="z-icon-es-add">
-        {$createPictures}
-    </a>
-    </p>
-    {/if}
     </div>
-    </div>
+  
     <div id="muimage_pictures_content">
-    {if isset($album.picture) && $album.picture ne null}
+    {if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
     {include file='user/picture/include_displayItemListMany.tpl' items=$album.picture}
     {else}
     {gt text='No pictures'}
     {/if}
     </div>
     </div>
+    {if isset($album.children) && count($album.children) > 0}    
     <h3 class="z-acc-header">{gt text='SubAlbums'}</h3> 
     <div id="muimage_albums" class="z-acc-content">
     <div id="muimage_albums_header">
     <div id="muimage_albums_header_left">
     </div>
-    <div id="muimage_add_album">
-    {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
-    <p class="manageLink">
-    {gt text='Create subalbum' assign='createTitle'}
-    <a href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent="`$album.id`" returnTo='userDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
-        {$createTitle}
-    </a>
-    </p>
-    {/if}
-    </div>
+
     </div>   
-    {if isset($album.children)}
+
     {foreach item='childAlbum' from=$album.children}
     <div class="muimage_album_container">
     <div class="muimage_album_title">
     <a title="{$childAlbum.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$childAlbum.id`"}">{$childAlbum.title|truncate:30}</a>
     <div class="muimage_display_album_title_action">
+    {if $childAlbum.createdUserId eq $coredata.user.uid}
     {if count($childAlbum._actions) gt 0}
         {strip}
         {foreach item='option' from=$childAlbum._actions}
@@ -130,6 +117,7 @@
         </a>
         {/foreach}
         {/strip}
+    {/if}
     {/if}
     </div>
     </div>
@@ -148,10 +136,8 @@
     </div>
     </div>
     {/foreach}
-    {else}
-    {gt text='No SubAlbums'}
-    {/if}
     </div>
+    {/if}
     </div>
     <div style="clear: both">
   {*  <dt>{gt text='Parent'}</dt>
