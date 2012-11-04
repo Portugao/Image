@@ -77,6 +77,12 @@ class MUImage_Block_OneItem extends Zikula_Controller_AbstractBlock
         if (!isset($vars['id']) || empty($vars['id'])) {
             $vars['id'] = null;
         }
+        if (!isset($vars['width']) || empty($vars['width'])) {
+            $vars['width'] = 0;
+        }
+        if (!isset($vars['height']) || empty($vars['height'])) {
+            $vars['height'] = 0;
+        }
         if (!isset($vars['showtitle']) || empty($vars['showtitle'])) {
             $vars['showtitle'] = 0;
         }        
@@ -157,6 +163,12 @@ class MUImage_Block_OneItem extends Zikula_Controller_AbstractBlock
         if (!isset($vars['id']) || $vars['id'] == '') {
             $vars['id'] = 0;
         }
+        if (!isset($vars['width']) || empty($vars['width'])) {
+            $vars['width'] = 0;
+        }
+        if (!isset($vars['height']) || empty($vars['height'])) {
+            $vars['height'] = 0;
+        }
         if (!isset($vars['showtitle']) || $vars['showtitle'] == '') {
             $vars['showtitle'] = 0;
         }
@@ -191,7 +203,9 @@ class MUImage_Block_OneItem extends Zikula_Controller_AbstractBlock
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
         $vars['objectType'] = $this->request->getPost()->filter('objecttype', 'picture', FILTER_SANITIZE_STRING);
-        $vars['id'] = (int) $this->request->getPost()->filter('id', 0, FILTER_SANITIZE_STRING);
+        $vars['id'] = (int) $this->request->getPost()->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+        $vars['width'] = (int) $this->request->getPost()->filter('width', 0, FILTER_SANITIZE_NUMBER_INT);
+        $vars['height'] = (int) $this->request->getPost()->filter('height', 0, FILTER_SANITIZE_NUMBER_INT);
         $vars['showtitle'] = (int) $this->request->getPost()->filter('showtitle', 0, FILTER_SANITIZE_STRING);
         $vars['template'] = $this->request->getPost()->get('template', '');
 
