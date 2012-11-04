@@ -13,6 +13,16 @@
 </div>
 
 <div class="z-formrow">
+    <label for="MUImage_width">{gt text='Width'}:</label>
+    <input type="text" id="MUImage_width" name="width" size="10" value="{$width}" />
+</div>
+
+<div class="z-formrow">
+    <label for="MUImage_height">{gt text='Height'}:</label>
+    <input type="text" id="MUImage_height" name="height" size="10" value="{$height}" />
+</div>
+
+<div class="z-formrow">
     <label for="MUImage_showtitle">{gt text='Diplay default block title?'}:</label>
     <input type="checkbox" id="MUImage_showtitle" name="showtitle" value="1"{if $showtitle eq 1} checked="checked"{/if} />
 </div>
