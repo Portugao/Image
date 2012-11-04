@@ -121,7 +121,7 @@ class MUImage_ContentType_ItemList extends MUImage_ContentType_Base_ItemList
 
         //$this->view->setCaching(true);
 
-        $data = array('objectType' => $this->objectType, 'sorting' => $this->sorting, 'amount' => $this->amount, 'filter' => $this->filter, 'template' => $this->template);
+        $data = array('objectType' => $this->objectType, 'selectalbum' => $this->albums, 'sorting' => $this->sorting, 'amount' => $this->amount, 'filter' => $this->filter, 'template' => $this->template);
 
         // assign block vars and fetched data
         $this->view->assign('vars', $data)
