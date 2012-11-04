@@ -77,7 +77,7 @@
     {if $mode eq 'edit'}
         {formbutton id='btnUpdate' commandName='update' __text='Update album' class='z-bt-save'}
       {if !$inlineUsage}
-        {gt text='Really delete this album?' assign='deleteConfirmMsg'}
+        {gt text='Really delete this album? Notice: If you delete this album you will delete also its sub albums and pictures of these albums too!' assign='deleteConfirmMsg'}
         {formbutton id='btnDelete' commandName='delete' __text='Delete album' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
       {/if}
     {elseif $mode eq 'create'}

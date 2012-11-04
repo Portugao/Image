@@ -45,6 +45,11 @@
                     {formlabel for='numberPictures' __text='Number pictures' class='muimageFormTooltips' title=$toolTip}
                     {formintinput id='numberPictures' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
                 </div>
+                <div class="z-formrow">
+                    {formlabel for='fileSize' __text='Allowed filesize?'}
+                    {formintinput id='fileSize' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                    <div class="z-informationmsg z-formnote">{gt text="102400 = 100 KB."}</div>
+                </div>
             </fieldset>
 
             <div class="z-buttons z-formbuttons">

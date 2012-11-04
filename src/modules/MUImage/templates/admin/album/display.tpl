@@ -17,7 +17,7 @@
     {include file='admin/picture/include_displayItemListMany.tpl' items=$album.picture}
 {/if}
 
-{checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
+{* {checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
 {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
 <p class="manageLink">
     {gt text='Create picture' assign='createTitle'}
@@ -25,14 +25,14 @@
         {$createTitle}
     </a>
 </p>
-{/if}
+{/if} *}
 <h3>{gt text='Album'}</h3>
 
 {if isset($album.parent) && $album.parent ne null}
     {include file='admin/album/include_displayItemListOne.tpl' item=$album.parent}
 {/if}
 
-{if !isset($album.parent) || $album.parent eq null}
+{* {if !isset($album.parent) || $album.parent eq null}
 {checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
 {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
 <p class="manageLink">
@@ -42,9 +42,9 @@
     </a>
 </p>
 {/if}
-{/if}
+{/if}*}
 </div>
-{/if}
+{/if} 
 
 <dl id="MUImage_body">
 
