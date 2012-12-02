@@ -60,4 +60,5 @@ class MUImage_Entity_Validator_Picture extends MUImage_Entity_Validator_Base_Pic
             return $errorInfo;
         }
         return true;
+    }
 }
