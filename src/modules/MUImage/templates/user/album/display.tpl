@@ -10,8 +10,13 @@
 </div>
 <div id="album_header">
 <div id="albumLeftBox">
-    <dt>{gt text='Description'}</dt>
-    <dd>{$album.description}</dd>
+	{if isset($album.description) && $album.description ne null && count($album.description) > 0}
+		<dt>{gt text='Description'}</dt>
+		<dd>{$album.description}</dd>
+	{else}
+		<!-- {gt text='No description available'} -->
+	{/if}
+	
     {include file='user/include_categories_display.tpl' obj=$album}
 </div>
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
@@ -26,12 +31,12 @@
     </a>
 </p>
 {/if} *}
-<h3>{gt text='Main Album'}</h3>
 
 {if isset($album.parent) && $album.parent ne null && count($album.parent) > 0}
+<h3>{gt text='Main Album'}</h3>
     {include file='user/album/include_displayItemListOne.tpl' item=$album.parent}
 {else}
-{gt text='No main album'}
+<!-- {gt text='No main album'} -->
 {/if}
 
 {* {if !isset($album.parent) || $album.parent eq null}
