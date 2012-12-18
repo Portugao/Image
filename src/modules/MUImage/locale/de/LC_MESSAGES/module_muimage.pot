@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-12-17 17:07-0500\n"
-"PO-Revision-Date: 2012-12-17 22:47+0100\n"
+"PO-Revision-Date: 2012-12-18 16:56+0100\n"
 "Last-Translator: dmm <dmm@designbeat.at>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -74,7 +74,7 @@ msgstr ""
 
 #: lib/MUImage/Api/Base/Mailz.php:36
 msgid "3 random albums"
-msgstr ""
+msgstr "3 zufällige Alben"
 
 #: lib/MUImage/Api/Base/Mailz.php:37
 msgid "A list of three random albums."
@@ -94,19 +94,19 @@ msgstr "Album erstellen"
 
 #: lib/MUImage/Api/User.php:46
 msgid "Create a main album"
-msgstr ""
+msgstr "Hauptalbum anlegen"
 
 #: lib/MUImage/Api/User.php:50
 msgid "Create SubAlbum"
-msgstr ""
+msgstr "Subalbum erstellen"
 
 #: lib/MUImage/Api/User.php:51
 msgid "Create a sub album"
-msgstr ""
+msgstr "Subalbum erstellen"
 
 #: lib/MUImage/Api/User.php:55
 msgid "Create Picture"
-msgstr ""
+msgstr "Bild anlegen"
 
 #: lib/MUImage/Api/User.php:56
 msgid "Load up a Picture"
@@ -161,7 +161,7 @@ msgstr ""
 
 #: lib/MUImage/Base/UploadHandler.php:107 lib/MUImage/UploadHandler.php:102
 msgid "Error! No file found."
-msgstr ""
+msgstr "Fehler! Keine Datei gefunden."
 
 #: lib/MUImage/Base/UploadHandler.php:118 lib/MUImage/UploadHandler.php:139
 msgid ""
