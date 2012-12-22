@@ -195,7 +195,14 @@ button.muimageInlineButton {
     float: left;
     margin: 5px;
     width: 100px;
-    border: 1px solid #333;
+	border:1px solid #EFEFEA;
+    background-color:#F5F5F1;
+    float:left;
+	margin:0px 10px 5px 0px;
+	-webkit-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
+	-moz-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1);
+	box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
+	filter: progid:DXImageTransform.Microsoft.Shadow(color='#ddd', Direction=90, Strength=3);
 
 }
 
@@ -438,6 +445,14 @@ button.muimageInlineButton {
     padding: 0 2% 0 0;
 }
 
+#MUImage_body_left img{
+	-webkit-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
+	-moz-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1);
+	box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
+	filter: progid:DXImageTransform.Microsoft.Shadow(color='#ddd', Direction=90, Strength=3);
+
+}
+
 #MUImage_body_right {
     float: right;
     width: 45%;
@@ -473,6 +488,7 @@ button.muimageInlineButton {
     position: relative;
     margin: 170px 0 0 0;
 }
+
 
 
 
