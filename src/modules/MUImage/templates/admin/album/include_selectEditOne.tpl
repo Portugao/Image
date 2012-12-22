@@ -1,6 +1,6 @@
 {* purpose of this template: inclusion template for managing related Albums in admin area *}
 <fieldset>
-    <legend>{gt text='Album'}</legend>
+    <legend>{gt text='Parent Album'}</legend>
     <div class="z-formrow">
     <div class="muimageRelationRightSide">
         <a id="{$idPrefix}AddLink" href="javascript:void(0);" style="display: none">{gt text='Select album'}</a>
