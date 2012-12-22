@@ -51,7 +51,7 @@
     {$album.description|truncate:100}
     </div>
     <div class="muimage_view_album_image">
-    <a title="{$album.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$album.id`"}">{include file='user/picture/include_displayItemListMany3.tpl' items=$album.picture}</a>
+    <a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{include file='user/picture/include_displayItemListMany3.tpl' items=$album.picture}</a>
     </div>
 	
 	{if isset($album.children) && $album.children ne null && count($album.children) > 0}

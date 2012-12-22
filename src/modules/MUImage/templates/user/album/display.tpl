@@ -14,7 +14,7 @@
 		<dt>{gt text='Description'}</dt>
 		<dd>{$album.description}</dd>
 	{else}
-		<!-- {gt text='No description available'} -->
+		{* {gt text='No description available'} *}
 	{/if}
 	
     {include file='user/include_categories_display.tpl' obj=$album}
@@ -36,7 +36,7 @@
 <h3>{gt text='Main Album'}</h3>
     {include file='user/album/include_displayItemListOne.tpl' item=$album.parent}
 {else}
-<!-- {gt text='No main album'} -->
+{* {gt text='No main album'} *}
 {/if}
 
 {* {if !isset($album.parent) || $album.parent eq null}
