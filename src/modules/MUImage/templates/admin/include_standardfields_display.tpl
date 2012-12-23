@@ -1,7 +1,7 @@
 {* purpose of this template: reusable display of standard fields *}
 {if (isset($obj.createdUserId) && $obj.createdUserId) || (isset($obj.updatedUserId) && $obj.updatedUserId)}
 <div class="standardfieldsbox">
-<h3 class="standardfields">{gt text='Creation and update'}:</h3>
+{* <h3 class="standardfields">{gt text='Creation and update'}:</h3> *}
 <dl class="propertylist">
 {if isset($obj.createdUserId) && $obj.createdUserId}
     <dt>{gt text='Creation'}</dt>
