@@ -135,7 +135,6 @@ button.muimageInlineButton {
     padding: 1%;
     margin: 0 0 5px;
     width: 98%;
-    border: #333 1px solid;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; 
@@ -168,7 +167,6 @@ button.muimageInlineButton {
     padding: 1%;
     margin: 0 0 5px;
     width: 98%;
-    border: #333 1px solid;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; 
@@ -307,7 +305,7 @@ button.muimageInlineButton {
 
 .muimage_view_album_description {
     background: #ccc;
-    padding: 5px 0;
+    padding: 5px 4px;
     height: 30px;
     width: 100%;
     overflow: auto;
@@ -431,7 +429,6 @@ button.muimageInlineButton {
     padding: 1%;
     margin: 0 0 5px;
     width: 98%;
-    border: #333 1px solid;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; 
