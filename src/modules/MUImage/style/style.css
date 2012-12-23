@@ -486,6 +486,19 @@ button.muimageInlineButton {
     margin: 170px 0 0 0;
 }
 
+.standardfieldsbox {
+	background: #f8f8f8;
+    padding: 1%;
+	border: 1px solid #f0f0f0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px; 
+}
+
+.standardfields {
+	font-size:13px;
+}
+
 
 
 
