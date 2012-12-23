@@ -16,5 +16,18 @@
  */
 class MUImage_Installer extends MUImage_Base_Installer
 {
-    // feel free to extend the installer here
+	/**
+	 * Install the MUImage application.
+	 *
+	 * @return boolean True on success, or false.
+	 */
+	public function install()
+	{
+		parent::install();
+		 
+		// Set up module hooks
+		HookUtil::registerProviderBundles($this->version->getHookProviderBundles());
+		
+		return true;
+	}
 }

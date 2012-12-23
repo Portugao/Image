@@ -55,28 +55,8 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
 		$dom = ZLanguage::getModuleDomain('MUImage');
 			
 		SessionUtil::delVar('muimagepictureids');
-		// we check the created pictures for this user
-		$uid = UserUtil::getVar('uid');
-		$gid = UserUtil::getGroupsForUser($uid);
-		if (in_array(2, $gid)) {
-			$allowedFields = 10 + 1;
-		}
-		else {
-			$picturerepository = MUImage_Util_Model::getPictureRepository();
-			$where3 = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
-			$picturecount = $picturerepository->selectCount($where3);
-
-			// we check for modvar numberPictures
-			$numberPictures = ModUtil::getVar($this->name, 'numberPictures');
-
-			$diff = $numberPictures - $picturecount;
-			if ($diff < 10) {
-				$allowedFields = $diff + 1;
-			}
-			else {
-				$allowedFields = 10 + 1;
-			}
-		}
+		
+		$allowedFields = MUImage_Util_Controller::allowedFields();
 		
 		$fileSize = MUImage_Util_Controller::maxSize();
 			

@@ -52,4 +52,31 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
 		
 		return $allowedSize;
     }
+    
+    public static function allowedFields() {
+    	// we check the created pictures for this user
+    	$uid = UserUtil::getVar('uid');
+    	$gid = UserUtil::getGroupsForUser($uid);
+    	if (in_array(2, $gid)) {
+    		$allowedFields = 10 + 1;
+    	}
+    	else {
+    		$picturerepository = MUImage_Util_Model::getPictureRepository();
+    		$where3 = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+    		$picturecount = $picturerepository->selectCount($where3);
+    	
+    		// we check for modvar numberPictures
+    		$numberPictures = ModUtil::getVar($this->name, 'numberPictures');
+    	
+    		$diff = $numberPictures - $picturecount;
+    		if ($diff < 10) {
+    			$allowedFields = $diff + 1;
+    		}
+    		else {
+    			$allowedFields = 10 + 1;
+    		}
+    	}
+    	
+    	return $allowedFields;
+    }
 }
