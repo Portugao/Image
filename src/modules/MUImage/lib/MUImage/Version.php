@@ -34,9 +34,9 @@ class MUImage_Version extends MUImage_Base_Version
 
         // define special capabilities of this module
         $meta['capabilities'] = array(
-            HookUtil::SUBSCRIBER_CAPABLE => array('enabled' => true) /*,
-             HookUtil::PROVIDER_CAPABLE => array('enabled' => true), // TODO: see #15
-             'authentication' => array('version' => '1.0'),
+            HookUtil::SUBSCRIBER_CAPABLE => array('enabled' => true), 
+            HookUtil::PROVIDER_CAPABLE => array('enabled' => true) // TODO: see #15
+           /*,  'authentication' => array('version' => '1.0'),
              'profile'        => array('version' => '1.0', 'anotherkey' => 'anothervalue'),
              'message'        => array('version' => '1.0', 'anotherkey' => 'anothervalue')
              */
@@ -60,5 +60,18 @@ class MUImage_Version extends MUImage_Base_Version
         // DEBUG: permission schema aspect ends
 
         return $meta;
+    }
+    
+    /**
+     * Define hook subscriber bundles.
+     */
+    protected function setupHookBundles()
+    {
+    	$bundle = new Zikula_HookManager_ProviderBundle($this->name, 'provider.muimage.ui_hooks.service', 'ui_hooks', $this->__('MUImage - Create album'));
+    	// form_edit hook is used to add smiley selector and other code to new object form (validate and process hooks unneeded)
+    	$bundle->addServiceHandler('form_edit', 'MUImage_HookHandlers', 'uiEdit', 'muimage.album');
+    	$this->registerHookProviderBundle($bundle);
+    	
+    	parent::setupHookBundles();
     }
 }
