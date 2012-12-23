@@ -10,9 +10,9 @@
 
 <div id="MUImage_body">
 <div id="MUImage_body_left">
-    <dt>{gt text='Description'}</dt>
+{*  <dt>{gt text='Description'}</dt> *}
     <dd>{$picture.description}</dd>
-{*    <dt>{gt text='Show title'}</dt>
+{*  <dt>{gt text='Show title'}</dt>
     <dd>{assign var='itemid' value=$picture.id}
 <a id="toggleshowtitle{$itemid}" href="javascript:void(0);" style="display: none">
 {if $picture.showTitle}
@@ -40,7 +40,7 @@
 <noscript><div id="noscriptshowdescription{$itemid}">
     {$picture.showDescription|yesno:true}</div></noscript>
 </dd> *}
-    <dt>{gt text='Image upload'}</dt>
+    {* <dt>{gt text='Image upload'}</dt> *}
     <dd>  <a href="{$picture.imageUploadFullPathURL}" title="{$picture.title|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
   {if $picture.imageUploadMeta.isImage}
       <img src="{$picture.imageUpload|muimageImageThumb:$picture.imageUploadFullPath:250:150}" width="250" height="150" alt="{$picture.title|replace:"\"":""}" />
