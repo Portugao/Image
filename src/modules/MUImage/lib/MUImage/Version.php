@@ -70,6 +70,7 @@ class MUImage_Version extends MUImage_Base_Version
     	$bundle = new Zikula_HookManager_ProviderBundle($this->name, 'provider.muimage.ui_hooks.service', 'ui_hooks', $this->__('MUImage - Create album'));
     	// form_edit hook is used to add smiley selector and other code to new object form (validate and process hooks unneeded)
     	$bundle->addServiceHandler('form_edit', 'MUImage_HookHandlers', 'uiEdit', 'muimage.album');
+    	$bundle->addServiceHandler('process_edit', 'MUImage_HookHandlers', 'processEdit', 'muimage.album');
     	$this->registerHookProviderBundle($bundle);
     	
     	parent::setupHookBundles();
