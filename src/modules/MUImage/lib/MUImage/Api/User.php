@@ -26,7 +26,7 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 		$links = array();
 
 		$func = $this->request->getGet()->filter('func', 'main', FILTER_SANITIZE_STRING);
-		$ot = $this->request->getGet()->filter('ot', '', FILTER_SANITIZE_STRING);
+		$ot = $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
 		$id = $this->request->getGet()->filter('id' , 0 , FILTER_SANITIZE_NUMBER_INT);
 
 		if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
@@ -40,7 +40,7 @@ class MUImage_Api_User extends MUImage_Api_Base_User
                 'text'  => $this->__('Albums'),
                 'title' => $this->__('Album list'));
 		}
-		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserMainAlbums() == true && $func == 'view' && $ot == 'album') {
+		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_ADD) && MUImage_Util_View::otherUserMainAlbums() == true && ($func == 'main' || $func == 'view') && $ot == 'album') {
 			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'edit', array('ot' => 'album', 'parent' => 0, 'returnTo' => 'userDisplayAlbum')),
                 'text'  => $this->__('Create Album'),
                 'title' => $this->__('Create a main album'));
