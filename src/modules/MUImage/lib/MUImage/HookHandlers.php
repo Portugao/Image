@@ -82,7 +82,6 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
 				$story = FormUtil::getPassedValue('story', isset($args['story']) ? $args['story'] : null, 'POST');
 				$newstitle = $story['title'];
 				
-				LogUtil::registerStatus('toll');
 				$album = new MUImage_Entity_Album();
 
 				$uid = UserUtil::getVar('uid');
@@ -94,10 +93,16 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
 				$album->setCreatedDate($date);
 				$album->setUpdatedDate($date);
 				
-				$album->setTitle(DateUtil::formatDatetime($date, 'datebrief') . ' - ' . $newstitle);
+				$title = DateUtil::formatDatetime($date, 'datebrief') . ' - ' . $newstitle;
+				
+				$album->setTitle($title);
 
 				$entityManager->persist($album);
 				$entityManager->flush();
+				
+				$dom = ZLanguage::getModuleDomain('MUImage');
+				
+				LogUtil::registerStatus(__('Album with title ', $dom) . $title . __(' created!', $dom));
 			}
 			else {
 				

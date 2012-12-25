@@ -34,7 +34,7 @@
     {if $album.parent eq NULL}
     <div class="muimage_view_album_container">
     <div class="muimage_view_album_title">
-    <a title="{$album.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:30}</a>
+    <a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:25}</a>
     <div class="muimage_view_album_title_action">
     {if count($album._actions) gt 0 && $coredata.user.uid eq $album.createdUserId}
         {strip}
