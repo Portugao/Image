@@ -103,6 +103,15 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
 				$dom = ZLanguage::getModuleDomain('MUImage');
 				
 				LogUtil::registerStatus(__('Album with title ', $dom) . $title . __(' created!', $dom));
+				
+				$albumrepository = MUImage_Util_Model::getAlbumRepository();
+				$where = 'tbl.title = $title';
+				$newalbum = $albumrepository->selectWhere(where);
+				$newalbumid = $newalbum->getId();
+				
+				foreach ($files as $file) {
+					
+				}
 			}
 			else {
 				
