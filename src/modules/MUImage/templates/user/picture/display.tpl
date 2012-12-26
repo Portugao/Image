@@ -51,27 +51,8 @@
 </dd>
     <dt>{gt text='Image view'}</dt>
     <dd>{$picture.imageView}</dd>
-    {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
-{if count($picture._actions) gt 0}
-    <p>{strip}
-    {foreach item='option' from=$picture._actions}
-        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
-            {$option.linkText|safetext}
-        </a>
-    {/foreach}
-    {/strip}</p>
-{/if}
-</div>
-{* include display hooks *}
-{notifydisplayhooks eventname='muimage.ui_hooks.pictures.display_view' id=$picture.id urlobject=$currentUrlObject assign='hooks'}
-{foreach key='hookname' item='hook' from=$hooks}
-    {$hook}
-{/foreach}
-
-{/if}
-</div>
-<div id="MUImage_body_right">
-    <h2>{gt text='Album'}</h2>
+    
+        <h2>{gt text='Album'}</h2>
     <dd>
     {if isset($picture.Album) && $picture.Album ne null}
       {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
@@ -102,6 +83,26 @@
 
     </div>
     </div>
+    {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
+{if count($picture._actions) gt 0}
+    <p>{strip}
+    {foreach item='option' from=$picture._actions}
+        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
+            {$option.linkText|safetext}
+        </a>
+    {/foreach}
+    {/strip}</p>
+{/if}
+</div>
+{/if}
+</div>
+<div id="MUImage_body_right">
+
+    {* include display hooks *}
+{notifydisplayhooks eventname='muimage.ui_hooks.pictures.display_view' id=$picture.id urlobject=$currentUrlObject assign='hooks'}
+{foreach key='hookname' item='hook' from=$hooks}
+    {$hook}
+{/foreach}
 </div>
 </div>
 {include file='user/footer.tpl'}
