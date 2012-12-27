@@ -66,7 +66,7 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
     		$picturecount = $picturerepository->selectCount($where3);
     	
     		// we check for modvar numberPictures
-    		$numberPictures = ModUtil::getVar($this->name, 'numberPictures');
+    		$numberPictures = ModUtil::getVar('MUImage', 'numberPictures');
     	
     		$diff = $numberPictures - $picturecount;
     		if ($diff < 10) {
