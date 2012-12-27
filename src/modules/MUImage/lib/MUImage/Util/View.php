@@ -193,7 +193,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 				}
 				else {
 					$contingentSubAlbums = $numberSubAlbums - $subalbumcount;
-					if ($contingentMainAlbums > 0) {
+					if ($contingentSubAlbums > 0) {
 						$out = $contingentSubAlbums;
 					}
 					else {
