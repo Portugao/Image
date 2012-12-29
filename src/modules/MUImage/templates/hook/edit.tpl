@@ -6,7 +6,7 @@
     </div>
         <div class="muimage-hook z-formrow">
         <label for="muimage-album">{gt text='Add pictures to main album:'}</label>
-        <select id="muimage-album" name="muimage-album" />
+        <select id="muimage-album" name="muimage-album">
             <option value="">{gt text='Select a main album'}</option>
             {foreach item='album' from=$albums}
                 <option value={$album.id}>{$album.title}</option>
@@ -15,7 +15,7 @@
     </div>  
         <div class="muimage-hook z-formrow">
         <label for="muimage-subalbum">{gt text='Add pictures to sub album:'}</label>
-        <select id="muimage-subalbum" name="muimage-subalbum" />
+        <select id="muimage-subalbum" name="muimage-subalbum">
             <option value="">{gt text='Select a sub album'}</option>
             {foreach item='subalbum' from=$subalbums}
                 <option value={$album.id}>{$subalbum.title}</option>
