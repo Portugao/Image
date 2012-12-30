@@ -138,7 +138,7 @@ class MUImage_Form_Handler_User_Picture_MultiUpload extends Zikula_Form_Abstract
 					$this->uploadFields = array($key => false);
 					//$upload
 					$entityData = $this->handleUploads($entityData, $entity);
-                    // if upload failed go to next uploaded file
+                    // if upload failed go to next file to upload
 					if ($entityData == false) {
 						continue;
 					}
