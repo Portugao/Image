@@ -65,7 +65,7 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
 	 *
 	 * @param Zikula_DisplayHook $hook
 	 */
-	public function processEdit(Zikula_DisplayHook $hook)
+	public function processEdit(Zikula_ProcessHook $hook)
 	{
 		$view = new Zikula_Request_Http();
 		$albumyes = $view->getPost()->filter('muimage-albumyes', '');
@@ -97,21 +97,27 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
 				
 				$album->setTitle($title);
 
-				$entityManager->persist($album);
-				$entityManager->flush();
+				/*$entityManager->persist($album);
+				$entityManager->flush();*/
 				
 				$dom = ZLanguage::getModuleDomain('MUImage');
 				
 				LogUtil::registerStatus(__('Album with title ', $dom) . $title . __(' created!', $dom));
 				
 				$albumrepository = MUImage_Util_Model::getAlbumRepository();
-				$where = 'tbl.title = $title';
-				$newalbum = $albumrepository->selectWhere(where);
-				$newalbumid = $newalbum->getId();
+				$where = 'tbl.title = \'' . DataUtil::formatForStore($title) . '\'';
+				$newalbum = $albumrepository->selectWhere($where);
+				$newalbumid = $newalbum[0]['id'];
 				
-				foreach ($files as $file) {
+				$serviceManager = ServiceUtil::getManager();
+				// create new Form reference
+		        $view = new Zikula_Form_View($serviceManager, 'MUImage');
+				
+				MUImage_Form_Handler_User_Picture_HookUpload::HandleCommand($view, &$args);
+				
+				/*foreach ($files as $file) {
 					
-				}
+				}*/
 			}
 			else {
 				
