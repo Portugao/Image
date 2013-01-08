@@ -18,7 +18,7 @@
         <select id="muimage-subalbum" name="muimage-subalbum">
             <option value="">{gt text='Select a sub album'}</option>
             {foreach item='subalbum' from=$subalbums}
-                <option value={$album.id}>{$subalbum.title}</option>
+                <option value={$subalbum.id}>{$subalbum.title}</option>
             {/foreach}
         </select>
     </div> 
