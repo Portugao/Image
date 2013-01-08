@@ -53,6 +53,12 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 
 			$entityManager->flush();
 		}
+		if ($ot == 'picture') {
+			$showTitle = ModUtil::getVar($this->name, 'showTitle');
+			$showDescription = ModUtil::getVar($this->name, 'showDescription');
+			$this->view->assign('showTitle', $showTitle);
+			$this->view->assign('showDescription', $showDescription);
+		}
 			
 		return parent::display($args);
 			

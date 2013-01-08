@@ -5,13 +5,17 @@
 {assign var='templateTitle' value=$picture.title|default:$templateTitle}
 {pagesetvar name='title' value=$templateTitle|@html_entity_decode}
 <div class="z-frontendcontainer">
+    {if $showTitle eq 1 && $picture.showTitle eq 1}
     <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.pictures.filter'}</h2>
+    {/if}
 
 
 <div id="MUImage_body">
 <div id="MUImage_body_left">
 {*  <dt>{gt text='Description'}</dt> *}
+    {if $showDescription eq 1 && $picture.showDescription eq 1}
     <dd>{$picture.description}</dd>
+    {/if}
 {*  <dt>{gt text='Show title'}</dt>
     <dd>{assign var='itemid' value=$picture.id}
 <a id="toggleshowtitle{$itemid}" href="javascript:void(0);" style="display: none">
