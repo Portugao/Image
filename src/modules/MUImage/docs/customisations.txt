@@ -33,6 +33,7 @@ implemented classes
 *lib/MUImage/Form/Handler/User/Base/Edit.php
 *lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php
 *lib/MUImage/Form/Handler/User/Picture/EditMulti.php
+*lib/MUImage/Form/Handler/User/Picture/HookUpload.php
 *lib/MUImage/Form/Handler/User/Picture/MultiUpload.php
 
 *lib/MUImage/Util/Controller.php
