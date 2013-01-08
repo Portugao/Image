@@ -118,18 +118,43 @@ class MUImage_Form_Handler_User_Picture_HookUpload extends Zikula_Form_AbstractH
 	public function HandleCommand(Zikula_Form_View $view, &$args)
 	{
 
-		$files = News_ImageUtil::reArrayFiles(FormUtil::getPassedValue('news_files', null, 'FILES'));
-		$i = 0;
-		foreach ($_FILES as $value) {
-			//	if ($value['size'] > 0) {
-			foreach ($value['name'] as $name) {
-				LogUtil::registerStatus('Name: ' . $value['name']);
-			}
-			$entity = new MUImage_Entity_Picture();
+		//$files = News_ImageUtil::reArrayFiles(FormUtil::getPassedValue('news_files', null, 'FILES'));
+		$sid = $args['sid'];
+		$albumid = $args['albumid'];
+		
+		$fileSize = ModUtil::getVar('MUImage', 'fileSize');
 
-			//$entityData = array($value['tmp_name'] => $value['name']);
+		$entity = new MUImage_Entity_Picture();
+
+		$newsuploaddir = ModUtil::getVar('News', 'picupload_uploaddir');
+
+		$filehandle = opendir($newsuploaddir);
+
+		while ($file = readdir($filehandle)) {
+			
+			$fileinfo = pathinfo($newsuploaddir . '/' . $file);
+			$size = filesize($newsuploaddir . '/' . $file);
+			LogUtil::registerStatus('Groesse: ' . $size);
 				
-			move_uploaded_file($value['tmp_name'][$i], '/userdata/MUTicket/pictures/imageupload/'.$value['name'][$i]);
+			if (strpos($fileinfo['filename'], 'norm') !== false && strpos($fileinfo['filename'], 'sid' . $sid) !== false) {
+				LogUtil::registerStatus($fileinfo['filename']);
+				
+				if ($size > $fileSize) {
+					LogUtil::registerError('sorry: File too big');
+					continue;
+				}
+				if (copy($newsuploaddir . '/' . $file  , 'userdata/MUImage/pictures/imageupload/' . $file) == true) {
+					LogUtil::registerStatus('Yes');
+						
+					$entityData = array($value['tmp_name'] => $value['name']);
+
+				}
+				else {
+					LogUtil::registerError('Mist');
+				}
+
+			}
+
 
 			$this->uploadFields = array($key => false);
 			//$upload
@@ -147,19 +172,19 @@ class MUImage_Form_Handler_User_Picture_HookUpload extends Zikula_Form_AbstractH
 
 			// get the selected album as object
 			$albumrepository = MUImage_Util_Model::getAlbumRepository();
-			$album = $albumrepository->selectById(13);
+			$album = $albumrepository->selectById($albumid);
 			$entityData['Album'] = $album;
 
 			// set a default title and the correct data for imageupload
 			$entity->setTitle($this->__('Please enter title...'));
 			$entity->setImageUpload($entityData['imageUpload']);
-				
+
 			$uid = UserUtil::getVar('uid');
 			$entity->setCreatedUserId($uid);
 			$entity->setUpdatedUserId($uid);
-				
+
 			$date = new DateTime("now");
-				
+
 			$entity->setCreatedDate($date);
 			$entity->setUpdatedDate($date);
 
@@ -175,29 +200,25 @@ class MUImage_Form_Handler_User_Picture_HookUpload extends Zikula_Form_AbstractH
 
 			// default message
 			self::addDefaultMessage($args, $success);
-				
-			$i++;
 
-			//}
-			/*else {
-			 continue;
-			}*/
 		}
+		
 		$pictureids = SessionUtil::getVar('muimagepictureids');
 		$pictures = unserialize($pictureids);
 		$id = $pictures[0];
 		return ModUtil::func($this->name, 'user', 'editMulti',array('ot' => 'picture', 'id' => $id, 'album' => $albumid));
 		/*$serviceManager = ServiceUtil::getManager();
-			$view = new Zikula_View($serviceManager);
+		 $view = new Zikula_View($serviceManager);
 		return ModUtil::url*/
 
 		//}
-			
+
 		if ($args['commandName'] == 'cancel') {
 			$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumid));
 			return $this->view->redirect($url);
 
 		}
+
 	}
 
 	/**
