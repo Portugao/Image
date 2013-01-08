@@ -25,18 +25,38 @@
     </script> 
     <br /> *}
     {checkpermission component='MUImage:Picture:' instance='.*' level='ACCESS_EDIT' assign='authEdit'}
-    {if $authEdit}
+    {if $authEdit && $item.createdUserId eq $coredata.user.uid}
     <a title="Edit {$item.title}" class="muimage_picture_view_header_right" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}"><img src="images/icons/extrasmall/xedit.png" /></a>
     {/if}
 </div>
+{if $item.imageUploadMeta.format eq 'landscape' || $item.imageUploadMeta.format eq ''}
 <div class="muimage_picture_view_content">
+{/if}
+{if $item.imageUploadMeta.format eq 'portrait'}
+<div class="muimage_picture_view_content_portrait">
+{/if}
 {if $item.imageUpload ne '' && isset($item.imageUploadFullPathURL)}
     <a href="{$item.imageUploadFullPathURL}" title="{$item.title|replace:"\"":""}"{if $item.imageUploadMeta.isImage} rel="imageviewer[item]"{/if}>
+    {if $item.imageUploadMeta.format eq 'landscape'}
     <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:100:70}" width="100" height="70" alt="{$item.title|replace:"\"":""}" />
+    {/if}
+    {if $item.imageUploadMeta.format eq 'portrait'}
+    <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:52:70}" width="52" height="70" alt="{$item.title|replace:"\"":""}" />
+    {/if} 
+
   </a>
 {/if}
+    {if $item.imageUploadMeta.format eq ''}
+        <span class="muimage-valid">{gt text='No valid file'}</span>
+    {/if}  
 
    {* </li> *}
+</div>
+<div class="muimage_picture_view_bottom">
+{modgetvar module='MUImage' name='countImageView' assign='imageView'}
+{if $imageView eq 1}
+{gt text='Invocations:'} {$item.imageView}
+{/if}
 </div>   
 </div>   
 {/foreach}
