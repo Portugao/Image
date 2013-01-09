@@ -34,9 +34,80 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 
 		}
 	}
+	/**
+	 * 
+	 * @param unknown $module
+	 * @param unknown $id
+	 */
+	private function insertOneAlbum($args) {
+		
+		$module = $args['module'];
+		$folder = $args['folder'];
+		$id = $args['album'];
+		
+		$album = $this->getOneAlbum($module, $id);
+		
+		if (is_array($album)) {
+		$datas = $this->buildArrayForAlbum($module, $album);
+		}
+		else {
+			return LogUtil::registerError('shit');
+		}
+		
+		$serviceManager = ServiceUtil::getManager();
+		$entityManager = $serviceManager->getService('doctrine.entitymanager');
+		
+		$newalbum = new MUImage_Entity_Album();
+		$newalbum->setId($data['id']);
+		$newalbum->setParent_id($data['parent_id']);
+		$newalbum->setTitle($data['title']);
+		$newalbum->setDescription($data['description']);
+		$newalbum->setCreatedUserId($data['createdUserId']);
+		$newalbum->setUpdatedUserId($data['updatedUserId']);
+		$newalbum->setCreatedDate($data['createdDate']);
+		$newalbum->setUpdatedDate($data['updatedDate']);
+		
+		$entityManager->flush();
+		$entityManager->persist($newalbum);
+	
+	}
 
-	private function insertAlbums($module, $data, $query) {
+	/**
+	 * 
+	 * @param unknown $module
+	 * @param unknown $id
+	 */
+	private function insertAlbums($module, $id) {
 
+	}
+	
+	/**
+	 *
+	 * Get albums of module
+	 * @param string $module    the module to work with
+	 *
+	 * @return an array of one album
+	 */
+	private function getOneAlbum($module, $id) {
+	
+		$table = $this->getTableForAlbum($module);
+
+		$moduletable = $this->getPraefix(). $table;
+	
+		$connect = $this->getDBConnection();
+	
+		// ask the DB for entries in the module table
+		// handle the access to the module album table
+		// build sql
+		$query = "SELECT * FROM $moduletable where ms_id = $id";
+	
+		// prepare the sql query
+		$sql = $connect->query($query);
+	
+	
+		//$connect = null;
+	
+		return $sql;
 	}
 
 	/**
@@ -49,6 +120,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	private function getAlbums($module) {
 
 		$table = $this->getTableForAlbum($module);
+
 		$moduletable = $this->getPraefix(). $table;
 
 		$connect = $this->getDBConnection();
@@ -56,12 +128,13 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 		// ask the DB for entries in the module table
 		// handle the access to the module album table
 		// build sql
-		$query = "SELECT * FROM $moduletable";
+		$query = "SELECT * FROM $table";
 
 		// prepare the sql query
 		$sql = $connect->query($query);
 
-		$connect = null;
+
+		//$connect = null;
 
 		return $sql;
 	}
@@ -93,21 +166,45 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 		return $sql;
 	}
 
-	private function getAlbumNames($args) {
+	public function getAlbumNames($args) {
 
-		$sql = $this->getAlbums($args['module']);
+		$module = $args['importmodule'];
+		
+		$sql = $this->getAlbums($module);
 
 		$albums = array();
 
 		if ($module == 'mediashare') {
-			foreach ($sgl as $result) {
+			foreach ($sql as $result) {
 					
-				$albums[] = array('name' => $result['ms_title'], 'value' => $result['ms_id']);
+				$albums[] = $result;
 			}
 		}
 
 		return $albums;
 
+	}
+	
+	/**
+	 *
+	 * Build data array for putting into the album table
+	 * @param string $module
+	 *
+	 * @return array of columns
+	 */
+	private function buildArrayForAlbum($module , $result) {
+	
+		if ($module == 'mediashare') {
+			$datas[] = array('id' => $result['ms_id'],
+					'parent_id' => $result['ms_parentAlbumId'],
+					'title' => $result['ms_title'],
+					'description' => $result['ms_description'],
+					'createdUserId' => $result['ms_ownerid'],
+					'updatedUserId' => $result['ms_ownerid'],
+					'createdDate' => $result['ms_createddate'],
+					'updatedDate' => $result['ms_modifieddate']);
+		}
+		return $datas;
 	}
 
 	/**
@@ -208,7 +305,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	private function getTableForPicture($module) {
 
 		if ($module == 'mediashare') {
-			$table = 'mediashare_albums';
+			$table = 'mediashare_mediastore';
 		}
 
 		return $table;
@@ -222,7 +319,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 
 	public function getModules() {
 
-		$modules = array('mediashare');
+		$modules = array('mediashare', 'userpictures');
 
 		return $modules;
 	}
