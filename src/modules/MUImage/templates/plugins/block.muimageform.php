@@ -37,10 +37,6 @@ function smarty_block_muimageform($params, $content, $view)
 			$action = 'index.php?module=muimage&amp;type=user&amp;func=editMulti';
 		}
 
-		if(strpos($action,"func=import")!==false) {
-			$action = 'index.php?module=muimage&amp;type=admin&amp;func=album';
-		}
-
 		$view->postRender();
 
 		$formId = $view->getFormId();
