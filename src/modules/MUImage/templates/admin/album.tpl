@@ -22,7 +22,7 @@
                 </div>
                 <div class="z-formrow">
                     {formlabel for='folder' __text='folder' class='muimageFormTooltips' title=$toolTip}
-                    {formtextinput group='albums' id='title' mandatory=true readOnly=false __title='Enter the folder' textMode='singleline' maxLength=255 cssClass='required validate-unique'}         </div>
+                    {formtextinput group='albums' id='folder' mandatory=true readOnly=false __title='Enter the folder' textMode='singleline' maxLength=255 cssClass='required validate-unique'}         </div>
             </fieldset>
             {* <input type="hidden" value={$module} id="module" name="module"> *}
             <div class="z-buttons z-formbuttons">

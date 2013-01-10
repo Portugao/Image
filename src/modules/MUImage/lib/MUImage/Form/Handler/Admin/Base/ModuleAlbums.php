@@ -130,8 +130,14 @@ class MUImage_Form_Handler_Admin_Base_ModuleAlbums extends Zikula_Form_AbstractH
 			LogUtil::registerError($arguments['folder']);
 
 			// call api for import
-			if ($arguments['module'] != '' && $arguments['album'] != '' && $arguments['folder'] != '') {
-            ModUtil::apiFunc($this->name, 'import', 'insertOneAlbum', $arguments);
+			if ($arguments['module'] != '' && $arguments['album'] > 0 && $arguments['folder'] != '') {
+            $result = ModUtil::apiFunc($this->name, 'import', 'insertOneAlbum', $arguments);
+            if ($result === true) {
+            	LogUtil::registerStatus('Klasse');
+            }
+            else {
+            	LogUtil::registerError('Scheisse');
+            }
 			}
 			else {
 				LogUtil::registerError('no such album');
@@ -147,7 +153,7 @@ class MUImage_Form_Handler_Admin_Base_ModuleAlbums extends Zikula_Form_AbstractH
 			// nothing to do there
 			}*/
 
-			// redirect back to the config page
+			// redirect back to the import page
 			$url = ModUtil::url('MUImage', 'admin', 'import');
 			return $this->view->redirect($url);
 		}

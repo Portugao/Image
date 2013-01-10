@@ -36,39 +36,57 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	}
 	/**
 	 * 
-	 * @param unknown $module
-	 * @param unknown $id
+	 * @param array $args
+	 * 
 	 */
-	private function insertOneAlbum($args) {
-		
+	public function insertOneAlbum($args) {
+
 		$module = $args['module'];
 		$folder = $args['folder'];
 		$id = $args['album'];
 		
-		$album = $this->getOneAlbum($module, $id);
+		$results = $this->getOneAlbum($module, $id);
+		LogUtil::registerStatus('zahl: ' . count($results));
+		foreach ($results as $result) {
+			$album[] = $result;
+		}
 		
 		if (is_array($album)) {
-		$datas = $this->buildArrayForAlbum($module, $album);
+		$data = $this->buildArrayForAlbum($module, $album[0]);
 		}
 		else {
-			return LogUtil::registerError('shit');
+			die('son shit');
 		}
 		
+		if (is_array($data)) {
 		$serviceManager = ServiceUtil::getManager();
 		$entityManager = $serviceManager->getService('doctrine.entitymanager');
+		LogUtil::registerStatus($data['title']);
 		
 		$newalbum = new MUImage_Entity_Album();
-		$newalbum->setId($data['id']);
-		$newalbum->setParent_id($data['parent_id']);
-		$newalbum->setTitle($data['title']);
-		$newalbum->setDescription($data['description']);
-		$newalbum->setCreatedUserId($data['createdUserId']);
-		$newalbum->setUpdatedUserId($data['updatedUserId']);
-		$newalbum->setCreatedDate($data['createdDate']);
-		$newalbum->setUpdatedDate($data['updatedDate']);
+		$newalbum->setId($data[0]['id']);
+		$newalbum->setParent_id($data[0]['parent_id']);
+		$newalbum->setTitle($data[0]['title']);
+		$newalbum->setDescription($data[0]['description']);
+		$newalbum->setCreatedUserId($data[0]['createdUserId']);
+		$newalbum->setUpdatedUserId($data[0]['updatedUserId']);
+		//$newalbum->setCreatedDate($data[0]['createdDate']);
+		//$newalbum->setUpdatedDate($data[0]['updatedDate']);
 		
-		$entityManager->flush();
-		$entityManager->persist($newalbum);
+		$entityManager->persist($newalbum);	
+		if ($entityManager->flush()) {
+			$pictures = $this->getPictures($module, $data[0]['id']);
+			return true;
+		}
+		else {
+			return false;
+		}
+		}
+		else {
+			die('shit2');
+		}
+		
+		return true;
 	
 	}
 
@@ -99,7 +117,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 		// ask the DB for entries in the module table
 		// handle the access to the module album table
 		// build sql
-		$query = "SELECT * FROM $moduletable where ms_id = $id";
+		$query = "SELECT * FROM $moduletable WHERE ms_id = $id";
 	
 		// prepare the sql query
 		$sql = $connect->query($query);
@@ -146,7 +164,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	 *
 	 * @return an array of albums
 	 */
-	private function getPictures($module) {
+	private function getPictures($module, $albumid) {
 
 		$table = $this->getTableForPicture($module);
 		$moduletable = $this->getPraefix(). $table;
@@ -156,7 +174,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 		// ask the DB for entries in the module table
 		// handle the access to the module album table
 		// build sql
-		$query = "SELECT * FROM $moduletable";
+		$query = "SELECT * FROM $moduletable WHERE ms_parentalbumid = $albumid";
 
 		// prepare the sql query
 		$sql = $connect->query($query);
@@ -187,10 +205,10 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	
 	/**
 	 *
-	 * Build data array for putting into the album table
+	 * Build data array for creating album
 	 * @param string $module
-	 *
-	 * @return array of columns
+	 * @param array $result
+	 * @return array of values
 	 */
 	private function buildArrayForAlbum($module , $result) {
 	
