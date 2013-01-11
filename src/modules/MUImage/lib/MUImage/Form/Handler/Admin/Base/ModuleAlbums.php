@@ -111,6 +111,8 @@ class MUImage_Form_Handler_Admin_Base_ModuleAlbums extends Zikula_Form_AbstractH
 		$view = new Zikula_Request_Http();
 		
 		$module = $view->getGet()->filter('importmodule', '', FILTER_SANITIZE_STRING);
+		
+		$dom = ZLanguage::getModuleDomain($this->name);
 
 		if ($args['commandName'] == 'start') {
 			// check if all fields are valid
@@ -123,24 +125,21 @@ class MUImage_Form_Handler_Admin_Base_ModuleAlbums extends Zikula_Form_AbstractH
 				
 			// check if existing supporters deleting
 			$arguments['module'] = $module;
-			LogUtil::registerError($arguments['module']);
 			$arguments['album'] = $data['albums']['album'];
-			LogUtil::registerError($arguments['album']);
 			$arguments['folder'] = $data['albums']['folder'];
-			LogUtil::registerError($arguments['folder']);
 
 			// call api for import
 			if ($arguments['module'] != '' && $arguments['album'] > 0 && $arguments['folder'] != '') {
             $result = ModUtil::apiFunc($this->name, 'import', 'insertOneAlbum', $arguments);
             if ($result === true) {
-            	LogUtil::registerStatus('Klasse');
+            	LogUtil::registerStatus(__('Success! The album is imported!', $dom));
             }
             else {
-            	LogUtil::registerError('Scheisse');
+            	LogUtil::registerError(LogUtil::registerError(__('Sorry! The album is not imported!', $dom)));
             }
 			}
 			else {
-				LogUtil::registerError('no such album');
+				LogUtil::registerError(__('no such album', $dom));
 			}
 
 			// update all module vars
