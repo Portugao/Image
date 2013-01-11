@@ -14,7 +14,6 @@
 /**
  * The muimageImageMeta modifier displays a meta datas of an image.
  *
- * @param  string    $imageUpload   The uploaded Image
  * @param  string    $imageurl      The url to the image (including file name).
  *
  * @return string the meta datas.
