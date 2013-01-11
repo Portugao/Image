@@ -22,7 +22,7 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
 
 		$Exif = exif_read_data($imageurl,'IFD0', true);
 		if($Exif === false) {
-			$metadatas = 'No metadatas available';
+			$metadatas = __('No metadatas available', $dom);
 		}
 		else
 		{
