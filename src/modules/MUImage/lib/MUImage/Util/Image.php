@@ -16,28 +16,58 @@
  */
 class MUImage_Util_Image extends MUImage_Util_Base_Image
 {
-    public static function getMetaDatas($imageurl) {
-        $Exif = exif_read_data($imageurl,'IFD0', true);
-            if($Exif === false) { 
-                $metadatas = 'No metadatas available';
-            }
-            else
-            {
-             $metadatas = '';
-            foreach($Exif as $key => $Abschnitt)
-            {
-              foreach($Abschnitt as $Name => $Wert)
-              {
-                  if ($key == 'EXIF' && ($Name != 'MakerNote' && $Name != 'ComponentsConfiguration')) {
-                  	if ($Name == 'FNumber'){
-                  		$Wert = (int)$Wert / 10;
-                  	}
-                      $metadatas .= "$Name: $Wert<br>\n";
-                  }
-              }	
-            }
-            }
-          
-          return $metadatas;
-      } 
+	public static function getMetaDatas($imageurl) {
+
+		$dom = ZLanguage::getModuleDomain('MUImage');
+
+		$Exif = exif_read_data($imageurl,'IFD0', true);
+		if($Exif === false) {
+			$metadatas = 'No metadatas available';
+		}
+		else
+		{
+			$metadatas = '';
+			foreach($Exif as $key => $Abschnitt)
+			{
+				foreach($Abschnitt as $Name => $Wert)
+				{
+					if ($key != 'APP12' && ($Name != 'FileDateTime' && $Name != 'FileType' && $Name != 'html' && $Name != 'IsColor' && $Name != 'ApertureFNumber' && $Name != 'Orientation' && $Name != 'ImageDescription' && $Name != 'UserCommentEncoding' && $Name != 'SectionsFound'&& $Name != 'ByteOrderMotorola' &&
+							$Name != 'ResolutionUnit' && $Name != 'XResolution' && $Name != 'YResolution' && $Name != 'MakerNote' && $Name != 'ExifVersion' && $Name != 'ComponentsConfiguration')) {
+
+						if ($Name == 'FileName') {
+							$Name = __('File name', $dom);
+						}
+						if ($Name == 'FNumber'){
+							$Name = __('Aperture', $dom);
+							$Wert = (int)$Wert / 10;
+						}
+						if ($Name == 'ExposureTime') {
+							$Name = __('Exposer time: ', $dom);
+						}
+						if ($Name == 'ISOSpeedRatings') {
+							$Name = __('ISO: ', $dom);
+						}
+						if ($Name == 'WhiteBalance') {
+							$Name = __('White balance: ', $dom);
+						}
+						if ($Name == 'MimeType') {
+							$Name = __('Mime type: ', $dom);
+						}
+						if ($Name == 'Make') {
+							$Name = __('Company: ', $dom);
+						}
+						if ($Name == 'ISOSpeedRatings') {
+							$Name = __('ISO: ', $dom);
+						}
+						if ($Name == 'ISOSpeedRatings') {
+							$Name = __('ISO: ', $dom);
+						}
+						$metadatas .= "$Name: $Wert<br>\n";
+					}
+				}
+			}
+		}
+
+		return $metadatas;
+	}
 }
