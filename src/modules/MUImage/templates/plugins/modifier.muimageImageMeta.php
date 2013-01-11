@@ -14,15 +14,12 @@
 /**
  * The muimageImageMeta modifier displays a meta datas of an image.
  *
- * @param  string    $fileName   The input file name.
- * @param  string    $filePath   The input file path (including file name).
- * @param  int       $width      Desired width.
- * @param  int       $height     Desired height.
- * @param  array     $thumbArgs  Additional arguments.
+ * @param  string    $imageUpload   The uploaded Image
+ * @param  string    $imageurl      The url to the image (including file name).
  *
- * @return string The meta datas.
+ * @return string the meta datas.
  */
-function smarty_modifier_muimageImageMeta($imageUpload = '', $imageurl = '')
+function smarty_modifier_muimageImageMeta($imageurl = '')
 {
     /**
      * By overriding this plugin or the util method called below you may add further thumbnail arguments
