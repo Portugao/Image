@@ -148,7 +148,7 @@ class MUImage_Base_UploadHandler
 
         $extensionarr = explode('.', $fileName);
         $meta = array();
-        $meta['extension'] = $extensionarr[count($extensionarr) - 1];
+        $meta['extension'] = $extensionarr[count($extensionarr) - 1];     
         $meta['size'] = filesize($filePath);
         $meta['isImage'] = (in_array($meta['extension'], $this->imageFileTypes) ? true : false);
 
