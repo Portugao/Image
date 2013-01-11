@@ -47,7 +47,12 @@
     {* <dt>{gt text='Image upload'}</dt> *}
     <dd>  <a href="{$picture.imageUploadFullPathURL}" title="{$picture.title|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
   {if $picture.imageUploadMeta.isImage}
+      {if $picture.imageUploadmeta.format eq 'landscape'}
       <img src="{$picture.imageUpload|muimageImageThumb:$picture.imageUploadFullPath:250:150}" width="250" height="150" alt="{$picture.title|replace:"\"":""}" />
+      {/if}
+      {if $picture.imageUploadmeta.format eq 'portrait'}
+      <img src="{$picture.imageUpload|muimageImageThumb:$picture.imageUploadFullPath:150:250}" width="150" height="250" alt="{$picture.title|replace:"\"":""}" />
+      {/if}
   {else}
       {gt text='Download'} ({$picture.imageUploadMeta.size|muimageGetFileSize:$picture.imageUploadFullPath:false:false})
   {/if}
@@ -84,7 +89,7 @@
     <div class="z-panels" id="panel">
     <h2 class="z-panel-header z-panel-indicator z-pointer z-panel-active">{gt text='Meta Datas'}</h2>
     <div class="z-panel-content z-panel-active" style="overflow: visible;">
-
+    {$picture.imageUploadFullPath|muimageImageMeta}
     </div>
     </div>
     {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
