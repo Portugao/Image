@@ -48,10 +48,13 @@
     <dd>  <a href="{$picture.imageUploadFullPathURL}" title="{$picture.title|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
   {if $picture.imageUploadMeta.isImage}
       {if $picture.imageUploadmeta.format eq 'landscape'}
-      <img src="{$picture.imageUpload|muimageImageThumb:$picture.imageUploadFullPath:250:150}" width="250" height="150" alt="{$picture.title|replace:"\"":""}" />
+      <img src="{$picture.imageUpload|muimageImageThumb:$picture.imageUploadFullPath:280:210}" width="280" height="210" alt="{$picture.title|replace:"\"":""}" />
       {/if}
       {if $picture.imageUploadmeta.format eq 'portrait'}
-      <img src="{$picture.imageUpload|muimageImageThumb:$picture.imageUploadFullPath:150:250}" width="150" height="250" alt="{$picture.title|replace:"\"":""}" />
+      <img src="{$picture.imageUpload|muimageImageThumb:$picture.imageUploadFullPath:210:280}" width="210" height="280" alt="{$picture.title|replace:"\"":""}" />
+      {/if}
+      {if $picture.imageUploadmeta.format eq 'square'}
+      <img src="{$picture.imageUpload|muimageImageThumb:$picture.imageUploadFullPath:280:280}" width="280" height="280" alt="{$picture.title|replace:"\"":""}" />
       {/if}
   {else}
       {gt text='Download'} ({$picture.imageUploadMeta.size|muimageGetFileSize:$picture.imageUploadFullPath:false:false})
@@ -88,9 +91,15 @@
     {include file='user/include_standardfields_display.tpl' obj=$picture}
     <div class="z-panels" id="panel">
     <h2 class="z-panel-header z-panel-indicator z-pointer z-panel-active">{gt text='Meta Datas'}</h2>
+    {if $picture.imageUploadMeta.extension eq 'jpg' || $picture.imageUploadMeta.extension eq 'TIFF'}
     <div class="z-panel-content z-panel-active" style="overflow: visible;">
     {$picture.imageUploadFullPath|muimageImageMeta}
     </div>
+    {else}
+    <div>
+    {gt text='Not supported for this picture'}
+    </div>
+    {/if}
     </div>
     {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
 {if count($picture._actions) gt 0}
@@ -120,7 +129,7 @@
 /* <![CDATA[ */
              
     var panel = new Zikula.UI.Panels('panel', {
-    headerSelector: 'h3',
+    headerSelector: 'h2',
     headerClassName: 'z-panel-header z-panel-indicator',
     contentClassName: 'z-panel-content'
     });             
