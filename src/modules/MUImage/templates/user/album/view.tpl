@@ -80,6 +80,9 @@
         {$hook}
     {/foreach} 
 </div>
+    <div id="muimage_body_footer">
+    {gt text='Total number of albums:'} {$numalbums} | {gt text='Total number of pictures:'} {$numpictures}  
+    </div>
 </div>
 {include file='user/footer.tpl'}
 
