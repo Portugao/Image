@@ -20,6 +20,13 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
 
 		$dom = ZLanguage::getModuleDomain('MUImage');
 
+		$filter = array('FileDateTime', 'FileType', 'html', 'IsColor', 'ApertureFNumber', 'ResolutionUnit', 'XResolution', 'YResolution','Orientation',
+				'ImageDescription', 'ExifVersion','MakerNote', 'UserCommentEncoding', 'SectionsFound', 'ByteOrderMotorola', 'CompressedBitsPerPixel',
+				'ShutterSpeedValue', 'ApertureValue', 'ExifImageWidth', 'ExifImageHeight', 'ExifImageLength', 'ComponentsConfiguration', 'DateTimeDigitized',
+				'ExposureBiasValue', 'Exif_IFD_Pointer', 'Aperture', 'MeteringMode', 'DateTime','LightSource', 'ExposureProgram', 'FileSource',
+				'FocalLengthIn35mmFilm', 'MaxApertureValue', 'ExposureMode', 'SceneType');
+
+
 		$Exif = exif_read_data($imageurl,'IFD0', true);
 		if($Exif === false) {
 			$metadatas = __('No metadatas available', $dom);
@@ -31,38 +38,81 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
 			{
 				foreach($Abschnitt as $Name => $Wert)
 				{
-					if ($key != 'APP12' && ($Name != 'FileDateTime' && $Name != 'FileType' && $Name != 'html' && $Name != 'IsColor' && $Name != 'ApertureFNumber' && $Name != 'Orientation' && $Name != 'ImageDescription' && $Name != 'UserCommentEncoding' && $Name != 'SectionsFound'&& $Name != 'ByteOrderMotorola' &&
-							$Name != 'ResolutionUnit' && $Name != 'XResolution' && $Name != 'YResolution' && $Name != 'MakerNote' && $Name != 'ExifVersion' && $Name != 'ComponentsConfiguration')) {
+					if ($key != 'APP12' && !in_array($Name, $filter)) {
 
 						if ($Name == 'FileName') {
 							$Name = __('File name', $dom);
+						}
+						if ($Name == 'FileSize') {
+							$Name = __('File size ', $dom);
+							$Wert = $Wert . __(' bytes', $dom);
 						}
 						if ($Name == 'FNumber'){
 							$Name = __('Aperture', $dom);
 							$Wert = (int)$Wert / 10;
 						}
 						if ($Name == 'ExposureTime') {
-							$Name = __('Exposer time: ', $dom);
-						}
-						if ($Name == 'ISOSpeedRatings') {
-							$Name = __('ISO: ', $dom);
+							$Name = __('Exposer time', $dom);
 						}
 						if ($Name == 'WhiteBalance') {
-							$Name = __('White balance: ', $dom);
+							$Name = __('White balance', $dom);
 						}
 						if ($Name == 'MimeType') {
-							$Name = __('Mime type: ', $dom);
+							$Name = __('Mime type', $dom);
 						}
 						if ($Name == 'Make') {
-							$Name = __('Company: ', $dom);
+							$Name = __('Company', $dom);
+						}
+						if ($Name == 'Model') {
+							$Name = __('Model', $dom);
+						}
+						if ($Name == 'DateTimeOriginal') {
+							$Name = __('Original time', $dom);
 						}
 						if ($Name == 'ISOSpeedRatings') {
-							$Name = __('ISO: ', $dom);
+							$Name = __('ISO', $dom);
 						}
-						if ($Name == 'ISOSpeedRatings') {
-							$Name = __('ISO: ', $dom);
+						if ($Name == 'FocalLength') {
+							$Name = __('Focal length', $dom);
+							$nameArray = explode('/', $Wert);
+							$Wert = $nameArray[0] / $nameArray[1];
 						}
-						$metadatas .= "$Name: $Wert<br>\n";
+						if ($Name == 'BrightnessValue') {
+							$Name = __('Brightness', $dom);
+						}
+						if ($Name == 'SceneCaptureType') {
+							$Name = __('Scene capture type', $dom);
+							switch ($Wert) {
+								case 0:
+									$Wert = __('Standard', $dom);
+									break;
+								case 1:
+									$Wert = __('Landscape', $dom);
+									break;
+								case 2:
+									$Wert = __('Portrait', $dom);
+									break;
+								case 3:
+									$Wert = __('Nigtht scene', $dom);
+									break;
+								default:
+									$Wert = __('Other', $dom);
+							}
+						}
+						if ($Name == 'Flash') {
+							if ($Wert == 0)
+								$Wert = __('No', $dom);
+							else {
+								$Wert = __('Yes', $dom);
+							}
+						}
+						if ($key == 'EXIF' && $Name == 'UserComment') {
+							continue;
+						}
+						if ($Name == 'UserComment' && key != 'EXIF'){
+							$Name = __('User comment', $dom);
+						}
+						$metadatas .= "<b>$Name:</b> $Wert<br>\n";
 					}
 				}
 			}
