@@ -1,4 +1,4 @@
-{zdebug}{* purpose of this template: module configuration *}
+{* purpose of this template: module configuration *}
 {include file='admin/header.tpl'}
 <div class="muimage-config">
 {gt text='Albums of Module' assign='templateTitle'}
@@ -7,6 +7,8 @@
     {icon type='config' size='small' __alt='Albums'}
     <h3>{$templateTitle}</h3>
 </div>
+    <p class="z-warningmsg">{gt text='Attention! For a complete import of all albums with the correct structure 
+    of main albums and subalbums it is important, that you import them in order of the dropdownlist below!'}</p>
 
     {muimageform cssClass='z-form'}
 
