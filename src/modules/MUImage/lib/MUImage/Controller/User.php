@@ -73,6 +73,12 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	public function view($args)
 	{
 		$objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+		
+		$count = MUImage_Util_View::countPictures();
+		$count2 = MUImage_Util_View::countAlbums();
+		
+		$this->view->assign('numpictures', $count);
+		$this->view->assign('numalbums', $count2);
 			
 		if ($objectType == 'album') {
 			// DEBUG: permission check aspect starts
