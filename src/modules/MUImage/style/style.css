@@ -426,6 +426,11 @@ button.muimageInlineButton {
     border-radius: 3px; 
 }
 
+#muimage-user-album-hooks {
+     padding: 25px; 
+     float: left;
+}
+
 /*-----------PICTURE STYLE IN DISPLAY--------*/
 
 #MUImage_body_left {
@@ -473,6 +478,7 @@ button.muimageInlineButton {
     position: relative;
     margin: 170px 0 0 0;
 }
+
 
 
 

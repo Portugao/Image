@@ -53,11 +53,11 @@
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
 
 
-{* include display hooks *}
+{* include display hooks 
 {notifydisplayhooks eventname='muimage.ui_hooks.albums.display_view' id=$album.id urlobject=$currentUrlObject assign='hooks'}
 {foreach key='hookname' item='hook' from=$hooks}
     {$hook}
-{/foreach}
+{/foreach} *}
 
 <br style="clear: right" />
 {/if}
@@ -185,15 +185,15 @@
     {/foreach}
     {/strip}</p>
 {/if} *}
-
+<div id="muimage-user-album-hooks">
 {* include display hooks *}
-{* {notifydisplayhooks eventname='muimage.ui_hooks.albums.display_view' id=$album.id urlobject=$currentUrlObject assign='hooks'}
+{notifydisplayhooks eventname='muimage.ui_hooks.albums.display_view' id=$album.id urlobject=$currentUrlObject assign='hooks'}
 {foreach key='hookname' item='hook' from=$hooks}
     {$hook}
 {/foreach}
 
-<br style="clear: right" />
-{/if} *}
+</div>
+{* {/if} *}
 
 </div>
 </div>
