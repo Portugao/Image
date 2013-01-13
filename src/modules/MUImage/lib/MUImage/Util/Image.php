@@ -80,6 +80,15 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
 						if ($Name == 'BrightnessValue') {
 							$Name = __('Brightness', $dom);
 						}
+						if ($Name == 'Contrast') {
+							$Name = __('Contrast', $dom);
+						}
+						if ($Name == 'Saturation') {
+							$Name = __('Saturation', $dom);
+						}
+						if ($Name == 'Sharpness') {
+							$Name = __('Sharpness', $dom);
+						}
 						if ($Name == 'SceneCaptureType') {
 							$Name = __('Scene capture type', $dom);
 							switch ($Wert) {
