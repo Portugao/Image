@@ -135,6 +135,7 @@ button.muimageInlineButton {
     padding: 1%;
     margin: 0 0 5px;
     width: 98%;
+    border: #333 1px solid;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; 
@@ -167,6 +168,7 @@ button.muimageInlineButton {
     padding: 1%;
     margin: 0 0 5px;
     width: 98%;
+    border: #333 1px solid;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; 
@@ -193,14 +195,7 @@ button.muimageInlineButton {
     float: left;
     margin: 5px;
     width: 100px;
-	border:1px solid #EFEFEA;
-    background-color:#F5F5F1;
-    float:left;
-	margin:0px 10px 5px 0px;
-	-webkit-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
-	-moz-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1);
-	box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
-	filter: progid:DXImageTransform.Microsoft.Shadow(color='#ddd', Direction=90, Strength=3);
+    border: 1px solid #333;
 
 }
 
@@ -265,13 +260,9 @@ button.muimageInlineButton {
     width: 300px;
     height: 350px;
     float: left;
-    border: #ddd 1px solid;
+    border: #333 1px solid;
     background: #efefef;
     margin: 0 10px 10px;
-	-webkit-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
-	-moz-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1);
-	box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
-	filter: progid:DXImageTransform.Microsoft.Shadow(color='#ddd', Direction=90, Strength=3);
 }
 
 .muimage_view_album_title {
@@ -305,7 +296,7 @@ button.muimageInlineButton {
 
 .muimage_view_album_description {
     background: #ccc;
-    padding: 5px 4px;
+    padding: 5px 0;
     height: 30px;
     width: 100%;
     overflow: auto;
@@ -429,6 +420,7 @@ button.muimageInlineButton {
     padding: 1%;
     margin: 0 0 5px;
     width: 98%;
+    border: #333 1px solid;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; 
@@ -442,12 +434,8 @@ button.muimageInlineButton {
     padding: 0 2% 0 0;
 }
 
-#MUImage_body_left img{
-	-webkit-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
-	-moz-box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1);
-	box-shadow: 5px 5px 0px 2px rgba(0, 107, 0, 0.1); 
-	filter: progid:DXImageTransform.Microsoft.Shadow(color='#ddd', Direction=90, Strength=3);
-
+#MUImage_body_left .z-panels {
+    padding: 0 0 20px 0;
 }
 
 #MUImage_body_right {
@@ -484,19 +472,6 @@ button.muimageInlineButton {
     clear: both;
     position: relative;
     margin: 170px 0 0 0;
-}
-
-.standardfieldsbox {
-	background: #f8f8f8;
-    padding: 1%;
-	border: 1px solid #f0f0f0;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px; 
-}
-
-.standardfields {
-	font-size:13px;
 }
 
 
