@@ -567,18 +567,6 @@ msgstr ""
 msgid "unlimited"
 msgstr ""
 
-#: lib/MUImage/Util/View.php:325
-msgid "Main Albums: unlimited"
-msgstr ""
-
-#: lib/MUImage/Util/View.php:333
-msgid "Sub Albums: unlimited"
-msgstr ""
-
-#: lib/MUImage/Util/View.php:341
-msgid "Pictures: unlimited"
-msgstr ""
-
 #: lib/MUImage/Util/View.php:344
 msgid "Your Quota: "
 msgstr ""
@@ -1461,3 +1449,7 @@ msgstr "kein Titel"
 #: templates/user/picture/multiUpload.tpl:29
 msgid "Create pictures"
 msgstr "Bilder anlegen"
+
+#: templates/user/picture/multiUpload.tpl:29
+msgid "Import from other modules"
+msgstr ""
