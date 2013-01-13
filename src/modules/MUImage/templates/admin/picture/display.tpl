@@ -91,10 +91,10 @@
 {/if}
 
 {* include display hooks *}
-{notifydisplayhooks eventname='muimage.ui_hooks.pictures.display_view' id=$picture.id urlobject=$currentUrlObject assign='hooks'}
+{* {notifydisplayhooks eventname='muimage.ui_hooks.pictures.display_view' id=$picture.id urlobject=$currentUrlObject assign='hooks'}
 {foreach key='hookname' item='hook' from=$hooks}
     {$hook}
-{/foreach}
+{/foreach} *}
 
 {/if}
 
