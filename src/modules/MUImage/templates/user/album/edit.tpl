@@ -61,7 +61,7 @@
    {* {/if} *}
 
     {* include return control *}
-    {if $mode eq 'create'}
+    {* {if $mode eq 'create'}
         <fieldset>
             <legend>{gt text='Return control'}</legend>
             <div class="z-formrow">
@@ -69,7 +69,7 @@
                 {formcheckbox group='album' id='repeatcreation' readOnly=false}
             </div>
         </fieldset>
-    {/if}
+    {/if} *}
 
     {* include possible submit actions *}
     <div class="z-buttons z-formbuttons">
