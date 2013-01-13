@@ -12,12 +12,24 @@
 
 class MUImage_Api_Base_Import extends Zikula_AbstractApi
 {
+	/**
+	 * This method is controlling the different methods
+	 * for working with modules to import
+	 * 
+	 * @param array $args
+	 * @return boolean
+	 */
 	public function handleImport($args) {
 		
+		$module = $args['module'];	
 		if ($module == 'mediashare') {
-			$this->insertOneAlbum($args);
+			if ($this->insertOneAlbum($args)) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
-
 	}
 
 	/**
@@ -310,7 +322,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	 * @param int    $albumid   the id of the album
 	 * @return an array of pictures
 	 */
-	public function getPictures($module, $albumid) {
+	private function getPictures($module, $albumid) {
 
 		$sql2 = null;
 		$table = $this->getTableForPicture($module);
@@ -407,79 +419,6 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 		}
 		return $datas;
 	}
-
-	/**
-	 *
-	 * Build data array for putting into the album table
-	 * @param string $module
-	 *
-	 * @return array of columns
-	 */
-	private function buildDatasForAlbum($module , $result) {
-
-		if ($module == 'mediashare') {
-			$datas[] = array(':id' => $result['ms_id'],
-					':parent_id' => $result['ms_parentAlbumId'],
-					':title' => $result['ms_title'],
-					':description' => $result['ms_description'],
-					':createdUserId' => $result['ms_ownerid'],
-					':updatedUserId' => $result['ms_ownerid'],
-					':createdDate' => $result['ms_createddate'],
-					':updatedDate' => $result['ms_modifieddate']);
-		}
-		return $datas;
-	}
-
-	/**
-	 *
-	 * Build data array for putting into the picture table
-	 * @param string $module
-	 *
-	 * @return array of columns
-	 */
-	private function buildDatasForPicture($module , $result) {
-
-		if ($module == 'mediashare') {
-			$datas[] = array(':id' => $result['ms_id'],
-					':parent_id' => $result['ms_parentAlbumId'],
-					':title' => $result['ms_title'],
-					':description' => $result['ms_description'],
-					':createdUserId' => $result['ms_ownerid'],
-					':updatedUserId' => $result['ms_ownerid'],
-					':createdDate' => $result['ms_createddate'],
-					':updatedDate' => $result['ms_modifieddate']);
-		}
-		return $datas;
-	}
-
-	/**
-	 *
-	 * Build the query for create albums
-	 * @param string $module
-	 */
-	private function buildQueryForAlbumInput($module) {
-
-		if ($module == 'mediashare') {
-			$query = "INSERT INTO muimage_album (id, parent_id, title, description, createdUserId, updatedUserId, createdDate, updatedDate) VALUES (:id, :parent_id, :title, :description, :createdUserId, :updatedUserId, :createdDate, :updatedDate)";
-		}
-
-		return $query;
-	}
-
-	/**
-	 *
-	 * Build the query for create albums
-	 * @param string $module
-	 */
-	private function buildQueryForPictureInput($module) {
-
-		if ($module == 'mediashare') {
-			$query = "INSERT INTO muimage_picture (id, album_id, title, description, createdUserId, updatedUserId, createdDate, updatedDate) VALUES (:id, :parent_id, :title, :description, :createdUserId, :updatedUserId, :createdDate, :updatedDate)";
-		}
-
-		return $query;
-	}
-
 
 	/**
 	 *

@@ -70,16 +70,9 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 */
 	public static function countPictures()
 	{
-			
-		$view = new Zikula_Request_Http();
-		$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
-		if ($id != 0) {
-
-			$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
-
 			$repository = MUImage_Util_Model::getPictureRepository();
 			$count = $repository->selectCount();
-		}
+
 		return $count;
 	}
 
@@ -89,16 +82,9 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 */
 	public static function countAlbums()
 	{
-			
-		$view = new Zikula_Request_Http();
-		$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
-		if ($id != 0) {
-
-			$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
-
 			$repository = MUImage_Util_Model::getAlbumRepository();
 			$count = $repository->selectCount();
-		}
+
 		return $count;
 	}
 
@@ -164,6 +150,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 * return true or false
 	 */
 	public static function otherUserSubAlbums($kind = 1) {
+		$dom = ZLanguage::getModuleDomain('MUImage');
 		$numberSubAlbums = ModUtil::getVar('MUImage', 'numberSubAlbums');
 		if ($numberSubAlbums != '') {
 			$uid = UserUtil::getVar('uid');
@@ -219,6 +206,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 * return true or false
 	 */
 	public static function otherUserPictures($kind = 1) {
+		$dom = ZLanguage::getModuleDomain('MUImage');
 		$numberPictures = ModUtil::getVar('MUImage', 'numberPictures');
 		if ($numberPictures != '') {
 			$uid = UserUtil::getVar('uid');
@@ -322,7 +310,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			$numberMain = self::otherUserMainAlbums(2);
 		}
 		else {
-			$numberMain = __('Main Albums: unlimited', $dom);
+			$numberMain = __('unlimited', $dom);
 		}
 
 		$subAlbum = ModUtil::getVar('MUImage', 'numberSubAlbums');
@@ -330,7 +318,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			$numberSub = self::otherUserSubAlbums(2);
 		}
 		else {
-			$numberSub = __('Sub Albums: unlimited', $dom);
+			$numberSub = __('unlimited', $dom);
 		}
 
 		$pictures = ModUtil::getVar('MUImage', 'numberPictures');
@@ -338,7 +326,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			$numberPictures = self::otherUserPictures(2);
 		}
 		else {
-			$numberPictures = __('Pictures: unlimited', $dom);
+			$numberPictures = __('unlimited', $dom);
 		}
 
 		$out = __('Your Quota: ', $dom);
