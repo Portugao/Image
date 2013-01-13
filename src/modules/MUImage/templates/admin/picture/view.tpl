@@ -56,7 +56,7 @@
             {sortlink __linktext='Show description' sort='showDescription' currentsort=$sort sortdir=$sdir all=$all modname='MUImage' type='admin' func='view' ot='picture'}
         </th>
         <th id="himageupload" scope="col" class="z-left">
-            {sortlink __linktext='Image upload' sort='imageUpload' currentsort=$sort sortdir=$sdir all=$all modname='MUImage' type='admin' func='view' ot='picture'}
+            {sortlink __linktext='Current image' sort='imageUpload' currentsort=$sort sortdir=$sdir all=$all modname='MUImage' type='admin' func='view' ot='picture'}
         </th>
         <th id="himageview" scope="col" class="z-right">
             {sortlink __linktext='Image view' sort='imageView' currentsort=$sort sortdir=$sdir all=$all modname='MUImage' type='admin' func='view' ot='picture'}
