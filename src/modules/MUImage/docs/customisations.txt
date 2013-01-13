@@ -10,12 +10,23 @@ changed files
 
 
 *styles/style.css
+*templates/admin/config.tpl
+
+*templates/admin/album/display.tpl
+*templates/admin/picture/view.tpl
+
+*templates/user/album/delete.tpl
+*templates/user/album/edit.tpl
 *templates/user/album/display.tpl
+*templates/user/album/picture.tpl
 *templates/user/picture/include_displayItemListMany.tpl
 
 implemented classes
 
 *lib/MUImage/HookHandlers.php
+*lib/MUImage/Installer.php
+*lib/MUImage/UploadHandler.php
+*lib/MUImage/Version.php
 
 *lib/MUImage/Api/User.php
 *lib/MUImage/Api/Import.php
@@ -30,21 +41,35 @@ implemented classes
 
 *lib/MUImage/Form/Handler/Admin/Base/Import.php
 *lib/MUImage/Form/Handler/User/Edit.php
-*lib/MUImage/Form/Handler/User/Base/Edit.php
+*lib/MUImage/Form/Handler/User/Base/EditMulti.php
+*lib/MUImage/Form/Handler/User/Picture/Edit.php
 *lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php
 *lib/MUImage/Form/Handler/User/Picture/EditMulti.php
 *lib/MUImage/Form/Handler/User/Picture/HookUpload.php
 *lib/MUImage/Form/Handler/User/Picture/MultiUpload.php
 
+*lib/MUImage/TaggedObjectMeta/MUImage.php
+
 *lib/MUImage/Util/Controller.php
 *lib/MUImage/Util/Image.php
+*lib/MUImage/Util/Model.php
 *lib/MUImage/Util/View.php
 
 added files
 
+*templates/admin/album.tpl
 *templates/admin/import.tpl
 
+
+*templates/block/oneitem.tpl
+*templates/block/oneitem_modifiy.tpl
+
 *templates/hook/edit.tpl
+
+*templates/plugins/block.muimageform.php
+*templates/plugins/modifier.muimageContingent.php
+*templates/plugins/modifier.muimageCountAlbumPictures.php
+*templates/plugins/modifier.muimageImageMeta.php
 
 *templates/user/picture/editMulti.tpl
 *templates/user/picture/multiUpload.tpl
