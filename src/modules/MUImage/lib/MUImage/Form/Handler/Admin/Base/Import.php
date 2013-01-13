@@ -52,22 +52,19 @@ class MUImage_Form_Handler_Admin_Base_Import extends Zikula_Form_AbstractHandler
 	 */
 	protected function initializeAdditions()
 	{
-		$view = new Zikula_Request_Http();
-		$step = MUImage_Util_View::getStep();
 
-		if ($step == 'first') {
-			$modules = ModUtil::apiFunc($this->name, 'import', 'getModules');
+		$modules = ModUtil::apiFunc($this->name, 'import', 'getModules');
 
-			$supportedmodules = array();
+		$supportedmodules = array();
 
-			foreach($modules as $module => $value) {
-				$supportedmodules[] = array('value' => $value, 'text' => $value);
-			}
-
-			$import = $this->view->get_template_vars('import');
-			$import['importmoduleItems'] = $supportedmodules;
-			$this->view->assign('import', $import);
+		foreach($modules as $module => $value) {
+			$supportedmodules[] = array('value' => $value, 'text' => $value);
 		}
+
+		$import = $this->view->get_template_vars('import');
+		$import['importmoduleItems'] = $supportedmodules;
+		$this->view->assign('import', $import);
+
 	}
 
 	/**
@@ -112,14 +109,20 @@ class MUImage_Form_Handler_Admin_Base_Import extends Zikula_Form_AbstractHandler
 
 			// retrieve form data
 			$data = $this->view->getValues();
-				
+
 			// check if existing supporters deleting
 			$arguments['importmodule'] = $data['import']['importmodule'];
 
-		}
-		// redirect back to the config page
-		$url = ModUtil::url('MUImage', 'admin', 'modulealbums', $arguments);
-		return $this->view->redirect($url);
 
+			// redirect back to the module page
+			$url = ModUtil::url('MUImage', 'admin', 'modulealbums', $arguments);
+			return $this->view->redirect($url);
+		}
+		if ($args['commandName'] == 'cancel') {
+
+			// redirect back to the main page
+			$url = ModUtil::url('MUImage', 'admin', 'main');
+			return $this->view->redirect($url);
+		}
 	}
 }

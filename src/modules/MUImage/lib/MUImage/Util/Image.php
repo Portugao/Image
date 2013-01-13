@@ -24,7 +24,7 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
 				'ImageDescription', 'ExifVersion','MakerNote', 'UserCommentEncoding', 'SectionsFound', 'ByteOrderMotorola', 'CompressedBitsPerPixel',
 				'ShutterSpeedValue', 'ApertureValue', 'ExifImageWidth', 'ExifImageHeight', 'ExifImageLength', 'ComponentsConfiguration', 'DateTimeDigitized',
 				'ExposureBiasValue', 'Exif_IFD_Pointer', 'Aperture', 'MeteringMode', 'DateTime','LightSource', 'ExposureProgram', 'FileSource',
-				'FocalLengthIn35mmFilm', 'MaxApertureValue', 'ExposureMode', 'SceneType');
+				'FocalLengthIn35mmFilm', 'MaxApertureValue', 'ExposureMode', 'SceneType', 'WhiteBalance');
 
 
 		$Exif = exif_read_data($imageurl,'IFD0', true);
@@ -44,9 +44,15 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
 							$Name = __('File name', $dom);
 						}
 						if ($Name == 'FileSize') {
-							$Name = __('File size ', $dom);
+							$Name = __('File size', $dom);
 							$Wert = $Wert . __(' bytes', $dom);
+						}						
+						if ($Name == 'Height') {
+							$Name = __('Height', $dom);
 						}
+						if ($Name == 'Width') {
+							$Name = __('Width', $dom);
+						}						
 						if ($Name == 'FNumber'){
 							$Name = __('Aperture', $dom);
 							$Wert = (int)$Wert / 10;
@@ -79,6 +85,8 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
 						}
 						if ($Name == 'BrightnessValue') {
 							$Name = __('Brightness', $dom);
+							$nameArray = explode('/', $Wert);
+							$Wert = $nameArray[0] / $nameArray[1];
 						}
 						if ($Name == 'Contrast') {
 							$Name = __('Contrast', $dom);
@@ -109,6 +117,7 @@ class MUImage_Util_Image extends MUImage_Util_Base_Image
 							}
 						}
 						if ($Name == 'Flash') {
+							$Name = __('Flash', $dom);
 							if ($Wert == 0)
 								$Wert = __('No', $dom);
 							else {
