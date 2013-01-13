@@ -25,7 +25,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	 * Set albums into the DB
 	 * @param string $module   the module to handle
 	 */
-	private function setAlbums($module) {
+	private function setAlbums($module) {  // TODO can be deleted?
 
 		// get the albums
 		$albums = $this->getAlbums($module);
@@ -536,7 +536,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 
 	public function getModules() {
 
-		$modules = array('mediashare', 'userpictures');
+		$modules = array('mediashare');
 
 		return $modules;
 	}
