@@ -107,6 +107,11 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 					if (is_array($pictures)) {
 						foreach ($pictures as $picture) {
 							$data2 = $this->buildArrayForPicture($module, $picture);
+							// we check if the item is a picture really
+							if ($picture['ms_mediahandler'] != 'imagegd') {
+								continue;
+							}
+							// if we have a guilty array for create a picture we do
 							if (is_array($data2)) {
 								$newpicture = new MUImage_Entity_Picture();
 								$newpicture->setId($data2[0]['id']);
@@ -114,15 +119,17 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 								$newpicture->setTitle($data2[0]['title']);
 								$newpicture->setDescription($data2[0]['description']);
 								
+								// we get the original picture and its path
 								$origpictures = $this->getFile($module, $picture['ms_originalid']);
-								LogUtil::registerError($picture['ms_originalid']);
+
 								foreach ($origpictures as $origpicture) {
 									$filepath[] = $origpicture;
 								}
+								// unset
 								unset($origpictures);
-															
+
+								// we get the filename
 								$file = explode('/', $filepath[0]['mss_fileref']);
-								LogUtil::registerError('Pfad: ' . '/' . $folder . '/' . $filepath[0]['mss_fileref']);
 
 								$newpicture->setImageUpload($file[1]);
 								
@@ -361,6 +368,8 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	private function buildArrayForAlbum($module , $result) {
 
 		if ($module == 'mediashare') {
+			$result['ms_title'] = utf8_encode($result['ms_title']);
+			$result['ms_description'] = utf8_encode($result['ms_description']);
 			$datas[] = array('id' => $result['ms_id'],
 					'parent_id' => $result['ms_parentAlbumId'],
 					'title' => $result['ms_title'],
@@ -383,6 +392,8 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	private function buildArrayForPicture($module , $result) {
 
 		if ($module == 'mediashare') {
+			$result['ms_title'] = utf8_encode($result['ms_title']);
+			$result['ms_description'] = utf8_encode($result['ms_description']);
 			$datas[] = array('id' => $result['ms_id'],
 					'album_id' => $result['ms_parentalbumId'],
 					'title' => $result['ms_title'],
