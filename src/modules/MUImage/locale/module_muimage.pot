@@ -1626,3 +1626,6 @@ msgstr ""
 
 msgid "Flash"
 msgstr ""
+
+msgid "Attention! For a complete import of all albums with the correct structure of main albums and subalbums it is important, that you import them in order of the dropdownlist below!"
+msgstr ""
