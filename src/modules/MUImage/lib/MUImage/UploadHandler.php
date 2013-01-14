@@ -66,7 +66,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $fileName = $fileData[$fieldName]['name'];
         $fileNameParts = explode('.', $fileName);
         $extension = $fileNameParts[count($fileNameParts) - 1];
-        $extension = str_replace('JPG', 'jpg', strtolower($extension));
+        $extension = str_replace('jpeg', 'jpg', strtolower($extension));
         $fileNameParts[count($fileNameParts) - 1] = $extension;
         $fileName = implode('.', $fileNameParts);
 
