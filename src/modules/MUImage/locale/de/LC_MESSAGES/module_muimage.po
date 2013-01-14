@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-13 08:51-0500\n"
-"PO-Revision-Date: 2013-01-13 17:04+0100\n"
+"PO-Revision-Date: 2013-01-14 10:26+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -162,15 +162,19 @@ msgid ""
 "An error was encountered while removing stored object workflows for the %s "
 "module."
 msgstr ""
+"Während des Entfernens gespeicherter Objekt Arbeitsabläufe für das Modul %s "
+"ist ein Fehler aufgetreten."
 
 #: lib/MUImage/Base/Installer.php:123
 #, php-format
 msgid "An error was encountered while dropping the tables for the %s module."
 msgstr ""
+"Ein Fehler ist während des Löschens der Tabellen für das Modul %s "
+"aufgetreten."
 
 #: lib/MUImage/Base/UploadHandler.php:81 lib/MUImage/UploadHandler.php:75
 msgid "Error! Could not move your file to the destination folder."
-msgstr ""
+msgstr "Fehler! Konnte Deine Datei nicht in den Zielordner verschieben.."
 
 #: lib/MUImage/Base/UploadHandler.php:107 lib/MUImage/UploadHandler.php:102
 msgid "Error! No file found."
@@ -221,6 +225,8 @@ msgid ""
 "Notice: This block will not be displayed until you activate the MUImage "
 "module."
 msgstr ""
+"Hinweis: Dieser Block wird erst angezeigt, wenn das Modul MUImage aktiviert "
+"ist."
 
 #: lib/MUImage/Block/Base/ItemList.php:41
 msgid "Item list"
@@ -228,7 +234,7 @@ msgstr "Elementliste"
 
 #: lib/MUImage/Block/Base/ItemList.php:42
 msgid "Show a list of MUImage items based on different criteria."
-msgstr ""
+msgstr "Zeige eine Liste von MUImage Elementen anhand verschiedener Kriterien."
 
 #: lib/MUImage/Block/Base/ItemList.php:142 lib/MUImage/Block/ItemList.php:169
 #: lib/MUImage/ContentType/Base/ItemList.php:39
@@ -302,7 +308,7 @@ msgstr "Fehler: ungültige Eingabe"
 
 #: lib/MUImage/Controller/User.php:213
 msgid "You have no permissions to delete this album!"
-msgstr ""
+msgstr "Du hast keine Berechtigung dieses Album zu löschen!"
 
 #: lib/MUImage/Controller/User.php:231
 msgid "You have no permissions to delete this picture!"
@@ -393,7 +399,7 @@ msgstr "Wiederverwenden"
 #: lib/MUImage/Entity/Validator/Picture.php:59
 #, php-format
 msgid "Error! Length of field value must not be higher than %2$s (%1$s)."
-msgstr ""
+msgstr "Fehler! Die Länge des Feldes darf nicht größer als %2$s (%1$s) sein."
 
 #: lib/MUImage/Entity/Validator/Base/Album.php:36
 #, php-format
@@ -403,7 +409,7 @@ msgstr "Fehler! Der Wert des Feldes darf nicht leer sein (%s)."
 #: lib/MUImage/Entity/Validator/Base/Album.php:44
 #, php-format
 msgid "The title %s is already assigned. Please choose another title."
-msgstr ""
+msgstr "Der Titel %s existiert schon. Bitte wähle einen anderen."
 
 #: lib/MUImage/Entity/Validator/Base/Picture.php:40
 #: lib/MUImage/Entity/Validator/Base/Picture.php:44
@@ -417,7 +423,7 @@ msgstr "Fehler! Das Feld benötigt einen gültigen booleschen Wert (%s)."
 #: lib/MUImage/Entity/Validator/Picture.php:55
 #, php-format
 msgid "Error! Field value may only contain digits (%s)."
-msgstr ""
+msgstr "Fehler! Der Wert des Feldes darf nur Ziffern beinhalten (%s)."
 
 #: lib/MUImage/Form/Handler/Admin/Album/Base/Edit.php:140
 #: lib/MUImage/Form/Handler/User/Album/Base/Edit.php:140
@@ -445,7 +451,7 @@ msgstr "Erledigt! Modulimport komplett."
 
 #: lib/MUImage/Form/Handler/Admin/Base/Config.php:105
 msgid "Error! Failed to set configuration variables."
-msgstr ""
+msgstr "Fehler! Setzen von Modulvariablen fehlgeschlagen."
 
 #: lib/MUImage/Form/Handler/Admin/Base/Config.php:108
 msgid "Done! Module configuration updated."
@@ -483,7 +489,7 @@ msgstr "Fehler! Löschen fehlgeschlagen"
 
 #: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:73
 msgid "Sorry. Could not load any albums for this module!"
-msgstr ""
+msgstr "Entschuldigung. Laden eines Albums für dieses Modul nicht möglich!"
 
 #: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:135
 msgid "Success! The album is imported!"
@@ -533,11 +539,11 @@ msgstr "Du hast kein Kontingent zur Erstellung veion Bildern!"
 
 #: lib/MUImage/Form/Handler/User/Edit.php:69
 msgid "You do not have permissions to edit this album!"
-msgstr ""
+msgstr "Du hast keine Berechtigung dieses Album zu bearbeiten!"
 
 #: lib/MUImage/Form/Handler/User/Edit.php:75
 msgid "You do not have permissions to edit this picture!"
-msgstr ""
+msgstr "Du hast keine Berechtigung dieses Bild zu bearbeiten!"
 
 #: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:96
 msgid "Sorry. There is an error with session var."
@@ -574,11 +580,14 @@ msgstr "erstellt!"
 msgid ""
 "Error! Your file %s is too big. Please keep it smaller than %s kilobytes."
 msgstr ""
+"Fehler! Deine Datei %s ist zu gross. Bitte halte sie kleiner als %s "
+"kilobytes."
 
 #: lib/MUImage/UploadHandler.php:125
 #, php-format
 msgid "Error! Your file is too big. Please keep it smaller than %s megabytes."
 msgstr ""
+"Fehler! Deine Datei ist zu gross. Bitte halte sie kleiner als %s megabytes."
 
 #: lib/MUImage/Util/Base/Image.php:140
 #, php-format
@@ -792,23 +801,27 @@ msgstr "Dies ist ein Pflichtfeld."
 
 #: templates/plugins/function.muimageValidationError.php:40
 msgid "Please enter a valid number in this field."
-msgstr ""
+msgstr "Bitte gib eine gültige Zahl ein."
 
 #: templates/plugins/function.muimageValidationError.php:43
 msgid ""
 "Please use numbers only in this field. please avoid spaces or other "
 "characters such as dots or commas."
 msgstr ""
+"Bitte nutze nur Ziffern in diesem Feld. Vermeide Leerzeichen und andere "
+"Zeichen wie Punkte oder Kommata."
 
 #: templates/plugins/function.muimageValidationError.php:46
 msgid "Please use letters only (a-z) in this field."
-msgstr ""
+msgstr "Bitte nutze nur Buchstaben (a-z) in diiesem Feld."
 
 #: templates/plugins/function.muimageValidationError.php:49
 msgid ""
 "Please use only letters (a-z) or numbers (0-9) only in this field. No spaces "
 "or other characters are allowed."
 msgstr ""
+"Bitte nutze nur Buchstaben (a-z) oder Ziffern (0-9) in diesem feld. "
+"Leerzeichen und andere Zeichen sind nicht erlaubt."
 
 #: templates/plugins/function.muimageValidationError.php:52
 msgid "Please enter a valid date."
@@ -817,6 +830,7 @@ msgstr "Bitte gib ein gültiges Datum ein."
 #: templates/plugins/function.muimageValidationError.php:55
 msgid "Please enter a valid email address. For example yourname@example.com ."
 msgstr ""
+"Bitte gib eine gültige email Adresse en. Zum Beispiel deinname@beispiel.com ."
 
 #: templates/plugins/function.muimageValidationError.php:58
 msgid "Please enter a valid URL."
@@ -827,10 +841,12 @@ msgid ""
 "Please use this date format: dd/mm/yyyy. For example 17/03/2010 for the 17th "
 "of March, 2010."
 msgstr ""
+"Bitte nutze folgendes Datumsformat: dd/mm/yyyy. Beispiel: 17/03/2011 für den "
+"17. März 2011."
 
 #: templates/plugins/function.muimageValidationError.php:64
 msgid "Please enter a valid $ amount. For example $100.00 ."
-msgstr ""
+msgstr "Bitte gib eine $ gültige Zahl ein. ZUm Beispiel $ 100.00  ."
 
 #: templates/plugins/function.muimageValidationError.php:67
 msgid "Please make a selection."
@@ -846,7 +862,7 @@ msgstr "Dieser Wert darf keine Leerzeichen enthalten."
 
 #: templates/plugins/function.muimageValidationError.php:78
 msgid "Please select a valid html colour code."
-msgstr ""
+msgstr "Bitte wähle einen gültigen Farbcode."
 
 #: templates/plugins/function.muimageValidationError.php:81
 #: templates/plugins/function.muimageValidationError.php:87
@@ -863,6 +879,7 @@ msgstr "Bitte wähle einen Wert in der Zukunft"
 #: templates/plugins/function.muimageValidationError.php:99
 msgid "This value is already assigned, but must be unique. Please change it."
 msgstr ""
+"Dieser Wert existiert shon und er muss eindeutig sein. Bitte ändere ihn."
 
 #: templates/admin/album.tpl:4
 msgid "Albums of Module"
@@ -1056,6 +1073,8 @@ msgid ""
 "Really delete this album? Notice: If you delete this album you will delete "
 "also its sub albums and pictures of these albums too!"
 msgstr ""
+"Dieses Album wirklich löschen? Achtung: Wenn Du dieses Album löscht, löscht "
+"Du auch seine Unteralben und sämtliche Fotos der Alben!"
 
 #: templates/admin/album/edit.tpl:86 templates/admin/picture/edit.tpl:126
 #: templates/user/album/edit.tpl:85 templates/user/picture/edit.tpl:120
@@ -1162,7 +1181,7 @@ msgstr "Einstellungen"
 
 #: templates/admin/config.tpl:18
 msgid "Here you can manage all basic settings for this application."
-msgstr ""
+msgstr "Hier kannst Du die Grundeinstellungen für dieses Modul verwalten."
 
 #: templates/admin/config.tpl:21
 msgid "Pagesize"
@@ -1171,7 +1190,7 @@ msgstr "Elemente pro Seite"
 #: templates/admin/config.tpl:22 templates/admin/config.tpl:38
 #: templates/admin/config.tpl:42 templates/admin/config.tpl:46
 msgid "Enter this setting. Only digits are allowed."
-msgstr ""
+msgstr "Gib diese Einstellung ein. Nur Ziffern sind erlaubt."
 
 #: templates/admin/config.tpl:25 templates/admin/picture/display.tpl:16
 #: templates/admin/picture/edit.tpl:40 templates/admin/picture/view.csv:3
@@ -1223,7 +1242,7 @@ msgstr "Einstellungen aktualisieren"
 
 #: templates/admin/import.tpl:18
 msgid "Here you can import albums and pictures from other modules."
-msgstr ""
+msgstr "Hier kannst Du Alben und Bilder von anderen Modulen importieren."
 
 #: templates/admin/import.tpl:21
 msgid "module"
@@ -1312,7 +1331,7 @@ msgstr "Bild"
 #: templates/user/picture/view.tpl:85 templates/user/picture/view.tpl:97
 #: templates/user/picture/view.tpl:100
 msgid "This setting is enabled. Click here to disable it."
-msgstr ""
+msgstr "Diese Einstellung ist aktiviert. Klicke hier um sie zu deaktivieren."
 
 #: templates/admin/picture/display.tpl:21
 #: templates/admin/picture/display.tpl:24
@@ -1371,7 +1390,7 @@ msgstr "Gib einen Titel für das Bild ein"
 #: templates/admin/picture/edit.tpl:37 templates/user/picture/edit.tpl:30
 #: templates/user/picture/editMulti.tpl:30
 msgid "Enter the description of the picture"
-msgstr ""
+msgstr "Gib die Beschreibung des Bildes ein"
 
 #: templates/admin/picture/edit.tpl:41 templates/user/picture/edit.tpl:34
 #: templates/user/picture/editMulti.tpl:34
@@ -1416,7 +1435,7 @@ msgstr "Letzte Bilder"
 #: templates/admin/picture/view.atom:5 templates/admin/picture/view.rss:12
 #: templates/user/picture/view.atom:5 templates/user/picture/view.rss:12
 msgid "A direct feed showing the list of pictures"
-msgstr ""
+msgstr "Ein Feed zur Anzeige einer Liste von Bildern"
 
 #: templates/admin/picture/view.tpl:59
 msgid "Current image"
@@ -1527,7 +1546,7 @@ msgstr "MUImage Album erstellen"
 
 #: templates/hook/edit.tpl:4
 msgid "Create Album and add the uploaded pictures?"
-msgstr ""
+msgstr "Album erstellen und die hochgeladenen Bilder hinzufügen?"
 
 #: templates/hook/edit.tpl:8
 msgid "Add pictures to main album:"
@@ -1539,7 +1558,7 @@ msgstr "Wähle ein Hauptalbum"
 
 #: templates/hook/edit.tpl:17
 msgid "Add pictures to sub album:"
-msgstr ""
+msgstr "Füge Bilder zum Unteralbum hinzu:"
 
 #: templates/hook/edit.tpl:19
 msgid "Select a sub album"
@@ -1558,6 +1577,8 @@ msgid ""
 "Notice. If there are blocks or contenttypes saved with this album you should "
 "delete them before deleting this album!"
 msgstr ""
+"Hinweis. Wenn es mit diesem Album aktive Blöcke oder Inhalte in Content von "
+"MUImage gibt, solltest Du diese vorm Löschen des Albums ebenfalls löschen!"
 
 #: templates/user/album/display.tpl:36
 msgid "Main Album"
@@ -1604,7 +1625,7 @@ msgstr "Bearbeitung beenden"
 
 #: templates/user/picture/editMulti.tpl:115
 msgid "Really delete this picture? If you a delete a picture"
-msgstr ""
+msgstr "Dieses Bild wirklich löschen? Wenn Du ein Bild löscht"
 
 #: templates/user/picture/editMulti.tpl:128
 msgid "Next picture"
