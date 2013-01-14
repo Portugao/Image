@@ -104,8 +104,6 @@ class MUImage_Form_Handler_Admin_Base_Import extends Zikula_Form_AbstractHandler
 		//return ModUtil::func($this->name, 'admin', 'modulealbums');
 
 		if ($args['commandName'] == 'start') {
-			// check if all fields are valid
-
 
 			// retrieve form data
 			$data = $this->view->getValues();
