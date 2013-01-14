@@ -37,7 +37,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	 * Set albums into the DB
 	 * @param string $module   the module to handle
 	 */
-	private function setAlbums($module) {  // TODO can be deleted?
+	/*private function setAlbums($module) {  // TODO can be deleted?
 
 		// get the albums
 		$albums = $this->getAlbums($module);
@@ -49,7 +49,8 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 			$data = $this->buildDatasForAlbum($module, $result);
 
 		}
-	}
+	}*/
+	
 	/**
 	 *
 	 * @param array $args
@@ -190,15 +191,6 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 
 	/**
 	 *
-	 * @param string $module
-	 * @param int $id
-	 */
-	private function insertAlbums($module, $id) {
-
-	}
-
-	/**
-	 *
 	 * Get the album with the relevant id
 	 * @param string $module    the module to work with
 	 * @param int    $id     id of the album
@@ -231,7 +223,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 	 * Get the parent album with the relevant id
 	 * @param string $module    the module to work with
 	 * @param int    $id     id of the album
-	 * @return an array of parent album
+	 * @return an array of parent albums
 	 */
 	private function getParentAlbum($module, $id) {
 	
