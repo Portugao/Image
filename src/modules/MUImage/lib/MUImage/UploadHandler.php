@@ -64,8 +64,11 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
 
         // retrieve the final file name
         $fileName = $fileData[$fieldName]['name'];
-        $extensionarr = explode('.', $fileName);
-        $extension = strtolower($extensionarr[count($extensionarr) - 1]);
+        $fileNameParts = explode('.', $fileName);
+        $extension = $fileNameParts[count($fileNameParts) - 1];
+        $extension = str_replace('JPG', 'jpg', strtolower($extension));
+        $fileNameParts[count($fileNameParts) - 1] = $extension;
+        $fileName = implode('.', $fileNameParts);
 
         // retrieve the final file name
         $basePath = MUImage_Util_Controller::getFileBaseFolder($objectType, $fieldName);
