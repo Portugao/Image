@@ -1,4 +1,4 @@
-{* purpose of this template: build the Form to edit an instance of album *}
+{zdebug}{* purpose of this template: build the Form to edit an instance of album *}
 {include file='user/header.tpl'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
@@ -75,9 +75,11 @@
     <div class="z-buttons z-formbuttons">
     {if $mode eq 'edit'}
         {formbutton id='btnUpdate' commandName='update' __text='Update album' class='z-bt-save'}
+        {if $coredata.user.uid eq $album.createdUserId}
       {if !$inlineUsage}
         {gt text='Really delete this album? Notice: If you delete this album you will delete also its sub albums and pictures of these albums too!' assign='deleteConfirmMsg'}
         {formbutton id='btnDelete' commandName='delete' __text='Delete album' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
+      {/if}
       {/if}
     {elseif $mode eq 'create'}
         {formbutton id='btnCreate' commandName='create' __text='Create album' class='z-bt-ok'}
