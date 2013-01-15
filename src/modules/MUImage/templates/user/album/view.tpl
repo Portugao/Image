@@ -36,12 +36,22 @@
     <div class="muimage_view_album_title">
     <a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:25}</a>
     <div class="muimage_view_album_title_action">
-    {if count($album._actions) gt 0 && $coredata.user.uid eq $album.createdUserId}
+    {if count($album._actions) gt 0}
         {strip}
         {foreach item='option' from=$album._actions}
-        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
-              {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
-        </a>
+            {if $option.url.func == 'edit' || $option.url.func eq 'delete'}
+                {if $coredata.user.uid eq $album.createdUserId}
+                    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
+                    {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
+                    </a>
+                {/if}
+                    
+           {else}
+                    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
+                    {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
+                    </a>                    
+           {/if}
+        
         {/foreach}
         {/strip}
     {/if}
