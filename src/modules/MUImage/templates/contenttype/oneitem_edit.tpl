@@ -17,7 +17,7 @@
 </div> *}
 <div class="z-formrow">
     {formlabel for='MUImage_id' __text='Id'}
-    {formtextinput id='MUImage_id' dataField='id' group='data' mandatory=true maxLength=2}
+    {formtextinput id='MUImage_id' dataField='id' group='data' mandatory=true maxLength=20}
 </div>
 <div class="z-formrow">
     {formlabel for='MUImage_width' __text='Width'}
