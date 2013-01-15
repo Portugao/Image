@@ -1,4 +1,4 @@
-{zdebug}{* purpose of this template: build the Form to edit an instance of album *}
+{* purpose of this template: build the Form to edit an instance of album *}
 {include file='user/header.tpl'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
