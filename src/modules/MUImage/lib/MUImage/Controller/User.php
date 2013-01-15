@@ -210,8 +210,8 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 					// if user is no admin
 					if (!in_array(2, $usergroups)) {
 						$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'album', 'id' => $id));
-						LogUtil::registerError(__('You have no permissions to delete this album!'));
-						System::redirect($url);
+						LogUtil::registerError($this->__('You have no permissions to delete this album!'));
+						return System::redirect($url);
 					}
 				}
 			}
@@ -228,8 +228,8 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 					// if user is no admin
 					if (!in_array(2, $usergroups)) {
 						$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'piture', 'id' => $id));
-						LogUtil::registerError(__('You have no permissions to delete this picture!'));
-						System::redirect($url);
+						LogUtil::registerError($this->__('You have no permissions to delete this picture!'));
+						return System::redirect($url);
 					}
 				}
 
