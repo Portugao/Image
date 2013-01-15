@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-13 08:51-0500\n"
-"PO-Revision-Date: 2013-01-14 11:40+0100\n"
+"POT-Creation-Date: 2013-01-15 11:45-0500\n"
+"PO-Revision-Date: 2013-01-15 16:56+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,38 @@ msgstr "Einstellungen"
 msgid "Manage settings for this application"
 msgstr "Verwalte die Einstellungen für MUImage"
 
-#: lib/MUImage/Api/Base/Import.php:576
+#: lib/MUImage/Api/Base/Import.php:73
+msgid "There is no album with the id you entered!"
+msgstr "Es gibt kein Album mit der Id, die Du eingegeben hast!"
+
+#: lib/MUImage/Api/Base/Import.php:81
+msgid "Could not build data array to import this album"
+msgstr "Konnte das Datenarray zum importieren dieses Albums nicht herstellen"
+
+#: lib/MUImage/Api/Base/Import.php:116
+#, php-format
+msgid "Success! The album %s is imported!"
+msgstr "Erfolg! Das Album %s wurde importiert!"
+
+#: lib/MUImage/Api/Base/Import.php:177
+msgid "Invalid data pool for this picture"
+msgstr "Ungültiger Datenpool für dieses Bild"
+
+#: lib/MUImage/Api/Base/Import.php:183 lib/MUImage/Api/Base/Import.php:186
+#: lib/MUImage/Api/Base/Import.php:202 lib/MUImage/Api/Base/Import.php:205
+msgid "No valid pictures for this album!"
+msgstr "Keine gültigen Bilder für dieses Album!"
+
+#: lib/MUImage/Api/Base/Import.php:193 lib/MUImage/Api/Base/Import.php:196
+#, php-format
+msgid "%1$s Pictures imported for this album!"
+msgstr "%1$s Bilder für dieses Album importiert!"
+
+#: lib/MUImage/Api/Base/Import.php:210
+msgid "Not able to create the correct structure for album import"
+msgstr "Nicht möglich, eine korrekte Struktur für den Albumimport zu erstellen"
+
+#: lib/MUImage/Api/Base/Import.php:530
 msgid "Connection to database failed"
 msgstr "Verbindung zur Datenbank fehlgeschlagen"
 
@@ -172,21 +203,21 @@ msgstr ""
 "Ein Fehler ist während des Löschens der Tabellen für das Modul %s "
 "aufgetreten."
 
-#: lib/MUImage/Base/UploadHandler.php:81 lib/MUImage/UploadHandler.php:75
+#: lib/MUImage/Base/UploadHandler.php:81 lib/MUImage/UploadHandler.php:78
 msgid "Error! Could not move your file to the destination folder."
 msgstr "Fehler! Konnte Deine Datei nicht in den Zielordner verschieben.."
 
-#: lib/MUImage/Base/UploadHandler.php:107 lib/MUImage/UploadHandler.php:102
+#: lib/MUImage/Base/UploadHandler.php:107 lib/MUImage/UploadHandler.php:105
 msgid "Error! No file found."
 msgstr "Fehler! Keine Datei gefunden."
 
-#: lib/MUImage/Base/UploadHandler.php:118 lib/MUImage/UploadHandler.php:139
+#: lib/MUImage/Base/UploadHandler.php:118 lib/MUImage/UploadHandler.php:142
 msgid ""
 "Error! This file type is not allowed. Please choose another file format."
 msgstr ""
 "Fehler! Dieser Dateityp ist nicht erlaubt. Wähle bitte ein anderes Format."
 
-#: lib/MUImage/Base/UploadHandler.php:127 lib/MUImage/UploadHandler.php:149
+#: lib/MUImage/Base/UploadHandler.php:127 lib/MUImage/UploadHandler.php:152
 msgid "Error! This file type seems not to be a valid image."
 msgstr "Fehler! Dieser Dateityp scheint kein gültiges Bild zu sein."
 
@@ -445,7 +476,6 @@ msgid "Error! Failed to start the import."
 msgstr "Fehler! Start des Imports fehlgeschlagen."
 
 #: lib/MUImage/Form/Handler/Admin/Base/Album.php:118
-#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:145
 msgid "Done! Module import complete."
 msgstr "Erledigt! Modulimport komplett."
 
@@ -491,17 +521,9 @@ msgstr "Fehler! Löschen fehlgeschlagen"
 msgid "Sorry. Could not load any albums for this module!"
 msgstr "Entschuldigung. Laden eines Albums für dieses Modul nicht möglich!"
 
-#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:135
-msgid "Success! The album is imported!"
-msgstr "Erfolg! Das Album wurde importiert!"
-
-#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:138
-msgid "Sorry! The album is not imported!"
-msgstr "Entschuldigung! Das Album wurde nicht importiert!"
-
-#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:142
-msgid "no such album"
-msgstr "kein solches Album"
+#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:146
+msgid "No such album"
+msgstr "Kein solches Album"
 
 #: lib/MUImage/Form/Handler/Admin/Picture/Base/Edit.php:148
 #: lib/MUImage/Form/Handler/User/Picture/Base/Edit.php:148
@@ -575,7 +597,7 @@ msgstr "Album mit Titel"
 msgid " created!"
 msgstr "erstellt!"
 
-#: lib/MUImage/UploadHandler.php:117
+#: lib/MUImage/UploadHandler.php:120
 #, php-format
 msgid ""
 "Error! Your file %s is too big. Please keep it smaller than %s kilobytes."
@@ -583,7 +605,7 @@ msgstr ""
 "Fehler! Deine Datei %s ist zu gross. Bitte halte sie kleiner als %s "
 "kilobytes."
 
-#: lib/MUImage/UploadHandler.php:125
+#: lib/MUImage/UploadHandler.php:128
 #, php-format
 msgid "Error! Your file is too big. Please keep it smaller than %s megabytes."
 msgstr ""
@@ -630,83 +652,97 @@ msgstr "Dateigröße"
 msgid " bytes"
 msgstr " Bytes"
 
-#: lib/MUImage/Util/Image.php:51
+#: lib/MUImage/Util/Image.php:51 templates/block/oneitem_modify.tpl:21
+#: templates/contenttype/oneitem_edit.tpl:27
+msgid "Height"
+msgstr "Höhe"
+
+#: lib/MUImage/Util/Image.php:54 templates/block/oneitem_modify.tpl:16
+#: templates/contenttype/oneitem_edit.tpl:23
+msgid "Width"
+msgstr "Breite"
+
+#: lib/MUImage/Util/Image.php:57
 msgid "Aperture"
 msgstr "Blende"
 
-#: lib/MUImage/Util/Image.php:55
+#: lib/MUImage/Util/Image.php:61
 msgid "Exposer time"
 msgstr "Belichtungszeit"
 
-#: lib/MUImage/Util/Image.php:58
+#: lib/MUImage/Util/Image.php:64
 msgid "White balance"
 msgstr "Weissabgleich"
 
-#: lib/MUImage/Util/Image.php:61
+#: lib/MUImage/Util/Image.php:67
 msgid "Mime type"
 msgstr "Mime Typ"
 
-#: lib/MUImage/Util/Image.php:64
+#: lib/MUImage/Util/Image.php:70
 msgid "Company"
 msgstr "Hersteller"
 
-#: lib/MUImage/Util/Image.php:67
+#: lib/MUImage/Util/Image.php:73
 msgid "Model"
 msgstr "Modell"
 
-#: lib/MUImage/Util/Image.php:70
+#: lib/MUImage/Util/Image.php:76
 msgid "Original time"
 msgstr "Originalzeit"
 
-#: lib/MUImage/Util/Image.php:73
+#: lib/MUImage/Util/Image.php:79
 msgid "ISO"
 msgstr "ISO"
 
-#: lib/MUImage/Util/Image.php:76
+#: lib/MUImage/Util/Image.php:82
 msgid "Focal length"
 msgstr "Brennweite"
 
-#: lib/MUImage/Util/Image.php:81
+#: lib/MUImage/Util/Image.php:87
 msgid "Brightness"
 msgstr "Helligkeit"
 
-#: lib/MUImage/Util/Image.php:86
+#: lib/MUImage/Util/Image.php:92
 msgid "Contrast"
 msgstr "Kontrast"
 
-#: lib/MUImage/Util/Image.php:89
+#: lib/MUImage/Util/Image.php:95
 msgid "Saturation"
 msgstr "Sättigung"
 
-#: lib/MUImage/Util/Image.php:92
+#: lib/MUImage/Util/Image.php:98
 msgid "Sharpness"
 msgstr "Schärfe"
 
-#: lib/MUImage/Util/Image.php:95
+#: lib/MUImage/Util/Image.php:101
 msgid "Scene capture type"
 msgstr "Aufnahmemodus"
 
-#: lib/MUImage/Util/Image.php:98
+#: lib/MUImage/Util/Image.php:104
 msgid "Standard"
 msgstr "Standard"
 
-#: lib/MUImage/Util/Image.php:101
+#: lib/MUImage/Util/Image.php:107
 msgid "Landscape"
 msgstr "Landschaft"
 
-#: lib/MUImage/Util/Image.php:104
+#: lib/MUImage/Util/Image.php:110
 msgid "Portrait"
 msgstr "Portrait"
 
-#: lib/MUImage/Util/Image.php:107
+#: lib/MUImage/Util/Image.php:113
 msgid "Nigtht scene"
 msgstr "Nachtszene"
 
-#: lib/MUImage/Util/Image.php:110
+#: lib/MUImage/Util/Image.php:116
 msgid "Other"
 msgstr "Anderes"
 
-#: lib/MUImage/Util/Image.php:115 templates/admin/picture/display.tpl:21
+#: lib/MUImage/Util/Image.php:120
+msgid "Flash"
+msgstr "Blitz"
+
+#: lib/MUImage/Util/Image.php:122 templates/admin/picture/display.tpl:21
 #: templates/admin/picture/display.tpl:24
 #: templates/admin/picture/display.tpl:35
 #: templates/admin/picture/display.tpl:38 templates/admin/picture/view.tpl:85
@@ -719,7 +755,7 @@ msgstr "Anderes"
 msgid "No"
 msgstr "Nein"
 
-#: lib/MUImage/Util/Image.php:117 templates/admin/picture/display.tpl:20
+#: lib/MUImage/Util/Image.php:124 templates/admin/picture/display.tpl:20
 #: templates/admin/picture/display.tpl:23
 #: templates/admin/picture/display.tpl:34
 #: templates/admin/picture/display.tpl:37 templates/admin/picture/view.tpl:84
@@ -732,31 +768,31 @@ msgstr "Nein"
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/MUImage/Util/Image.php:124
+#: lib/MUImage/Util/Image.php:131
 msgid "User comment"
 msgstr "Benutzerkommentar"
 
-#: lib/MUImage/Util/View.php:121 lib/MUImage/Util/View.php:156
-#: lib/MUImage/Util/View.php:176 lib/MUImage/Util/View.php:211
-#: lib/MUImage/Util/View.php:231 lib/MUImage/Util/View.php:264
-#: lib/MUImage/Util/View.php:325 lib/MUImage/Util/View.php:333
-#: lib/MUImage/Util/View.php:341
+#: lib/MUImage/Util/View.php:107 lib/MUImage/Util/View.php:142
+#: lib/MUImage/Util/View.php:163 lib/MUImage/Util/View.php:198
+#: lib/MUImage/Util/View.php:219 lib/MUImage/Util/View.php:252
+#: lib/MUImage/Util/View.php:313 lib/MUImage/Util/View.php:321
+#: lib/MUImage/Util/View.php:329
 msgid "unlimited"
 msgstr "unbegrenzt"
 
-#: lib/MUImage/Util/View.php:344
+#: lib/MUImage/Util/View.php:332
 msgid "Your Quota: "
 msgstr "Dein Kontingent: "
 
-#: lib/MUImage/Util/View.php:345
+#: lib/MUImage/Util/View.php:333
 msgid "Main Albums: "
 msgstr "Hauptalben: "
 
-#: lib/MUImage/Util/View.php:345
+#: lib/MUImage/Util/View.php:333
 msgid "Sub Albums: "
 msgstr "Unteralben: "
 
-#: lib/MUImage/Util/View.php:345
+#: lib/MUImage/Util/View.php:333
 msgid "Pictures: "
 msgstr "Bilder: "
 
@@ -885,27 +921,37 @@ msgstr ""
 msgid "Albums of Module"
 msgstr "Alben des Moduls"
 
-#: templates/admin/album.tpl:20
+#: templates/admin/album.tpl:10
+msgid ""
+"Attention! For a complete import of all albums with the correct structure of "
+"main albums and subalbums it is important, that you import them in order of "
+"the dropdownlist below!"
+msgstr ""
+"Achtung! Für einen kompletten Import aller Alben mit der korrekten Struktur "
+"der Hauptalben und Unteralben ist es wichtig, dass Du diese in der "
+"Reihenfolge der Dropdownliste importierst!"
+
+#: templates/admin/album.tpl:19
 msgid "Here you can select the albums."
 msgstr "Hier kannst Du die Alben des Moduls wählen."
 
-#: templates/admin/album.tpl:22
+#: templates/admin/album.tpl:21
 msgid "album"
 msgstr "Album"
 
-#: templates/admin/album.tpl:26
+#: templates/admin/album.tpl:25
 msgid "folder"
 msgstr "Ordner"
 
-#: templates/admin/album.tpl:27
+#: templates/admin/album.tpl:26
 msgid "Enter the folder"
 msgstr "Gib den Folder ein"
 
-#: templates/admin/album.tpl:31 templates/admin/import.tpl:27
+#: templates/admin/album.tpl:30 templates/admin/import.tpl:27
 msgid "Start import"
 msgstr "Import starten"
 
-#: templates/admin/album.tpl:32 templates/admin/album/delete.tpl:22
+#: templates/admin/album.tpl:31 templates/admin/album/delete.tpl:22
 #: templates/admin/album/edit.tpl:88
 #: templates/admin/album/include_selectEditOne.tpl:15
 #: templates/admin/config.tpl:57 templates/admin/import.tpl:28
@@ -1506,16 +1552,6 @@ msgstr "oder"
 msgid "Id"
 msgstr "Id"
 
-#: templates/block/oneitem_modify.tpl:16
-#: templates/contenttype/oneitem_edit.tpl:23
-msgid "Width"
-msgstr "Breite"
-
-#: templates/block/oneitem_modify.tpl:21
-#: templates/contenttype/oneitem_edit.tpl:27
-msgid "Height"
-msgstr "Höhe"
-
 #: templates/block/oneitem_modify.tpl:26
 msgid "Diplay default block title?"
 msgstr "Standard Blocktitel anzeigen"
@@ -1652,17 +1688,8 @@ msgstr "Mehrfachupload"
 msgid "Create pictures"
 msgstr "Bilder stellen"
 
-msgid "Flash"
-msgstr "Blitz"
-
-msgid ""
-"Attention! For a complete import of all albums with the correct structure of "
-"main albums and subalbums it is important, that you import them in order of "
-"the dropdownlist below!"
-msgstr ""
-"Achtung! Für einen kompletten Import aller Alben mit der korrekten Struktur "
-"der Hauptalben und Unteralben ist es wichtig, dass Du diese in der "
-"Reihenfolge der Dropdownliste importierst!"
+#~ msgid "Sorry! The album is not imported!"
+#~ msgstr "Entschuldigung! Das Album wurde nicht importiert!"
 
 #~ msgid "Zip upload"
 #~ msgstr "Zipupload"
