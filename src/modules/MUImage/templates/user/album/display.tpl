@@ -69,15 +69,15 @@
     {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
     <div id="muimage_body_header">
         {if count($album._actions) gt 0}
-            <p>{strip}
-        {foreach item='option' from=$album._actions}
-        {if $option.icon ne 'display'}
-        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
-            {$option.linkText|safetext}
-        </a>
-        {/if}
-        {/foreach}
-            {/strip}</p>
+            {strip}
+                {foreach item='option' from=$album._actions}
+                {if $option.icon ne 'display'}
+                    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
+                    {$option.linkText|safetext}
+                    </a>
+                {/if}
+                {/foreach}
+            {/strip}
         {/if}    
     </div>
     {/checkpermissionblock} 
