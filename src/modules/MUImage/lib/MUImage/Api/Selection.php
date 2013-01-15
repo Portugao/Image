@@ -16,5 +16,36 @@
  */
 class MUImage_Api_Selection extends MUImage_Api_Base_Selection
 {
-    
+	/**
+	 * Select a list of parent entities by different criteria.
+	 *
+	 * @param string  $args['ot']             The object type to retrieve (optional)
+	 * @param string  $args['where']          The where clause to use when retrieving the collection (optional) (default='').
+	 * @param string  $args['orderBy']        The order-by clause to use when retrieving the collection (optional) (default='').
+	 * @param integer $args['currentPage']    Where to start selection
+	 * @param integer $args['resultsPerPage'] Amount of items to select
+	 * @param boolean $args['useJoins']       Whether to include joining related objects (optional) (default=true).
+	 *
+	 * @return Array with retrieved collection and amount of total records affected by this query.
+	 */
+	public function getParentEntitiesPaginated($args)
+	{
+		$objectType = $this->determineObjectType($args, 'getEntitiesPaginated');
+		$repository = $this->getRepository($objectType);
+		
+		$args['where'] = 'tbl.parent_id IS NULL';
+	
+		$where = isset($args['where']) ? $args['where'] : '';
+		$orderBy = isset($args['orderBy']) ? $args['orderBy'] : '';
+		$currentPage = isset($args['currentPage']) ? $args['currentPage'] : 1;
+		$resultsPerPage = isset($args['resultsPerPage']) ? $args['resultsPerPage'] : 25;
+		$useJoins = isset($args['useJoins']) ? ((bool)$args['useJoins']) : true;
+	
+		if ($orderBy == 'RAND()') {
+			// random ordering is disabled for now, see https://github.com/Guite/MostGenerator/issues/143
+			$orderBy = $repository->getDefaultSortingField();
+		}
+	
+		return $repository->selectWherePaginated($where, $orderBy, $currentPage, $resultsPerPage, $useJoins);
+	}    
 }
