@@ -71,11 +71,11 @@
         {if count($album._actions) gt 0}
             {strip}
                 {foreach item='option' from=$album._actions}
-                {if $option.icon ne 'display'}
-                    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
-                    {$option.linkText|safetext}
-                    </a>
-                {/if}
+                    {if $option.icon ne 'display'}
+                        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
+                            {$option.linkText|safetext}
+                        </a>
+                    {/if}
                 {/foreach}
             {/strip}
         {/if}    
@@ -113,16 +113,22 @@
     <div class="muimage_album_title">
     <a title="{$childAlbum.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$childAlbum.id`"}">{$childAlbum.title|truncate:30}</a>
     <div class="muimage_display_album_title_action">
-    {if $childAlbum.createdUserId eq $coredata.user.uid}
     {if count($childAlbum._actions) gt 0}
         {strip}
         {foreach item='option' from=$childAlbum._actions}
-        <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
-              {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
-        </a>
+            {if $option.url.func == 'edit' || $option.url.func eq 'delete'}
+                {if $coredata.user.uid eq $childAlbum.createdUserId}
+                    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
+                    {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
+                    </a>
+                {/if}           
+           {else}
+                    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
+                    {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
+                    </a>                    
+           {/if}
         {/foreach}
         {/strip}
-    {/if}
     {/if}
     </div>
     </div>
