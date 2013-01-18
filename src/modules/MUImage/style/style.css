@@ -378,6 +378,7 @@ button.muimageInlineButton {
 .muimage_album_title a {
    padding: 0 0 0 5px;
    float: left;
+   width: 25%;
 }
 
 .muimage_album_description {
@@ -478,6 +479,8 @@ button.muimageInlineButton {
     position: relative;
     margin: 170px 0 0 0;
 }
+
+
 
 
 
