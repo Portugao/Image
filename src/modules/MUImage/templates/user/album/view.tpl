@@ -44,8 +44,7 @@
                     <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
                     {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
                     </a>
-                {/if}
-                    
+                {/if}            
            {else}
                     <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
                     {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
