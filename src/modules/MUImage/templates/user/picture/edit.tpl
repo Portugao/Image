@@ -75,8 +75,11 @@
 
     {if $mode ne 'create'}
         {include file='user/include_standardfields_edit.tpl' obj=$picture}
+        {include file='user/album/include_selectEditOne.tpl' relItem=$picture aliasName='album' idPrefix='muimageAlbum_Album'}  
+    {else}
+        <input id="muimageAlbum_AlbumItemList" type="hidden" value="{$albumid}" name="muimageAlbum_AlbumItemList">
+        <input id="muimageAlbum_AlbumMode" type="hidden" value="1" name="muimageAlbum_AlbumMode">
     {/if}
-    {include file='user/album/include_selectEditOne.tpl' relItem=$picture aliasName='album' idPrefix='muimageAlbum_Album'}
 
     {* include display hooks *}
     {if $mode eq 'create'}
@@ -95,7 +98,7 @@
         </fieldset>
    {* {/if} *}
 
-    {* include return control *}
+    {* include return control 
     {if $mode eq 'create'}
         <fieldset>
             <legend>{gt text='Return control'}</legend>
@@ -104,7 +107,7 @@
                 {formcheckbox group='picture' id='repeatcreation' readOnly=false}
             </div>
         </fieldset>
-    {/if}
+    {/if} *}
 
     {* include possible submit actions *}
     <div class="z-buttons z-formbuttons">

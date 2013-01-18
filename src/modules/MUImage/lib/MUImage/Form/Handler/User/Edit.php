@@ -61,6 +61,9 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 			if ($parent) {
 				$this->view->assign('parent', $parent);
 			}
+			if ($album) {
+			$this->view->assign('albumid', $album);
+			}
 		}
 		else {
 			// if a user want to edit an album
