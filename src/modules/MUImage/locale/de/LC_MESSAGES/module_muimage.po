@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-15 11:45-0500\n"
-"PO-Revision-Date: 2013-01-15 16:56+0100\n"
+"PO-Revision-Date: 2013-01-18 14:20+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1686,7 +1686,7 @@ msgstr "Mehrfachupload"
 
 #: templates/user/picture/multiUpload.tpl:29
 msgid "Create pictures"
-msgstr "Bilder stellen"
+msgstr "Bilder erstellen"
 
 #~ msgid "Sorry! The album is not imported!"
 #~ msgstr "Entschuldigung! Das Album wurde nicht importiert!"
