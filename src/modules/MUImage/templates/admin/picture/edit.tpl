@@ -57,6 +57,7 @@
 {/if}
 
             <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
+            <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
             {if $mode ne 'create'}
                   <div class="z-formnote">
                       {gt text='Current file'}:
@@ -71,12 +72,12 @@
             {/if}
             {muimageValidationError id='imageUpload' class='required'}
         </div>
-        <div class="z-formrow">
+      {*  <div class="z-formrow">
             {formlabel for='imageView' __text='Image view' mandatorysym='1'}
             {formintinput group='picture' id='imageView' mandatory=true __title='Enter the image view of the picture' maxLength=11 cssClass='required validate-digits'}
             {muimageValidationError id='imageView' class='required'}
             {muimageValidationError id='imageView' class='validate-digits'}
-        </div>
+        </div> *}
     </fieldset>
 
     {if $mode ne 'create'}
