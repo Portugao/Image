@@ -21,6 +21,9 @@ changed files
 *templates/user/album/picture.tpl
 *templates/user/picture/include_displayItemListMany.tpl
 
+
+*lib/MUImage/Base/UploadHandler.php
+
 implemented classes
 
 *lib/MUImage/HookHandlers.php

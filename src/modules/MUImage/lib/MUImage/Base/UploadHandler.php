@@ -95,7 +95,7 @@ class MUImage_Base_UploadHandler
      *
      * @return boolean true if file is valid else false
      */
-    protected function validateFileUpload($file)
+    protected function validateFileUpload($objectType, $file, $fieldName)
     {
         $dom = ZLanguage::getModuleDomain('MUImage');
 
