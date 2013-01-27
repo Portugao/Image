@@ -16,5 +16,52 @@
  */
 class MUImage_RouterFacade extends MUImage_Base_RouterFacade
 {
-    // here you can customise the data which is provided to the url router.
+	/**
+	 * Constructor.
+	 */
+	function __construct()
+	{
+		$displayDefaultEnding = ModUtil::getVar('MUImage', 'ending');
+		if ($displayDefaultEnding != '') {
+			// nothing to do
+		}
+		else {
+			$displayDefaultEnding = System::getVar('shorturlsext', '');
+		}
+		// get $displayDefaultEnding as own var
+		$this->displayDefaultEnding = $displayDefaultEnding;
+		$this->requirements = array(
+				'func'          => '\w+',
+				'ot'            => '\w+',
+				'title'         => '[^/.]+', // title used for slugs ([^/.]+ = all chars except / and .)
+				'displayending' => '(?:' . $displayDefaultEnding . '|xml|pdf|json)',
+				'viewending'    => '(?:\.csv|\.rss|\.atom|\.xml|\.pdf|\.json)?',
+				'id'            => '\d+'
+		);
+
+		// initialise and reference router instance
+		$this->router = new Zikula_Routing_UrlRouter();
+
+		// add generic routes
+		return $this->initUrlRoutes();
+	}
+
+	/**
+	 * Helper function to route permalinks for different slug types.
+	 */
+	protected function initRouteForEachSlugType($prefix, $patternStart, $patternEnd, $defaults, $fieldRequirements)
+	{
+		// entities with unique slug (slug only)
+		$this->router->set($prefix . 'a', new Zikula_Routing_UrlRoute($patternStart . ':title.' . $patternEnd, $defaults, $fieldRequirements));
+		// entities with non-unique slug (slug and id)
+		$this->router->set($prefix . 'b', new Zikula_Routing_UrlRoute($patternStart . ':title.:id.' . $patternEnd, $defaults, $fieldRequirements));
+		// entities without slug (id)
+		if ($this->displayDefaultEnding == '') {
+			$this->router->set($prefix . 'c', new Zikula_Routing_UrlRoute($patternStart . 'id.:id' . $patternEnd, $defaults, $fieldRequirements));
+		}
+		else {
+			$this->router->set($prefix . 'c', new Zikula_Routing_UrlRoute($patternStart . 'id.:id.' . $patternEnd, $defaults, $fieldRequirements));
+
+		}
+	}
 }

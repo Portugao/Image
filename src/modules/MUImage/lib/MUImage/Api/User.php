@@ -62,4 +62,143 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 		}
 		return $links;
 	}
+	
+	/**
+	 * Form custom url string
+	 *
+	 * @return       string custom url string
+	 */
+	public function encodeurl($args)
+	{
+		// check if we have the required input
+		if (!is_array($args) || !isset($args['modname']) || !isset($args['func'])) {
+			return LogUtil::registerArgsError();
+		}
+	
+		// set default values
+		if (!isset($args['type'])) {
+			$args['type'] = 'user';
+		}
+		if (!isset($args['args'])) {
+			$args['args'] = array();
+		}
+	
+		// return if function url scheme is not being customised
+		$customFuncs = array('view', 'display');
+		if (!in_array($args['func'], $customFuncs)) {
+			return false;
+		}
+	
+		// reference to current language
+		$lang = ZLanguage::getLanguageCode();
+	
+		// initialise url routing rules
+		$routerFacade = new MUImage_RouterFacade();
+		// get router itself for convenience
+		$router = $routerFacade->getRouter();
+	
+		// initialise object type
+		$utilArgs = array('controller' => 'user', 'action' => 'encodeurl');
+		$allowedObjectTypes = MUImage_Util_Controller::getObjectTypes('api', $utilArgs);
+		$objectType = ((isset($args['args']['ot']) && in_array($args['args']['ot'], $allowedObjectTypes)) ? $args['args']['ot'] : MUImage_Util_Controller::getDefaultObjectType('api', $utilArgs));
+	
+		// initialise group folder
+		$groupFolder = $routerFacade->getGroupingFolderFromObjectType($objectType, $args['func'], $args['args']);
+	
+		// start pre processing
+	
+		// convert object type to group folder
+		$args['args']['ot'] = $groupFolder;
+	
+		// handle special templates
+		// we handle the setting for the ending by gnerating the urls
+		$displayDefaultEnding = ModUtil::getVar('MUImage', 'ending');
+		if ($displayDefaultEnding != '') {
+			// nothing to do
+		}
+		else {
+			$displayDefaultEnding = System::getVar('shorturlsext', '');
+		}
+		$endingPrefix = ($args['func'] == 'view') ? '.' : '';
+		foreach (array('csv', 'rss', 'atom', 'xml', 'pdf', 'json') as $ending) {
+			if (!isset($args['args']['use' . $ending . 'ext'])) {
+				continue;
+			}
+			if ($args['args']['use' . $ending . 'ext'] == '1') {
+				$args['args'][$args['func'] . 'ending'] = $endingPrefix . $ending;
+			}
+			unset($args['args']['use' . $ending . 'ext']);
+		}
+		// fallback to default templates
+		if (!isset($args['args'][$args['func'] . 'ending'])) {
+			if ($args['func'] == 'view') {
+				$args['args'][$args['func'] . 'ending'] = ''; //'/';
+			} else if ($args['func'] == 'display') {
+				$args['args'][$args['func'] . 'ending'] = $displayDefaultEnding;
+			}
+		}
+	
+		if ($args['func'] == 'view') {
+			// TODO filter views (e.g. /orders/customer/mr-smith.csv)
+			/**
+			 $filterEntities = array('customer', 'region', 'federalstate', 'country');
+			 foreach ($filterEntities as $filterEntity) {
+			 $filterField = $filterEntity . 'id';
+			 if (!isset($args['args'][$filterField]) || !$args['args'][$filterField]) {
+			 continue;
+			 }
+			 $filterId = $args['args'][$filterField];
+			 unset($args['args'][$filterField]);
+	
+			 $filterGroupFolder = $routerFacade->getGroupingFolderFromObjectType($filterEntity, 'display', $args['args']);
+			 $filterSlug = $routerFacade->getFormattedSlug($filterEntity, 'display', $args['args'], $filterId);
+			 $result .= $filterGroupFolder . '/' . $filterSlug .'/';
+			 break;
+			 }
+			 */
+		} elseif ($args['func'] == 'display') {
+			// determine given id
+			$id = 0;
+			foreach (array('id', strtolower($objectType) . 'id', 'objectid') as $idFieldName) {
+				if (isset($args['args'][$idFieldName])) {
+					$id = $args['args'][$idFieldName];
+					unset($args['args'][$idFieldName]);
+				}
+			}
+	
+			$slugTitle = '';
+			if ($id > 0) {
+				$slugTitle = $routerFacade->getFormattedSlug($objectType, $args['func'], $args['args'], $id);
+			}
+	
+			if (!empty($slugTitle) && $slugTitle != $id) {
+				// add slug expression
+				$args['args']['title'] = $slugTitle;
+			} else {
+				// readd id
+				$args['args']['id'] = $id;
+			}
+		}
+	
+		// add func as first argument
+		$routerArgs = array_merge(array('func' => $args['func']), $args['args']);
+	
+		// now create url based on params
+		$result = $router->generate(null, $routerArgs);
+	
+		// post processing
+		if (($args['func'] == 'view' && !empty($args['args']['viewending'])) || $args['func'] == 'display') {
+			// check if url ends with a trailing slash
+			if (substr($result, -1) == '/') {
+				// remove the trailing slash
+				$result = substr($result, 0, strlen($result) - 1);
+			}
+		}
+	
+		// enforce url name of the module, but do only 1 replacement to avoid changing other params
+		$modInfo = ModUtil::getInfoFromName('MUImage');
+		$result = preg_replace('/' . $modInfo['name'] . '/', $modInfo['url'], $result, 1);
+	
+		return $result;
+	}
 }

@@ -17,5 +17,33 @@
  */
 class MUImage_Form_Handler_Admin_Config extends MUImage_Form_Handler_Admin_Base_Config
 {
-    // feel free to extend the base handler class here
+	    /**
+     * Command event handler.
+     *
+     * This event handler is called when a command is issued by the user. Commands are typically something
+     * that originates from a {@link Zikula_Form_Plugin_Button} plugin. The passed args contains different properties
+     * depending on the command source, but you should at least find a <var>$args['commandName']</var>
+     * value indicating the name of the command. The command name is normally specified by the plugin
+     * that initiated the command.
+     * @see Zikula_Form_Plugin_Button
+     * @see Zikula_Form_Plugin_ImageButton
+     */
+    public function handleCommand(Zikula_Form_View $view, &$args)
+    {
+    	$dom = ZLanguage::getModuleDomain('MUImage');
+    	
+    	// retrieve form data
+    	$data = $this->view->getValues();
+    	
+    	$ending = $data['config']['ending'];
+    	if ($ending != '') {
+    		if ($ending != 'html' && $ending != 'htm') {
+    			LogUtil::registerError(__('Sorry! Your enter is invalid!'));
+    			$url = ModUtil::url('MUImage', 'admin', 'config');
+    			return System::redirect($url);
+    		}
+    	} 
+    	
+    	parent::handleCommand($view, $args);
+    }
 }
