@@ -201,4 +201,117 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 	
 		return $result;
 	}
+	
+	/**
+	 * Decode the custom url string
+	 *
+	 * @return       bool true if successful, false otherwise
+	 */
+	public function decodeurl($args)
+	{
+		// check we actually have some vars to work with
+		if (!is_array($args) || !isset($args['vars']) || !is_array($args['vars']) || !count($args['vars'])) {
+			return LogUtil::registerArgsError();
+		}
+	
+		// define the available user functions
+		$funcs = array('main', 'view', 'display', 'edit', 'delete', 'zipUpload', 'multiUpload');
+	
+		// return if function url scheme is not being customised
+		$customFuncs = array('view', 'display');
+	
+		// set the correct function name based on our input
+		if (empty($args['vars'][2])) {
+			// no func and no vars = main
+			System::queryStringSetVar('func', 'main');
+			return true;
+		} else if (in_array($args['vars'][2], $funcs) && !in_array($args['vars'][2], $customFuncs)) {
+			// normal url scheme, no need for special decoding
+			return false;
+		}
+	
+		$func = $args['vars'][2];
+	
+		// usually the language is in $args['vars'][0], except no mod name is in the url and we are set as start app
+		$modInfo = ModUtil::getInfoFromName('MUImage');
+		$lang = (strtolower($args['vars'][0]) == $modInfo['url']) ? $args['vars'][1] : $args['vars'][0];
+	
+		// remove some unrequired parameters
+		foreach ($_GET as $k => $v) {
+			if (in_array($k, array('module', 'type', 'func', 'lang', 'ot')) === false) {
+				unset($_GET[$k]);
+			}
+		}
+	
+		// process all args except language and module
+		$urlVars = array_slice($args['vars'], 2); // all except [0] and [1]
+	
+		// get arguments as string
+		$url = implode('/', $urlVars);
+	
+		// check if default view urls end with a trailing slash
+		if ($func == 'view' && strpos($url, '.') === false && substr($url, -1) != '/') {
+			// add missing trailing slash
+			$url .= '/';
+		}
+	
+		$isDefaultModule = (System::getVar('shorturlsdefaultmodule', '') == $modInfo['name']);
+		if (!$isDefaultModule) {
+			$url = $modInfo['url'] . '/' . $url;
+		}
+	
+		// initialise url routing rules
+		$routerFacade = new MUImage_RouterFacade();
+		// get router itself for convenience
+		$router = $routerFacade->getRouter();
+	
+		// read params out of url
+		$parameters = $router->parse($url);
+		//var_dump($parameters);
+	
+		if (!$parameters || !is_array($parameters)) {
+			return false;
+		}
+	
+		// post processing
+		if (!isset($parameters['func'])) {
+			$parameters['func'] = 'view';
+		}
+	
+		$func = $parameters['func'];
+		// convert group folder to object type
+		$parameters['ot'] = $routerFacade->getObjectTypeFromGroupingFolder($parameters['ot'], $func);
+	
+		// handle special templates
+		// we handle the setting for the ending by gnerating the urls
+		$displayDefaultEnding = ModUtil::getVar('MUImage', 'ending');
+		if ($displayDefaultEnding != '') {
+			// nothing to do
+		}
+		else {
+			$displayDefaultEnding = System::getVar('shorturlsext', '');
+		}
+		$endingPrefix = ($func == 'view') ? '.' : '';
+		if (isset($parameters[$func . 'ending']) && !empty($parameters[$func . 'ending']) && $parameters[$func . 'ending'] != ($endingPrefix . $displayDefaultEnding)) {
+			if ($func == 'view') {
+				$parameters[$func . 'ending'] = str_replace($endingPrefix, '', $parameters[$func . 'ending']);
+			}
+			$parameters['use' . $parameters[$func . 'ending'] . 'ext'] = '1';
+			unset($parameters[$func . 'ending']);
+		}
+	
+		// rename id to objid (primary key for display pages, optional filter id for view pages)
+		/* may be obsolete now
+		 if (isset($parameters['id'])) {
+		$parameters[strtolower($parameters['ot']) . 'id'] = $parameters['id'];
+		unset($parameters['id']);
+		}*/
+	
+		// write vars to GET
+		foreach ($parameters as $k => $v) {
+			System::queryStringSetVar($k, $v);
+		}
+	
+		return true;
+	}
 }
