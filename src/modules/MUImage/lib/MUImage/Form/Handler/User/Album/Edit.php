@@ -17,5 +17,36 @@
  */
 class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Album_Base_Edit
 {
-    // feel free to extend the base handler class here
+	    /**
+     * Initialize form handler.
+     *
+     * This method takes care of all necessary initialisation of our data and form states.
+     *
+     * @return boolean False in case of initialization errors, otherwise true.
+     */
+    public function initialize(Zikula_Form_View $view)
+    {
+    	$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+    	
+    	$myAlbums = MUImage_Util_View::getAlbums($id);
+    	
+    	$myalbums = array();
+    	
+    	foreach ($myAlbums as $myAlbum) {
+    		$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title']);
+    	}
+    	
+    	$mainalbum = $this->view->get_template_vars('mainalbum');
+    	$mainalbum['muimageAlbum_ParentItemListItems'] = $myalbums;
+    	$this->view->assign('mainalbum', $mainalbum);
+
+    	if (MUImage_Util_View::otherUserMainAlbums() == true) {
+    	$this->view->assign('otherMainAlbum', true);
+    	}
+    	else {
+    		$this->view->assign('otherMainAlbum', false);
+    	}
+    	
+    	parent::initialize($view);
+    }
 }
