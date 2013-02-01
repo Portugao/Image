@@ -43,10 +43,12 @@ implemented classes
 *lib/MUImage/Entity/Album.php
 *lib/MUImage/Entity/Picture.php
 
+*lib/MUImage/Form/Handler/Admin/Config.php
 *lib/MUImage/Form/Handler/Admin/Base/Import.php
 *lib/MUImage/Form/Handler/Admin/Picture/Edit.php
 *lib/MUImage/Form/Handler/User/Edit.php
 *lib/MUImage/Form/Handler/User/Base/EditMulti.php
+*lib/MUImage/Form/Handler/User/Album/Edit.php
 *lib/MUImage/Form/Handler/User/Picture/Edit.php
 *lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php
 *lib/MUImage/Form/Handler/User/Picture/EditMulti.php
