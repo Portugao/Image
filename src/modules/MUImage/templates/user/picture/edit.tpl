@@ -51,6 +51,7 @@
 
             <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
             <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
+            <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
             {if $mode ne 'create'}
                   <div class="z-formnote">
                       {gt text='Current file'}:
@@ -74,7 +75,6 @@
     </fieldset>
 
     {if $mode ne 'create'}
-        {include file='user/include_standardfields_edit.tpl' obj=$picture}
         {include file='user/album/include_selectEditOne.tpl' relItem=$picture aliasName='album' idPrefix='muimageAlbum_Album'}  
     {else}
         <input id="muimageAlbum_AlbumItemList" type="hidden" value="{$albumid}" name="muimageAlbum_AlbumItemList">
@@ -83,20 +83,10 @@
 
     {* include display hooks *}
     {if $mode eq 'create'}
-        {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=null assign='hooks'}
+        {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=null}
     {else}
-        {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=$picture.id assign='hooks'}
+        {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=$picture.id}
     {/if}
-  {*  {if is_array($hooks) && isset($hooks[0])} *}
-        <fieldset>
-            <legend>{gt text='Hooks'}</legend>
-            {foreach key='hookName' item='hook' from=$hooks}
-            <div class="z-formrow">
-                {$hook}
-            </div>
-            {/foreach}
-        </fieldset>
-   {* {/if} *}
 
     {* include return control 
     {if $mode eq 'create'}
@@ -113,7 +103,7 @@
     <div class="z-buttons z-formbuttons">
     {if $mode eq 'edit'}
         {formbutton id='btnUpdate' commandName='update' __text='Update picture' class='z-bt-save'}
-      {if !$inlineUsage}
+      {if !$inlineUsage && $deletePictures eq true}
         {gt text='Really delete this picture?' assign='deleteConfirmMsg'}
         {formbutton id='btnDelete' commandName='delete' __text='Delete picture' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
       {/if}
@@ -126,7 +116,9 @@
     </div>
   {/muimageFormFrame}
 {/form}
-
+    {if $mode ne 'create'}
+        {include file='user/include_standardfields_edit.tpl' obj=$picture}
+   {/if}
 </div>
 </div>
 {include file='user/footer.tpl'}

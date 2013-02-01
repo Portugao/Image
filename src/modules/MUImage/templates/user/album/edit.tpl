@@ -34,31 +34,27 @@
     </fieldset>
 
     {include file='user/include_categories_edit.tpl' obj=$album groupName='albumObj'}
-    {if $mode ne 'create'}
-        {include file='user/include_standardfields_edit.tpl' obj=$album}
-    {/if}
     {if $mode eq 'create'}
     <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$parent}">
     <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
     {else}
-    {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'}
+    <fieldset>
+        <legend>{gt text='Main album'}</legend>
+        <div class="z-formrow">
+             {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
+             {formdropdownlist group='mainalbum' id='muimageAlbum_ParentItemList'}
+             <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
+        </div>
+    </fieldset>
+   {* {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'} *}
     {/if}
     {* include display hooks *}
     {if $mode eq 'create'}
-        {notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=null assign='hooks'}
+        {notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=null}
     {else}
-        {notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=$album.id assign='hooks'}
+        {notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=$album.id}
     {/if}
-   {* {if is_array($hooks) && isset($hooks[0])} *}
-        <fieldset>
-            <legend>{gt text='Hooks'}</legend>
-            {foreach key='hookName' item='hook' from=$hooks}
-            <div class="z-formrow">
-                {$hook}
-            </div>
-            {/foreach}
-        </fieldset>
-   {* {/if} *}
+
 
     {* include return control *}
     {* {if $mode eq 'create'}
@@ -90,7 +86,9 @@
     </div>
   {/muimageFormFrame}
 {/form}
-
+    {if $mode ne 'create'}
+        {include file='user/include_standardfields_edit.tpl' obj=$album}
+    {/if}
 </div>
 </div>
 {include file='user/footer.tpl'}

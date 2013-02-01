@@ -80,9 +80,6 @@
         </div> *}
     </fieldset>
 
-    {if $mode ne 'create'}
-        {include file='admin/include_standardfields_edit.tpl' obj=$picture}
-    {/if}
     {include file='admin/album/include_selectEditOne.tpl' relItem=$picture aliasName='album' idPrefix='muimageAlbum_Album'}
 
     {* include display hooks *}
@@ -131,6 +128,9 @@
   {/muimageFormFrame}
 {/form}
 
+    {if $mode ne 'create'}
+        {include file='admin/include_standardfields_edit.tpl' obj=$picture}
+    {/if}
 </div>
 {include file='admin/footer.tpl'}
 

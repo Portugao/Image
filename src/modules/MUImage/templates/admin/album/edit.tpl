@@ -39,9 +39,6 @@
     </fieldset>
 
     {include file='admin/include_categories_edit.tpl' obj=$album groupName='albumObj'}
-    {if $mode ne 'create'}
-        {include file='admin/include_standardfields_edit.tpl' obj=$album}
-    {/if}
     {include file='admin/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'}
 
     {* include display hooks *}
@@ -89,7 +86,9 @@
     </div>
   {/muimageFormFrame}
 {/form}
-
+    {if $mode ne 'create'}
+        {include file='admin/include_standardfields_edit.tpl' obj=$album}
+    {/if}
 </div>
 {include file='admin/footer.tpl'}
 
