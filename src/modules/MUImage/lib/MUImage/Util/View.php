@@ -259,7 +259,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 *
 	 */
 	public static function myPicture($id) {
-		$view = new Zikula_Request_Http();
+
 		$picturerepository = MUImage_Util_Model::getPictureRepository();
 		$myPicture = $picturerepository->selectById($id);
 
@@ -274,13 +274,26 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 				return false;
 			}
 		}
-	}
+	}	/**
+	 *
+	 */
+	public static function myAlbums($id) {
+
+		$uid = UserUtil::getVar('uid');
+		$albumrepository = MUImage_Util_Model::getAlbumRepository();
+		$where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+		$where .= ' AND ';
+		$where .= 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
+		$myAlbums = $albumrepository->selectWhere($where);
+		
+		return $myAlbums;
+	}	
 
 	/**
 	 *
 	 */
 	public static function myAlbum($id) {
-		$view = new Zikula_Request_Http();
+
 		$albumrepository = MUImage_Util_Model::getAlbumRepository();
 		$myAlbum = $albumrepository->selectById($id);
 
