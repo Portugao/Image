@@ -21,6 +21,7 @@
         {formuploadinput group='picture' id="imageUpload`$smarty.section.fields.index`" mandatory=false readOnly=false cssClass=''}
         <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
         <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
+        <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
         </div>
         {/section}     
       </fieldset>

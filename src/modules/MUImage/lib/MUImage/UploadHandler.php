@@ -151,6 +151,12 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
 			if (!is_array($imgInfo) || !$imgInfo[0] || !$imgInfo[1]) {
 				return LogUtil::registerError(__('Error! This file type seems not to be a valid image.', $dom));
 			}
+			$requiredWidth = ModUtil::getVar('MUImage', 'minWidth');
+			if ($imgInfo[0] < $requiredWidth) {
+				LogUtil::registerError(__('Sorry! Your picture does not have the required width.', $dom));
+				$url = ModUtil::url('MUImage', 'user', 'view');
+				return false;
+			}
 		}
 
 		return true;

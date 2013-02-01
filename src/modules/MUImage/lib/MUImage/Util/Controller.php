@@ -16,6 +16,26 @@
  */
 class MUImage_Util_Controller extends MUImage_Util_Base_Controller
 {
+	
+	/**
+	 * this function chekcs for the given min width 
+	 * for a picture in the configuration
+	 * return string
+	 */
+	
+	public static function minWidth() {
+		
+		$dom = ZLanguage::getModuleDomain('MUImage');
+		
+		$minWidth = ModUtil::getVar('MUImage', 'minWidth');
+		if ($minWidth == '') {
+			return __('Not set', $dom);
+		}
+		else {
+			return $minWidth . ' ' . __('pixel');
+		}
+		
+	}
     /**
      * Get allowed filesize
      */
@@ -53,6 +73,11 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
 		return $allowedSize;
     }
     
+    
+    /**
+     * this function calculates the number of upload fields
+     * @return number
+     */
     public static function allowedFields() {
     	// we check the created pictures for this user
     	$uid = UserUtil::getVar('uid');

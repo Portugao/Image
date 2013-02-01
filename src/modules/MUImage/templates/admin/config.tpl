@@ -50,6 +50,14 @@
                     {formintinput id='fileSize' group='config' maxLength=20 width=20em __title='Input this setting.'}
                     <div class="z-informationmsg z-formnote">{gt text="102400 = 100 KB."}</div>
                 </div>
+                <div class="z-formrow">
+                    {formlabel for='minWidth' __text='Required width of pictures'}
+                    {formintinput id='minWidth' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='userDeletePictures' __text='May users delete their pictures?' class='muimageFormTooltips' title=$toolTip}
+                    {formcheckbox id='userDeletePictures' group='config'}
+                </div>
                  <div class="z-formrow">
                     {formlabel for='ending' __text='Do you wish an ending for display of albums and pictures?' class='muimageFormTooltips' title=$toolTip}
                     {formtextinput id='ending' group='config' maxLength=255 width=20em __title='Enter this setting.'}
