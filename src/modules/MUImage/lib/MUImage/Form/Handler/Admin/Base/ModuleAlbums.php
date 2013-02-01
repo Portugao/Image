@@ -123,7 +123,7 @@ class MUImage_Form_Handler_Admin_Base_ModuleAlbums extends Zikula_Form_AbstractH
 			// retrieve form data
 			$data = $this->view->getValues();
 				
-			// check if existing supporters deleting
+			// check if entered folder does exist
 			$arguments['module'] = $module;
 			$arguments['album'] = $data['albums']['album'];
 			$arguments['folder'] = $data['albums']['folder'];
