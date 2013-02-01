@@ -26,10 +26,23 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 	 */
 	public function initialize(Zikula_Form_View $view)
 	{
-			
+		// we get the allowed filesize	
 		$fileSize = MUImage_Util_Controller::maxSize();
+		// we check if deleting of pictures is allowed
+		$deletePictures = ModUtil::getVar($this->name, 'userDeletePictures');
+		// we check for required width for pictures
+		$minWidth = MUImage_Util_Controller::minWidth();
 			
-		$this->view->assign('fileSize', $fileSize);
+		$this->view->assign('fileSize', $fileSize)
+		           ->assign('minWidth', $minWidth)
+		           ->assign('deletePictures', $deletePictures);
+		
+		if (MUImage_Util_View::otherUserMainAlbums() == true) {
+			$this->view->assign('otherMainAlbum', true);
+		}
+		else {
+			$this->view->assign('otherMainAlbum', false);
+		}
 			
 		parent::initialize($view);
 	}
