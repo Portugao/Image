@@ -1,7 +1,2 @@
 CREDITS
 -------
-
-Changes in 1.0.1
-
-# closed #25 now it is possible to enable the ending for single display of
-  albums and pictures for shorturls

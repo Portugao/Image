@@ -160,7 +160,7 @@ class MUImage_Controller_Base_User extends Zikula_AbstractController
     public function display($args)
     {
         // DEBUG: permission check aspect starts
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_READ));
+        //$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_READ));
         // DEBUG: permission check aspect ends
 
         // parameter specifying which type of objects we are treating
