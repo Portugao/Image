@@ -26,6 +26,8 @@ class MUImage_Installer extends MUImage_Base_Installer
 		parent::install();
 		
 		$this->setVar('ending', 'html');
+		$this->setVar('deleteUserPictures', false);
+		$this->setVar('minWidth', 400);
 		 
 		// Set up module hooks
 		HookUtil::registerProviderBundles($this->version->getHookProviderBundles());
@@ -49,6 +51,8 @@ class MUImage_Installer extends MUImage_Base_Installer
 		switch ($oldversion) {
 		case '1.0.0':
 			$this->setVar('ending', 'html');
+			$this->setVar('deleteUserPictures', false);
+			$this->setVar('minWidth', 400);
 			
 		// do something
 		// ...
