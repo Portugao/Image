@@ -38,7 +38,7 @@ class MUImage_Form_Handler_Admin_Config extends MUImage_Form_Handler_Admin_Base_
     	$ending = $data['config']['ending'];
     	if ($ending != '') {
     		if ($ending != 'html' && $ending != 'htm') {
-    			LogUtil::registerError(__('Sorry! Your enter is invalid!'));
+    			LogUtil::registerError(__('Sorry! Your enter for the ending is invalid!', $dom));
     			$url = ModUtil::url('MUImage', 'admin', 'config');
     			return System::redirect($url);
     		}
