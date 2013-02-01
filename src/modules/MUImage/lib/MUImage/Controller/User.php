@@ -95,7 +95,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 		// no view for pictures in the user area
 		if ($objectType == 'picture') {
 			$url = ModUtil::url($this->name, 'user', 'view', array('ot' => 'album'));
-			System::redirect($url);
+			return System::redirect($url);
 		}
 
         // DEBUG: permission check aspect starts
@@ -316,7 +316,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 				}
 				else {
 					// if user is no admin
-					if (!in_array(2, $usergroups)) {
+					if (!in_array(2, $usergroups) && ModUtil::getVar($this->name, 'userDeletePictures') == 0) {
 						$url = ModUtil::url($this->name, 'user' , 'display', array('ot' => 'piture', 'id' => $id));
 						LogUtil::registerError($this->__('You have no permissions to delete this picture!'));
 						return System::redirect($url);
