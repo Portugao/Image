@@ -78,6 +78,7 @@
                     {/if}
                 {/foreach}
             {/strip}
+        <a title="{gt text='Load up a Picture'}" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /></a> <a title="{gt text='Load up few Pictures'}" href="{modurl modname='MUImage' type='user' func='multiUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /><img src="images/icons/extrasmall/edit_add.png" /></a>
         {/if}    
     </div>
     {/checkpermissionblock} 
@@ -85,12 +86,10 @@
     <div id="basic_accordion">
     <h3 class="z-acc-header">{gt text='Pictures'}</h3>
     <div id="muimage_pictures" class="z-acc-content">
-   <div id="muimage_pictures_header">
+    <div id="muimage_pictures_header">
     <div id="muimage_pictures_header_left">
-
     </div>
     </div>
-  
     <div id="muimage_pictures_content">
     {if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
     {include file='user/picture/include_displayItemListMany.tpl' items=$album.picture}
