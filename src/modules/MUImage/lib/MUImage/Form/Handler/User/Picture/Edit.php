@@ -32,10 +32,13 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 		$deletePictures = ModUtil::getVar($this->name, 'userDeletePictures');
 		// we check for required width for pictures
 		$minWidth = MUImage_Util_Controller::minWidth();
+		// we check for user is in admin group
+		$inAdminGroup = MUImage_Util_View::isAdmin();
 			
 		$this->view->assign('fileSize', $fileSize)
 		           ->assign('minWidth', $minWidth)
-		           ->assign('deletePictures', $deletePictures);
+		           ->assign('deletePictures', $deletePictures)
+		           ->assign('inAdminGroup', $inAdminGroup);
 		
 		if (MUImage_Util_View::otherUserMainAlbums() == true) {
 			$this->view->assign('otherMainAlbum', true);

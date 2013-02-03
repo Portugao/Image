@@ -103,7 +103,7 @@
     <div class="z-buttons z-formbuttons">
     {if $mode eq 'edit'}
         {formbutton id='btnUpdate' commandName='update' __text='Update picture' class='z-bt-save'}
-      {if !$inlineUsage && $deletePictures eq true}
+      {if !$inlineUsage && ($deletePictures eq true || $inAdminGroup eq true)}
         {gt text='Really delete this picture?' assign='deleteConfirmMsg'}
         {formbutton id='btnDelete' commandName='delete' __text='Delete picture' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
       {/if}

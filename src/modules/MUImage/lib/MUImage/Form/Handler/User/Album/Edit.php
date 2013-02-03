@@ -36,6 +36,12 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
     		$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title']);
     	}
     	
+    	// we check if user is in admin group
+    	$inAdmingroup = MUImage_Util_View::isAdmin();    	
+    	$this->view->assign('inAdminGroup', $inAdminGroup);
+    	
+    	// TODO have to look for controlling of albums in edit
+    	// of pictures and ablums
     	$mainalbum = $this->view->get_template_vars('mainalbum');
     	$mainalbum['muimageAlbum_ParentItemListItems'] = $myalbums;
     	$this->view->assign('mainalbum', $mainalbum);

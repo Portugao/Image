@@ -120,7 +120,7 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
                         'linkText' => __('Reuse', $dom)
                     );*/
                 }
-                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE)) {
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE) && MUImage_Util_View::isAdmin() === true) {
                     $this->_actions[] = array(
                         'url' => array('type' => 'user', 'func' => 'delete', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
                         'icon' => 'delete',

@@ -16,17 +16,21 @@
  */
 class MUImage_Util_View extends MUImage_Util_Base_View
 {
-	/**
-	 *
-	 * Returning the step of import
+	
+	/*
+	 * this function checks if an user is in the admin group
+	 * return boolean
 	 */
-	public static function getStep() {
-		$view = new Zikula_Request_Http();
-		$step = $view->getGet()->filter('step', 'first', FILTER_SANITIZE_STRING);
-
-		return $step;
+	public static function isAdmin() {
+		$uid = UserUtil::getVar('uid');
+		$gid = UserUtil::getGroupsForUser($uid);
+		if (in_array(2, $gid)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
-
 	/**
 	 *
 	 * Returning the albums
