@@ -55,7 +55,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
 		/*foreach ($album[picture] as $value) {
 		 $pictures[] = $value;
-		 }*/
+		}*/
 		//$count = count($album[picture]);
 		$count = 0;
 
@@ -70,8 +70,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 */
 	public static function countPictures()
 	{
-			$repository = MUImage_Util_Model::getPictureRepository();
-			$count = $repository->selectCount();
+		$repository = MUImage_Util_Model::getPictureRepository();
+		$count = $repository->selectCount();
 
 		return $count;
 	}
@@ -82,8 +82,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 */
 	public static function countAlbums()
 	{
-			$repository = MUImage_Util_Model::getAlbumRepository();
-			$count = $repository->selectCount();
+		$repository = MUImage_Util_Model::getAlbumRepository();
+		$count = $repository->selectCount();
 
 		return $count;
 	}
@@ -275,8 +275,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			}
 		}
 	}	/**
-	 *
-	 */
+	*
+	*/
 	public static function myAlbums($id) {
 
 		$uid = UserUtil::getVar('uid');
@@ -285,9 +285,9 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 		$where .= ' AND ';
 		$where .= 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
 		$myAlbums = $albumrepository->selectWhere($where);
-		
+
 		return $myAlbums;
-	}	
+	}
 
 	/**
 	 *
@@ -317,29 +317,36 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
 		$dom = ZLanguage::getModuleDomain('MUImage');
 
-		$uid = UserUtil::getVar('uid');
-		$mainAlbum = ModUtil::getVar('MUImage', 'numberParentAlbums');
-		if ($mainAlbum != '') {
-			$numberMain = self::otherUserMainAlbums(2);
+		if (UserUtil::isLoggedIn() === false) {
+			$numberMain = 0;
+			$numberSub = 0;
+			$numberPictures = 0;
 		}
 		else {
-			$numberMain = __('unlimited', $dom);
-		}
+			$uid = UserUtil::getVar('uid');
+			$mainAlbum = ModUtil::getVar('MUImage', 'numberParentAlbums');
+			if ($mainAlbum != '') {
+				$numberMain = self::otherUserMainAlbums(2);
+			}
+			else {
+				$numberMain = __('unlimited', $dom);
+			}
 
-		$subAlbum = ModUtil::getVar('MUImage', 'numberSubAlbums');
-		if ($subAlbum != '') {
-			$numberSub = self::otherUserSubAlbums(2);
-		}
-		else {
-			$numberSub = __('unlimited', $dom);
-		}
+			$subAlbum = ModUtil::getVar('MUImage', 'numberSubAlbums');
+			if ($subAlbum != '') {
+				$numberSub = self::otherUserSubAlbums(2);
+			}
+			else {
+				$numberSub = __('unlimited', $dom);
+			}
 
-		$pictures = ModUtil::getVar('MUImage', 'numberPictures');
-		if ($pictures != '') {
-			$numberPictures = self::otherUserPictures(2);
-		}
-		else {
-			$numberPictures = __('unlimited', $dom);
+			$pictures = ModUtil::getVar('MUImage', 'numberPictures');
+			if ($pictures != '') {
+				$numberPictures = self::otherUserPictures(2);
+			}
+			else {
+				$numberPictures = __('unlimited', $dom);
+			}
 		}
 
 		$out = __('Your Quota: ', $dom);
@@ -352,7 +359,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	/**
 	 * @param   $id          $id  of album or picture
 	 * @param   $kind        $kind check for 1 = album or 2 = picture
-	 * 
+	 *
 	 *  assign to template
 	 */
 	public static function checkForBlocksAndContent($id = 0, $kind = 1) {
@@ -360,7 +367,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 		$view = new Zikula_View($serviceManager);
 		if ($id > 0) {
 			$block = BlockUtil::getBlockInfo($id, 'content');
-			LogUtil::registerStatus($block);				
+			LogUtil::registerStatus($block);
 			$view->assign('muimageblock', $block);
 		}
 	}

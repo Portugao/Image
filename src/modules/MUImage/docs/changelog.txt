@@ -2,6 +2,8 @@ CHANGELOG
 ---------
 
 Changes in 1.1.0
+  
+# closed #8 it is now possible to set a min width for pictures
 
 # closed #25 now it is possible to enable the ending for single display of
   albums and pictures for shorturls
@@ -9,10 +11,13 @@ Changes in 1.1.0
 # closed #30 concrete datas of pictures and albums moved to the bottom of the edit template
   in backend and frontend
   
-# closed #8 it is now possible to set a min width for pictures
+# closed #31 now we can find links to upload pictures near the view of pictures in
+  a album display 
   
   
 ------ some fixes ------
 
-Deleting of an image coming from the display of an image,
-gives error in frontend; now we return the redirect.
+# Deleting of an image coming from the display of an image,
+  gives error in frontend; now we return the redirect.
+  
+# Guests contingent is now correct, 0 albums, 0 subalbums, 0 pictures
