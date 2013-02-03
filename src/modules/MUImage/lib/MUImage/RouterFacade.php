@@ -57,7 +57,7 @@ class MUImage_RouterFacade extends MUImage_Base_RouterFacade
 		$this->router->set($prefix . 'b', new Zikula_Routing_UrlRoute($patternStart . ':title.:id.' . $patternEnd, $defaults, $fieldRequirements));
 		// entities without slug (id)
 		if ($this->displayDefaultEnding == '') {
-			$this->router->set($prefix . 'c', new Zikula_Routing_UrlRoute($patternStart . 'id.:id' . $patternEnd, $defaults, $fieldRequirements));
+			$this->router->set($prefix . 'c', new Zikula_Routing_UrlRoute($patternStart . 'id.:id.' . $patternEnd, $defaults, $fieldRequirements));
 		}
 		else {
 			$this->router->set($prefix . 'c', new Zikula_Routing_UrlRoute($patternStart . 'id.:id.' . $patternEnd, $defaults, $fieldRequirements));

@@ -580,7 +580,7 @@ class MUImage_Form_Handler_User_Base_Edit extends Zikula_Form_AbstractHandler
                     $message = $this->__('Error! Update attempt failed.');
                 }
                 break;
-            case 'update':
+            case 'delete':
                 if ($success === true) {
                     $message = $this->__('Done! Item deleted.');
                 } else {

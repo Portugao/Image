@@ -183,7 +183,7 @@ class MUImage_Form_Handler_User_Picture_Base_MultiUpload extends MUImage_Form_Ha
 			$pictureids = SessionUtil::getVar('muimagepictureids');
 			$pictures = unserialize($pictureids);
 			$id = $pictures[0];
-			$url = ModUtil::url($this->name, 'user', 'editMulti',array('ot' => 'picture', 'id' => $id, 'album' => $albumid));
+			$url = ModUtil::url($this->name, 'user', 'editMulti', array('ot' => 'picture', 'id' => $id, 'album' => $albumid));
 			return $this->view->redirect($url);
 
 		}

@@ -38,15 +38,15 @@
     <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$parent}">
     <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
     {else}
-    <fieldset>
+    {* <fieldset>
         <legend>{gt text='Main album'}</legend>
         <div class="z-formrow">
              {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
              {formdropdownlist group='mainalbum' id='muimageAlbum_ParentItemList'}
              <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
         </div>
-    </fieldset>
-   {* {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'} *}
+    </fieldset> *}
+    {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'} 
     {/if}
     {* include display hooks *}
     {if $mode eq 'create'}
@@ -71,11 +71,9 @@
     <div class="z-buttons z-formbuttons">
     {if $mode eq 'edit'}
         {formbutton id='btnUpdate' commandName='update' __text='Update album' class='z-bt-save'}
-        {if $coredata.user.uid eq $album.createdUserId}
-      {if !$inlineUsage}
-        {gt text='Really delete this album? Notice: If you delete this album you will delete also its sub albums and pictures of these albums too!' assign='deleteConfirmMsg'}
-        {formbutton id='btnDelete' commandName='delete' __text='Delete album' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
-      {/if}
+        {if !$inlineUsage && $inAdmingroup eq true}
+            {gt text='Really delete this album? Notice: If you delete this album you will delete also its sub albums and pictures of these albums too!' assign='deleteConfirmMsg'}
+            {formbutton id='btnDelete' commandName='delete' __text='Delete album' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
       {/if}
     {elseif $mode eq 'create'}
         {formbutton id='btnCreate' commandName='create' __text='Create album' class='z-bt-ok'}
