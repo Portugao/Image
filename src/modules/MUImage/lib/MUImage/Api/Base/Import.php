@@ -101,7 +101,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 			}
 
 			if ($newparentAlbumObject) {
-			$newalbum->setParent($newparentAlbumObject);
+				$newalbum->setParent($newparentAlbumObject);
 			}
 			$newalbum->setTitle($data[0]['title']);
 			$newalbum->setDescription($data[0]['description']);
@@ -189,12 +189,12 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 				}
 				// if we could import one picture or more
 				if ($count > 0) {
-				if ($status != '') {
-					$status .= ' '. __f('%1$s Pictures imported for this album!', $count, $dom);
-				}
-				else {
-					$status = __f('%1$s Pictures imported for this album!', $count, $dom);
-				}
+					if ($status != '') {
+						$status .= ' '. __f('%1$s Pictures imported for this album!', $count, $dom);
+					}
+					else {
+						$status = __f('%1$s Pictures imported for this album!', $count, $dom);
+					}
 				}
 			} // if (!empty($resultpictures))
 			else {
