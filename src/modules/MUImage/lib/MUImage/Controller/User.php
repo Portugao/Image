@@ -44,7 +44,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 		$picturerepository = MUImage_Util_Model::getPictureRepository();
 		$picture = $picturerepository->selectById($id);
 		// if object is a picture, we want to count views, the picture id is not the actuel userid
-		// or the user is not loggedin we add to 1 to view
+		// or the user is not loggedin we add 1 to view
 		if ($ot == 'picture' && ModUtil::getVar('MUImage', 'countImageView') == true && ($picture->getCreatedUserId() != $coredata.user.uid || UserUtil::isLoggedIn() == false)) {
 			$picture->setImageView($picture->getImageView() + 1);
 
