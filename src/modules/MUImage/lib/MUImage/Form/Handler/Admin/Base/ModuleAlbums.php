@@ -62,7 +62,7 @@ class MUImage_Form_Handler_Admin_Base_ModuleAlbums extends Zikula_Form_AbstractH
 
 		if (is_array($relevantalbums)) {
 			foreach($relevantalbums as $album) {
-				$modulealbums[] = array('value' => $album['ms_id'], 'text' => $album['ms_title']);
+				$modulealbums[] = array('value' => $album['ms_id'], 'text' => utf8_encode($album['ms_title']));
 				$albums = $this->view->get_template_vars('albums');
 				$albums['albumItems'] = $modulealbums;
 				$this->view->assign('albums', $albums);

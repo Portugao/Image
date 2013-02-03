@@ -94,7 +94,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 				foreach ($parentalbums as $parentalbum) {
 					$mainAlbum[] = $parentalbum;
 					$mainAlbumTitle = $mainAlbum[0]['ms_title'];
-					$where = 'tbl.title = \'' . DataUtil::formatForStore($mainAlbumTitle) . '\'';
+					$where = 'tbl.title = \'' . DataUtil::formatForStore(utf8_encode($mainAlbumTitle)) . '\'';
 					$newparentAlbum = $albumrepository->selectWhere($where);
 					$newparentAlbumObject = $albumrepository->selectById($newparentAlbum[0]['id']);
 				}
