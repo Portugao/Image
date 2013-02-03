@@ -98,11 +98,6 @@ class MUImage_Form_Handler_Admin_Base_Import extends Zikula_Form_AbstractHandler
 	 */
 	public function handleCommand(Zikula_Form_View $view, &$args)
 	{
-		$step = MUImage_Util_View::getStep();
-
-		// Execute form using supplied template and page event handler
-		//return ModUtil::func($this->name, 'admin', 'modulealbums');
-
 		if ($args['commandName'] == 'start') {
 
 			// retrieve form data
