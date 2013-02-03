@@ -490,7 +490,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 
 	public function getModules() {
 
-		$modules = array('mediashare');
+		$modules = array('mediashare', 'userpictures');
 
 		return $modules;
 	}
