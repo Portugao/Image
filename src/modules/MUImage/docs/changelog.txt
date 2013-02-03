@@ -14,6 +14,9 @@ Changes in 1.1.0
 # closed #31 now we can find links to upload pictures near the view of pictures in
   a album display 
   
+# closed #34 there is an option in the backend configuration now to allow users to 
+  delete their own pictures
+  
   
 ------ some fixes ------
 
