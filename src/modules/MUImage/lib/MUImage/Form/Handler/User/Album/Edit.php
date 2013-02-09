@@ -17,42 +17,60 @@
  */
 class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Album_Base_Edit
 {
-	    /**
-     * Initialize form handler.
-     *
-     * This method takes care of all necessary initialisation of our data and form states.
-     *
-     * @return boolean False in case of initialization errors, otherwise true.
-     */
-    public function initialize(Zikula_Form_View $view)
-    {
-    	$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
-    	
-    	$myAlbums = MUImage_Util_View::getAlbums($id);
-    	
-    	$myalbums = array();
-    	
-    	foreach ($myAlbums as $myAlbum) {
-    		$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title']);
-    	}
-    	
-    	// we check if user is in admin group
-    	$inAdmingroup = MUImage_Util_View::isAdmin();    	
-    	$this->view->assign('inAdminGroup', $inAdminGroup);
-    	
-    	// TODO have to look for controlling of albums in edit
-    	// of pictures and ablums
-    	$mainalbum = $this->view->get_template_vars('mainalbum');
-    	$mainalbum['muimageAlbum_ParentItemListItems'] = $myalbums;
-    	$this->view->assign('mainalbum', $mainalbum);
+	/**
+	 * Initialize form handler.
+	 *
+	 * This method takes care of all necessary initialisation of our data and form states.
+	 *
+	 * @return boolean False in case of initialization errors, otherwise true.
+	 */
+	public function initialize(Zikula_Form_View $view)
+	{
+		$dom = ZLanguage::getModuleDomain('MUimage');
+		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
-    	if (MUImage_Util_View::otherUserMainAlbums() == true) {
-    	$this->view->assign('otherMainAlbum', true);
-    	}
-    	else {
-    		$this->view->assign('otherMainAlbum', false);
-    	}
-    	
-    	parent::initialize($view);
-    }
+	//	if ($this->mode == 'edit') {
+			$myAlbums = MUImage_Util_View::getAlbums($id);
+
+			$myalbums = array();
+
+			if (MUImage_Util_View::isAdmin() === true || MUImage_Util_View::otherUserMainAlbums() === true) {
+				$myalbums[] = array('value' => '', 'text' => __('Choose an album'), $dom);
+			}
+
+			foreach ($myAlbums as $myAlbum) {
+				$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title']);
+			}
+		//}
+		// we check if user is in admin group
+		$inAdmingroup = MUImage_Util_View::isAdmin();
+		$this->view->assign('inAdminGroup', $inAdminGroup);
+			
+		// controlling of albums in edit form
+		// of pictures and ablums
+		$mainalbum = $this->view->get_template_vars('mainalbum');
+		$mainalbum['muimageAlbum_ParentItemListItems'] = $myalbums;
+		$this->view->assign('mainalbum', $mainalbum);
+
+		$albumrepository = MUImage_Util_Model::getAlbumRepository();
+		if ($id > 0) {
+			// we get this album to edit
+			$thisalbum = $albumrepository->selectById($id);
+			$parent = $thisalbum->getParent();
+			if ($parent) {
+				$parentid[0] = $parent->getId();
+
+				$this->view->assign('muimageAlbum_ParentItemList', 1);
+			}
+		}
+
+		if (MUImage_Util_View::otherUserMainAlbums() == true) {
+			$this->view->assign('otherMainAlbum', true);
+		}
+		else {
+			$this->view->assign('otherMainAlbum', false);
+		}
+			
+		parent::initialize($view);
+	}
 }
