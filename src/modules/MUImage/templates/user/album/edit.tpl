@@ -38,15 +38,15 @@
     <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$parent}">
     <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
     {else}
-    {* <fieldset>
+     <fieldset>
         <legend>{gt text='Main album'}</legend>
         <div class="z-formrow">
              {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
              {formdropdownlist group='mainalbum' id='muimageAlbum_ParentItemList'}
              <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
         </div>
-    </fieldset> *}
-    {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'} 
+    </fieldset> 
+    {* {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'} *}
     {/if}
     {* include display hooks *}
     {if $mode eq 'create'}
