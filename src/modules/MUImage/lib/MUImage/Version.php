@@ -21,7 +21,7 @@ class MUImage_Version extends MUImage_Base_Version
     {
         $meta = array();
         // the current module version
-        $meta['version'] = '1.0.1';
+        $meta['version'] = '1.1.0';
         // the displayed name of the module
         $meta['displayname'] = $this->__('MUImage');
         // the module description

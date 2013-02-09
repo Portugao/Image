@@ -53,6 +53,9 @@ class MUImage_Installer extends MUImage_Base_Installer
 			$this->setVar('ending', 'html');
 			$this->setVar('deleteUserPictures', false);
 			$this->setVar('minWidth', 400);
+		
+		case '1.1.0':
+			// later updates
 			
 		// do something
 		// ...
