@@ -75,7 +75,18 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 		}
 
 		if (is_array($album)) {
-			$data = $this->buildArrayForAlbum($module, $album[0]);
+			// we check if there is already n album with the same title
+			$where = 'tbl.title = \'' . DataUtil::formatForStore(utf8_encode($album[0]['ms_title'])) . '\'';
+			$albumWithTitle = $albumrepository->selectWhere($where);
+
+			if (count($albumWithTitle) == 0 || !is_array($albumWithTitle)) {
+				$data = $this->buildArrayForAlbum($module, $album[0]);
+			}
+			else {
+				LogUtil::registerError(__('Sorry! There is already an album with this title in MUImage!', $dom));
+				$url = ModUtil::url($this->name, 'admin', 'import');
+				return System::redirect($url);
+			}
 		}
 		else {
 			$status = __('Could not build data array to import this album', $dom);
@@ -94,9 +105,14 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 				foreach ($parentalbums as $parentalbum) {
 					$mainAlbum[] = $parentalbum;
 					$mainAlbumTitle = $mainAlbum[0]['ms_title'];
-					$where = 'tbl.title = \'' . DataUtil::formatForStore(utf8_encode($mainAlbumTitle)) . '\'';
-					$newparentAlbum = $albumrepository->selectWhere($where);
-					$newparentAlbumObject = $albumrepository->selectById($newparentAlbum[0]['id']);
+					$where2 = 'tbl.title = \'' . DataUtil::formatForStore(utf8_encode($mainAlbumTitle)) . '\'';
+					$newparentAlbum = $albumrepository->selectWhere($where2);
+					if ($newparentAlbum) {
+						$newparentAlbumObject = $albumrepository->selectById($newparentAlbum[0]['id']);
+					}
+					else {
+						$status .= __f('For the album  %s there was no main album found. If you are sure, there is one in the mediashare table, you should edit the imported album to assign the main album.', array($data[0]['title']), $dom);
+					}
 				}
 			}
 
@@ -113,10 +129,15 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
 			$entityManager->persist($newalbum);
 			$entityManager->flush();
 
-			$status = __f('Success! The album %s is imported!', array($data[0]['title']), $dom);
+			if ($status != ''){
+				$status .= ' ' . __f('Success! The album %s is imported!', array($data[0]['title']), $dom);
+			}
+			else {
+				$status = __f('Success! The album %s is imported!', array($data[0]['title']), $dom);
+			}
 
-			$where2 = 'tbl.title = \'' . DataUtil::formatForStore($data[0]['title']) . '\'';
-			$thisalbum = $albumrepository->selectWhere($where2);
+			$where3 = 'tbl.title = \'' . DataUtil::formatForStore($data[0]['title']) . '\'';
+			$thisalbum = $albumrepository->selectWhere($where3);
 			$thisalbumobject = $albumrepository->selectById($thisalbum[0]['id']);
 
 			$resultpictures = $this->getPictures($module, $data[0]['id']);
