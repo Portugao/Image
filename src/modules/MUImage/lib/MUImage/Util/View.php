@@ -16,11 +16,11 @@
  */
 class MUImage_Util_View extends MUImage_Util_Base_View
 {
-	
+
 	/*
 	 * this function checks if an user is in the admin group
-	 * return boolean
-	 */
+	* return boolean
+	*/
 	public static function isAdmin() {
 		$uid = UserUtil::getVar('uid');
 		$gid = UserUtil::getGroupsForUser($uid);
@@ -33,15 +33,112 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	}
 	/**
 	 *
-	 * Returning the albums
+	 * Returning the albums for dropdownlist in edit mode
 	 */
 
-	public static function getAlbums() {
+	public static function getAlbums($id) {
 
+		$uid = UserUtil::getVar('uid');
 		$repository = MUImage_Util_Model::getAlbumRepository();
-		$albums = $repository->selectWhere();
+		$thisAlbum = $repository->selectById($id);
+		if ($thisAlbum) {
+			$thisParent = $thisAlbum->getParent();
+		}
+		if ($thisParent) {
+			$thisParentId = $thisParent->getId();
+		}
+		else {
+			$thisParentId = NULL;
+		}
+
+		// if this album has no main album only albums that have no main album too
+		// and are not this album can be the main album
+		if ($thisParentId == NULL) {
+
+			$where = 'tbl.parent_id is NULL';
+			$where .= ' AND ';
+			$where .= 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
+
+			if (MUImage_Util_View::isAdmin() === false) {
+				$where .= ' AND ';
+				$where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+			}
+
+		}
+		else {
+
+			$childrenIds = self::getSubAlbums($thisAlbum);
+			//LogUtil::registerError('Anzahl Ids: ' . count($childrenIds));
+			if ($childrenIds != false) {
+				//if (is_array($childrenIds) && count($childrenIds > 0)) {
+					//$childrenIds = implode(',', $childrenIds);
+					
+					$where = 'tbl.id NOT IN (' . implode(', ', $childrenIds) . ')';
+				//}
+				/*else {
+					$where = 'tbl.id != \'' . DataUtil::formatForStore($childrenIds[0]) . '\'';
+				}*/
+			}
+			if ($where != '') {
+				$where .= ' AND ';
+				$where .= 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
+			}
+			else {
+				$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
+			}
+		}
+		/*else {
+			if (MUImage_Util_View::isAdmin() === true) {
+		if ($thisParentId == NULL) {
+		$where = 'tbl.parent_id is NULL';
+		$where = ' AND ';
+		$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
+		}
+		else {
+		$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
+		$where .= ' AND ';
+		$where .= 'tbl.parent_id != \'' . DataUtil::formatForStore($id) . '\'';
+		}
+		}
+		else {
+		$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
+		$where .= ' AND ';
+		$where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+		$where .= ' AND ';
+		$where .= 'tbl.parent_id != \'' . DataUtil::formatForStore($id) . '\'';
+		}
+		}*/
+		$albums = $repository->selectWhere($where);
+
+		if ($thisParentId != NULL) {
+			//$albums[] = $thisParent;
+		}
 
 		return $albums;
+	}
+
+	/**
+	 * 
+	 * @param object $album
+	 * @param array $childrenIds
+	 * @return boolean|array
+	 */
+	public static function getSubAlbums($album, $childrenIds = array()) {
+		$children = $album->getChildren();
+        $counter = 0;
+		if ($children) {
+			$children->toArray();
+			LogUtil::registerError('Groesse Array pro Durchlauf: ' . count($children));
+			foreach ($children as $child) {		
+				$childrenIds[] = $child['id'];
+				LogUtil::registerError(implode(',', $childrenIds));
+				self::getSubAlbums($child, $childrenIds);
+			}	
+		}
+		else {
+			return false;
+		}	
+		return $childrenIds;
 	}
 
 	/**
