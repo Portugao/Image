@@ -62,7 +62,7 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 				$this->view->assign('parent', $parent);
 			}
 			if ($album) {
-			$this->view->assign('albumid', $album);
+				$this->view->assign('albumid', $album);
 			}
 		}
 		else {
@@ -72,7 +72,7 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 				LogUtil::registerError(__('You do not have permissions to edit this album!'));
 				return System::redirect($url);
 			}
-			// if a user want to edit a picture	
+			// if a user want to edit a picture
 			if ($ot == 'picture' && MUImage_Util_View::myPicture($id) == false) {
 				$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'picture', 'id' => $id));
 				LogUtil::registerError(__('You do not have permissions to edit this picture!'));
@@ -81,5 +81,53 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 		}
 		return parent::initialize($view);
 
+	}
+
+	/**
+	 * Input data processing called by handleCommand method.
+	 */
+	public function fetchInputData(Zikula_Form_View $view, &$args)
+	{
+		// we get the parent id for edit an album
+		$parent = $this->request->getPost()->filter('muimageAlbum_ParentItemList', NULL, FILTER_SANITIZE_NUMBER_INT);
+
+		// fetch posted data input values as an associative array
+		$formData = $this->view->getValues();
+		// we want the array with our field values
+		$entityData = $formData[$this->objectTypeLower];
+		unset($formData[$this->objectTypeLower]);
+
+		// get treated entity reference from persisted member var
+		$entity = $this->entityRef;
+
+		if (in_array($args['commandName'], array('create', 'update'))) {
+			if (count($this->uploadFields) > 0) {
+				$entityData = $this->handleUploads($entityData, $entity);
+				if ($entityData == false) {
+					return false;
+				}
+			}
+
+		}
+
+		$repeatCreateAction = false;
+		if (isset($entityData['repeatcreation'])) {
+			if ($args['commandName'] == 'create') {
+				$repeatCreateAction = $entityData['repeatcreation'];
+			}
+			unset($entityData['repeatcreation']);
+		}
+		// if objecttype is album we set parent album
+		if ($this->objectTypeLower == 'album') {
+			$entityData['parent_id'] = $parent[0];
+		}
+		// assign fetched data
+		$entity->merge($entityData);
+
+		// save updated entity
+		$this->entityRef = $entity;
+
+		// return remaining form data
+		return $formData;
 	}
 }
