@@ -411,7 +411,7 @@ button.muimageInlineButton {
     height: 30px;
     width: 100%;
     float: left;
-    overflow: hidden;
+    overflow: auto;
     font-size: 0.7em;
 }
 
@@ -479,3 +479,4 @@ button.muimageInlineButton {
     position: relative;
     margin: 170px 0 0 0;
 }
+
