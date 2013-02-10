@@ -22,7 +22,7 @@
  *
  * @return string The thumbnail file path.
  */
-function smarty_modifier_muimageCountAlbumPictures($title = '', $albumid = '')
+function smarty_modifier_muimageCountAlbumPictures($albumid = '')
 {
     /**
      * 

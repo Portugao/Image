@@ -78,7 +78,9 @@
                     {/if}
                 {/foreach}
             {/strip}
+        {if $otherPictures eq true}    
         <a title="{gt text='Load up a Picture'}" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /></a> <a title="{gt text='Load up few Pictures'}" href="{modurl modname='MUImage' type='user' func='multiUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /><img src="images/icons/extrasmall/edit_add.png" /></a>
+        {/if}
         {/if}    
     </div>
     {/checkpermissionblock} 
@@ -142,6 +144,7 @@
     {/if}
     </div>
     <div class="muimage_album_bottom">
+    {gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}<br /> 
     {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$childAlbum.children}
     </div>
     </div>
