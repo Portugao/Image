@@ -63,21 +63,15 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 				$where .= ' AND ';
 				$where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
 			}
-
 		}
 		else {
 
 			$childrenIds = self::getSubAlbums($thisAlbum);
-			//LogUtil::registerError('Anzahl Ids: ' . count($childrenIds));
+
 			if ($childrenIds != false) {
-				//if (is_array($childrenIds) && count($childrenIds > 0)) {
-					//$childrenIds = implode(',', $childrenIds);
-					
+				
 					$where = 'tbl.id NOT IN (' . implode(', ', $childrenIds) . ')';
-				//}
-				/*else {
-					$where = 'tbl.id != \'' . DataUtil::formatForStore($childrenIds[0]) . '\'';
-				}*/
+
 			}
 			if ($where != '') {
 				$where .= ' AND ';
@@ -86,33 +80,21 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			else {
 				$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
 			}
-		}
-		/*else {
-			if (MUImage_Util_View::isAdmin() === true) {
-		if ($thisParentId == NULL) {
-		$where = 'tbl.parent_id is NULL';
-		$where = ' AND ';
-		$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
-		}
-		else {
-		$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
-		$where .= ' AND ';
-		$where .= 'tbl.parent_id != \'' . DataUtil::formatForStore($id) . '\'';
-		}
-		}
-		else {
-		$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
-		$where .= ' AND ';
-		$where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
-		$where .= ' AND ';
-		$where .= 'tbl.parent_id != \'' . DataUtil::formatForStore($id) . '\'';
-		}
-		}*/
-		$albums = $repository->selectWhere($where);
 
-		if ($thisParentId != NULL) {
-			//$albums[] = $thisParent;
+			if (MUImage_Util_View::isAdmin() === false) {
+				$where .= ' AND ';
+				$where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+			}			
+			
 		}
+		
+		if ($thisParentId != NULL && $thisParent['createdUserId'] == $uid) {
+			$albums[] = $thisParent;
+		}
+		
+		$orderBy = 'title ASC';
+		
+		$albums = $repository->selectWhere($where, $orderBy);
 
 		return $albums;
 	}
@@ -149,18 +131,15 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
 		$view = new Zikula_Request_Http();
 		$id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
-		$where = 'tbl.album_id = \'' . DataUtil::formatForStore($id) . '\'';
+		$where = 'tbl.id = \'' . DataUtil::formatForStore($albumid) . '\'';
 
 		$repository = MUImage_Util_Model::getAlbumRepository();
-		$album = $repository->selectById();
+		$album = $repository->selectById($albumid);
 
-		/*foreach ($album[picture] as $value) {
-		 $pictures[] = $value;
-		}*/
-		//$count = count($album[picture]);
 		$count = 0;
 
-		//LogUtil::registerStatus($album);
+		$pictures = $album->getPicture();
+		$count = count($pictures);
 
 		return $count;
 	}
@@ -303,8 +282,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	}
 
 	/**
-	 *this method checks if an user may create another picture
-	 * return true or false
+	 * this method checks if an user may create another picture
+	 * return true or false or the number of allowed pictures
 	 */
 	public static function otherUserPictures($kind = 1) {
 		$dom = ZLanguage::getModuleDomain('MUImage');
@@ -397,12 +376,14 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
 		$albumrepository = MUImage_Util_Model::getAlbumRepository();
 		$myAlbum = $albumrepository->selectById($id);
+		
+		$uid = UserUtil::getVar('uid');
 
-		if (in_array(2, UserUtil::getGroupsForUser(UserUtil::getVar('uid')))) {
+		if (in_array(2, UserUtil::getGroupsForUser($uid))) {
 			return true;
 		}
 		else {
-			if (UserUtil::getVar('uid') == $myAlbum->getCreatedUserId()) {
+			if ($uid == $myAlbum->getCreatedUserId()) {
 				return true;
 			}
 			else {
