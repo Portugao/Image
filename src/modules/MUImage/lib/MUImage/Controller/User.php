@@ -24,9 +24,10 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	 */
 	public function display($args)
 	{
-		$view = new Zikula_Request_Http();
-		$id = $view->getGet()->filter('id', 0 , FILTER_SANITIZE_STRING);
-		$ot = $view->getGet()->filter('ot','album' , FILTER_SANITIZE_STRING);
+
+		$id = $this->request->getGet()->filter('id', 0 , FILTER_SANITIZE_STRING);
+		$ot = $this->request->getget()->filter('ot','album' , FILTER_SANITIZE_STRING);
+		
 		// DEBUG: permission check aspect starts
 		$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', $id.'::', ACCESS_READ));
 		// DEBUG: permission check aspect ends
@@ -59,6 +60,9 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 			$this->view->assign('showTitle', $showTitle);
 			$this->view->assign('showDescription', $showDescription);
 		}
+		
+		$otherPictures = MUImage_Util_View::otherUserPictures();
+		$this->view->assign('otherPictures', $otherPictures);
 			
 		return parent::display($args);
 			
