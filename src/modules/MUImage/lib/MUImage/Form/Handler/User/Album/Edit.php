@@ -29,7 +29,8 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 		$dom = ZLanguage::getModuleDomain('MUimage');
 		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
-	//	if ($this->mode == 'edit') {
+		// if we want to edit an item
+		if ($id > 0) {
 			$myAlbums = MUImage_Util_View::getAlbums($id);
 
 			$myalbums = array();
@@ -39,9 +40,9 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 			}
 
 			foreach ($myAlbums as $myAlbum) {
-				$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title']);
+				$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
 			}
-		//}
+		}
 		// we check if user is in admin group
 		$inAdmingroup = MUImage_Util_View::isAdmin();
 		$this->view->assign('inAdminGroup', $inAdminGroup);
