@@ -75,7 +75,15 @@
     </fieldset>
 
     {if $mode ne 'create'}
-        {include file='user/album/include_selectEditOne.tpl' relItem=$picture aliasName='album' idPrefix='muimageAlbum_Album'}  
+        {* {include file='user/album/include_selectEditOne.tpl' relItem=$picture aliasName='album' idPrefix='muimageAlbum_Album'} *}
+        <fieldset>
+        <legend>{gt text='Album'}</legend>
+            <div class="z-formrow">
+                {formlabel for='muimageAlbum_AlbumItemList' __text='Album'}
+                {formdropdownlist group='mainalbum' id='muimageAlbum_AlbumItemList'}
+                <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="1">
+            </div>
+        </fieldset>  
     {else}
         <input id="muimageAlbum_AlbumItemList" type="hidden" value="{$albumid}" name="muimageAlbum_AlbumItemList">
         <input id="muimageAlbum_AlbumMode" type="hidden" value="1" name="muimageAlbum_AlbumMode">
