@@ -25,7 +25,20 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 	 * @return boolean False in case of initialization errors, otherwise true.
 	 */
 	public function initialize(Zikula_Form_View $view)
-	{
+	{	
+		$dom = ZLanguage::getModuleDomain('MUImage');
+		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+		
+		$picturerepository = MUImage_Util_Model::getPictureRepository();
+		$albumrepository = MUImage_Util_Model::getAlbumRepository();
+		if ($id > 0) {
+		$picture = $picturerepository->selectById($id);
+		}
+		
+		$picture->getAlbum();
+		//$albumid
+		
+		
 		// we get the allowed filesize	
 		$fileSize = MUImage_Util_Controller::maxSize();
 		// we check if deleting of pictures is allowed
@@ -34,6 +47,27 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 		$minWidth = MUImage_Util_Controller::minWidth();
 		// we check for user is in admin group
 		$inAdminGroup = MUImage_Util_View::isAdmin();
+		
+		// if we want to edit an item
+		if ($id > 0) {
+			$myAlbums = MUImage_Util_View::getAlbums($id, 2);
+		
+			$myalbums = array();
+		
+			if (MUImage_Util_View::isAdmin() === true || MUImage_Util_View::otherUserMainAlbums() === true) {
+				$myalbums[] = array('value' => '', 'text' => __('Choose an album'), $dom);
+			}
+		
+			foreach ($myAlbums as $myAlbum) {
+				$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
+			}
+		}
+		
+		// controlling of albums in edit form
+		// of pictures and albums
+		$mainalbum = $this->view->get_template_vars('mainalbum');
+		$mainalbum['muimageAlbum_AlbumItemListItems'] = $myalbums;
+		$this->view->assign('mainalbum', $mainalbum);
 			
 		$this->view->assign('fileSize', $fileSize)
 		           ->assign('minWidth', $minWidth)

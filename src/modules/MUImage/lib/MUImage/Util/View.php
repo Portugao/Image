@@ -32,47 +32,35 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 		}
 	}
 	/**
-	 *
+	 * $param int $id     id of the item
+	 * $param int $kind   kind of item, 1 = album, other = picture
 	 * Returning the albums for dropdownlist in edit mode
 	 */
 
-	public static function getAlbums($id) {
+	public static function getAlbums($id, $kind = 1) {
 
 		$uid = UserUtil::getVar('uid');
 		$repository = MUImage_Util_Model::getAlbumRepository();
-		$thisAlbum = $repository->selectById($id);
-		if ($thisAlbum) {
-			$thisParent = $thisAlbum->getParent();
-		}
-		if ($thisParent) {
-			$thisParentId = $thisParent->getId();
-		}
-		else {
-			$thisParentId = NULL;
-		}
-
-		// if this album has no main album only albums that have no main album too
-		// and are not this album can be the main album
-		if ($thisParentId == NULL) {
-
-			$where = 'tbl.parent_id is NULL';
-			$where .= ' AND ';
-			$where .= 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
-
-			if (MUImage_Util_View::isAdmin() === false) {
-				$where .= ' AND ';
-				$where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+		if ($kind == 1) {
+			$thisAlbum = $repository->selectById($id);
+			if ($thisAlbum) {
+				$thisParent = $thisAlbum->getParent();
 			}
-		}
-		else {
+			if ($thisParent) {
+				$thisParentId = $thisParent->getId();
+			}
+			else {
+				$thisParentId = NULL;
+			}
 
 			$childrenIds = self::getSubAlbums($thisAlbum);
 
 			if ($childrenIds != false) {
-				
-					$where = 'tbl.id NOT IN (' . implode(', ', $childrenIds) . ')';
+
+				$where = 'tbl.id NOT IN (' . implode(', ', $childrenIds) . ')';
 
 			}
+
 			if ($where != '') {
 				$where .= ' AND ';
 				$where .= 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
@@ -80,47 +68,74 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			else {
 				$where = 'tbl.id != \'' . DataUtil::formatForStore($id) . '\'';
 			}
+		}
 
-			if (MUImage_Util_View::isAdmin() === false) {
+		if (MUImage_Util_View::isAdmin() === false) {
+			if ($where != '') {
+
 				$where .= ' AND ';
 				$where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
-			}			
-			
+			}
+			else {
+				$where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+			}
 		}
-		
+
 		if ($thisParentId != NULL && $thisParent['createdUserId'] == $uid) {
 			$albums[] = $thisParent;
 		}
-		
+
 		$orderBy = 'title ASC';
-		
+
 		$albums = $repository->selectWhere($where, $orderBy);
 
 		return $albums;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param object $album
 	 * @param array $childrenIds
 	 * @return boolean|array
 	 */
-	public static function getSubAlbums($album, $childrenIds = array()) {
-		$children = $album->getChildren();
-        $counter = 0;
-		if ($children) {
-			$children->toArray();
-			LogUtil::registerError('Groesse Array pro Durchlauf: ' . count($children));
-			foreach ($children as $child) {		
-				$childrenIds[] = $child['id'];
-				LogUtil::registerError(implode(',', $childrenIds));
-				self::getSubAlbums($child, $childrenIds);
-			}	
+	public static function getSubAlbums($album, $childrenIds = array(), $start = 0) {
+
+		$childrenIds = SessionUtil::getVar('muimagechildrenids', false);
+
+		if ($start == 0) {
+			$childrenIds[] = $album['id'];
+			$start++;
 		}
-		else {
+
+		// we get he children albums of this album
+		$children = $album->getChildren();
+		// to array
+		$children = $children->toArray();
+
+		foreach ($children as $child) {
+				
+			if ($child['id'] > 0) {
+				$childrenIds[] = $child['id'];
+				SessionUtil::setVar('muimagechildrenids', $childrenIds);
+			}
+			else {
+				// nothing to do
+					
+			}
+		}
+		foreach ($children as $child) {
+			$childrenIds = SessionUtil::getVar('muimagechildrenids');
+			self::getSubAlbums($child, $childrenIds, $start);
+		}
+
+		if ($childrenIds && count($childrenIds > 0)) {
+			return $childrenIds;
+		}
+		else
+		{
 			return false;
-		}	
-		return $childrenIds;
+		}
+
 	}
 
 	/**
@@ -376,7 +391,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
 		$albumrepository = MUImage_Util_Model::getAlbumRepository();
 		$myAlbum = $albumrepository->selectById($id);
-		
+
 		$uid = UserUtil::getVar('uid');
 
 		if (in_array(2, UserUtil::getGroupsForUser($uid))) {

@@ -26,8 +26,11 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 	 */
 	public function initialize(Zikula_Form_View $view)
 	{
-		$dom = ZLanguage::getModuleDomain('MUimage');
+		$dom = ZLanguage::getModuleDomain('MUImage');
 		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+
+		// we delete session var for dropdownlist if existing, will be set in util/View.php
+		SessionUtil::delVar('muimagechildrenids');
 
 		// if we want to edit an item
 		if ($id > 0) {
@@ -48,7 +51,7 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 		$this->view->assign('inAdminGroup', $inAdminGroup);
 			
 		// controlling of albums in edit form
-		// of pictures and ablums
+		// of pictures and albums
 		$mainalbum = $this->view->get_template_vars('mainalbum');
 		$mainalbum['muimageAlbum_ParentItemListItems'] = $myalbums;
 		$this->view->assign('mainalbum', $mainalbum);
