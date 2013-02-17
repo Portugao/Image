@@ -16,17 +16,17 @@
  */
 class MUImage_Util_Controller extends MUImage_Util_Base_Controller
 {
-	
+
 	/**
-	 * this function chekcs for the given min width 
+	 * this function checks for the given min width
 	 * for a picture in the configuration
 	 * return string
 	 */
-	
+
 	public static function minWidth() {
-		
+
 		$dom = ZLanguage::getModuleDomain('MUImage');
-		
+
 		$minWidth = ModUtil::getVar('MUImage', 'minWidth');
 		if ($minWidth == '') {
 			return __('Not set', $dom);
@@ -34,74 +34,154 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
 		else {
 			return $minWidth . ' ' . __('pixel');
 		}
-		
-	}
-    /**
-     * Get allowed filesize
-     */
-    
-    public static function maxSize() 
-    {
 
-    	$maxSize = ModUtil::getVar('MUImage', 'fileSize');
-    	
-    	$dom = ZLanguage::getModuleDomain('MUImage');
+	}
+	/**
+	 * Get allowed filesize
+	 */
+
+	public static function maxSize()
+	{
+
+		$maxSize = ModUtil::getVar('MUImage', 'fileSize');
+			
+		$dom = ZLanguage::getModuleDomain('MUImage');
 
 		if ($maxSize > 0) {
 
-				$maxSizeKB = $maxSize / 1024;
+			$maxSizeKB = $maxSize / 1024;
 
-				if ($maxSizeKB < 1024) {
-					$maxSizeKB = DataUtil::formatNumber($maxSizeKB);
+			if ($maxSizeKB < 1024) {
+				$maxSizeKB = DataUtil::formatNumber($maxSizeKB);
 
-					$allowedSize = $maxSizeKB . ' KB';
-					return $allowedSize;
-
-				}
-
-				$maxSizeMB = $maxSizeKB / 1024;
-				$maxSizeMB = DataUtil::formatNumber($maxSizeMB);
-
-				$allowedSize = $maxSizeMB . ' MB';
+				$allowedSize = $maxSizeKB . ' KB';
 				return $allowedSize;
+
+			}
+
+			$maxSizeMB = $maxSizeKB / 1024;
+			$maxSizeMB = DataUtil::formatNumber($maxSizeMB);
+
+			$allowedSize = $maxSizeMB . ' MB';
+			return $allowedSize;
 
 		}
 		else {
 			$allowedSize = __('No limit', $dom);
 		}
-		
+
 		return $allowedSize;
-    }
-    
-    
-    /**
-     * this function calculates the number of upload fields
-     * @return number
-     */
-    public static function allowedFields() {
-    	// we check the created pictures for this user
-    	$uid = UserUtil::getVar('uid');
-    	$gid = UserUtil::getGroupsForUser($uid);
-    	if (in_array(2, $gid)) {
-    		$allowedFields = 10 + 1;
-    	}
-    	else {
-    		$picturerepository = MUImage_Util_Model::getPictureRepository();
-    		$where3 = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
-    		$picturecount = $picturerepository->selectCount($where3);
-    	
-    		// we check for modvar numberPictures
-    		$numberPictures = ModUtil::getVar('MUImage', 'numberPictures');
-    	
-    		$diff = $numberPictures - $picturecount;
-    		if ($diff < 10) {
-    			$allowedFields = $diff + 1;
-    		}
-    		else {
-    			$allowedFields = 10 + 1;
-    		}
-    	}
-    	
-    	return $allowedFields;
-    }
+	}
+
+
+	/**
+	 * this function calculates the number of upload fields
+	 * @return number
+	 */
+	public static function allowedFields() {
+		// we check the created pictures for this user
+		$uid = UserUtil::getVar('uid');
+		$gid = UserUtil::getGroupsForUser($uid);
+		if (in_array(2, $gid)) {
+			$allowedFields = 10 + 1;
+		}
+		else {
+			$picturerepository = MUImage_Util_Model::getPictureRepository();
+			$where3 = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+			$picturecount = $picturerepository->selectCount($where3);
+
+			// we check for modvar numberPictures
+			$numberPictures = ModUtil::getVar('MUImage', 'numberPictures');
+
+			$diff = $numberPictures - $picturecount;
+			if ($diff < 10) {
+				$allowedFields = $diff + 1;
+			}
+			else {
+				$allowedFields = 10 + 1;
+			}
+		}
+			
+		return $allowedFields;
+	}
+
+	/**
+	 *
+	 * @param int $id id of the curent album
+	 * @return mixed the mode for edit the mainalbum of the
+	 * current album
+	 * current album is main album
+	 * 1 = and user can create another main album and sub album
+	 * 2 = this album is main album and user may create a main album and not create another sub album
+	 * 3 = this album is main album and user can create another sub album, not a main album
+	 * 4 = this album is main album and user may not create another main or sub album
+	 *
+	 */
+	public static function ruleEditMainAlbum($id) {
+			
+		if ($id > 0) {
+			$albumrepository = MUImage_Util_Model::getAlbumRepository();
+			$thisAlbum = $albumrepository->selectById($id);
+
+			$thisAlbumId = $thisAlbum->getId();
+			$thisAlbumParent = $thisAlbum->getParent();
+			if ($thisAlbumParent) {
+				$thisAlbumParentId = $thisAlbumParent->getId();
+			}
+			else {
+				$thisAlbumParentId = NULL;
+			}
+			
+			$mainAlbumMode = false;
+
+			// if album is on first level
+			if ($thisAlbumParentId == NULL) {
+				
+				if (MUImage_Util_View::otherUserMainAlbums() == true) {
+					if (MUImage_Util_View::otherUserSubAlbums() == true) {
+						// may create album on first level and subalbum
+						$mainAlbumMode = 1;
+					}
+					else {
+						// may only create album on first level
+						$mainAlbumMode = 2;
+					}
+				}
+				else {
+					if (MUImage_Util_View::otherUserSubAlbums() == true) {
+						// may only create sub album
+						$mainAlbumMode = 3;
+					}
+					else {
+						// may nothing
+						$mainAlbumMode = 4;
+					}
+				}
+			}
+			else {
+				if (MUImage_Util_View::otherUserMainAlbums() == true) {
+					if (MUImage_Util_View::otherUserSubAlbums() == true) {
+						// may create album on first level and subalbum
+						$mainAlbumMode = A;
+					}
+					else {
+						// may only create album on first level
+						$mainAlbumMode = B;
+					}
+				}
+				else {
+					if (MUImage_Util_View::otherUserSubAlbums() == true) {
+						// may only create sub album
+						$mainAlbumMode = C;
+					}
+					else {
+						// may nothing
+						$mainAlbumMode = D;
+					}
+				}
+			}
+		}
+			
+		return $mainAlbumMode;
+	}
 }
