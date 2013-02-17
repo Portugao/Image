@@ -29,8 +29,9 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 		$dom = ZLanguage::getModuleDomain('MUImage');
 		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
-		// we delete session var for dropdownlist if existing, will be set in util/View.php
-		SessionUtil::delVar('muimagechildrenids');
+		$mainAlbumMode = MUImage_Util_Controller::ruleEditMainAlbum($id);
+		// we check if user is in admin group
+		$inAdminGroup = MUImage_Util_View::isAdmin();
 
 		// if we want to edit an item
 		if ($id > 0) {
@@ -38,18 +39,23 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 
 			$myalbums = array();
 
-			if (MUImage_Util_View::isAdmin() === true || MUImage_Util_View::otherUserMainAlbums() === true) {
-				$myalbums[] = array('value' => '', 'text' => __('Choose an album'), $dom);
+			if (MUImage_Util_View::isAdmin() === true || ($mainAlbumMode != C && $mainAlbumMode != D)) {
+				$myalbums[] = array('value' => '', 'text' => __('No main album'), $dom);
 			}
 
-			foreach ($myAlbums as $myAlbum) {
-				$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
+			if (MUImage_Util_View::isAdmin() === true || ($mainAlbumMode !== false && $mainAlbumMode != 4)) {
+				foreach ($myAlbums as $myAlbum) {
+					$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
+				}
 			}
 		}
-		// we check if user is in admin group
-		$inAdmingroup = MUImage_Util_View::isAdmin();
-		$this->view->assign('inAdminGroup', $inAdminGroup);
-			
+		// we check if there is an item in the dropdownlist
+		$countmyalbums = count($myalbums);
+		
+		$this->view->assign('mainAlbumMode', $mainAlbumMode)
+		           ->assign('inAdminGroup', $inAdminGroup)
+		           ->assign('countmyalbums', $countmyalbums);
+
 		// controlling of albums in edit form
 		// of pictures and albums
 		$mainalbum = $this->view->get_template_vars('mainalbum');
@@ -62,10 +68,13 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 			$thisalbum = $albumrepository->selectById($id);
 			$parent = $thisalbum->getParent();
 			if ($parent) {
-				$parentid[0] = $parent->getId();
-
-				$this->view->assign('muimageAlbum_ParentItemList', 1);
+				$parentid = $parent->getId();	
 			}
+			else {
+				$parentid = '';
+			}
+			
+			$this->view->assign('savedParent', $parentid);
 		}
 
 		if (MUImage_Util_View::otherUserMainAlbums() == true) {
@@ -74,7 +83,7 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 		else {
 			$this->view->assign('otherMainAlbum', false);
 		}
-			
+
 		parent::initialize($view);
 	}
 }
