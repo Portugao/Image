@@ -163,7 +163,9 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
 
         $currentType = FormUtil::getPassedValue('type', 'user', 'GETPOST', FILTER_SANITIZE_STRING);
         $currentFunc = FormUtil::getPassedValue('func', 'main', 'GETPOST', FILTER_SANITIZE_STRING);
+        
         $dom = ZLanguage::getModuleDomain('MUImage');
+        
         if ($currentType == 'admin') {
             if (in_array($currentFunc, array('main', 'view'))) {
                    /* $this->_actions[] = array(
@@ -250,12 +252,12 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
                 }
             }
             if ($currentFunc == 'display') {
-                    $this->_actions[] = array(
-                        'url' => array('type' => 'user', 'func' => 'view', 'arguments' => array('ot' => 'album')),
+                   /* $this->_actions[] = array(
+                        'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $albumid)),
                         'icon' => 'back',
                         'linkTitle' => __('Back to overview', $dom),
                         'linkText' => __('Back to overview', $dom)
-                    );
+                    );*/
             }
         }
     }
