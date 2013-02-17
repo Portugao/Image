@@ -34,11 +34,7 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 		if ($id > 0) {
 		$picture = $picturerepository->selectById($id);
 		}
-		
-		$picture->getAlbum();
-		//$albumid
-		
-		
+			
 		// we get the allowed filesize	
 		$fileSize = MUImage_Util_Controller::maxSize();
 		// we check if deleting of pictures is allowed
