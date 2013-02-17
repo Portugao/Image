@@ -58,6 +58,7 @@
     </div>
     <div class="muimage_view_album_description">
     {$album.description|truncate:100}
+    {useravatar uid=$album.createdUserId size=30}
     </div>
     <div class="muimage_view_album_image">
     <a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{include file='user/picture/include_displayItemListMany3.tpl' items=$album.picture}</a>

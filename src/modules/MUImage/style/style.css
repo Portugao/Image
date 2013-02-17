@@ -304,6 +304,11 @@ button.muimageInlineButton {
     font-size: 0.9em;
 }
 
+.muimage_view_album_description img {
+   float: right; 
+   padding: 0 5px 0 0;
+}
+
 .muimage_view_album_image {
     background: #fff;
     padding: 0;
@@ -479,4 +484,5 @@ button.muimageInlineButton {
     position: relative;
     margin: 170px 0 0 0;
 }
+
 
