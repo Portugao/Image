@@ -89,13 +89,17 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 	public function fetchInputData(Zikula_Form_View $view, &$args)
 	{
 		// we get the parent id for edit an album
-		$parent = $this->request->getPost()->filter('muimageAlbum_ParentItemList', NULL, FILTER_SANITIZE_NUMBER_INT);
+		//$parent = $this->request->request->filter('muimageAlbum_ParentItemList', '', FILTER_SANITIZE_NUMBER_INT);
 
 		// fetch posted data input values as an associative array
 		$formData = $this->view->getValues();
 		// we want the array with our field values
 		$entityData = $formData[$this->objectTypeLower];
 		unset($formData[$this->objectTypeLower]);
+		
+		$mainAlbumData = $formData['mainalbum'];
+
+		$parent = $mainAlbumData['muimageAlbum_ParentItemList'];
 
 		// get treated entity reference from persisted member var
 		$entity = $this->entityRef;
@@ -119,7 +123,7 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 		}
 		// if objecttype is album we set parent album
 		if ($this->objectTypeLower == 'album') {
-			$entityData['parent_id'] = $parent[0];
+			$entityData['parent_id'] = $parent;
 		}
 		// assign fetched data
 		$entity->merge($entityData);
