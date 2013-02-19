@@ -162,6 +162,13 @@ class MUImage_Form_Handler_User_Album_Base_Edit extends MUImage_Form_Handler_Use
 
         $this->reassignRelatedObjects();
         $entityData['Parent'] = ((isset($selectedRelations['parent'])) ? $selectedRelations['parent'] : $this->retrieveRelatedObjects('album', 'muimageAlbum_ParentItemList', false, 'POST'));
+        
+        if ($args['commandName'] == 'update') {
+        	$parent = $this->request->getPost()->filter('muimageAlbum_ParentItemList', '', FILTER_SANITIZE_NUMBER_INT);
+        	$albumrepository = MUImage_Util_Model::getAlbumRepository();
+        	$album = $albumrepository->selectById($parent[0]);
+        	$entityData['Parent'] = $album;
+        }
 
         // assign fetched data
         if (count($entityData) > 0) {

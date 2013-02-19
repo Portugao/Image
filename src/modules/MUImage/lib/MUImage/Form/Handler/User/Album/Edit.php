@@ -51,10 +51,10 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 		}
 		// we check if there is an item in the dropdownlist
 		$countmyalbums = count($myalbums);
-		
+
 		$this->view->assign('mainAlbumMode', $mainAlbumMode)
-		           ->assign('inAdminGroup', $inAdminGroup)
-		           ->assign('countmyalbums', $countmyalbums);
+		->assign('inAdminGroup', $inAdminGroup)
+		->assign('countmyalbums', $countmyalbums);
 
 		// controlling of albums in edit form
 		// of pictures and albums
@@ -68,12 +68,12 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 			$thisalbum = $albumrepository->selectById($id);
 			$parent = $thisalbum->getParent();
 			if ($parent) {
-				$parentid = $parent->getId();	
+				$parentid = $parent->getId();
 			}
 			else {
 				$parentid = '';
 			}
-			
+				
 			$this->view->assign('savedParent', $parentid);
 		}
 
@@ -85,5 +85,40 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 		}
 
 		parent::initialize($view);
+	}
+
+	/**
+	 * Input data processing called by handleCommand method.
+	 */
+	public function fetchInputData(Zikula_Form_View $view, &$args)
+	{
+		parent::fetchInputData($view, $args);
+
+		// get treated entity reference from persisted member var
+		$entity = $this->entityRef;
+
+		$entityData = array();
+
+		$this->reassignRelatedObjects();
+		$entityData['Parent'] = ((isset($selectedRelations['parent'])) ? $selectedRelations['parent'] : $this->retrieveRelatedObjects('album', 'muimageAlbum_ParentItemList', false, 'POST'));
+
+		if ($args['commandName'] == 'update') {
+			$parent = $this->request->getPost()->filter('muimageAlbum_ParentItemList', '', FILTER_SANITIZE_NUMBER_INT);
+			if ($parent != '') {
+				$albumrepository = MUImage_Util_Model::getAlbumRepository();
+				$album = $albumrepository->selectById($parent[0]);
+			}
+			if ($album) {
+				$entityData['Parent'] = $album;
+			}
+		}
+
+		// assign fetched data
+		if (count($entityData) > 0) {
+			$entity->merge($entityData);
+		}
+
+		// save updated entity
+		$this->entityRef = $entity;
 	}
 }
