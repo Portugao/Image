@@ -38,13 +38,13 @@
     <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$parent}">
     <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
     {else}
-   {* {if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
+    {if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
         <fieldset>
             <legend>{gt text='Main album'}</legend>
             <div class="z-formrow">
                 {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
                 {formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList'}
-                <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="1">
+                <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
             </div>
         </fieldset>
     {else}
@@ -53,9 +53,9 @@
         {/if}
         <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$savedParent}">
         <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
-    {/if} *}
-     {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'} 
     {/if}
+    {* {include file='user/album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'} 
+   *}  {/if}
     {* include display hooks *}
     {if $mode eq 'create'}
         {notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=null}
