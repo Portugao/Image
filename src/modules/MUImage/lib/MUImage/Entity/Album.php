@@ -234,11 +234,6 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
 	 */
 	public function preSaveCallback()
 	{
-		$view = new Zikula_Request_Http();
-		$parentid = $view->getPost()->filter('muimageAlbum_ParentItemList','', FILTER_SANITIZE_NUMBER_INT);
-		if ($parentid[0] != '') {
-			$this->setParent_id($parentid[0]);
-		}
 		$this->performPreSaveCallback();
 	}
 
