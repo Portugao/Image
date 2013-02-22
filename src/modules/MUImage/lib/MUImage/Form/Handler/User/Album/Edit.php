@@ -30,6 +30,7 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
 		$mainAlbumMode = MUImage_Util_Controller::ruleEditMainAlbum($id);
+		LogUtil::registerError($mainAlbumMode);
 		// we check if user is in admin group
 		$inAdminGroup = MUImage_Util_View::isAdmin();
 
@@ -43,7 +44,7 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 				$myalbums[] = array('value' => '', 'text' => __('No main album'), $dom);
 			}
 
-			if (MUImage_Util_View::isAdmin() === true || ($mainAlbumMode !== false && $mainAlbumMode != 4)) {
+			if (MUImage_Util_View::isAdmin() === true || $mainAlbumMode == 1 || $mainAlbumMode == 2 || $mainAlbumMode == 3 || $mainAlbumMode == A || $mainAlbumMode == B || $mainAlbumMode == C || $mainAlbumMode == D) {
 				foreach ($myAlbums as $myAlbum) {
 					$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
 				}
@@ -73,7 +74,7 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 			else {
 				$parentid = '';
 			}
-				
+
 			$this->view->assign('savedParent', $parentid);
 		}
 
@@ -92,24 +93,30 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 	 */
 	public function fetchInputData(Zikula_Form_View $view, &$args)
 	{
-		parent::fetchInputData($view, $args);
-
+		if ($args['commandName'] == 'create') {
+			parent::fetchInputData($view, $args);
+		}
+		
 		// get treated entity reference from persisted member var
 		$entity = $this->entityRef;
 
 		$entityData = array();
 
-		$this->reassignRelatedObjects();
-		$entityData['Parent'] = ((isset($selectedRelations['parent'])) ? $selectedRelations['parent'] : $this->retrieveRelatedObjects('album', 'muimageAlbum_ParentItemList', false, 'POST'));
-
+		if ($args['commandName'] == 'create') {
+			$this->reassignRelatedObjects();
+			$entityData['Parent'] = ((isset($selectedRelations['parent'])) ? $selectedRelations['parent'] : $this->retrieveRelatedObjects('album', 'muimageAlbum_ParentItemList', false, 'POST'));
+		}
 		if ($args['commandName'] == 'update') {
-			$parent = $this->request->getPost()->filter('muimageAlbum_ParentItemList', '', FILTER_SANITIZE_NUMBER_INT);
-			if ($parent != '') {
+			$parent = $this->request->getPost()->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
+			if ($parent[0] > 0 && is_array($parent)) {
 				$albumrepository = MUImage_Util_Model::getAlbumRepository();
 				$album = $albumrepository->selectById($parent[0]);
+				if ($album) {
+					$entityData['Parent'] = $album;
+				}
 			}
-			if ($album) {
-				$entityData['Parent'] = $album;
+			else {
+				$entityData['Parent'] = null;
 			}
 		}
 
