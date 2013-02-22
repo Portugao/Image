@@ -278,7 +278,7 @@ button.muimageInlineButton {
     background: #ddd;
     padding: 5px  5px 0;
     float: right;
-    width: 30%;
+    width: 20%;
     text-align: right;
     font-size: 1.2em;
     font-weight: bolder;
@@ -461,6 +461,7 @@ button.muimageInlineButton {
 #basic_accordion h3 {
      float: left;
     width: 98%;
+    padding: 1% !important;
 }
 
 
@@ -484,5 +485,6 @@ button.muimageInlineButton {
     position: relative;
     margin: 170px 0 0 0;
 }
+
 
 
