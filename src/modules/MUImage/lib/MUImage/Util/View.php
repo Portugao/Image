@@ -52,12 +52,12 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 			else {
 				$thisParentId = NULL;
 			}
-			
+
 			$mainAlbumMode = MUImage_Util_Controller::ruleEditMainAlbum($id);
 
 			$childrenIds = self::getSubAlbums($thisAlbum);
 			
-			//SessionUtil::delVar('muimagechildrenids');
+			SessionUtil::delVar('muimagechildrenids');
 
 			if ($childrenIds != false) {
 
