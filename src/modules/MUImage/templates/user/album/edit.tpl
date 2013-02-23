@@ -53,10 +53,14 @@
                 <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
             </div>
         </fieldset>
+        {if $mainAlbumMode eq D}
+            <p class="z-warningmsg">{gt text='Attention! This album is a sub album and you have no quotas to make it to main album! You may select another album as main album.'}</p>
+        {/if}
     {else}
         {if $mainAlbumMode eq 4}
             <p class="z-warningmsg">{gt text='Attention! This album is on first level and you have no quotas to change!'}</p>
         {/if}
+
         <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$savedParent}">
         <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
     {/if}
