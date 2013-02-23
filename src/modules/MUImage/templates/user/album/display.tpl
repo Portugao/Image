@@ -205,6 +205,7 @@
 
 </div>
 </div>
+</div>
 {include file='user/footer.tpl'}
 <script type="text/javascript" charset="utf-8">
 /* <![CDATA[ */
