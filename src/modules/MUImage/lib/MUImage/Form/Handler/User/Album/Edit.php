@@ -30,7 +30,7 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
 		$mainAlbumMode = MUImage_Util_Controller::ruleEditMainAlbum($id);
-		LogUtil::registerError($mainAlbumMode);
+
 		// we check if user is in admin group
 		$inAdminGroup = MUImage_Util_View::isAdmin();
 
