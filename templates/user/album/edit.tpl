@@ -2,6 +2,10 @@
 {include file='user/header.tpl'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
+{pageaddvar name='javascript' value='jquery'}
+{pageaddvar name='javascript' value='jquery-ui'}
+{pageaddvar name='javascript' value='modules/MUImage/javascript/chosen/chosen.jquery.js'}
+{pageaddvar name='stylesheet' value='modules/MUImage/javascript/chosen/chosen.css'}
 
 {if $mode eq 'edit'}
     {gt text='Edit album' assign='templateTitle'}
@@ -49,7 +53,7 @@
             <legend>{gt text='Main album'}</legend>
             <div class="z-formrow">
                 {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
-                {formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList'}
+                {formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select'}
                 <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
             </div>
         </fieldset>
@@ -114,6 +118,7 @@
 
 <script type="text/javascript" charset="utf-8">
 /* <![CDATA[ */
+    
     var editImage = '<img src="{{$editImageArray.src}}" width="16" height="16" alt="" />';
     var removeImage = '<img src="{{$deleteImageArray.src}}" width="16" height="16" alt="" />';
     var relationHandler = new Array();
@@ -151,6 +156,11 @@
         });
 
         Zikula.UI.Tooltips($$('.muimageFormTooltips'));
+    });
+    
+    var MU = jQuery.noConflict();
+    MU(document).ready( function() { 
+        MU(".chzn-select").chosen();
     });
 
 /* ]]> */
