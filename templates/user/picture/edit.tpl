@@ -80,7 +80,7 @@
         <legend>{gt text='Album'}</legend>
             <div class="z-formrow">
                 {formlabel for='muimageAlbum_AlbumItemList' __text='Album'}
-                {formdropdownlist group='mainalbum' id='muimageAlbum_AlbumItemList'}
+                {formdropdownlist selectedValue=$savedAlbum group='mainalbum' id='muimageAlbum_AlbumItemList'}
                 <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="1">
             </div>
         </fieldset>  
