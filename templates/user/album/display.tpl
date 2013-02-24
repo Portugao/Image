@@ -135,6 +135,7 @@
     </div>
     <div class="muimage_album_description">
     {$childAlbum.description}
+    {useravatar uid=$childAlbum.createdUserId size=30}
     </div>
     <div class="muimage_album_image">
     {if isset($childAlbum.picture)}
