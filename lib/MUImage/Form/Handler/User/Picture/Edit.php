@@ -25,17 +25,18 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 	 * @return boolean False in case of initialization errors, otherwise true.
 	 */
 	public function initialize(Zikula_Form_View $view)
-	{	
+	{
 		$dom = ZLanguage::getModuleDomain('MUImage');
 		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
-		
+
 		$picturerepository = MUImage_Util_Model::getPictureRepository();
 		$albumrepository = MUImage_Util_Model::getAlbumRepository();
+
 		if ($id > 0) {
-		$picture = $picturerepository->selectById($id);
+			$picture = $picturerepository->selectById($id);
 		}
 			
-		// we get the allowed filesize	
+		// we get the allowed filesize
 		$fileSize = MUImage_Util_Controller::maxSize();
 		// we check if deleting of pictures is allowed
 		$deletePictures = ModUtil::getVar($this->name, 'userDeletePictures');
@@ -43,33 +44,45 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 		$minWidth = MUImage_Util_Controller::minWidth();
 		// we check for user is in admin group
 		$inAdminGroup = MUImage_Util_View::isAdmin();
-		
+
 		// if we want to edit an item
 		if ($id > 0) {
 			$myAlbums = MUImage_Util_View::getAlbums($id, 2);
-		
+
 			$myalbums = array();
-		
+
 			if (MUImage_Util_View::isAdmin() === true || MUImage_Util_View::otherUserMainAlbums() === true) {
 				$myalbums[] = array('value' => '', 'text' => __('Choose an album'), $dom);
 			}
-		
+
 			foreach ($myAlbums as $myAlbum) {
 				$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
 			}
 		}
-		
+
 		// controlling of albums in edit form
 		// of pictures and albums
 		$mainalbum = $this->view->get_template_vars('mainalbum');
 		$mainalbum['muimageAlbum_AlbumItemListItems'] = $myalbums;
 		$this->view->assign('mainalbum', $mainalbum);
+
+		if ($id > 0) {
+				
+			if ($picture) {
+				$pictureAlbum = $picture->getAlbum();
+				if ($pictureAlbum) {
+					$pictureAlbumId = $pictureAlbum->getId();
+				}
+			}
+
+			$this->view->assign('savedAlbum', $pictureAlbumId);
+		}
 			
 		$this->view->assign('fileSize', $fileSize)
-		           ->assign('minWidth', $minWidth)
-		           ->assign('deletePictures', $deletePictures)
-		           ->assign('inAdminGroup', $inAdminGroup);
-		
+		->assign('minWidth', $minWidth)
+		->assign('deletePictures', $deletePictures)
+		->assign('inAdminGroup', $inAdminGroup);
+
 		if (MUImage_Util_View::otherUserMainAlbums() == true) {
 			$this->view->assign('otherMainAlbum', true);
 		}
@@ -81,16 +94,70 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 	}
 
 	/**
+	 * Input data processing called by handleCommand method.
+	 */
+	public function fetchInputData(Zikula_Form_View $view, &$args)
+	{
+		parent::fetchInputData($view, $args);
+
+		// get treated entity reference from persisted member var
+		$entity = $this->entityRef;
+
+		$entityData = array();
+		if ($args['commandName'] == 'create') {
+			$this->reassignRelatedObjects();
+			$entityData['Album'] = ((isset($selectedRelations['album'])) ? $selectedRelations['album'] : $this->retrieveRelatedObjects('album', 'muimageAlbum_AlbumItemList', false, 'POST'));
+		}
+
+		if ($args['commandName'] == 'update') {
+			$album = $this->request->getPost()->filter('muimageAlbum_AlbumItemList', 0, FILTER_SANITIZE_NUMBER_INT);
+			if ($album[0] > 0 && is_array($album)) {
+				$albumrepository = MUImage_Util_Model::getAlbumRepository();
+				$album = $albumrepository->selectById($album[0]);
+				if ($album) {
+					$entityData['Album'] = $album;
+				}
+			}
+			else {
+				$entityData['Album'] = null;
+			}
+		}
+
+		// assign fetched data
+		if (count($entityData) > 0) {
+			$entity->merge($entityData);
+		}
+
+		// save updated entity
+		$this->entityRef = $entity;
+	}
+
+	/**
 	 * Get the default redirect url. Required if no returnTo parameter has been supplied.
 	 * This method is called in handleCommand so we know which command has been performed.
 	 */
 	protected function getDefaultReturnUrl($args, $obj)
 	{
+		if ($args['commandName'] == 'update') {
+			$pictureId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+		}
+
 		$picturerepository = MUImage_Util_Model::getPictureRepository();
-		$picture = $picturerepository->selectById($this->idValues['id']);
+		if ($args['commandName'] == 'create') {
+			$picture = $picturerepository->selectById($this->idValues['id']);
+		}
+		else {
+			$picture = $picturerepository->selectById($pictureId);
+		}
+
 		if ($picture) {
 			$album = $picture->getAlbum();
-			$albumid = $album->getId();
+			if ($album) {
+				$albumid = $album->getId();
+			}
+			else {
+				$albumid = 0;
+			}
 		}
 		else {
 			$viewArgs = array('ot' => 'album');
