@@ -57,7 +57,7 @@
     </div>
     </div>
     <div class="muimage_view_album_description">
-    {$album.description|truncate:100}
+    {$album.description|safehtml|truncate:100}
     {useravatar uid=$album.createdUserId size=30}
     </div>
     <div class="muimage_view_album_image">

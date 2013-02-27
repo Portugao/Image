@@ -54,7 +54,7 @@
             <div class="z-formrow">
                 {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
                 {formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select'}
-                <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
+                <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="1">
             </div>
         </fieldset>
         {if $mainAlbumMode eq D}
