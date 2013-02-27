@@ -1656,3 +1656,18 @@ msgstr ""
 #: templates/user/picture/multiUpload.tpl:29
 msgid "Create pictures"
 msgstr ""
+
+msgid "Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!"
+msgstr ""
+
+msgid "So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!"
+msgstr ""
+
+msgid "Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!"
+msgstr ""
+
+msgid "Attention! This album is a sub album and you have no quotas to make it to main album! You may select another album as main album."
+msgstr ""
+
+msgid "Attention! This album is on first level and you have no quotas to change!"
+msgstr ""

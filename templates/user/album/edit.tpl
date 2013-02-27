@@ -44,7 +44,8 @@
     {else}
     {if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
     {if $inAdminGroup eq true}
-        <p class="z-informationmsg">{gt text='Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!'}</p>       
+        <p class="z-informationmsg">{gt text='Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!'}</p> 
+        <p class="z-informationmsg">{gt text='So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!'}</p>      
     {/if}
     {if $inAdminGroup eq false}
         <p class="z-informationmsg">{gt text='Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!'}</p>       
