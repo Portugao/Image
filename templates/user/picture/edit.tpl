@@ -2,6 +2,10 @@
 {include file='user/header.tpl'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
+{pageaddvar name='javascript' value='jquery'}
+{pageaddvar name='javascript' value='jquery-ui'}
+{pageaddvar name='javascript' value='modules/MUImage/javascript/chosen/chosen.jquery.js'}
+{pageaddvar name='stylesheet' value='modules/MUImage/javascript/chosen/chosen.css'}
 
 {if $mode eq 'edit'}
     {gt text='Edit picture' assign='templateTitle'}
@@ -80,7 +84,7 @@
         <legend>{gt text='Album'}</legend>
             <div class="z-formrow">
                 {formlabel for='muimageAlbum_AlbumItemList' __text='Album'}
-                {formdropdownlist selectedValue=$savedAlbum group='mainalbum' id='muimageAlbum_AlbumItemList'}
+                {formdropdownlist selectedValue=$savedAlbum group='mainalbum' id='muimageAlbum_AlbumItemList' cssClass='chzn-select'}
                 <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="1">
             </div>
         </fieldset>  
@@ -173,6 +177,11 @@
         });
 
         Zikula.UI.Tooltips($$('.muimageFormTooltips'));
+    });
+    
+    var MU = jQuery.noConflict();
+    MU(document).ready( function() { 
+        MU(".chzn-select").chosen();
     });
 
 /* ]]> */
