@@ -93,10 +93,8 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 	 */
 	public function fetchInputData(Zikula_Form_View $view, &$args)
 	{
-		if ($args['commandName'] == 'create') {
-			parent::fetchInputData($view, $args);
-		}
-		
+		parent::fetchInputData($view, $args);
+
 		// get treated entity reference from persisted member var
 		$entity = $this->entityRef;
 
@@ -127,5 +125,30 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 
 		// save updated entity
 		$this->entityRef = $entity;
+	}
+
+	/**
+	 * Get the default redirect url. Required if no returnTo parameter has been supplied.
+	 * This method is called in handleCommand so we know which command has been performed.
+	 */
+	protected function getDefaultReturnUrl($args, $obj)
+	{
+		$albumId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+
+		// redirect to the list of albums
+		$viewArgs = array('ot' => $this->objectType);
+		$url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
+
+		//if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
+			if ($args['commandName'] == 'create') {
+				// redirect to the detail page of treated album
+				$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $this->idValues['id']));
+			}
+			if ($args['commandName'] == 'update') {
+				$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumId));
+
+			}
+		//}
+		return $url;
 	}
 }
