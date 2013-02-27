@@ -51,9 +51,9 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 
 			$myalbums = array();
 
-			if (MUImage_Util_View::isAdmin() === true || MUImage_Util_View::otherUserMainAlbums() === true) {
+			/*if (MUImage_Util_View::isAdmin() === true || MUImage_Util_View::otherUserMainAlbums() === true) {
 				$myalbums[] = array('value' => '', 'text' => __('Choose an album'), $dom);
-			}
+			}*/
 
 			foreach ($myAlbums as $myAlbum) {
 				$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
@@ -138,9 +138,7 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
 	 */
 	protected function getDefaultReturnUrl($args, $obj)
 	{
-		if ($args['commandName'] == 'update') {
-			$pictureId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
-		}
+		$pictureId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
 		$picturerepository = MUImage_Util_Model::getPictureRepository();
 		if ($args['commandName'] == 'create') {
