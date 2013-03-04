@@ -41,12 +41,12 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 			$myalbums = array();
 
 			if (MUImage_Util_View::isAdmin() === true || ($mainAlbumMode != C && $mainAlbumMode != D)) {
-				$myalbums[] = array('value' => '', 'text' => __('No main album'), $dom);
+				$myalbums[] = array('value' => '', 'text' => __('No main album', $dom));
 			}
 
 			if (MUImage_Util_View::isAdmin() === true || $mainAlbumMode == 1 || $mainAlbumMode == 2 || $mainAlbumMode == 3 || $mainAlbumMode == A || $mainAlbumMode == B || $mainAlbumMode == C || $mainAlbumMode == D) {
 				foreach ($myAlbums as $myAlbum) {
-					$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
+					$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner', $dom) . ': ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album', $dom) . ': ' . $myAlbum['parent']['title']);
 				}
 			}
 		}
