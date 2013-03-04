@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-15 11:45-0500\n"
-"PO-Revision-Date: 2013-02-27 21:12+0100\n"
+"PO-Revision-Date: 2013-03-04 12:29+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1723,14 +1723,17 @@ msgstr ""
 "Achtung! Dieses album befindest sich auf dem ersten Level und Du hast kein "
 "Kontingent, dies zu ändern!"
 
+msgid "Owner"
+msgstr "Besitzer"
+
+msgid "No main album"
+msgstr "Kein Hauptalbum"
+
 #~ msgid "Sorry! The album is not imported!"
 #~ msgstr "Entschuldigung! Das Album wurde nicht importiert!"
 
 #~ msgid "Zip upload"
 #~ msgstr "Zipupload"
-
-#~ msgid "No main album"
-#~ msgstr "Kein Hauptalbum"
 
 #~ msgid "M u image"
 #~ msgstr "MUImage"

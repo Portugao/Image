@@ -1671,3 +1671,9 @@ msgstr ""
 
 msgid "Attention! This album is on first level and you have no quotas to change!"
 msgstr ""
+
+msgid "Owner"
+msgstr ""
+
+msgid "No main album"
+msgstr ""
