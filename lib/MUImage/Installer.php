@@ -28,6 +28,8 @@ class MUImage_Installer extends MUImage_Base_Installer
 		$this->setVar('ending', 'html');
 		$this->setVar('deleteUserPictures', false);
 		$this->setVar('minWidth', 400);
+		$this->setVar('pageSizeAdminAlbums', 10);
+		$this->setVar('pageSizeAdminPictures', 10);
 		 
 		// Set up module hooks
 		HookUtil::registerProviderBundles($this->version->getHookProviderBundles());
@@ -55,6 +57,11 @@ class MUImage_Installer extends MUImage_Base_Installer
 			$this->setVar('minWidth', 400);
 		
 		case '1.1.0':
+			$this->setVar('pageSizeAdminAlbums', 10);
+			$this->setVar('pageSizeAdminPictures', 10);
+		
+		case '1.2.0':			
+			
 			// later updates
 			
 		// do something

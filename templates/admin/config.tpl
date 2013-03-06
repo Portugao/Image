@@ -18,8 +18,16 @@
                 <legend>{gt text='Here you can manage all basic settings for this application.'}</legend>
 
                 <div class="z-formrow">
-                    {formlabel for='pagesize' __text='Pagesize' class='muimageFormTooltips' title=$toolTip}
+                    {formlabel for='pagesize' __text='Pagesize of albums in frontend' class='muimageFormTooltips' title=$toolTip}
                     {formintinput id='pagesize' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
+                </div>
+                 <div class="z-formrow">
+                    {formlabel for='pageSizeAdminAlbums' __text='Pagesize of albums in backend' class='muimageFormTooltips' title=$toolTip}
+                    {formintinput id='pageSizeAdminAlbums' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='pageSizeAdminPictures' __text='Pagesize of pictures in backend' class='muimageFormTooltips' title=$toolTip}
+                    {formintinput id='pageSizeAdminPictures' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
                 </div>
                 <div class="z-formrow">
                     {formlabel for='showTitle' __text='Show title' class='muimageFormTooltips' title=$toolTip}

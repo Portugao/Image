@@ -164,6 +164,11 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
                 $csv = (int)(isset($args['usecsv']) && !empty($args['usecsv'])) ? $args['usecsv'] : $this->request->getGet()->filter('usecsvext', 0, FILTER_VALIDATE_INT);
                 $resultsPerPage = ($csv == 1) ? 999999 : $this->getVar('pagesize', 10);
             }
+            
+            // we get the pagesize for albums
+            if ($objectType == 'album') {
+            	$resultsPerPage = ModUtil::getVar($this->name, 'pagesize');
+            }
 
             $selectionArgs['currentPage'] = $currentPage;
             $selectionArgs['resultsPerPage'] = $resultsPerPage;
