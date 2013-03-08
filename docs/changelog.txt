@@ -1,6 +1,15 @@
 CHANGELOG
 ---------
 
+Changes in 1.1.1
+
+# closed #44 now we can manage elements per page for albums in frontend
+  and for albums and pictures in backend
+  
+# now the editing and the functions of blocks are working as expected
+  
+some missing translation done now
+
 Changes in 1.1.0
   
 # closed #8 it is now possible to set a min width for pictures
