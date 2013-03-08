@@ -18,15 +18,15 @@
                 <legend>{gt text='Here you can manage all basic settings for this application.'}</legend>
 
                 <div class="z-formrow">
-                    {formlabel for='pagesize' __text='Pagesize of albums in frontend' class='muimageFormTooltips' title=$toolTip}
+                    {formlabel for='pagesize' __text='Albums per page in frontend' class='muimageFormTooltips' title=$toolTip}
                     {formintinput id='pagesize' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
                 </div>
                  <div class="z-formrow">
-                    {formlabel for='pageSizeAdminAlbums' __text='Pagesize of albums in backend' class='muimageFormTooltips' title=$toolTip}
+                    {formlabel for='pageSizeAdminAlbums' __text='Albums per page in backend' class='muimageFormTooltips' title=$toolTip}
                     {formintinput id='pageSizeAdminAlbums' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
                 </div>
                 <div class="z-formrow">
-                    {formlabel for='pageSizeAdminPictures' __text='Pagesize of pictures in backend' class='muimageFormTooltips' title=$toolTip}
+                    {formlabel for='pageSizeAdminPictures' __text='Pictures per page in backend' class='muimageFormTooltips' title=$toolTip}
                     {formintinput id='pageSizeAdminPictures' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
                 </div>
                 <div class="z-formrow">
@@ -67,7 +67,7 @@
                     {formcheckbox id='userDeletePictures' group='config'}
                 </div>
                  <div class="z-formrow">
-                    {formlabel for='ending' __text='Do you wish an ending for display of albums and pictures?' class='muimageFormTooltips' title=$toolTip}
+                    {formlabel for='ending' __text='Choose an ending for display of albums and pictures!' class='muimageFormTooltips' title=$toolTip}
                     {formtextinput id='ending' group='config' maxLength=255 width=20em __title='Enter this setting.'}
                     <div class="z-informationmsg z-formnote">{gt text="You can select between html and htm."}</div>
                 </div>
