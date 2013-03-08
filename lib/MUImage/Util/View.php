@@ -37,11 +37,11 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 	 * Returning the albums for dropdownlist in edit mode
 	 */
 
-	public static function getAlbums($id, $kind = 1) {
+	public static function getAlbums($id = 0, $kind = 1) {
 
 		$uid = UserUtil::getVar('uid');
 		$repository = MUImage_Util_Model::getAlbumRepository();
-		if ($kind == 1) {
+		if ($kind == 1 && $id > 0) {
 			$thisAlbum = $repository->selectById($id);
 			if ($thisAlbum) {
 				$thisParent = $thisAlbum->getParent();
