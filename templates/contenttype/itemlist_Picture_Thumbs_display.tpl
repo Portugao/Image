@@ -17,4 +17,5 @@
 </a>
 </div>
 {/foreach}
+<br style="clear: both;" />
 </div>
