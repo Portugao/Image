@@ -60,7 +60,7 @@ class MUImage_Installer extends MUImage_Base_Installer
 			$this->setVar('pageSizeAdminAlbums', 10);
 			$this->setVar('pageSizeAdminPictures', 10);
 		
-		case '1.2.0':			
+		case '1.1.1':			
 			
 			// later updates
 			
