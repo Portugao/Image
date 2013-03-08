@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-15 11:45-0500\n"
-"PO-Revision-Date: 2013-03-04 12:37+0100\n"
+"PO-Revision-Date: 2013-03-08 12:18+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1230,8 +1230,26 @@ msgid "Here you can manage all basic settings for this application."
 msgstr "Hier kannst Du die Grundeinstellungen für dieses Modul verwalten."
 
 #: templates/admin/config.tpl:21
-msgid "Pagesize"
-msgstr "Elemente pro Seite"
+msgid "Albums per page in frontend"
+msgstr "Alben pro Seite im Frontend"
+
+msgid "Albums per page in backend"
+msgstr "Alben pro Seite im Backend"
+
+msgid "Pictures per page in backend"
+msgstr "Bilder pro Seite im Backend"
+
+msgid "Required width of pictures"
+msgstr "Erforderliche Breite von Bildern"
+
+msgid "May users delete their pictures?"
+msgstr "Dürfen Benutzer ihre Bilder löschen?"
+
+msgid "Choose an ending for display of albums and pictures!"
+msgstr "Wähle eine Endung für die Anzeige von Alben und Bildern!"
+
+msgid "You can select between html and htm."
+msgstr "Du kannst zwischen html und htm wählen."
 
 #: templates/admin/config.tpl:22 templates/admin/config.tpl:38
 #: templates/admin/config.tpl:42 templates/admin/config.tpl:46
@@ -1728,6 +1746,9 @@ msgstr "Besitzer"
 
 msgid "No main album"
 msgstr "Kein Hauptalbum"
+
+#~ msgid "Pagesize"
+#~ msgstr "Elemente pro Seite"
 
 #~ msgid "Sorry! The album is not imported!"
 #~ msgstr "Entschuldigung! Das Album wurde nicht importiert!"

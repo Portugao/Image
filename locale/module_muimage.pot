@@ -1203,7 +1203,25 @@ msgid "Here you can manage all basic settings for this application."
 msgstr ""
 
 #: templates/admin/config.tpl:21
-msgid "Pagesize"
+msgid "Albums per page in frontend"
+msgstr ""
+
+msgid "Albums per page in backend"
+msgstr ""
+
+msgid "Pictures per page in backend"
+msgstr ""
+
+msgid "Required width of pictures"
+msgstr ""
+
+msgid "May users delete their pictures?"
+msgstr ""
+
+msgid "Choose an ending for display of albums and pictures!"
+msgstr ""
+
+msgid "You can select between html and htm."
 msgstr ""
 
 #: templates/admin/config.tpl:22 templates/admin/config.tpl:38
