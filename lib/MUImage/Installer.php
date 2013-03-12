@@ -23,18 +23,58 @@ class MUImage_Installer extends MUImage_Base_Installer
 	 */
 	public function install()
 	{
-		parent::install();
-		
-		$this->setVar('ending', 'html');
-		$this->setVar('deleteUserPictures', false);
-		$this->setVar('minWidth', 400);
-		$this->setVar('pageSizeAdminAlbums', 10);
-		$this->setVar('pageSizeAdminPictures', 10);
-		 
+        $basePath = MUImage_Util_Controller::getFileBaseFolder('picture', 'imageUpload');
+        if (!is_dir($basePath)) {
+            return LogUtil::registerError($this->__f('The upload folder "%s" does not exist. Please create it before installing this application.', array($basePath)));
+        }
+        if (!is_writable($basePath)) {
+            return LogUtil::registerError($this->__f('The upload folder "%s" is not writable. Please change permissions accordingly before installing this application.', array($basePath)));
+        }
+
+        // create all tables from according entity definitions
+        try {
+            DoctrineHelper::createSchema($this->entityManager, $this->listEntityClasses());
+        } catch (Exception $e) {
+            if (System::isDevelopmentMode()) {
+                LogUtil::registerError($this->__('Doctrine Exception: ') . $e->getMessage());
+            }
+            return LogUtil::registerError($this->__f('An error was encountered while creating the tables for the %s module.', array($this->getName())));
+        }
+
+        // set up all our vars with initial values
+        $this->setVar('pagesize', 10);
+        $this->setVar('showTitle', false);
+        $this->setVar('showDescription', false);
+        $this->setVar('countImageView', false);
+        $this->setVar('numberParentAlbums', 1);
+        $this->setVar('numberSubAlbums', 2);
+        $this->setVar('numberPictures', 20);
+        $this->setVar('fileSize', '');
+        $this->setVar('ending', 'html');
+        $this->setVar('deleteUserPictures', false);
+        $this->setVar('minWidth', 400);
+        $this->setVar('pageSizeAdminAlbums', 10);
+        $this->setVar('pageSizeAdminPictures', 10);
+
+        // create the default data for MUImage
+        $this->createDefaultData();
+
+        // add entries to category registry
+        $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
+        CategoryRegistryUtil::insertEntry('MUImage', 'Album', 'Main', $rootcat['id']);
+
+        // register persistent event handlers
+        $this->registerPersistentEventHandlers();
+
+        // register hook subscriber bundles
+        HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
+        
 		// Set up module hooks
 		HookUtil::registerProviderBundles($this->version->getHookProviderBundles());
 		
-		return true;
+        // initialisation successful
+        return true;
+
 	}
 	
 	/**
