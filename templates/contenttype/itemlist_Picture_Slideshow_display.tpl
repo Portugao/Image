@@ -11,6 +11,9 @@
     {if $item.imageUploadMeta.format eq 'portrait'}
         <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:120:160}" width="120px" height="160px" alt="{$item.title|replace:"\"":""}" />
     {/if}
+    {if $item.imageUploadMeta.format eq 'square'}
+        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:160:160}" width="160px" height="160px" alt="{$item.title|replace:"\"":""}" />
+    {/if}
     {else}
         {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
     {/if}
@@ -26,6 +29,9 @@
     {/if}
     {if $item.imageUploadMeta.format eq 'portrait'}
         <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:120:160}" width="120px" height="160px" alt="{$item.title|replace:"\"":""}" />
+    {/if}
+    {if $item.imageUploadMeta.format eq 'square'}
+        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:160:160}" width="160px" height="160px" alt="{$item.title|replace:"\"":""}" />
     {/if}
     {else}
         {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
