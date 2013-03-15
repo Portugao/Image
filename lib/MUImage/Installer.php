@@ -121,4 +121,46 @@ class MUImage_Installer extends MUImage_Base_Installer
 		// update successful
 		return true;
 	}
+	
+	/**
+	 * Uninstall MUImage.
+	 *
+	 * @return boolean True on success, false otherwise.
+	 */
+	public function uninstall()
+	{
+		// delete stored object workflows
+		$result = Zikula_Workflow_Util::deleteWorkflowsForModule($this->getName());
+		if ($result === false) {
+			return LogUtil::registerError($this->__f('An error was encountered while removing stored object workflows for the %s module.', array($this->getName())));
+		}
+	
+		try {
+			DoctrineHelper::dropSchema($this->entityManager, $this->listEntityClasses());
+		} catch (Exception $e) {
+			if (System::isDevelopmentMode()) {
+				LogUtil::registerError($this->__('Doctrine Exception: ') . $e->getMessage());
+			}
+			return LogUtil::registerError($this->__f('An error was encountered while dropping the tables for the %s module.', array($this->getName())));
+		}
+	
+		// unregister persistent event handlers
+		EventUtil::unregisterPersistentModuleHandlers('MUImage');
+	
+		// unregister hook subscriber bundles
+		HookUtil::unregisterSubscriberBundles($this->version->getHookSubscriberBundles());
+		
+		// unregister hook provider bundles
+		HookUtil::unregisterProviderBundles($this->version->getHookProviderBundles());
+	
+		// remove all module vars
+		$this->delVars();
+	
+		// remove category registry entries
+		ModUtil::dbInfoLoad('Categories');
+		DBUtil::deleteWhere('categories_registry', "modname = 'MUImage'");
+	
+		// deletion successful
+		return true;
+	}
 }
