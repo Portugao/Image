@@ -6,9 +6,14 @@ Changes in 1.1.1
 # closed #44 now we can manage elements per page for albums in frontend
   and for albums and pictures in backend
   
+# closed #50 Editing of block 'itemlist' is possible now
+
+# closed #51 The readme was updated for better install informations
+  
 # now the editing and the functions of blocks are working as expected
   
 some missing translation done now
+some layout cosmetics with block itemlist done
 
 Changes in 1.1.0
   
