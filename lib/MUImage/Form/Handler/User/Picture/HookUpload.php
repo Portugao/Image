@@ -20,10 +20,6 @@
 class MUImage_Form_Handler_User_Picture_HookUpload extends Zikula_Form_AbstractHandler
 {
 	/**
-	 * Persistent member vars
-	 */
-
-	/**
 	 * Pre-initialise hook.
 	 *
 	 * @return void
@@ -117,7 +113,6 @@ class MUImage_Form_Handler_User_Picture_HookUpload extends Zikula_Form_AbstractH
 	 */
 	public function HandleCommand(Zikula_Form_View $view, &$args)
 	{
-
 		//$files = News_ImageUtil::reArrayFiles(FormUtil::getPassedValue('news_files', null, 'FILES'));
 		$sid = $args['sid'];
 		$albumid = $args['albumid'];
@@ -148,13 +143,10 @@ class MUImage_Form_Handler_User_Picture_HookUpload extends Zikula_Form_AbstractH
 						
 					$entityData = array($value['tmp_name'] => $value['name']);
 
-				}
-				else {
+				} else {
 					LogUtil::registerError('Mist');
 				}
-
 			}
-
 
 			$this->uploadFields = array($key => false);
 			//$upload

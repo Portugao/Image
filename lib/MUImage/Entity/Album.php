@@ -26,7 +26,6 @@ use DoctrineExtensions\StandardFields\Mapping\Annotation as ZK;
  */
 class MUImage_Entity_Album extends MUImage_Entity_Base_Album
 {
-
 	/**
 	 * Collect available actions for this entity.
 	 */

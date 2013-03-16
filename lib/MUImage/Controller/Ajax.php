@@ -16,94 +16,94 @@
  */
 class MUImage_Controller_Ajax extends MUImage_Controller_Base_Ajax
 {
-	/**
-	 * Searches for entities for auto completion usage.
-	 *
-	 * @param string $ot       Treated object type.
-	 * @param string $fragment The fragment of the entered item name.
-	 * @param string $exclude  Comma separated list with ids of other items (to be excluded from search).
-	 *
-	 * @return Zikula_Response_Ajax_Base
-	 */
-	public function getItemList()
-	{
-		if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_EDIT)) {
-			return true;
-		}
+    /**
+     * Searches for entities for auto completion usage.
+     *
+     * @param string $ot       Treated object type.
+     * @param string $fragment The fragment of the entered item name.
+     * @param string $exclude  Comma separated list with ids of other items (to be excluded from search).
+     *
+     * @return Zikula_Response_Ajax_Base
+     */
+    public function getItemList()
+    {
+        if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_EDIT)) {
+            return true;
+        }
 
-		$uid = UserUtil::getVar('uid');
+        $uid = UserUtil::getVar('uid');
 
-		$objectType = 'album';
-		if ($this->request->isPost() && $this->request->getPost()->has('ot')) {
-			$objectType = $this->request->getPost()->filter('ot', 'album', FILTER_SANITIZE_STRING);
-		} elseif ($this->request->isGet() && $this->request->getGet()->has('ot')) {
-			$objectType = $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
-		}
-		if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', array('controller' => 'ajax', 'action' => 'getItemList')))) {
-			$objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', array('controller' => 'ajax', 'action' => 'getItemList'));
-		}
+        $objectType = 'album';
+        if ($this->request->isPost() && $this->request->getPost()->has('ot')) {
+            $objectType = $this->request->getPost()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+        } elseif ($this->request->isGet() && $this->request->getGet()->has('ot')) {
+            $objectType = $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
+        }
+        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', array('controller' => 'ajax', 'action' => 'getItemList')))) {
+            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', array('controller' => 'ajax', 'action' => 'getItemList'));
+        }
 
-		$repository = $this->entityManager->getRepository('MUImage_Entity_' . ucfirst($objectType));
-		$idFields = ModUtil::apiFunc($this->name, 'selection', 'getIdFields', array('ot' => $objectType));
+        $repository = $this->entityManager->getRepository('MUImage_Entity_' . ucfirst($objectType));
+        $idFields = ModUtil::apiFunc($this->name, 'selection', 'getIdFields', array('ot' => $objectType));
 
-		$fragment = '';
-		$exclude = '';
-		if ($this->request->isPost() && $this->request->getPost()->has('fragment')) {
-			$fragment = $this->request->getPost()->get('fragment', '');
-			$exclude = $this->request->getPost()->get('exclude', '');
-		} elseif ($this->request->isGet() && $this->request->getGet()->has('fragment')) {
-			$fragment = $this->request->getGet()->get('fragment', '');
-			$exclude = $this->request->getGet()->get('exclude', '');
-		}
-		$exclude = ((!empty($exclude)) ? array($exclude) : array());
+        $fragment = '';
+        $exclude = '';
+        if ($this->request->isPost() && $this->request->getPost()->has('fragment')) {
+            $fragment = $this->request->getPost()->get('fragment', '');
+            $exclude = $this->request->getPost()->get('exclude', '');
+        } elseif ($this->request->isGet() && $this->request->getGet()->has('fragment')) {
+            $fragment = $this->request->getGet()->get('fragment', '');
+            $exclude = $this->request->getGet()->get('exclude', '');
+        }
+        $exclude = ((!empty($exclude)) ? array($exclude) : array());
 
-		// parameter for used sorting field
-		$sort = $this->request->getGet()->get('sort', '');
-		if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
-			$sort = $repository->getDefaultSortingField();
-		}
-		$sortParam = $sort . ' asc';
+        // parameter for used sorting field
+        $sort = $this->request->getGet()->get('sort', '');
+        if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
+            $sort = $repository->getDefaultSortingField();
+        }
+        $sortParam = $sort . ' asc';
 
-		$currentPage = 1;
-		$resultsPerPage = 20;
+        $currentPage = 1;
+        $resultsPerPage = 20;
 
-		// get objects from database
-		list($entities, $objectCount) = $repository->selectSearch($fragment, $exclude, $sortParam, $currentPage, $resultsPerPage);
+        // get objects from database
+        list($entities, $objectCount) = $repository->selectSearch($fragment, $exclude, $sortParam, $currentPage, $resultsPerPage);
 
-		$out = '<ul>';
-		if ((is_array($entities) || is_object($entities)) && count($entities) > 0) {
-			$titleFieldName = $repository->getTitleFieldName();
-			$descriptionFieldName = $repository->getDescriptionFieldName();
-			$previewFieldName = $repository->getPreviewFieldName();
+        $out = '<ul>';
+        if ((is_array($entities) || is_object($entities)) && count($entities) > 0) {
+            $titleFieldName = $repository->getTitleFieldName();
+            $descriptionFieldName = $repository->getDescriptionFieldName();
+            $previewFieldName = $repository->getPreviewFieldName();
 
-			$thumbWidth = 100;
-			$thumbHeight = 80;
-			foreach ($entities as $item) {
-				if ($item['createdUserId'] == $uid) {
-					// class="informal" --> show in dropdown, but do not copy in the input field after selection
-					$itemTitle = ((!empty($titleFieldName)) ? $item[$titleFieldName] : $this->__('Item'));
-					$itemTitleStripped = str_replace('"', '', $itemTitle);
-					$itemDescription = ((isset($item[$descriptionFieldName]) && !empty($item[$descriptionFieldName])) ? $item[$descriptionFieldName] : ''); //$this->__('No description yet.'));
-					$itemId = '';
-					foreach ($idFields as $idField) {
-						$itemId .= ((!empty($itemId)) ? '_' : '') . $item[$idField];
-					}
-					$out .= '<li id="' . $itemId . '" title="' . $itemTitleStripped . '">';
-					$out .= '<div class="itemtitle">' . $itemTitle . '</div>';
-					if (!empty($itemDescription)) {
-						$out .= '<div class="itemdesc informal">' . $itemDescription . '</div>';
-					}
-					// check for preview image
-					if (!empty($previewFieldName) && !empty($item[$previewFieldName]) && isset($item[$previewFieldName . 'FullPath'])) {
-						$thumbImagePath = MUImage_Util_Image::getThumb($item[$previewFieldName], $item[$previewFieldName . 'FullPath'], $thumbWidth, $thumbHeight);
-						$preview = '<img src="' . $thumbImagePath . '" width="' . $thumbWidth . '" height="' . $thumbHeight . '" alt="' . $itemTitleStripped . '" />';
-						$out .= '<div class="itempreview informal" id="itempreview' . $itemId . '">' . $preview . '</div>';
-					}
-					$out .= '</li>';
-				}
-			}
-		}
-		$out .= '</ul>';
-		return new Zikula_Response_Ajax_Plain($out);
-	}
+            $thumbWidth = 100;
+            $thumbHeight = 80;
+            foreach ($entities as $item) {
+                if ($item['createdUserId'] == $uid) {
+                    // class="informal" --> show in dropdown, but do not copy in the input field after selection
+                    $itemTitle = ((!empty($titleFieldName)) ? $item[$titleFieldName] : $this->__('Item'));
+                    $itemTitleStripped = str_replace('"', '', $itemTitle);
+                    $itemDescription = ((isset($item[$descriptionFieldName]) && !empty($item[$descriptionFieldName])) ? $item[$descriptionFieldName] : ''); //$this->__('No description yet.'));
+                    $itemId = '';
+                    foreach ($idFields as $idField) {
+                        $itemId .= ((!empty($itemId)) ? '_' : '') . $item[$idField];
+                    }
+                    $out .= '<li id="' . $itemId . '" title="' . $itemTitleStripped . '">';
+                    $out .= '<div class="itemtitle">' . $itemTitle . '</div>';
+                    if (!empty($itemDescription)) {
+                        $out .= '<div class="itemdesc informal">' . $itemDescription . '</div>';
+                    }
+                    // check for preview image
+                    if (!empty($previewFieldName) && !empty($item[$previewFieldName]) && isset($item[$previewFieldName . 'FullPath'])) {
+                        $thumbImagePath = MUImage_Util_Image::getThumb($item[$previewFieldName], $item[$previewFieldName . 'FullPath'], $thumbWidth, $thumbHeight);
+                        $preview = '<img src="' . $thumbImagePath . '" width="' . $thumbWidth . '" height="' . $thumbHeight . '" alt="' . $itemTitleStripped . '" />';
+                        $out .= '<div class="itempreview informal" id="itempreview' . $itemId . '">' . $preview . '</div>';
+                    }
+                    $out .= '</li>';
+                }
+            }
+        }
+        $out .= '</ul>';
+        return new Zikula_Response_Ajax_Plain($out);
+    }
 }

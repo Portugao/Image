@@ -16,7 +16,6 @@
  */
 class MUImage_Controller_Admin extends MUImage_Controller_Base_Admin
 {
-	
 	/**
 	 * This method provides a generic item list overview.
 	 *
@@ -149,7 +148,6 @@ class MUImage_Controller_Admin extends MUImage_Controller_Base_Admin
 	 */
 	public function import()
 	{
-
 		$this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN));
 
 		// Create new Form reference

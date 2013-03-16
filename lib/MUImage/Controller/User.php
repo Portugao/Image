@@ -24,7 +24,6 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	 */
 	public function display($args)
 	{
-
 		$id = $this->request->getGet()->filter('id', 0 , FILTER_SANITIZE_STRING);
 		$ot = $this->request->getget()->filter('ot','album' , FILTER_SANITIZE_STRING);
 		
@@ -259,7 +258,6 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	 */
 	public function editMulti($args)
 	{
-
 		// DEBUG: permission check aspect starts
 		$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
 		// DEBUG: permission check aspect ends
@@ -331,9 +329,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 						return System::redirect($url);
 					}
 				}
-
 			}
-
 		}
 
 		// TODO in next version MUImage_Util_View::checkForBlocksAndContent($id);

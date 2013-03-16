@@ -25,10 +25,6 @@ use DoctrineExtensions\StandardFields\Mapping\Annotation as ZK;
  */
 class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
 {
-    // feel free to add your own methods here
-
-
-
     /**
      * Post-Process the data after the entity has been constructed by the entity manager.
      *
@@ -261,5 +257,4 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
             }
         }
     }
-
 }

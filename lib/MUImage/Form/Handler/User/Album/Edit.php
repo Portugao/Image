@@ -80,11 +80,9 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 
 		if (MUImage_Util_View::otherUserMainAlbums() == true) {
 			$this->view->assign('otherMainAlbum', true);
-		}
-		else {
+		} else {
 			$this->view->assign('otherMainAlbum', false);
 		}
-
 		parent::initialize($view);
 	}
 
@@ -112,8 +110,7 @@ class MUImage_Form_Handler_User_Album_Edit extends MUImage_Form_Handler_User_Alb
 				if ($album) {
 					$entityData['Parent'] = $album;
 				}
-			}
-			else {
+			} else {
 				$entityData['Parent'] = null;
 			}
 		}

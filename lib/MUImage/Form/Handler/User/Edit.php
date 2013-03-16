@@ -25,8 +25,7 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 	 * @return boolean False in case of initialization errors, otherwise true.
 	 */
 	public function initialize(Zikula_Form_View $view)
-	{
-			
+	{	
 		$parent = $this->request->getGet()->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
 		$id = $this->request->getGet()->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 		$ot = $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
@@ -64,8 +63,7 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 			if ($album) {
 				$this->view->assign('albumid', $album);
 			}
-		}
-		else {
+		} else {
 			// if a user want to edit an album
 			if ($ot == 'album' && MUImage_Util_View::myAlbum($id) == false) {
 				$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $id));
@@ -80,6 +78,5 @@ class MUImage_Form_Handler_User_Edit extends MUImage_Form_Handler_User_Base_Edit
 			}
 		}
 		return parent::initialize($view);
-
 	}
 }

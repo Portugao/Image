@@ -16,15 +16,13 @@
  */
 class MUImage_Util_Model extends MUImage_Util_Base_Model
 {
-    
     /**
 	*
-	 This method is for getting a repository for pictures
+	* This method is for getting a repository for pictures
 	*
 	*/
-    
-    public static function getPictureRepository() {
-    
+    public static function getPictureRepository() 
+    {
      $serviceManager = ServiceUtil::getManager();
      $entityManager = $serviceManager->getService('doctrine.entitymanager');
      $repository = $entityManager->getRepository('MUImage_Entity_Picture');
@@ -34,12 +32,11 @@ class MUImage_Util_Model extends MUImage_Util_Base_Model
     
     /**
 	*
-	 This method is for getting a repository for albums
+	* This method is for getting a repository for albums
 	*
 	*/
-    
-    public static function getAlbumRepository() {
-    
+    public static function getAlbumRepository() 
+    {
      $serviceManager = ServiceUtil::getManager();
      $entityManager = $serviceManager->getService('doctrine.entitymanager');
      $repository = $entityManager->getRepository('MUImage_Entity_Album');
