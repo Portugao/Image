@@ -1695,3 +1695,6 @@ msgstr ""
 
 msgid "No main album"
 msgstr ""
+
+msgid "Sorry! Your enter for the ending is invalid!"
+msgstr ""
