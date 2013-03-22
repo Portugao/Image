@@ -69,7 +69,7 @@
                  <div class="z-formrow">
                     {formlabel for='ending' __text='Choose an ending for display of albums and pictures!' class='muimageFormTooltips' title=$toolTip}
                     {formtextinput id='ending' group='config' maxLength=255 width=20em __title='Enter this setting.'}
-                    <div class="z-informationmsg z-formnote">{gt text="You can select between html and htm."}</div>
+                    <div class="z-informationmsg z-formnote">{gt text="You can select between html and htm or no ending (empty field)."}</div>
                 </div>
             </fieldset>
 

@@ -215,7 +215,7 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 		}
 	
 		// define the available user functions
-		$funcs = array('main', 'view', 'display', 'edit', 'delete', 'zipUpload', 'multiUpload');
+		$funcs = array('main', 'view', 'display', 'edit', 'delete', 'zipUpload', 'multiUpload', 'editMulti');
 	
 		// return if function url scheme is not being customised
 		$customFuncs = array('view', 'display');
