@@ -345,11 +345,10 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
         // ask the DB for entries in the module table
         // handle the access to the module album table
         // build sql
-        $query = "SELECT ms_id, ms_title FROM $table ORDER by ms_parentalbumId";
+        $query = "SELECT ms_id, ms_title FROM $moduletable ORDER by ms_parentalbumId";
 
         // prepare the sql query
         $sql = $connect->query($query);
-
 
         //$connect = null;
 
@@ -376,7 +375,7 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
         // build sql
         if ($albumid > 0) {
             if ($module == 'mediashare') {
-                $query2 = "SELECT * FROM $table WHERE ms_parentalbumid = $albumid";
+                $query2 = "SELECT * FROM $moduletable WHERE ms_parentalbumid = $albumid";
             }
             if ($module == 'userpictures') {
                 $query2 = '';
@@ -535,6 +534,9 @@ class MUImage_Api_Base_Import extends Zikula_AbstractApi
     {
         //get prefix
         $prefix = $this->serviceManager['prefix'];
+        if ($prefix) {
+            $prefix = $prefix . '_';
+        }
 
         return $prefix;
 
