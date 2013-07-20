@@ -64,6 +64,9 @@ implemented classes
 
 added files
 
+*lib/MUImage/Controller/Base/External.php
+*lib/MUImage/Controller/External.php
+
 *templates/admin/album.tpl
 *templates/admin/import.tpl
 
