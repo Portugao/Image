@@ -17,6 +17,38 @@
  */
 class MUImage_Form_Handler_Admin_Config extends MUImage_Form_Handler_Admin_Base_Config
 {
+
+    /**
+     * Initialize form handler.
+     *
+     * This method takes care of all necessary initialisation of our data and form states.
+     *
+     * @return boolean False in case of initialization errors, otherwise true.
+     */
+    public function initialize(Zikula_Form_View $view)
+    {
+        $dom = ZLanguage::getModuleDomain('MUImage');
+
+        // permission check
+        if (!SecurityUtil::checkPermission('MUImage::', '::', ACCESS_ADMIN)) {
+            return $view->registerError(LogUtil::registerPermissionError());
+        }
+
+        // retrieve module vars
+        $modVars = ModUtil::getVar('MUImage');
+
+        // initialise list entries for the 'theme' setting
+        $modVars['slide1themeItems'] = array(
+                array('value' => 'theme-default', 'text' => __('Default', $dom)),
+                array('value' => 'theme-bar', 'text' => __('With bar', $dom)),
+                array('value' => 'theme-light', 'text' => __('Light', $dom)),
+                array('value' => 'theme-dark', 'text' => __('Dark', $dom))
+        );
+        
+        // assign all module vars
+        $this->view->assign('config', $modVars);
+    }
+
     /**
      * Command event handler.
      *
@@ -31,17 +63,17 @@ class MUImage_Form_Handler_Admin_Config extends MUImage_Form_Handler_Admin_Base_
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $dom = ZLanguage::getModuleDomain('MUImage');
-        	
+         
         // retrieve form data
         $data = $this->view->getValues();
-        	
+         
         $ending = $data['config']['ending'];
         if ($ending != '' && $ending != 'html' && $ending != 'htm') {
             LogUtil::registerError(__('Sorry! Your enter for the ending is invalid!', $dom));
             $url = ModUtil::url('MUImage', 'admin', 'config');
             return System::redirect($url);
         }
-        	
+         
         parent::handleCommand($view, $args);
     }
 }
