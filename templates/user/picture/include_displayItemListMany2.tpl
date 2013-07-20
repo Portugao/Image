@@ -3,7 +3,6 @@
 {if isset($items) && $items ne null}
 {* <ul class="relatedItemList Picture"> *}
 {foreach name='relLoop' item='item' from=$items}
-
 {if $item.imageUpload ne '' && isset($item.imageUploadFullPathURL)}
 {if $item.imageUploadMeta.format eq 'landscape'}
     <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:200:150}" width="200" height="150" alt="{$item.title|replace:"\"":""}" />
