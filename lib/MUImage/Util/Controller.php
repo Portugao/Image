@@ -33,6 +33,42 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
             return $minWidth . ' ' . __('pixel');
         }
     }
+    
+    /**
+     * this function checks for the given max width
+     * for a picture in the configuration
+     * return string
+     */
+    public static function maxWidth()
+    {
+    
+        $dom = ZLanguage::getModuleDomain('MUImage');
+    
+        $maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
+        if ($maxWidth == '') {
+            return __('Not set', $dom);
+        } else {
+            return $maxWidth . ' ' . __('pixel');
+        }
+    }
+    
+    /**
+     * this function checks for the given max height
+     * for a picture in the configuration
+     * return string
+     */
+    public static function maxHeight()
+    {
+    
+        $dom = ZLanguage::getModuleDomain('MUImage');
+    
+        $maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
+        if ($maxHeight == '') {
+            return __('Not set', $dom);
+        } else {
+            return $maxHeight . ' ' . __('pixel');
+        }
+    }
 
     /**
      * Get allowed filesize

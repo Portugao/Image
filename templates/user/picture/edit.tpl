@@ -56,6 +56,8 @@
             <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
             <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
             <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
+            <div class="z-formnote">{gt text='Maximum width:'} {$maxWidth} </div>
+            <div class="z-formnote">{gt text='Maximum height:'} {$maxHeight} </div>
             {if $mode ne 'create'}
                   <div class="z-formnote">
                       {gt text='Current file'}:

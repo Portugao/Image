@@ -152,10 +152,22 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
 				return LogUtil::registerError(__('Error! This file type seems not to be a valid image.', $dom));
 			}
 			$requiredWidth = ModUtil::getVar('MUImage', 'minWidth');
+			$maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
+			$maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
 			if ($imgInfo[0] < $requiredWidth) {
 				LogUtil::registerError(__('Sorry! Your picture does not have the required width.', $dom));
 				$url = ModUtil::url('MUImage', 'user', 'view');
 				return false;
+			}
+			if ($imgInfo[0] > $maxWidth) {
+			    LogUtil::registerError(__('Sorry! Your picture is wider than allowed.', $dom));
+			    $url = ModUtil::url('MUImage', 'user', 'view');
+			    return false;
+			}
+			if ($imgInfo[1] > $maxHeight) {
+			    LogUtil::registerError(__('Sorry! Your picture is higher than allowed.', $dom));
+			    $url = ModUtil::url('MUImage', 'user', 'view');
+			    return false;
 			}
 		}
 

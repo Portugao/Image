@@ -42,6 +42,10 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
         $deletePictures = ModUtil::getVar($this->name, 'userDeletePictures');
         // we check for required width for pictures
         $minWidth = MUImage_Util_Controller::minWidth();
+        // we check for maximum width for pictures
+        $maxWidth = MUImage_Util_Controller::maxWidth();
+        // we check for maximum height for pictures
+        $maxHeight = MUImage_Util_Controller::maxHeight();
         // we check for user is in admin group
         $inAdminGroup = MUImage_Util_View::isAdmin();
 
@@ -80,6 +84,8 @@ class MUImage_Form_Handler_User_Picture_Edit extends MUImage_Form_Handler_User_P
         	
         $this->view->assign('fileSize', $fileSize)
         ->assign('minWidth', $minWidth)
+        ->assign('maxWidth', $maxWidth)
+        ->assign('maxHeight', $maxHeight)
         ->assign('deletePictures', $deletePictures)
         ->assign('inAdminGroup', $inAdminGroup);
 

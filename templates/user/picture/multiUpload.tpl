@@ -7,8 +7,7 @@
 {gt text='Multi upload' assign='templateTitle'}
 {pagesetvar name='title' value=$templateTitle}
 <div class="z-frontendcontainer">
-    <h2>{$templateTitle}</h2>
-    
+    <h2>{$templateTitle}</h2>   
     {form enctype='multipart/form-data' cssClass='z-form'}
     {* add validation summary and a <div> element for styling the form *}
     {muimageFormFrame}
@@ -22,6 +21,8 @@
         <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
         <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
         <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
+        <div class="z-formnote">{gt text='Maximum width:'} {$maxWidth} </div>
+        <div class="z-formnote">{gt text='Maximum height:'} {$maxHeight} </div>
         </div>
         {/section}     
       </fieldset>
@@ -36,4 +37,22 @@
 
 </div>
 </div>
+<script type="text/javascript" charset="utf-8">
+/* <![CDATA[ */
+$(document).ready(function() {
+  var $num = $('.number'),
+        times = 0;
+
+    for(i=0; i<=100; i++) {
+        setTimeout(function() { 
+            $num.html(times);
+            times++;
+            if (times === 100) {
+                $('.progress-circle-outer').removeClass('animate');
+            }
+        },i*100)
+    };
+});
+/* ]]> */
+</script>
 {include file='user/footer.tpl'}

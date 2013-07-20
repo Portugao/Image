@@ -1,5 +1,7 @@
 {* purpose of this template: module configuration *}
 {include file='admin/header.tpl'}
+{pageaddvar name='javascript' value='jquery'}
+{pageaddvar name='javascript' value='jquery-ui'}
 <div class="muimage-config">
 {gt text='Settings' assign='templateTitle'}
 {pagesetvar name='title' value=$templateTitle}
@@ -10,10 +12,12 @@
 
     {form cssClass='z-form'}
 
-
         {* add validation summary and a <div> element for styling the form *}
         {muimageFormFrame}
         {formsetinitialfocus inputId='pagesize'}
+        {formtabbedpanelset}
+            {gt text='General' assign='tabTitle'}
+            {formtabbedpanel title=$tabTitle}
             <fieldset>
                 <legend>{gt text='Here you can manage all basic settings for this application.'}</legend>
 
@@ -63,16 +67,128 @@
                     {formintinput id='minWidth' group='config' maxLength=20 width=20em __title='Input this setting.'}
                 </div>
                 <div class="z-formrow">
+                    {formlabel for='axmWidth' __text='Maximum width of pictures'}
+                    {formintinput id='maxWidth' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='maxHeight' __text='Maximum height of pictures'}
+                    {formintinput id='maxHeight' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
                     {formlabel for='userDeletePictures' __text='May users delete their pictures?' class='muimageFormTooltips' title=$toolTip}
                     {formcheckbox id='userDeletePictures' group='config'}
                 </div>
-                 <div class="z-formrow">
+                <div class="z-formrow">
                     {formlabel for='ending' __text='Choose an ending for display of albums and pictures!' class='muimageFormTooltips' title=$toolTip}
                     {formtextinput id='ending' group='config' maxLength=255 width=20em __title='Enter this setting.'}
                     <div class="z-informationmsg z-formnote">{gt text="You can select between html and htm or no ending (empty field)."}</div>
                 </div>
+                </fieldset>
+                {/formtabbedpanel}
+                {gt text='Slideshows' assign='tabTitle'}
+                {formtabbedpanel title=$tabTitle}
+                <fielddset>
+                <div class="z-formrow">
+                    {formlabel for='slideshow1' __text='Allow Slideshow1?' class='muimageFormTooltips' title=$toolTip}
+                    {formcheckbox id='slideshow1' group='config'}
+                </div>
+                <div id="muimage-config-slideshow1" style="display: none;">
+                <div class="z-formrow">
+                    {formlabel for='slide1effect' __text='Effect?'}
+                    {formtextinput id='slide1effect' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                    <div class="z-informationmsg z-formnote">{gt text="You can select between"} sliceDown, sliceDownLeft, sliceUp, sliceUpLeft,
+                    sliceUpDown, sliceUpDownLeft, fold, fade, random, slideInRight, slideInLeft, boxRandom, boxRain, boxRainReverse, boxRainGrow, boxRainGrowReverse</div>
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1slices' __text='Slices'}
+                    {formintinput id='slide1slices' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1boxCols' __text='Box Cols'}
+                    {formintinput id='slide1boxCols' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1boxRows' __text='Box Rows'}
+                    {formintinput id='slide1boxRows' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1Speed' __text='Speed'}
+                    {formintinput id='slide1Speed' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1PauseTime' __text='Pause time'}
+                    {formintinput id='slide1Pausetime' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1StartSlide' __text='Start Slide'}
+                    {formintinput id='slide1StartSlide' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1directionNav' __text='Direction navigation?'}
+                    {formcheckbox id='slide1directionNav' group='config' __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1controlNav' __text='Control navigation?'}
+                    {formcheckbox id='slide1controlNav' group='config' __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1pauseOnHover' __text='Pause on hover?'}
+                    {formcheckbox id='slide1pauseOnHover' group='config' __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1PrevText' __text='Previous text'}
+                    {formtextinput id='slide1prevText' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1nextText' __text='Next text'}
+                    {formtextinput id='slide1nextText' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1random' __text='Random start?'}
+                    {formcheckbox id='slide1random' group='config' __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1theme' __text='Witch theme?'}
+                    {formdropdownlist id='slide1theme' group='config' __title='Input this setting.'}
+                </div>                  
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slideshow2' __text='Allow Slideshow2?' class='muimageFormTooltips' title=$toolTip}
+                    {formcheckbox id='slideshow2' group='config'}
+                </div>
+                <div id="muimage-config-slideshow2" style="display: none;">
+                <div class="z-formrow">
+                    {formlabel for='slide1auto' __text='Autostart?'}
+                    {formcheckbox id='slide1auto' group='config' __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1speed' __text='Speed'}
+                    {formintinput id='slide1speed' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1timeout' __text='Timeout'}
+                    {formintinput id='slide1timeout' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1pager' __text='Pager?'}
+                    {formcheckbox id='slide1pager' group='config' __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1nav' __text='Navigation?'}
+                    {formcheckbox id='slide1nav' group='config' __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1random' __text='Random?'}
+                    {formcheckbox id='slide1random' group='config' __title='Input this setting.'}
+                </div>
+                <div class="z-formrow">
+                    {formlabel for='slide1pause' __text='Pause?'}
+                    {formcheckbox id='slide1pause' group='config' __title='Input this setting.'}
+                </div>                  
+                </div>
             </fieldset>
-
+            {/formtabbedpanel}
+            {/formtabbedpanelset}
             <div class="z-buttons z-formbuttons">
                 {formbutton commandName='save' __text='Update configuration' class='z-bt-save'}
                 {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
@@ -80,4 +196,40 @@
         {/muimageFormFrame}
     {/form}
 </div>
+<script type="text/javascript" charset="utf-8">
+/* <![CDATA[ */
+             
+    var MU = jQuery.noConflict();
+    MU(document).ready(function() {
+        if(MU(".z-formrow > #slideshow1").is(':checked')) {
+            MU("#muimage-config-slideshow1").css({display: 'block'});
+        }
+        if(MU(".z-formrow > #slideshow2").is(':checked')) {
+            MU("#muimage-config-slideshow2").css({display: 'block'});
+        }        
+    });
+    
+    MU(".z-formrow > #slideshow1").click( function() {
+        if(MU(this).is(':checked')) {
+            MU("#muimage-config-slideshow1").slideDown('slow');
+            }
+            else {
+            	MU("#muimage-config-slideshow1").slideUp('slow');
+            }
+
+        });
+
+    MU(".z-formrow > #slideshow2").click( function() {
+        if(MU(this).is(':checked')) {
+            MU("#muimage-config-slideshow2").slideDown('slow');
+            }
+            else {
+            	MU("#muimage-config-slideshow2").slideUp('slow');
+            }
+
+        });  
+
+
+/* ]]> */
+</script>
 {include file='admin/footer.tpl'}

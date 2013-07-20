@@ -62,9 +62,15 @@ class MUImage_Form_Handler_User_Picture_Base_MultiUpload extends MUImage_Form_Ha
 		
 		// we check for required width for pictures
 		$minWidth = MUImage_Util_Controller::minWidth();
+		// we check for maximum width for pictures
+		$maxWidth = MUImage_Util_Controller::maxWidth();
+		// we check for maximum height for pictures
+		$maxHeight = MUImage_Util_Controller::maxHeight();
 			
 		$this->view->assign('allowedFields', $allowedFields)
 		           ->assign('minWidth', $minWidth)
+		           ->assign('maxWidth', $maxWidth)
+		           ->assign('maxHeight', $maxHeight)
 		           ->assign('fileSize', $fileSize);
 
 		// everything okay, no initialization errors occured
