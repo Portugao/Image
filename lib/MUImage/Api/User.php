@@ -314,4 +314,11 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 	
 		return true;
 	}
+	
+	public function template()
+	{
+	    $request = new Zikula_Request_Http();
+	    $template = $request->getPost()->filter('template', 1, FILTER_SANITIZE_NUMBER_INT);
+	    SessionUtil::setVar('template', $template);
+	}
 }

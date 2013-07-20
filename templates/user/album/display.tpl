@@ -81,7 +81,17 @@
         {if $otherPictures eq true}    
         <a title="{gt text='Load up a Picture'}" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /></a> <a title="{gt text='Load up few Pictures'}" href="{modurl modname='MUImage' type='user' func='multiUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /><img src="images/icons/extrasmall/edit_add.png" /></a>
         {/if}
-        {/if}    
+        {/if} 
+        <div id="MUImage_user_template">
+            <form action="{modurl modname='MUImage' type='user' func='template'}" method="post">
+            <select id="template" name="template">
+            <option value="1">Normal</option>
+            <option value="2">Slideshow1</option>
+            <option value="3">Slideshow2</option>
+            </select>
+            <input type='submit' value='Ansicht wechseln' />
+            </form>
+        </div>   
     </div>
     {/checkpermissionblock} 
     {/if}    
@@ -94,7 +104,15 @@
     </div>
     <div id="muimage_pictures_content">
     {if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
+    {if $template eq 1}
     {include file='user/picture/include_displayItemListMany.tpl' items=$album.picture}
+    {/if}
+    {if $template eq 2}
+    {include file='user/picture/slideshow1.tpl' items=$album.picture}
+    {/if}
+    {if $template eq 3}
+    {include file='user/picture/slideshow2.tpl' items=$album.picture}
+    {/if}
     {else}
     {gt text='No pictures'}
     {/if}

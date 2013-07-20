@@ -60,6 +60,19 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 			$this->view->assign('showDescription', $showDescription);
 		}
 		
+		// we look if a template is set in session var
+		$template = SessionUtil::getVar('template');
+		if ($template == 0) {
+		   SessionUtil::setVar('template', 1);
+		   $template = SessionUtil::getVar('template');
+		}
+		
+		// we get all modvars and assign them to the template
+		$modvars = ModUtil::getVar($this->name);
+		$this->view->assign('modulevars', $modvars);
+		
+		$this->view->assign('template', $template);
+		
 		$otherPictures = MUImage_Util_View::otherUserPictures();
 		$this->view->assign('otherPictures', $otherPictures);
 			
@@ -186,6 +199,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
         	$albumcount = count($entities);
         	$this->view->assign('albumcount', $albumcount);
         }
+        
         // assign the object data, sorting information and details for creating the pager
         $this->view->assign('items', $entities)
             ->assign('sort', $sort)
@@ -336,4 +350,16 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 
 		return parent::delete($args);
 	}
+	
+	/**
+	 * This method provides to change the template in the user view of an album
+	 * @param unknown $args
+	 */
+	public function template($args)
+	{
+	    ModUtil::apiFunc($this->name, 'user', 'template'); 
+	    $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => 1));
+	    return System::redirect($url);  
+	}
+
 }
