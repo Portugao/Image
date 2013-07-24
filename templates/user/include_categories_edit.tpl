@@ -1,4 +1,5 @@
 {* purpose of this template: reusable editing of entity attributes *}
+{if $registries ne null & count($registries) > 0}
 <fieldset>
     <legend>{gt text='Categories'}</legend>
     {formvolatile}
@@ -11,3 +12,4 @@
     {/foreach}
     {/formvolatile}
 </fieldset>
+{/if}
