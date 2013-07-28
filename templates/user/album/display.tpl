@@ -83,14 +83,20 @@
         {/if}
         {/if} 
         <div id="MUImage_user_template">
+            {if $modulevars.slideshow1 || $modulevars.slideshow2}
             <form action="{modurl modname='MUImage' type='user' func='template'}" method="post">
             <select id="template" name="template">
             <option value="1">Normal</option>
-            <option value="2">Slideshow1</option>
+            {if $modulevars.slideshow1}
+            <option value="2">Slideshow</option>
+            {/if}
+            {if $modulevars.slideshow2}
             <option value="3">Slideshow2</option>
+            {/if}
             </select>
             <input type='submit' value='Ansicht wechseln' />
             </form>
+            {/if}
         </div>   
     </div>
     {/checkpermissionblock} 
@@ -108,10 +114,7 @@
     {include file='user/picture/include_displayItemListMany.tpl' items=$album.picture}
     {/if}
     {if $template eq 2}
-    {include file='user/picture/slideshow1.tpl' items=$album.picture}
-    {/if}
-    {if $template eq 3}
-    {include file='user/picture/slideshow2.tpl' items=$album.picture}
+    {include file='user/picture/slideshow.tpl' items=$album.picture}
     {/if}
     {else}
     {gt text='No pictures'}
