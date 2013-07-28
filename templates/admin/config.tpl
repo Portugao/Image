@@ -94,97 +94,25 @@
                 </div>
                 <div id="muimage-config-slideshow1" style="display: none;">
                 <div class="z-formrow">
-                    {formlabel for='slide1effect' __text='Effect?'}
-                    {formtextinput id='slide1effect' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                    <div class="z-informationmsg z-formnote">{gt text="You can select between"} sliceDown, sliceDownLeft, sliceUp, sliceUpLeft,
-                    sliceUpDown, sliceUpDownLeft, fold, fade, random, slideInRight, slideInLeft, boxRandom, boxRain, boxRainReverse, boxRainGrow, boxRainGrowReverse</div>
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1slices' __text='Slices'}
-                    {formintinput id='slide1slices' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1boxCols' __text='Box Cols'}
-                    {formintinput id='slide1boxCols' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1boxRows' __text='Box Rows'}
-                    {formintinput id='slide1boxRows' group='config' maxLength=20 width=20em __title='Input this setting.'}
+                    {formlabel for='slide1Interval' __text='Interval'}
+                    {formtextinput id='slide1Interval' group='config' maxLength=10 width=10em __title='Input this setting.'}
+                    <div class="z-informationmsg z-formnote">{gt text="Delay in milliseconds between slides for the automatic slideshow"}</div>
                 </div>
                 <div class="z-formrow">
                     {formlabel for='slide1Speed' __text='Speed'}
-                    {formintinput id='slide1Speed' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1PauseTime' __text='Pause time'}
-                    {formintinput id='slide1Pausetime' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1StartSlide' __text='Start Slide'}
-                    {formintinput id='slide1StartSlide' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1directionNav' __text='Direction navigation?'}
-                    {formcheckbox id='slide1directionNav' group='config' __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1controlNav' __text='Control navigation?'}
-                    {formcheckbox id='slide1controlNav' group='config' __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1pauseOnHover' __text='Pause on hover?'}
-                    {formcheckbox id='slide1pauseOnHover' group='config' __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1PrevText' __text='Previous text'}
-                    {formtextinput id='slide1prevText' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1nextText' __text='Next text'}
-                    {formtextinput id='slide1nextText' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1random' __text='Random start?'}
-                    {formcheckbox id='slide1random' group='config' __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1theme' __text='Witch theme?'}
-                    {formdropdownlist id='slide1theme' group='config' __title='Input this setting.'}
+                    {formtextinput id='slide1Speed' group='config' maxLength=10 width=10em __title='Input this setting.'}
+                    <div class="z-informationmsg z-formnote">{gt text="The transition speed between slide changes in milliseconds"}</div>
                 </div>                  
                 </div>
-                <div class="z-formrow">
+              {*  <div class="z-formrow">
                     {formlabel for='slideshow2' __text='Allow Slideshow2?' class='muimageFormTooltips' title=$toolTip}
                     {formcheckbox id='slideshow2' group='config'}
-                </div>
+                </div> *}
                 <div id="muimage-config-slideshow2" style="display: none;">
                 <div class="z-formrow">
                     {formlabel for='slide1auto' __text='Autostart?'}
                     {formcheckbox id='slide1auto' group='config' __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1speed' __text='Speed'}
-                    {formintinput id='slide1speed' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1timeout' __text='Timeout'}
-                    {formintinput id='slide1timeout' group='config' maxLength=20 width=20em __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1pager' __text='Pager?'}
-                    {formcheckbox id='slide1pager' group='config' __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1nav' __text='Navigation?'}
-                    {formcheckbox id='slide1nav' group='config' __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1random' __text='Random?'}
-                    {formcheckbox id='slide1random' group='config' __title='Input this setting.'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='slide1pause' __text='Pause?'}
-                    {formcheckbox id='slide1pause' group='config' __title='Input this setting.'}
-                </div>                  
+                </div>              
                 </div>
             </fieldset>
             {/formtabbedpanel}
