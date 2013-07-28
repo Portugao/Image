@@ -28,7 +28,9 @@ blueimp.Gallery(
     document.getElementById('links').getElementsByTagName('a'),
     {
         container: '#blueimp-gallery-carousel',
-        carousel: true
+        carousel: true,
+        slideshowInterval: {{$modulevars.slide1Interval}},
+        transitionSpeed: {{$modulevars.slide1Speed}}
     }
 );
 </script>
