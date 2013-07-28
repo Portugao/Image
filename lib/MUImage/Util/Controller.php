@@ -46,7 +46,7 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
     
         $maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
         if ($maxWidth == '') {
-            return __('Not set', $dom);
+            return __('No limit', $dom);
         } else {
             return $maxWidth . ' ' . __('pixel');
         }
@@ -64,7 +64,7 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
     
         $maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
         if ($maxHeight == '') {
-            return __('Not set', $dom);
+            return __('No limit', $dom);
         } else {
             return $maxHeight . ' ' . __('pixel');
         }
