@@ -17,24 +17,24 @@
 class MUImage_UploadHandler extends MUImage_Base_UploadHandler
 {
 
-	/**
-	 * var array List of allowed file sizes per field.
-	 */
-	protected $allowedFileSizes;
+    /**
+     * var array List of allowed file sizes per field.
+     */
+    protected $allowedFileSizes;
 
-	/**
-	 * Constructor initialising the supported object types.
-	 */
-	public function __construct()
-	{
-		$this->allowedObjectTypes = array('picture');
-		$this->imageFileTypes = array('gif', 'jpeg', 'jpg', 'png');
-		$this->forbiddenFileTypes = array('cgi', 'pl', 'asp', 'phtml', 'php', 'php3', 'php4', 'php5', 'exe', 'com', 'bat', 'jsp', 'cfm', 'shtml');
-		$filesize = ModUtil::getVar('MUImage', 'fileSize');
-		$this->allowedFileSizes = array('picture' => array('imageUpload' => $filesize));
+    /**
+     * Constructor initialising the supported object types.
+     */
+    public function __construct()
+    {
+        $this->allowedObjectTypes = array('picture');
+        $this->imageFileTypes = array('gif', 'jpeg', 'jpg', 'png');
+        $this->forbiddenFileTypes = array('cgi', 'pl', 'asp', 'phtml', 'php', 'php3', 'php4', 'php5', 'exe', 'com', 'bat', 'jsp', 'cfm', 'shtml');
+        $filesize = ModUtil::getVar('MUImage', 'fileSize');
+        $this->allowedFileSizes = array('picture' => array('imageUpload' => $filesize));
 
-	}
-	
+    }
+
     /**
      * Process a file upload.
      *
@@ -49,7 +49,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $dom = ZLanguage::getModuleDomain('MUImage');
 
         $result = array('fileName' => '',
-            'metaData' => array());
+                'metaData' => array());
 
         // check whether uploads are allowed for the given object type
         if (!in_array($objectType, $this->allowedObjectTypes)) {
@@ -86,91 +86,97 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
     }
 
 
-	/**
-	 * Check if an upload file meets all validation criteria.
-	 *
-	 * @param array $file Reference to data of uploaded file.
-	 *
-	 * @return boolean true if file is valid else false
-	 */
-	protected function validateFileUpload($objectType, $file, $fieldName)
-	{
-		$dom = ZLanguage::getModuleDomain('MUImage');
+    /**
+     * Check if an upload file meets all validation criteria.
+     *
+     * @param array $file Reference to data of uploaded file.
+     *
+     * @return boolean true if file is valid else false
+     */
+    protected function validateFileUpload($objectType, $file, $fieldName)
+    {
+        $dom = ZLanguage::getModuleDomain('MUImage');
 
-		// check if a file has been uploaded properly without errors
-		if ((!is_array($file)) || (is_array($file) && ($file['error'] != '0'))) {
-			if (is_array($file)) {
-				return $this->handleError($file);
-			}
-			return LogUtil::registerError(__('Error! No file found.', $dom));
-		}
+        // check if a file has been uploaded properly without errors
+        if ((!is_array($file)) || (is_array($file) && ($file['error'] != '0'))) {
+            if (is_array($file)) {
+                return $this->handleError($file);
+            }
+            return LogUtil::registerError(__('Error! No file found.', $dom));
+        }
 
-		$maxSize = $this->allowedFileSizes[$objectType][$fieldName];
+        $maxSize = $this->allowedFileSizes[$objectType][$fieldName];
 
-		if ($maxSize > 0) {
+        if ($maxSize > 0) {
 
-			$fileSize = filesize($file['tmp_name']);
+            $fileSize = filesize($file['tmp_name']);
 
-			if ($fileSize > $maxSize) {
-				$maxSizeKB = $maxSize / 1024;
+            if ($fileSize > $maxSize) {
+                $maxSizeKB = $maxSize / 1024;
 
-				if ($maxSizeKB < 1024) {
-					$maxSizeKB = DataUtil::formatNumber($maxSizeKB);
-					$fileName = $file['name'];
+                if ($maxSizeKB < 1024) {
+                    $maxSizeKB = DataUtil::formatNumber($maxSizeKB);
+                    $fileName = $file['name'];
                     LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s kilobytes.', array($fileName, $maxSizeKB), $dom));
-					return false;
+                    return false;
 
-				}
+                }
 
-				$maxSizeMB = $maxSizeKB / 1024;
-				$maxSizeMB = DataUtil::formatNumber($maxSizeMB);
-				$fileName = $file['name'];
+                $maxSizeMB = $maxSizeKB / 1024;
+                $maxSizeMB = DataUtil::formatNumber($maxSizeMB);
+                $fileName = $file['name'];
                 LogUtil::registerError(__f('Error! Your file is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
-				return false; 
-			}
+                return false;
+            }
 
-		}
+        }
 
-		// extract file extension
-		$fileName = $file['name'];
-		$extensionarr = explode('.', $fileName);
-		$extension = strtolower($extensionarr[count($extensionarr) - 1]);
+        // extract file extension
+        $fileName = $file['name'];
+        $extensionarr = explode('.', $fileName);
+        $extension = strtolower($extensionarr[count($extensionarr) - 1]);
 
-		// validate extension
-		$isValidExtension = $this->isAllowedFileExtension($objectType, $fieldName, $extension);
-		if ($isValidExtension === false) {
-			LogUtil::registerError(__('Error! This file type is not allowed. Please choose another file format.', $dom));
-			
-		}
+        // validate extension
+        $isValidExtension = $this->isAllowedFileExtension($objectType, $fieldName, $extension);
+        if ($isValidExtension === false) {
+            LogUtil::registerError(__('Error! This file type is not allowed. Please choose another file format.', $dom));
+            	
+        }
 
-		// validate image file
-		$imgInfo = array();
-		$isImage = in_array($extension, $this->imageFileTypes);
-		if ($isImage) {
-			$imgInfo = getimagesize($file['tmp_name']);
-			if (!is_array($imgInfo) || !$imgInfo[0] || !$imgInfo[1]) {
-				return LogUtil::registerError(__('Error! This file type seems not to be a valid image.', $dom));
-			}
-			$requiredWidth = ModUtil::getVar('MUImage', 'minWidth');
-			$maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
-			$maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
-			if ($imgInfo[0] < $requiredWidth) {
-				LogUtil::registerError(__('Sorry! Your picture does not have the required width.', $dom));
-				$url = ModUtil::url('MUImage', 'user', 'view');
-				return false;
-			}
-			if ($imgInfo[0] > $maxWidth) {
-			    LogUtil::registerError(__('Sorry! Your picture is wider than allowed.', $dom));
-			    $url = ModUtil::url('MUImage', 'user', 'view');
-			    return false;
-			}
-			if ($imgInfo[1] > $maxHeight) {
-			    LogUtil::registerError(__('Sorry! Your picture is higher than allowed.', $dom));
-			    $url = ModUtil::url('MUImage', 'user', 'view');
-			    return false;
-			}
-		}
+        // validate image file
+        $imgInfo = array();
+        $isImage = in_array($extension, $this->imageFileTypes);
+        if ($isImage) {
+            $imgInfo = getimagesize($file['tmp_name']);
+            if (!is_array($imgInfo) || !$imgInfo[0] || !$imgInfo[1]) {
+                return LogUtil::registerError(__('Error! This file type seems not to be a valid image.', $dom));
+            }
+            $requiredWidth = ModUtil::getVar('MUImage', 'minWidth');
+            $maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
+            $maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
+            if ($requiredWidth != '') {
+                if ($imgInfo[0] < $requiredWidth) {
+                    LogUtil::registerError(__('Sorry! Your picture does not have the required width.', $dom));
+                    $url = ModUtil::url('MUImage', 'user', 'view');
+                    return false;
+                }
+            }
+            if ($maxWidth != '') {
+                if ($imgInfo[0] > $maxWidth) {
+                    LogUtil::registerError(__('Sorry! Your picture is wider than allowed.', $dom));
+                    $url = ModUtil::url('MUImage', 'user', 'view');
+                    return false;
+                }
+            }
+            if ($maxHeight != '') {
+                if ($imgInfo[1] > $maxHeight) {
+                    LogUtil::registerError(__('Sorry! Your picture is higher than allowed.', $dom));
+                    $url = ModUtil::url('MUImage', 'user', 'view');
+                    return false;
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 }
