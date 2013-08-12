@@ -17,6 +17,6 @@
  * This is the concrete validation class for album entities.
  */
 class MUImage_Entity_Validator_Album extends MUImage_Entity_Validator_Base_Album
-{
+{    
     // here you can add custom validation methods or override existing checks
 }
