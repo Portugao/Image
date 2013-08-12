@@ -65,9 +65,10 @@
 {/if}
 </div>
 <div id="MUImage_body">
-    {if $album.createdUserId eq $coredata.user.uid}
-    {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
+
     <div id="muimage_body_header">
+        {if $album.createdUserId eq $coredata.user.uid}
+        {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
         {if count($album._actions) gt 0}
             {strip}
                 {foreach item='option' from=$album._actions}
@@ -82,13 +83,15 @@
         <a title="{gt text='Load up a Picture'}" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /></a> <a title="{gt text='Load up few Pictures'}" href="{modurl modname='MUImage' type='user' func='multiUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /><img src="images/icons/extrasmall/edit_add.png" /></a>
         {/if}
         {/if} 
+        {/checkpermissionblock}
+        {/if}  
         <div id="MUImage_user_template">
             {if $modulevars.slideshow1 || $modulevars.slideshow2}
-            <form action="{modurl modname='MUImage' type='user' func='template'}" method="post">
+            <form action="{modurl modname='MUImage' type='user' func='template' id=$album.id}" method="post">
             <select id="template" name="template">
-            <option value="1">Normal</option>
+            <option value="1"{if $template eq 1} selected{/if}>Normal</option>
             {if $modulevars.slideshow1}
-            <option value="2">Slideshow</option>
+            <option value="2"{if $template eq 2} selected{/if}>Slideshow</option>
             {/if}
             {if $modulevars.slideshow2}
             <option value="3">Slideshow2</option>
@@ -98,9 +101,7 @@
             </form>
             {/if}
         </div>   
-    </div>
-    {/checkpermissionblock} 
-    {/if}    
+    </div>   
     <div id="basic_accordion">
     <h3 class="z-acc-header">{gt text='Pictures'}</h3>
     <div id="muimage_pictures" class="z-acc-content">
