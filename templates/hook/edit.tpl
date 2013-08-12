@@ -1,4 +1,5 @@
-<fieldset>
+
+{if $module eq 'News'}
     <legend>{gt text="Create MUImage Album"}</legend>
     <div class="muimage-hook z-formrow">
         <label for="muimage-albumyes">{gt text='Create Album and add the uploaded pictures?'}</label>
@@ -21,5 +22,13 @@
                 <option value={$subalbum.id}>{$subalbum.title}</option>
             {/foreach}
         </select>
-    </div> 
-</fieldset>
+    </div>
+{else}
+    <legend>{gt text="Create MUImage Album"}</legend>
+    <div class="">
+    <div class="muimage-hook z-formrow">
+        <label for="muimage-albumname">{gt text='Enter a title for your album!'}</label>
+        <input type="text" id="muimage-albumname" name="muimage-albumname" />
+    </div>
+    </div>
+{/if}
