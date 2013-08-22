@@ -36,14 +36,6 @@ class MUImage_Form_Handler_Admin_Config extends MUImage_Form_Handler_Admin_Base_
 
         // retrieve module vars
         $modVars = ModUtil::getVar('MUImage');
-
-        // initialise list entries for the 'theme' setting
-        $modVars['slide1themeItems'] = array(
-                array('value' => 'theme-default', 'text' => __('Default', $dom)),
-                array('value' => 'theme-bar', 'text' => __('With bar', $dom)),
-                array('value' => 'theme-light', 'text' => __('Light', $dom)),
-                array('value' => 'theme-dark', 'text' => __('Dark', $dom))
-        );
         
         // assign all module vars
         $this->view->assign('config', $modVars);
