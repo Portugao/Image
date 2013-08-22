@@ -239,7 +239,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
      *
      * this method checks if an user may create another subalbum
      * @param int $kind
-     * return true or false or string
+     * return true or false
      */
     public static function otherUserSubAlbums($kind = 1)
     {
@@ -262,19 +262,12 @@ class MUImage_Util_View extends MUImage_Util_Base_View
                 $where2 .= 'tbl.parent_id > 0';
                 $subalbumcount = $albumrepository->selectCount($where2);
                 if ($kind == 1) {
-                    if ($numberSubAlbums < 0) {
-                        return false;
-                    }
                     if ($subalbumcount < $numberSubAlbums) {
                         return true;
                     } else {
                         return false;
                     }
                 } else {
-                    if ($numberSubAlbums < 0) {
-                        $out = 0;
-                        return $out;
-                    }
                     $contingentSubAlbums = $numberSubAlbums - $subalbumcount;
                     if ($contingentSubAlbums > 0) {
                         $out = $contingentSubAlbums;
