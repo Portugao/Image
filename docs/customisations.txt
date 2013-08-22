@@ -38,6 +38,8 @@ implemented classes
 
 *lib/MUImage/Controller/Admin.php
 *lib/MUImage/Controller/Ajax.php
+*lib/MUImage/Controller/Base/External.php
+*lib/MUImage/Controller/External.php
 *lib/MUImage/Controller/User.php
 
 *lib/MUImage/Entity/Album.php
