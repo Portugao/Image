@@ -16,82 +16,177 @@
  */
 class MUImage_Controller_External extends MUImage_Controller_Base_External
 {
+
     /**
-* Popup selector for scribite plugins.
-* Finds items of a certain object type.
-*
-* @param array $args List of arguments.
-*
-* @return output The external item finder page
-*/
-    public function finder($args)
+     * Post initialise.
+     *
+     * Run after construction.
+     *
+     * @return void
+     */
+    protected function postInitialize()
+    {
+        // Set caching to true by default.
+        $this->view->setCaching(Zikula_View::CACHE_DISABLED);
+    }
+
+    /**
+     * Popup selector for scribite plugins.
+     * Finds items of a certain object type.
+     *
+     * @param array $args List of arguments.
+     *
+     * @return output The external album finder page
+     */
+    public function finderAlbum($args)
     {
         PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('MUImage'));
-    
-        $getData = $this->request->query;
-        $controllerHelper = new MUImage_Util_Controller($this->serviceManager);
-    
+
+        /*$getData = $this->request->query;
+         $controllerHelper = new MUImage_Util_Controller($this->serviceManager);
+
         $objectType = isset($args['objectType']) ? $args['objectType'] : $getData->filter('objectType', 'picture', FILTER_SANITIZE_STRING);
         $utilArgs = array('controller' => 'external', 'action' => 'finder');
         if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $utilArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerType', $utilArgs);
+        $objectType = $controllerHelper->getDefaultObjectType('controllerType', $utilArgs);
         }
-    
+
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:' . ucwords($objectType) . ':', '::', ACCESS_COMMENT), LogUtil::getErrorMsgPermission());
-    
+
         $repository = $this->entityManager->getRepository('MUImage_Entity_' . ucfirst($objectType));
-    
+
         $editor = (isset($args['editor']) && !empty($args['editor'])) ? $args['editor'] : $getData->filter('editor', '', FILTER_SANITIZE_STRING);
         if (empty($editor) || !in_array($editor, array('xinha', 'tinymce', 'ckeditor'))) {
-            return 'Error: Invalid editor context given for external controller action.';
+        return 'Error: Invalid editor context given for external controller action.';
         }
-    
+
         // fetch selected categories to reselect them in the output
         // the actual filtering is done inside the repository class
         $categoryIds = ModUtil::apiFunc('MUImage', 'category', 'retrieveCategoriesFromRequest', array('ot' => $objectType, 'source' => 'GET'));
         $sort = (isset($args['sort']) && !empty($args['sort'])) ? $args['sort'] : $getData->filter('sort', '', FILTER_SANITIZE_STRING);
         if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
-            $sort = $repository->getDefaultSortingField();
+        $sort = $repository->getDefaultSortingField();
         }
-    
+
         $sdir = (isset($args['sortdir']) && !empty($args['sortdir'])) ? $args['sortdir'] : $getData->filter('sortdir', '', FILTER_SANITIZE_STRING);
         $sdir = strtolower($sdir);
         if ($sdir != 'asc' && $sdir != 'desc') {
-            $sdir = 'asc';
+        $sdir = 'asc';
         }
-    
+
         $sortParam = $sort . ' ' . $sdir;
-    
+
         // the current offset which is used to calculate the pagination
         $currentPage = (int) (isset($args['pos']) && !empty($args['pos'])) ? $args['pos'] : $getData->filter('pos', 1, FILTER_VALIDATE_INT);
-    
+
         // the number of items displayed on a page for pagination
         $resultsPerPage = (int) (isset($args['num']) && !empty($args['num'])) ? $args['num'] : $getData->filter('num', 0, FILTER_VALIDATE_INT);
         if ($resultsPerPage == 0) {
-            $resultsPerPage = $this->getVar('pageSize', 20);
+        $resultsPerPage = $this->getVar('pageSize', 20);
         }
         $where = '';
         list($objectData, $objectCount) = $repository->selectWherePaginated($where, $sortParam, $currentPage, $resultsPerPage);
-    
+
         $view = Zikula_View::getInstance('MUImage', false);
-    
+
         $view->assign('editorName', $editor)
-             ->assign('objectType', $objectType)
-             ->assign('objectData', $objectData)
-             ->assign('sort', $sort)
-             ->assign('sortdir', $sdir)
-             ->assign('currentPage', $currentPage)
-             ->assign('pager', array('numitems' => $objectCount,
-                                     'itemsperpage' => $resultsPerPage));
-    
+        ->assign('objectType', $objectType)
+        ->assign('objectData', $objectData)
+        ->assign('sort', $sort)
+        ->assign('sortdir', $sdir)
+        ->assign('currentPage', $currentPage)
+        ->assign('pager', array('numitems' => $objectCount,
+                'itemsperpage' => $resultsPerPage));
+
         // assign category properties
         $properties = null;
         if (in_array($objectType, $this->categorisableObjectTypes)) {
-            $properties = ModUtil::apiFunc('MUImage', 'category', 'getAllProperties', array('ot' => $objectType));
+        $properties = ModUtil::apiFunc('MUImage', 'category', 'getAllProperties', array('ot' => $objectType));
         }
         $view->assign('properties', $properties)
-             ->assign('catIds', $categoryIds);
-    
-        return $view->display('external/' . $objectType . '/find.tpl');
+        ->assign('catIds', $categoryIds);*/
+
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:' . 'Album' . ':', '::', ACCESS_ADD), LogUtil::getErrorMsgPermission());
+
+        $getData = $this->request->query;
+
+        $editor = (isset($args['editor']) && !empty($args['editor'])) ? $args['editor'] : $getData->filter('editor', '', FILTER_SANITIZE_STRING);
+        if (empty($editor) || !in_array($editor, array('xinha', 'tinymce', 'ckeditor'))) {
+            return 'Error: Invalid editor context given for external controller action.';
+        }
+
+        $view = Zikula_View::getInstance('MUImage', false);
+
+        // we get the actual userid
+        $uid = UserUtil::getVar('uid');
+        $usergroups = UserUtil::getGroupsForUser($uid);
+
+        $albumrepository = MUImage_Util_Model::getAlbumRepository();
+        $where = 'tbl.parent_id IS NULL';
+        // if user is not in the admingroup
+        if (!in_array(2, $usergroups)) {
+            $where .= 'AND';
+            $where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+        }
+        $albums = $albumrepository->selectWhere($where);
+
+        // if user is not in the admingroup
+        $where2 = 'tbl.parent_id IS NOT NULL';
+        if (!in_array(2, $usergroups)) {
+            $where2 .= 'AND';
+            $where2 .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+        }
+        $subalbums = $albumrepository->selectWhere($where2);
+
+        $view->clear_cache();
+
+        // assign the albums to template
+        $this->view->assign('albums', $albums);
+        // assign the subalbums to template
+        $this->view->assign('subalbums', $subalbums);
+
+        return $view->display('external/' . 'album' . '/find.tpl');
+    }
+
+    public function finderImages($args)
+    {
+        $view = Zikula_View::getInstance('MUImage', false);
+        $request = new Zikula_Request_Http();
+
+        $mainalbum = $request->query->filter('mainalbum', 0, FILTER_SANITIZE_NUMBER_INT);
+        $subalbum = $request->query->filter('subalbum', 0, FILTER_SANITIZE_NUMBER_INT);
+
+        //$mainalbum = $args['muimage-album'];
+        $albumrepository = MUImage_Util_Model::getAlbumRepository();
+        if ($subalbum == 0) {
+            $album = $albumrepository->selectById($mainalbum);
+        } else {
+            $album = $albumrepository->selectById($subalbum);
+        }
+
+        $imagerepository = MUImage_Util_Model::getPictureRepository();
+        //if ($album) {
+        $where = 'tbl.album  = \'' . DataUtil::formatForStore($album['id']) . '\'';
+        //}
+        $images = $imagerepository->selectWhere($where);
+
+        // assign the images to template
+        $this->view->assign('images', $images);
+
+
+        return $view->display('external/' . 'picture' . '/find.tpl');
+    }
+
+    public function setImage()
+    {
+        $view = Zikula_View::getInstance('MUImage', false);
+        $request = new Zikula_Request_Http();
+
+        $imageid = $request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+        $imagerepository = MUImage_Util_Model::getPictureRepository();
+
+
+
+
     }
 }
