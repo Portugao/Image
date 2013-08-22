@@ -48,14 +48,17 @@
                 <div class="z-formrow">
                     {formlabel for='numberParentAlbums' __text='Number parent albums' class='muimageFormTooltips' title=$toolTip}
                     {formintinput id='numberParentAlbums' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
+                    <div class="z-informationmsg z-formnote">{gt text="Enter -1 for none. Empty for unlimited."}</div>
                 </div>
                 <div class="z-formrow">
                     {formlabel for='numberSubAlbums' __text='Number sub albums' class='muimageFormTooltips' title=$toolTip}
                     {formintinput id='numberSubAlbums' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
+                    <div class="z-informationmsg z-formnote">{gt text="Enter -1 for none. Empty for unlimited."}</div>
                 </div>
                 <div class="z-formrow">
                     {formlabel for='numberPictures' __text='Number pictures' class='muimageFormTooltips' title=$toolTip}
                     {formintinput id='numberPictures' group='config' maxLength=255 width=20em __title='Enter this setting. Only digits are allowed.'}
+                    <div class="z-informationmsg z-formnote">{gt text="Enter -1 for none. Empty for unlimited."}</div>
                 </div>
                 <div class="z-formrow">
                     {formlabel for='fileSize' __text='Allowed filesize?'}
