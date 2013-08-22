@@ -45,6 +45,11 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
 
 		$allowedFields = MUImage_Util_Controller::allowedFields();
 
+		// we get the calling module
+		$request = new Zikula_Request_Http();
+		$module = $request->query->filter('module', '', FILTER_SANITIZE_STRING);
+		// News module
+		if($module == 'News') {
 		$albumrepository = MUImage_Util_Model::getAlbumRepository();
 		$where = 'tbl.parent_id IS NULL';
 		$albums = $albumrepository->selectWhere($where);
@@ -56,6 +61,9 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
 		$this->view->assign('albums', $albums);
 		// assign the subalbums to template
 		$this->view->assign('subalbums', $subalbums);
+		} else { // other modules
+		        
+		}
 
 		$hook->setResponse(new Zikula_Response_DisplayHook('provider.muimage.ui_hooks.service', $this->view, 'hook/edit.tpl'));
 	}
