@@ -40,10 +40,10 @@ class MUImage_Entity_Validator_Base_Album extends MUImage_Validator
             $errorInfo['message'] = __f('Error! Length of field value must not be higher than %2$s (%1$s).', array('description', 2000), $dom);
             return $errorInfo;
         }
-        if (!$this->isUniqueValue('title')) {
+       /* if (!$this->isUniqueValue('title')) {
             $errorInfo['message'] = __f('The title %s is already assigned. Please choose another title.', array($this->entity['title']), $dom);
             return $errorInfo;
-        }
+        }*/
         return true;
     }
 
