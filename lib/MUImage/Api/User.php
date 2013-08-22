@@ -215,7 +215,7 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 		}
 	
 		// define the available user functions
-		$funcs = array('main', 'view', 'display', 'edit', 'delete', 'zipUpload', 'multiUpload', 'editMulti');
+		$funcs = array('main', 'view', 'display', 'edit', 'delete', 'zipUpload', 'multiUpload', 'editMulti', 'template');
 	
 		// return if function url scheme is not being customised
 		$customFuncs = array('view', 'display');
@@ -315,10 +315,10 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 		return true;
 	}
 	
-	public function template()
+	public function template($args)
 	{
 	    $request = new Zikula_Request_Http();
-	    $template = $request->getPost()->filter('template', 1, FILTER_SANITIZE_NUMBER_INT);
+	    $template = $args['template'];
 	    SessionUtil::setVar('template', $template);
 	}
 }

@@ -359,7 +359,8 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	{
 	    // we get the id of the album
 	    $id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
-	    ModUtil::apiFunc($this->name, 'user', 'template'); 
+	    $template = $this->request->getPost()->filter('template', 1, FILTER_SANITIZE_NUMBER_INT);
+	    ModUtil::apiFunc($this->name, 'user', 'template', array('template' => $template)); 
 	    $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $id));
 	    return System::redirect($url);  
 	}
