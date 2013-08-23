@@ -63,7 +63,7 @@ abstract class MUImage_Entity_Base_Album extends Zikula_EntityAccess
 
 
     /**
-     * @ORM\Column(length=255, unique=true)
+     * @ORM\Column(length=255)
      * @var string $title.
      */
     protected $title = '';
