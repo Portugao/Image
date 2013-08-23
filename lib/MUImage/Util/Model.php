@@ -17,30 +17,30 @@
 class MUImage_Util_Model extends MUImage_Util_Base_Model
 {
     /**
-	*
-	* This method is for getting a repository for pictures
-	*
-	*/
-    public static function getPictureRepository() 
+     *
+     * This method is for getting a repository for pictures
+     *
+     */
+    public static function getPictureRepository()
     {
-     $serviceManager = ServiceUtil::getManager();
-     $entityManager = $serviceManager->getService('doctrine.entitymanager');
-     $repository = $entityManager->getRepository('MUImage_Entity_Picture');
-    
-     return $repository;
+        $serviceManager = ServiceUtil::getManager();
+        $entityManager = $serviceManager->getService('doctrine.entitymanager');
+        $repository = $entityManager->getRepository('MUImage_Entity_Picture');
+
+        return $repository;
     }
-    
+
     /**
-	*
-	* This method is for getting a repository for albums
-	*
-	*/
-    public static function getAlbumRepository() 
+     *
+     * This method is for getting a repository for albums
+     *
+     */
+    public static function getAlbumRepository()
     {
-     $serviceManager = ServiceUtil::getManager();
-     $entityManager = $serviceManager->getService('doctrine.entitymanager');
-     $repository = $entityManager->getRepository('MUImage_Entity_Album');
-    
-     return $repository;
-    } 
+        $serviceManager = ServiceUtil::getManager();
+        $entityManager = $serviceManager->getService('doctrine.entitymanager');
+        $repository = $entityManager->getRepository('MUImage_Entity_Album');
+
+        return $repository;
+    }
 }
