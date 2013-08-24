@@ -129,9 +129,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
         } else {
             return false;
         }
-
     }
-
 
     /**
      * Counting pictures of an album
@@ -371,8 +369,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
      * @param int $id user id
      * @return array
      */
-    public static function myAlbums($id) {
-
+    public static function myAlbums($id) 
+    {
         $uid = UserUtil::getVar('uid');
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
         $where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
@@ -411,8 +409,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
      *
      * @return string $out
      */
-    public static function contingent() {
-
+    public static function contingent() 
+    {
         $dom = ZLanguage::getModuleDomain('MUImage');
 
         if (UserUtil::isLoggedIn() === false) {
