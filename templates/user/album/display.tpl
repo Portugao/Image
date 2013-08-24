@@ -161,7 +161,8 @@
     </div>
     <div class="muimage_album_image">
     {if isset($childAlbum.picture)}
-    {include file='user/picture/include_displayItemListMany2.tpl' items=$childAlbum.picture}
+    {muimageGiveImageOfAlbum moduleid=$childAlbum.id assign='picture'}
+    {include file='user/picture/include_displayOneItem.tpl' item=$picture}
     {else}
     <h2>{gt text='No pictures'}</h2>
     {/if}
