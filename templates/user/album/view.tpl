@@ -67,7 +67,7 @@
 	{if isset($album.children) && $album.children ne null && count($album.children) > 0}
     <div class="muimage_view_album_bottom">
     {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$album.children}<br />
-    {* {gt text='Amount of pictures'}: {$album.title|muimageCountAlbumPictures:$album.id} *}
+    {gt text='Pictures'}: {$album.picture|@count}
     </div>
 	{else}
 	{/if}
