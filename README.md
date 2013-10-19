@@ -7,5 +7,5 @@ Notice: Please use only official published versions.
 
 At this moment 1.1.1
 
-To download behind the link 'Tags'.
+To download behind the link 'releases'.
 
