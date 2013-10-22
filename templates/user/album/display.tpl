@@ -87,7 +87,8 @@
         {/if}  
         <div id="MUImage_user_template">
             {if $modulevars.slideshow1 || $modulevars.slideshow2}
-            <form action="{modurl modname='MUImage' type='user' func='template' id=$album.id}" method="post">
+            <form class="form-inline" action="{modurl modname='MUImage' type='user' func='template' id=$album.id}" method="post">
+	    <label>{gt text="View as:"}</label>
             <select id="template" name="template">
             <option value="1"{if $template eq 1} selected{/if}>Normal</option>
             {if $modulevars.slideshow1}
@@ -97,7 +98,7 @@
             <option value="3">Slideshow2</option>
             {/if}
             </select>
-            <input type='submit' value='Ansicht wechseln' />
+	    <input type='submit' value='{gt text="Change view"}' />
             </form>
             {/if}
         </div>   
