@@ -1,6 +1,28 @@
 CHANGELOG
 ---------
 
+Changes in 1.2.0
+
+# closed #23 now it is poosible to set no ending in urls
+
+# closed #27 we have no hook container if no hooks enabled
+
+# closed #43 better performance for albums with many subalbums
+             for subalbums only the first picture will be oaded
+             
+# closed #53 import of mediashare is possible with having a prefix in the tables
+             thanks to nmpetkov
+             
+# closed #54 albums may have the same title, no error editing albums
+
+# closed #55 we can set a maximum width and maximum height for pictures
+
+# closed #59 to set 0 for allowed albums and pictures we can set -1 now;
+             we have an information in the template
+             
+# closed #60 changing album view is possible now with shorturls with no ending
+             without error message 
+
 Changes in 1.1.1
 
 # closed #44 now we can manage elements per page for albums in frontend
