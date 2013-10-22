@@ -158,7 +158,11 @@
     </div>
     <div class="muimage_album_description">
     {useravatar uid=$childAlbum.createdUserId size=30}
+    {if $childAlbum.description}
     {$childAlbum.description}
+    {else}
+    {gt text='No description'}
+    {/if}
     </div>
     <div class="muimage_album_image">
     {if isset($childAlbum.picture)}
@@ -169,8 +173,8 @@
     {/if}
     </div>
     <div class="muimage_album_bottom">
-    {gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}<br /> 
-    {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$childAlbum.children}
+    {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$childAlbum.children}<br /> 
+    {gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}
     </div>
     </div>
     {/foreach}
