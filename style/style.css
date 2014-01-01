@@ -147,8 +147,8 @@ button.muimageInlineButton {
 
 #thisalbum {
     border-bottom: #333 1px solid;
-    float: left;
-    width: 98%;
+   /* float: left;
+    width: 98%; */
 }
 
 #thisalbum h2 {
