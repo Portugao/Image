@@ -32,8 +32,11 @@
 {if $item.imageUploadMeta.format eq 'landscape' || $item.imageUploadMeta.format eq ''}
 <div class="muimage_picture_view_content">
 {/if}
-{if $item.imageUploadMeta.format eq 'portrait' || $item.imageUploadMeta.format eq 'square'}
+{if $item.imageUploadMeta.format eq 'portrait'}
 <div class="muimage_picture_view_content_portrait">
+{/if}
+{if $item.imageUploadMeta.format eq 'square'}
+<div class="muimage_picture_view_content_square">
 {/if}
 {if $item.imageUpload ne '' && isset($item.imageUploadFullPathURL)}
     <a href="{$item.imageUploadFullPathURL}" title="{$item.title|replace:"\"":""}"{if $item.imageUploadMeta.isImage} rel="imageviewer[item]"{/if}>

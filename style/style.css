@@ -234,6 +234,14 @@ button.muimageInlineButton {
     background: #999;
 }
 
+.muimage_picture_view_content_square {
+    float: left;
+    width: 85px;
+    padding: 0 0 0 15px; 
+    height: 70px;
+    background: #999;
+}
+
 .muimage_picture_view_bottom {
     float: left;
     width: 90px;
