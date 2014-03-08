@@ -24,11 +24,16 @@
         </select>
     </div>
 {else}
-    <legend>{gt text="Create MUImage Album"}</legend>
+    <legend>{gt text="Select MUImage Album"}</legend>
     <div class="">
     <div class="muimage-hook z-formrow">
-        <label for="muimage-albumname">{gt text='Enter a title for your album!'}</label>
-        <input type="text" id="muimage-albumname" name="muimage-albumname" />
+        <label for="muimage-albumname">{gt text='Select an album!'}</label>
+        <select id="" name="">
+            <option value="">{gt text='No album selected'}</option>
+            {foreach item='album' from=$allalbums}
+                <option value={$album.id}>{$album.title}</option>    
+            {/foreach}
+        </select>
     </div>
     </div>
 {/if}
