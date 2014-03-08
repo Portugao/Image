@@ -8,166 +8,343 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-15 11:45-0500\n"
+"POT-Creation-Date: 2014-03-08 21:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/MUImage/Api/Admin.php:30 lib/MUImage/Api/Base/Admin.php:30
-msgid "Frontend"
+#: templates/plugins/function.muimageTemplateHeaders.php:31
+#, php-format
+msgid "%1$s: missing parameter '%2$s'"
 msgstr ""
 
-#: lib/MUImage/Api/Admin.php:31 lib/MUImage/Api/Base/Admin.php:31
-msgid "Switch to user area."
+#: templates/plugins/function.muimageSelectorTemplates.php:29
+#: templates/block/itemlist_modify.tpl:37
+#: templates/block/oneitem_modify.tpl:34
+msgid "Only item titles"
 msgstr ""
 
-#: lib/MUImage/Api/Admin.php:36 lib/MUImage/Api/Base/Admin.php:36
-#: lib/MUImage/Api/Base/User.php:36 lib/MUImage/Api/User.php:40
+#: templates/plugins/function.muimageSelectorTemplates.php:30
+#: templates/block/itemlist_modify.tpl:38
+#: templates/block/oneitem_modify.tpl:35
+msgid "With description"
+msgstr ""
+
+#: templates/plugins/function.muimageSelectorTemplates.php:31
+#: templates/block/itemlist_modify.tpl:39
+msgid "Thumbnails"
+msgstr ""
+
+#: templates/plugins/function.muimageSelectorTemplates.php:32
+#: templates/block/itemlist_modify.tpl:40
+msgid "Slideshow"
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:37
+msgid "This is a required field."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:40
+msgid "Please enter a valid number in this field."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:43
+msgid ""
+"Please use numbers only in this field. please avoid spaces or other "
+"characters such as dots or commas."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:46
+msgid "Please use letters only (a-z) in this field."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:49
+msgid ""
+"Please use only letters (a-z) or numbers (0-9) only in this field. No spaces "
+"or other characters are allowed."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:52
+msgid "Please enter a valid date."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:55
+msgid "Please enter a valid email address. For example yourname@example.com ."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:58
+msgid "Please enter a valid URL."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:61
+msgid ""
+"Please use this date format: dd/mm/yyyy. For example 17/03/2010 for the 17th "
+"of March, 2010."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:64
+msgid "Please enter a valid $ amount. For example $100.00 ."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:67
+msgid "Please make a selection."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:70
+msgid "Please select one of the above options."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:75
+msgid "This value must not contain spaces."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:78
+msgid "Please select a valid html colour code."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:81
+#: templates/plugins/function.muimageValidationError.php:87
+#: templates/plugins/function.muimageValidationError.php:93
+msgid "Please select a value in the past."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:84
+#: templates/plugins/function.muimageValidationError.php:90
+#: templates/plugins/function.muimageValidationError.php:96
+msgid "Please select a value in the future."
+msgstr ""
+
+#: templates/plugins/function.muimageValidationError.php:99
+msgid "This value is already assigned, but must be unique. Please change it."
+msgstr ""
+
 #: templates/plugins/function.muimageSelectorObjectTypes.php:29
+#: lib/MUImage/Api/Base/User.php:36 lib/MUImage/Api/Base/Admin.php:36
+#: lib/MUImage/Api/User.php:40 lib/MUImage/Api/Admin.php:36
 #: templates/admin/album.tpl:7 templates/block/itemlist_modify.tpl:6
 msgid "Albums"
 msgstr ""
 
-#: lib/MUImage/Api/Admin.php:37 lib/MUImage/Api/Base/Admin.php:37
-#: lib/MUImage/Api/Base/User.php:37 lib/MUImage/Api/User.php:41
-#: templates/admin/album/view.tpl:4 templates/user/album/view.tpl:4
-#: templates/user/album/viewlist.tpl:4
-msgid "Album list"
-msgstr ""
-
-#: lib/MUImage/Api/Admin.php:41 lib/MUImage/Api/Base/Admin.php:41
-#: lib/MUImage/Api/Base/User.php:41
 #: templates/plugins/function.muimageSelectorObjectTypes.php:30
-#: templates/admin/album/display.tpl:14 templates/block/itemlist_modify.tpl:7
-#: templates/block/oneitem_modify.tpl:6 templates/user/album/display.tpl:86
+#: lib/MUImage/Api/Base/User.php:41 lib/MUImage/Api/Base/Admin.php:41
+#: lib/MUImage/Api/Admin.php:41 templates/admin/album/display.tpl:14
+#: templates/user/album/display.tpl:56 templates/user/album/display.tpl:116
+#: templates/user/album/view.tpl:45 templates/block/itemlist_modify.tpl:7
+#: templates/block/oneitem_modify.tpl:6
 msgid "Pictures"
 msgstr ""
 
-#: lib/MUImage/Api/Admin.php:42 lib/MUImage/Api/Base/Admin.php:42
-#: lib/MUImage/Api/Base/User.php:42 templates/admin/picture/view.tpl:4
-#: templates/user/picture/view.tpl:4
-msgid "Picture list"
+#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:289
+#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:318
+#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:289
+#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:318
+#: lib/MUImage/Form/Handler/User/Base/Edit.php:289
+#: lib/MUImage/Form/Handler/User/Base/Edit.php:318
+#: lib/MUImage/Controller/Base/User.php:196
+#: lib/MUImage/Controller/Base/User.php:277
+#: lib/MUImage/Controller/Base/Admin.php:179
+#: lib/MUImage/Controller/Base/Admin.php:260
+#: lib/MUImage/Controller/Base/Ajax.php:204
+msgid "No such item."
 msgstr ""
 
-#: lib/MUImage/Api/Admin.php:46 templates/admin/import.tpl:4
-#: templates/admin/import.tpl:7
-msgid "Import"
+#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:571
+#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:576
+#: lib/MUImage/Form/Handler/User/Base/Edit.php:571
+msgid "Done! Item created."
 msgstr ""
 
-#: lib/MUImage/Api/Admin.php:47
-msgid "Import from other modules"
+#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:573
+#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:578
+#: lib/MUImage/Form/Handler/User/Base/Edit.php:573
+msgid "Error! Creation attempt failed."
 msgstr ""
 
-#: lib/MUImage/Api/Admin.php:51 lib/MUImage/Api/Base/Admin.php:46
-msgid "Configuration"
+#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:578
+#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:583
+#: lib/MUImage/Form/Handler/User/Base/Edit.php:578
+msgid "Done! Item updated."
 msgstr ""
 
-#: lib/MUImage/Api/Admin.php:52 lib/MUImage/Api/Base/Admin.php:47
-msgid "Manage settings for this application"
+#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:580
+#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:585
+#: lib/MUImage/Form/Handler/User/Base/Edit.php:580
+msgid "Error! Update attempt failed."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Import.php:73
-msgid "There is no album with the id you entered!"
+#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:585
+#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:590
+#: lib/MUImage/Form/Handler/User/Base/Edit.php:585
+#: lib/MUImage/Controller/Base/User.php:287
+#: lib/MUImage/Controller/Base/Admin.php:270
+msgid "Done! Item deleted."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Import.php:81
-msgid "Could not build data array to import this album"
+#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:587
+#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:592
+#: lib/MUImage/Form/Handler/User/Base/Edit.php:587
+msgid "Error! Deletion attempt failed."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Import.php:116
-#, php-format
-msgid "Success! The album %s is imported!"
+#: lib/MUImage/Form/Handler/Admin/Base/Album.php:115
+msgid "Error! Failed to start the import."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Import.php:177
-msgid "Invalid data pool for this picture"
+#: lib/MUImage/Form/Handler/Admin/Base/Album.php:118
+msgid "Done! Module import complete."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Import.php:183 lib/MUImage/Api/Base/Import.php:186
-#: lib/MUImage/Api/Base/Import.php:202 lib/MUImage/Api/Base/Import.php:205
-msgid "No valid pictures for this album!"
+#: lib/MUImage/Form/Handler/Admin/Base/Config.php:105
+msgid "Error! Failed to set configuration variables."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Import.php:193 lib/MUImage/Api/Base/Import.php:196
-#, php-format
-msgid "%1$s Pictures imported for this album!"
+#: lib/MUImage/Form/Handler/Admin/Base/Config.php:108
+msgid "Done! Module configuration updated."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Import.php:210
-msgid "Not able to create the correct structure for album import"
+#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:73
+msgid "Sorry. Could not load any albums for this module!"
 msgstr ""
 
-#: lib/MUImage/Api/Base/Import.php:530
-msgid "Connection to database failed"
+#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:146
+msgid "No such album"
 msgstr ""
 
-#: lib/MUImage/Api/Base/Mailz.php:30
-msgid "3 newest albums"
+#: lib/MUImage/Form/Handler/Admin/Picture/Base/Edit.php:148
+#: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:294
+#: lib/MUImage/Form/Handler/User/Picture/Base/Edit.php:148
+msgid "Done! Picture created."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Mailz.php:31
-msgid "A list of the three newest albums."
+#: lib/MUImage/Form/Handler/Admin/Picture/Base/Edit.php:151
+#: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:297
+#: lib/MUImage/Form/Handler/User/Picture/Base/Edit.php:151
+#: lib/MUImage/Form/Handler/User/Picture/Base/MultiUpload.php:223
+#: lib/MUImage/Form/Handler/User/Picture/HookUpload.php:235
+msgid "Done! Picture updated."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Mailz.php:36
-msgid "3 random albums"
+#: lib/MUImage/Form/Handler/Admin/Picture/Base/Edit.php:154
+#: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:300
+#: lib/MUImage/Form/Handler/User/Picture/Base/Edit.php:154
+#: lib/MUImage/Form/Handler/User/Picture/Base/MultiUpload.php:226
+#: lib/MUImage/Form/Handler/User/Picture/HookUpload.php:238
+msgid "Done! Picture deleted."
 msgstr ""
 
-#: lib/MUImage/Api/Base/Mailz.php:37
-msgid "A list of three random albums."
+#: lib/MUImage/Form/Handler/Admin/Album/Base/Edit.php:140
+#: lib/MUImage/Form/Handler/User/Album/Base/Edit.php:140
+msgid "Done! Album created."
 msgstr ""
 
-#: lib/MUImage/Api/Base/User.php:30 lib/MUImage/Api/User.php:34
-msgid "Backend"
+#: lib/MUImage/Form/Handler/Admin/Album/Base/Edit.php:143
+#: lib/MUImage/Form/Handler/User/Album/Base/Edit.php:143
+msgid "Done! Album updated."
 msgstr ""
 
-#: lib/MUImage/Api/Base/User.php:31 lib/MUImage/Api/User.php:35
-msgid "Switch to administration area."
+#: lib/MUImage/Form/Handler/Admin/Album/Base/Edit.php:146
+#: lib/MUImage/Form/Handler/User/Album/Base/Edit.php:146
+msgid "Done! Album deleted."
 msgstr ""
 
-#: lib/MUImage/Api/User.php:45
-msgid "Create Album"
+#: lib/MUImage/Form/Handler/Admin/Config.php:64
+msgid "Sorry! Your enter for the ending is invalid!"
 msgstr ""
 
-#: lib/MUImage/Api/User.php:46
-msgid "Create a main album"
+#: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:96
+msgid "Sorry. There is an error with session var."
 msgstr ""
 
-#: lib/MUImage/Api/User.php:50
-msgid "Create SubAlbum"
+#: lib/MUImage/Form/Handler/User/Picture/Base/MultiUpload.php:168
+#: lib/MUImage/Form/Handler/User/Picture/HookUpload.php:171
+msgid "Please enter title..."
 msgstr ""
 
-#: lib/MUImage/Api/User.php:51
-msgid "Create a sub album"
+#: lib/MUImage/Form/Handler/User/Picture/Base/MultiUpload.php:220
+#: lib/MUImage/Form/Handler/User/Picture/HookUpload.php:232
+msgid "Done! Image uploaded."
 msgstr ""
 
-#: lib/MUImage/Api/User.php:55
-msgid "Create Picture"
+#: lib/MUImage/Form/Handler/User/Picture/Edit.php:63
+msgid "Owner:"
 msgstr ""
 
-#: lib/MUImage/Api/User.php:56
-msgid "Load up a Picture"
+#: lib/MUImage/Form/Handler/User/Picture/Edit.php:63
+msgid "Main album:"
 msgstr ""
 
-#: lib/MUImage/Api/User.php:60
-msgid "Create Pictures"
+#: lib/MUImage/Form/Handler/User/Edit.php:39
+msgid "You do not have quotas to create a main album!"
 msgstr ""
 
-#: lib/MUImage/Api/User.php:61
-msgid "Load up few Pictures"
+#: lib/MUImage/Form/Handler/User/Edit.php:47
+msgid "You do not have quotas to create a sub album!"
 msgstr ""
 
-#: lib/MUImage/Base/Installer.php:28
+#: lib/MUImage/Form/Handler/User/Edit.php:55
+msgid "You do not have quotas to create pictures!"
+msgstr ""
+
+#: lib/MUImage/Form/Handler/User/Edit.php:70
+msgid "You do not have permissions to edit this album!"
+msgstr ""
+
+#: lib/MUImage/Form/Handler/User/Edit.php:76
+msgid "You do not have permissions to edit this picture!"
+msgstr ""
+
+#: lib/MUImage/Form/Handler/User/Album/Edit.php:44
+msgid "No main album"
+msgstr ""
+
+#: lib/MUImage/Form/Handler/User/Album/Edit.php:49
+msgid "Owner"
+msgstr ""
+
+#: lib/MUImage/Form/Handler/User/Album/Edit.php:49
+#: templates/admin/album/display.tpl:60 templates/user/album/edit.tpl:54
+msgid "Main album"
+msgstr ""
+
+#: lib/MUImage/Form/Plugin/ColourInput.php:99
+msgid "Close"
+msgstr ""
+
+#: lib/MUImage/Form/Plugin/ColourInput.php:143
+msgid "Error! Invalid colour."
+msgstr ""
+
+#: lib/MUImage/ContentType/OneItem.php:38
+msgid "MUImage picture"
+msgstr ""
+
+#: lib/MUImage/ContentType/OneItem.php:44
+msgid "Display One MUImage Picture."
+msgstr ""
+
+#: lib/MUImage/ContentType/Base/ItemList.php:39
+#: lib/MUImage/ContentType/ItemList.php:39
+#: lib/MUImage/Block/Base/ItemList.php:142 lib/MUImage/Block/ItemList.php:169
+msgid "MUImage items"
+msgstr ""
+
+#: lib/MUImage/ContentType/Base/ItemList.php:45
+#: lib/MUImage/ContentType/ItemList.php:45
+msgid "Display MUImage items."
+msgstr ""
+
+#: lib/MUImage/Base/Installer.php:28 lib/MUImage/Installer.php:28
 #, php-format
 msgid ""
 "The upload folder \"%s\" does not exist. Please create it before installing "
 "this application."
 msgstr ""
 
-#: lib/MUImage/Base/Installer.php:31
+#: lib/MUImage/Base/Installer.php:31 lib/MUImage/Installer.php:31
 #, php-format
 msgid ""
 "The upload folder \"%s\" is not writable. Please change permissions "
@@ -175,22 +352,23 @@ msgid ""
 msgstr ""
 
 #: lib/MUImage/Base/Installer.php:39 lib/MUImage/Base/Installer.php:121
+#: lib/MUImage/Installer.php:39 lib/MUImage/Installer.php:150
 msgid "Doctrine Exception: "
 msgstr ""
 
-#: lib/MUImage/Base/Installer.php:41
+#: lib/MUImage/Base/Installer.php:41 lib/MUImage/Installer.php:41
 #, php-format
 msgid "An error was encountered while creating the tables for the %s module."
 msgstr ""
 
-#: lib/MUImage/Base/Installer.php:114
+#: lib/MUImage/Base/Installer.php:114 lib/MUImage/Installer.php:143
 #, php-format
 msgid ""
 "An error was encountered while removing stored object workflows for the %s "
 "module."
 msgstr ""
 
-#: lib/MUImage/Base/Installer.php:123
+#: lib/MUImage/Base/Installer.php:123 lib/MUImage/Installer.php:152
 #, php-format
 msgid "An error was encountered while dropping the tables for the %s module."
 msgstr ""
@@ -213,7 +391,6 @@ msgid "Error! This file type seems not to be a valid image."
 msgstr ""
 
 #: lib/MUImage/Base/Version.php:25 lib/MUImage/Version.php:26
-#: templates/user/header.tpl:13
 msgid "MUImage"
 msgstr ""
 
@@ -242,24 +419,10 @@ msgstr ""
 msgid "muimage Pictures Filter Hooks"
 msgstr ""
 
-#: lib/MUImage/Block/Base/ItemList.php:37 lib/MUImage/Block/OneItem.php:37
+#: lib/MUImage/Block/OneItem.php:37 lib/MUImage/Block/Base/ItemList.php:37
 msgid ""
 "Notice: This block will not be displayed until you activate the MUImage "
 "module."
-msgstr ""
-
-#: lib/MUImage/Block/Base/ItemList.php:41
-msgid "Item list"
-msgstr ""
-
-#: lib/MUImage/Block/Base/ItemList.php:42
-msgid "Show a list of MUImage items based on different criteria."
-msgstr ""
-
-#: lib/MUImage/Block/Base/ItemList.php:142 lib/MUImage/Block/ItemList.php:169
-#: lib/MUImage/ContentType/Base/ItemList.php:39
-#: lib/MUImage/ContentType/ItemList.php:39
-msgid "MUImage items"
 msgstr ""
 
 #: lib/MUImage/Block/OneItem.php:41
@@ -274,316 +437,12 @@ msgstr ""
 msgid "One MUImage Item"
 msgstr ""
 
-#: lib/MUImage/ContentType/Base/ItemList.php:45
-#: lib/MUImage/ContentType/ItemList.php:45
-msgid "Display MUImage items."
+#: lib/MUImage/Block/Base/ItemList.php:41
+msgid "Item list"
 msgstr ""
 
-#: lib/MUImage/ContentType/OneItem.php:38
-msgid "MUImage picture"
-msgstr ""
-
-#: lib/MUImage/ContentType/OneItem.php:44
-msgid "Display One MUImage Picture."
-msgstr ""
-
-#: lib/MUImage/Controller/Ajax.php:84 lib/MUImage/Controller/Base/Ajax.php:96
-msgid "Item"
-msgstr ""
-
-#: lib/MUImage/Controller/Base/Admin.php:176
-#: lib/MUImage/Controller/Base/Admin.php:257
-#: lib/MUImage/Controller/Base/User.php:193
-#: lib/MUImage/Controller/Base/User.php:274
-msgid "Error! Invalid identifier received."
-msgstr ""
-
-#: lib/MUImage/Controller/Base/Admin.php:179
-#: lib/MUImage/Controller/Base/Admin.php:260
-#: lib/MUImage/Controller/Base/Ajax.php:204
-#: lib/MUImage/Controller/Base/User.php:196
-#: lib/MUImage/Controller/Base/User.php:277
-#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:289
-#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:318
-#: lib/MUImage/Form/Handler/User/Base/Edit.php:289
-#: lib/MUImage/Form/Handler/User/Base/Edit.php:318
-#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:289
-#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:318
-msgid "No such item."
-msgstr ""
-
-#: lib/MUImage/Controller/Base/Admin.php:270
-#: lib/MUImage/Controller/Base/User.php:287
-#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:585
-#: lib/MUImage/Form/Handler/User/Base/Edit.php:585
-#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:590
-msgid "Done! Item deleted."
-msgstr ""
-
-#: lib/MUImage/Controller/Base/Ajax.php:146
-#: lib/MUImage/Controller/Base/Ajax.php:157
-#: lib/MUImage/Controller/Base/Ajax.php:198
-msgid "Error: invalid input."
-msgstr ""
-
-#: lib/MUImage/Controller/User.php:213
-msgid "You have no permissions to delete this album!"
-msgstr ""
-
-#: lib/MUImage/Controller/User.php:231
-msgid "You have no permissions to delete this picture!"
-msgstr ""
-
-#: lib/MUImage/Entity/Album.php:54 lib/MUImage/Entity/Album.php:108
-#: lib/MUImage/Entity/Base/Album.php:751 lib/MUImage/Entity/Base/Album.php:795
-#: lib/MUImage/Entity/Base/Picture.php:752
-#: lib/MUImage/Entity/Base/Picture.php:796 lib/MUImage/Entity/Picture.php:179
-#: lib/MUImage/Entity/Picture.php:223 templates/admin/album/display.tpl:8
-#: templates/admin/picture/display.tpl:8
-#: templates/user/picture/include_displayItemListMany.tpl:9
-msgid "Details"
-msgstr ""
-
-#: lib/MUImage/Entity/Album.php:64 lib/MUImage/Entity/Album.php:65
-#: lib/MUImage/Entity/Album.php:113 lib/MUImage/Entity/Album.php:114
-#: lib/MUImage/Entity/Base/Album.php:761 lib/MUImage/Entity/Base/Album.php:762
-#: lib/MUImage/Entity/Base/Album.php:805 lib/MUImage/Entity/Base/Album.php:806
-#: lib/MUImage/Entity/Base/Picture.php:762
-#: lib/MUImage/Entity/Base/Picture.php:763
-#: lib/MUImage/Entity/Base/Picture.php:806
-#: lib/MUImage/Entity/Base/Picture.php:807 lib/MUImage/Entity/Picture.php:189
-#: lib/MUImage/Entity/Picture.php:190 lib/MUImage/Entity/Picture.php:233
-#: lib/MUImage/Entity/Picture.php:234
-msgid "Edit"
-msgstr ""
-
-#: lib/MUImage/Entity/Album.php:78 lib/MUImage/Entity/Album.php:79
-#: lib/MUImage/Entity/Album.php:127 lib/MUImage/Entity/Album.php:128
-#: lib/MUImage/Entity/Base/Album.php:775 lib/MUImage/Entity/Base/Album.php:776
-#: lib/MUImage/Entity/Base/Album.php:819 lib/MUImage/Entity/Base/Album.php:820
-#: lib/MUImage/Entity/Base/Picture.php:776
-#: lib/MUImage/Entity/Base/Picture.php:777
-#: lib/MUImage/Entity/Base/Picture.php:820
-#: lib/MUImage/Entity/Base/Picture.php:821 lib/MUImage/Entity/Picture.php:203
-#: lib/MUImage/Entity/Picture.php:204 lib/MUImage/Entity/Picture.php:247
-#: lib/MUImage/Entity/Picture.php:248 templates/admin/album/delete.tpl:7
-#: templates/admin/album/delete.tpl:20 templates/admin/picture/delete.tpl:7
-#: templates/admin/picture/delete.tpl:20 templates/user/album/delete.tpl:19
-#: templates/user/picture/delete.tpl:17
-msgid "Delete"
-msgstr ""
-
-#: lib/MUImage/Entity/Album.php:87 lib/MUImage/Entity/Album.php:88
-#: lib/MUImage/Entity/Base/Album.php:784 lib/MUImage/Entity/Base/Album.php:785
-#: lib/MUImage/Entity/Base/Album.php:828 lib/MUImage/Entity/Base/Album.php:829
-#: lib/MUImage/Entity/Base/Picture.php:785
-#: lib/MUImage/Entity/Base/Picture.php:786
-#: lib/MUImage/Entity/Base/Picture.php:829
-#: lib/MUImage/Entity/Base/Picture.php:830 lib/MUImage/Entity/Picture.php:212
-#: lib/MUImage/Entity/Picture.php:213 lib/MUImage/Entity/Picture.php:256
-#: lib/MUImage/Entity/Picture.php:257
-msgid "Back to overview"
-msgstr ""
-
-#: lib/MUImage/Entity/Base/Album.php:744
-#: lib/MUImage/Entity/Base/Picture.php:745
-msgid "Open preview page"
-msgstr ""
-
-#: lib/MUImage/Entity/Base/Album.php:745
-#: lib/MUImage/Entity/Base/Picture.php:746
-msgid "Preview"
-msgstr ""
-
-#: lib/MUImage/Entity/Base/Album.php:767 lib/MUImage/Entity/Base/Album.php:811
-#: lib/MUImage/Entity/Base/Picture.php:768
-#: lib/MUImage/Entity/Base/Picture.php:812
-msgid "Reuse for new item"
-msgstr ""
-
-#: lib/MUImage/Entity/Base/Album.php:768 lib/MUImage/Entity/Base/Album.php:812
-#: lib/MUImage/Entity/Base/Picture.php:769
-#: lib/MUImage/Entity/Base/Picture.php:813
-msgid "Reuse"
-msgstr ""
-
-#: lib/MUImage/Entity/Validator/Base/Album.php:32
-#: lib/MUImage/Entity/Validator/Base/Album.php:40
-#: lib/MUImage/Entity/Validator/Base/Picture.php:32
-#: lib/MUImage/Entity/Validator/Base/Picture.php:36
-#: lib/MUImage/Entity/Validator/Base/Picture.php:48
-#: lib/MUImage/Entity/Validator/Base/Picture.php:60
-#: lib/MUImage/Entity/Validator/Picture.php:31
-#: lib/MUImage/Entity/Validator/Picture.php:35
-#: lib/MUImage/Entity/Validator/Picture.php:47
-#: lib/MUImage/Entity/Validator/Picture.php:59
-#, php-format
-msgid "Error! Length of field value must not be higher than %2$s (%1$s)."
-msgstr ""
-
-#: lib/MUImage/Entity/Validator/Base/Album.php:36
-#, php-format
-msgid "Error! Field value must not be empty (%s)."
-msgstr ""
-
-#: lib/MUImage/Entity/Validator/Base/Album.php:44
-#, php-format
-msgid "The title %s is already assigned. Please choose another title."
-msgstr ""
-
-#: lib/MUImage/Entity/Validator/Base/Picture.php:40
-#: lib/MUImage/Entity/Validator/Base/Picture.php:44
-#: lib/MUImage/Entity/Validator/Picture.php:39
-#: lib/MUImage/Entity/Validator/Picture.php:43
-#, php-format
-msgid "Error! Field value must be a valid boolean (%s)."
-msgstr ""
-
-#: lib/MUImage/Entity/Validator/Base/Picture.php:56
-#: lib/MUImage/Entity/Validator/Picture.php:55
-#, php-format
-msgid "Error! Field value may only contain digits (%s)."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Album/Base/Edit.php:140
-#: lib/MUImage/Form/Handler/User/Album/Base/Edit.php:140
-msgid "Done! Album created."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Album/Base/Edit.php:143
-#: lib/MUImage/Form/Handler/User/Album/Base/Edit.php:143
-msgid "Done! Album updated."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Album/Base/Edit.php:146
-#: lib/MUImage/Form/Handler/User/Album/Base/Edit.php:146
-msgid "Done! Album deleted."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Album.php:115
-msgid "Error! Failed to start the import."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Album.php:118
-msgid "Done! Module import complete."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Config.php:105
-msgid "Error! Failed to set configuration variables."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Config.php:108
-msgid "Done! Module configuration updated."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:571
-#: lib/MUImage/Form/Handler/User/Base/Edit.php:571
-#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:576
-msgid "Done! Item created."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:573
-#: lib/MUImage/Form/Handler/User/Base/Edit.php:573
-#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:578
-msgid "Error! Creation attempt failed."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:578
-#: lib/MUImage/Form/Handler/User/Base/Edit.php:578
-#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:583
-msgid "Done! Item updated."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:580
-#: lib/MUImage/Form/Handler/User/Base/Edit.php:580
-#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:585
-msgid "Error! Update attempt failed."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/Edit.php:587
-#: lib/MUImage/Form/Handler/User/Base/Edit.php:587
-#: lib/MUImage/Form/Handler/User/Base/EditMulti.php:592
-msgid "Error! Deletion attempt failed."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:73
-msgid "Sorry. Could not load any albums for this module!"
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Base/ModuleAlbums.php:146
-msgid "No such album"
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Picture/Base/Edit.php:148
-#: lib/MUImage/Form/Handler/User/Picture/Base/Edit.php:148
-#: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:294
-msgid "Done! Picture created."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Picture/Base/Edit.php:151
-#: lib/MUImage/Form/Handler/User/Picture/Base/Edit.php:151
-#: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:297
-#: lib/MUImage/Form/Handler/User/Picture/HookUpload.php:243
-#: lib/MUImage/Form/Handler/User/Picture/MultiUpload.php:213
-msgid "Done! Picture updated."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/Admin/Picture/Base/Edit.php:154
-#: lib/MUImage/Form/Handler/User/Picture/Base/Edit.php:154
-#: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:300
-#: lib/MUImage/Form/Handler/User/Picture/HookUpload.php:246
-#: lib/MUImage/Form/Handler/User/Picture/MultiUpload.php:216
-msgid "Done! Picture deleted."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/User/Edit.php:40
-msgid "You do not have quotas to create a main album!"
-msgstr ""
-
-#: lib/MUImage/Form/Handler/User/Edit.php:48
-msgid "You do not have quotas to create a sub album!"
-msgstr ""
-
-#: lib/MUImage/Form/Handler/User/Edit.php:56
-msgid "You do not have quotas to create pictures!"
-msgstr ""
-
-#: lib/MUImage/Form/Handler/User/Edit.php:69
-msgid "You do not have permissions to edit this album!"
-msgstr ""
-
-#: lib/MUImage/Form/Handler/User/Edit.php:75
-msgid "You do not have permissions to edit this picture!"
-msgstr ""
-
-#: lib/MUImage/Form/Handler/User/Picture/Base/EditMulti.php:96
-msgid "Sorry. There is an error with session var."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/User/Picture/HookUpload.php:179
-#: lib/MUImage/Form/Handler/User/Picture/MultiUpload.php:158
-msgid "Please enter title..."
-msgstr ""
-
-#: lib/MUImage/Form/Handler/User/Picture/HookUpload.php:240
-#: lib/MUImage/Form/Handler/User/Picture/MultiUpload.php:210
-msgid "Done! Image uploaded."
-msgstr ""
-
-#: lib/MUImage/Form/Plugin/ColourInput.php:99
-msgid "Close"
-msgstr ""
-
-#: lib/MUImage/Form/Plugin/ColourInput.php:143
-msgid "Error! Invalid colour."
-msgstr ""
-
-#: lib/MUImage/HookHandlers.php:145
-msgid "Album with title "
-msgstr ""
-
-#: lib/MUImage/HookHandlers.php:145
-msgid " created!"
+#: lib/MUImage/Block/Base/ItemList.php:42
+msgid "Show a list of MUImage items based on different criteria."
 msgstr ""
 
 #: lib/MUImage/UploadHandler.php:120
@@ -597,9 +456,24 @@ msgstr ""
 msgid "Error! Your file is too big. Please keep it smaller than %s megabytes."
 msgstr ""
 
-#: lib/MUImage/Util/Base/Image.php:140
-#, php-format
-msgid "An error occured during thumbnail creation: %s"
+#: lib/MUImage/UploadHandler.php:159
+msgid "Sorry! Your picture does not have the required width."
+msgstr ""
+
+#: lib/MUImage/UploadHandler.php:166
+msgid "Sorry! Your picture is wider than allowed."
+msgstr ""
+
+#: lib/MUImage/UploadHandler.php:173
+msgid "Sorry! Your picture is higher than allowed."
+msgstr ""
+
+#: lib/MUImage/Version.php:28
+msgid "MUImage Pictures in Albums and SubAlbums"
+msgstr ""
+
+#: lib/MUImage/Version.php:70
+msgid "MUImage - Create album"
 msgstr ""
 
 #: lib/MUImage/Util/Base/View.php:178
@@ -618,7 +492,46 @@ msgstr ""
 msgid "GB"
 msgstr ""
 
-#: lib/MUImage/Util/Controller.php:50
+#: lib/MUImage/Util/Base/Image.php:140
+#, php-format
+msgid "An error occured during thumbnail creation: %s"
+msgstr ""
+
+#: lib/MUImage/Util/View.php:200 lib/MUImage/Util/View.php:229
+#: lib/MUImage/Util/View.php:253 lib/MUImage/Util/View.php:290
+#: lib/MUImage/Util/View.php:312 lib/MUImage/Util/View.php:340
+#: lib/MUImage/Util/View.php:426 lib/MUImage/Util/View.php:433
+#: lib/MUImage/Util/View.php:440
+msgid "unlimited"
+msgstr ""
+
+#: lib/MUImage/Util/View.php:444
+msgid "Your Quota: "
+msgstr ""
+
+#: lib/MUImage/Util/View.php:445
+msgid "Main Albums: "
+msgstr ""
+
+#: lib/MUImage/Util/View.php:445
+msgid "Sub Albums: "
+msgstr ""
+
+#: lib/MUImage/Util/View.php:445
+msgid "Pictures: "
+msgstr ""
+
+#: lib/MUImage/Util/Controller.php:31
+msgid "Not set"
+msgstr ""
+
+#: lib/MUImage/Util/Controller.php:33 lib/MUImage/Util/Controller.php:51
+#: lib/MUImage/Util/Controller.php:69
+msgid "pixel"
+msgstr ""
+
+#: lib/MUImage/Util/Controller.php:49 lib/MUImage/Util/Controller.php:67
+#: lib/MUImage/Util/Controller.php:102
 msgid "No limit"
 msgstr ""
 
@@ -638,13 +551,13 @@ msgstr ""
 msgid " bytes"
 msgstr ""
 
-#: lib/MUImage/Util/Image.php:51 templates/block/oneitem_modify.tpl:21
-#: templates/contenttype/oneitem_edit.tpl:27
+#: lib/MUImage/Util/Image.php:51 templates/contenttype/oneitem_edit.tpl:27
+#: templates/block/oneitem_modify.tpl:21
 msgid "Height"
 msgstr ""
 
-#: lib/MUImage/Util/Image.php:54 templates/block/oneitem_modify.tpl:16
-#: templates/contenttype/oneitem_edit.tpl:23
+#: lib/MUImage/Util/Image.php:54 templates/contenttype/oneitem_edit.tpl:23
+#: templates/block/oneitem_modify.tpl:16
 msgid "Width"
 msgstr ""
 
@@ -758,141 +671,512 @@ msgstr ""
 msgid "User comment"
 msgstr ""
 
-#: lib/MUImage/Util/View.php:107 lib/MUImage/Util/View.php:142
-#: lib/MUImage/Util/View.php:163 lib/MUImage/Util/View.php:198
-#: lib/MUImage/Util/View.php:219 lib/MUImage/Util/View.php:252
-#: lib/MUImage/Util/View.php:313 lib/MUImage/Util/View.php:321
-#: lib/MUImage/Util/View.php:329
-msgid "unlimited"
-msgstr ""
-
-#: lib/MUImage/Util/View.php:332
-msgid "Your Quota: "
-msgstr ""
-
-#: lib/MUImage/Util/View.php:333
-msgid "Main Albums: "
-msgstr ""
-
-#: lib/MUImage/Util/View.php:333
-msgid "Sub Albums: "
-msgstr ""
-
-#: lib/MUImage/Util/View.php:333
-msgid "Pictures: "
-msgstr ""
-
-#: lib/MUImage/Version.php:28
-msgid "MUImage Pictures in Albums and SubAlbums"
-msgstr ""
-
-#: lib/MUImage/Version.php:70
-msgid "MUImage - Create album"
-msgstr ""
-
-#: templates/plugins/function.muimageSelectorTemplates.php:29
-#: templates/block/itemlist_modify.tpl:37
-#: templates/block/oneitem_modify.tpl:34
-msgid "Only item titles"
-msgstr ""
-
-#: templates/plugins/function.muimageSelectorTemplates.php:30
-#: templates/block/itemlist_modify.tpl:38
-#: templates/block/oneitem_modify.tpl:35
-msgid "With description"
-msgstr ""
-
-#: templates/plugins/function.muimageSelectorTemplates.php:31
-#: templates/block/itemlist_modify.tpl:39
-msgid "Thumbnails"
-msgstr ""
-
-#: templates/plugins/function.muimageSelectorTemplates.php:32
-#: templates/block/itemlist_modify.tpl:40
-msgid "Slideshow"
-msgstr ""
-
-#: templates/plugins/function.muimageTemplateHeaders.php:31
+#: lib/MUImage/Entity/Validator/Picture.php:31
+#: lib/MUImage/Entity/Validator/Picture.php:35
+#: lib/MUImage/Entity/Validator/Picture.php:47
+#: lib/MUImage/Entity/Validator/Picture.php:59
+#: lib/MUImage/Entity/Validator/Base/Picture.php:32
+#: lib/MUImage/Entity/Validator/Base/Picture.php:36
+#: lib/MUImage/Entity/Validator/Base/Picture.php:48
+#: lib/MUImage/Entity/Validator/Base/Picture.php:60
+#: lib/MUImage/Entity/Validator/Base/Album.php:32
+#: lib/MUImage/Entity/Validator/Base/Album.php:40
 #, php-format
-msgid "%1$s: missing parameter '%2$s'"
+msgid "Error! Length of field value must not be higher than %2$s (%1$s)."
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:37
-msgid "This is a required field."
+#: lib/MUImage/Entity/Validator/Picture.php:39
+#: lib/MUImage/Entity/Validator/Picture.php:43
+#: lib/MUImage/Entity/Validator/Base/Picture.php:40
+#: lib/MUImage/Entity/Validator/Base/Picture.php:44
+#, php-format
+msgid "Error! Field value must be a valid boolean (%s)."
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:40
-msgid "Please enter a valid number in this field."
+#: lib/MUImage/Entity/Validator/Picture.php:55
+#: lib/MUImage/Entity/Validator/Base/Picture.php:56
+#, php-format
+msgid "Error! Field value may only contain digits (%s)."
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:43
+#: lib/MUImage/Entity/Validator/Base/Album.php:36
+#, php-format
+msgid "Error! Field value must not be empty (%s)."
+msgstr ""
+
+#: lib/MUImage/Entity/Picture.php:177 lib/MUImage/Entity/Picture.php:221
+#: lib/MUImage/Entity/Base/Picture.php:752
+#: lib/MUImage/Entity/Base/Picture.php:796
+#: lib/MUImage/Entity/Base/Album.php:751 lib/MUImage/Entity/Base/Album.php:795
+#: lib/MUImage/Entity/Album.php:53 lib/MUImage/Entity/Album.php:107
+#: templates/admin/picture/display.tpl:8 templates/admin/album/display.tpl:8
+#: templates/user/picture/include_displayItemListMany.tpl:9
+msgid "Details"
+msgstr ""
+
+#: lib/MUImage/Entity/Picture.php:187 lib/MUImage/Entity/Picture.php:188
+#: lib/MUImage/Entity/Picture.php:231 lib/MUImage/Entity/Picture.php:232
+#: lib/MUImage/Entity/Base/Picture.php:762
+#: lib/MUImage/Entity/Base/Picture.php:763
+#: lib/MUImage/Entity/Base/Picture.php:806
+#: lib/MUImage/Entity/Base/Picture.php:807
+#: lib/MUImage/Entity/Base/Album.php:761 lib/MUImage/Entity/Base/Album.php:762
+#: lib/MUImage/Entity/Base/Album.php:805 lib/MUImage/Entity/Base/Album.php:806
+#: lib/MUImage/Entity/Album.php:63 lib/MUImage/Entity/Album.php:64
+#: lib/MUImage/Entity/Album.php:112 lib/MUImage/Entity/Album.php:113
+msgid "Edit"
+msgstr ""
+
+#: lib/MUImage/Entity/Picture.php:201 lib/MUImage/Entity/Picture.php:202
+#: lib/MUImage/Entity/Picture.php:245 lib/MUImage/Entity/Picture.php:246
+#: lib/MUImage/Entity/Base/Picture.php:776
+#: lib/MUImage/Entity/Base/Picture.php:777
+#: lib/MUImage/Entity/Base/Picture.php:820
+#: lib/MUImage/Entity/Base/Picture.php:821
+#: lib/MUImage/Entity/Base/Album.php:775 lib/MUImage/Entity/Base/Album.php:776
+#: lib/MUImage/Entity/Base/Album.php:819 lib/MUImage/Entity/Base/Album.php:820
+#: lib/MUImage/Entity/Album.php:77 lib/MUImage/Entity/Album.php:78
+#: lib/MUImage/Entity/Album.php:126 lib/MUImage/Entity/Album.php:127
+#: templates/admin/picture/delete.tpl:7 templates/admin/picture/delete.tpl:20
+#: templates/admin/album/delete.tpl:7 templates/admin/album/delete.tpl:20
+#: templates/user/picture/delete.tpl:17 templates/user/album/delete.tpl:19
+msgid "Delete"
+msgstr ""
+
+#: lib/MUImage/Entity/Picture.php:210 lib/MUImage/Entity/Picture.php:211
+#: lib/MUImage/Entity/Base/Picture.php:785
+#: lib/MUImage/Entity/Base/Picture.php:786
+#: lib/MUImage/Entity/Base/Picture.php:829
+#: lib/MUImage/Entity/Base/Picture.php:830
+#: lib/MUImage/Entity/Base/Album.php:784 lib/MUImage/Entity/Base/Album.php:785
+#: lib/MUImage/Entity/Base/Album.php:828 lib/MUImage/Entity/Base/Album.php:829
+#: lib/MUImage/Entity/Album.php:86 lib/MUImage/Entity/Album.php:87
+msgid "Back to overview"
+msgstr ""
+
+#: lib/MUImage/Entity/Base/Picture.php:745
+#: lib/MUImage/Entity/Base/Album.php:744
+msgid "Open preview page"
+msgstr ""
+
+#: lib/MUImage/Entity/Base/Picture.php:746
+#: lib/MUImage/Entity/Base/Album.php:745
+msgid "Preview"
+msgstr ""
+
+#: lib/MUImage/Entity/Base/Picture.php:768
+#: lib/MUImage/Entity/Base/Picture.php:812
+#: lib/MUImage/Entity/Base/Album.php:767 lib/MUImage/Entity/Base/Album.php:811
+msgid "Reuse for new item"
+msgstr ""
+
+#: lib/MUImage/Entity/Base/Picture.php:769
+#: lib/MUImage/Entity/Base/Picture.php:813
+#: lib/MUImage/Entity/Base/Album.php:768 lib/MUImage/Entity/Base/Album.php:812
+msgid "Reuse"
+msgstr ""
+
+#: lib/MUImage/HookHandlers.php:154
+msgid "Album with title "
+msgstr ""
+
+#: lib/MUImage/HookHandlers.php:154
+msgid " created!"
+msgstr ""
+
+#: lib/MUImage/Api/Base/Mailz.php:30
+msgid "3 newest albums"
+msgstr ""
+
+#: lib/MUImage/Api/Base/Mailz.php:31
+msgid "A list of the three newest albums."
+msgstr ""
+
+#: lib/MUImage/Api/Base/Mailz.php:36
+msgid "3 random albums"
+msgstr ""
+
+#: lib/MUImage/Api/Base/Mailz.php:37
+msgid "A list of three random albums."
+msgstr ""
+
+#: lib/MUImage/Api/Base/User.php:30 lib/MUImage/Api/User.php:34
+msgid "Backend"
+msgstr ""
+
+#: lib/MUImage/Api/Base/User.php:31 lib/MUImage/Api/User.php:35
+msgid "Switch to administration area."
+msgstr ""
+
+#: lib/MUImage/Api/Base/User.php:37 lib/MUImage/Api/Base/Admin.php:37
+#: lib/MUImage/Api/User.php:41 lib/MUImage/Api/Admin.php:37
+#: templates/admin/album/view.tpl:4 templates/user/album/view.tpl:3
+#: templates/user/album/viewlist.tpl:4
+msgid "Album list"
+msgstr ""
+
+#: lib/MUImage/Api/Base/User.php:42 lib/MUImage/Api/Base/Admin.php:42
+#: lib/MUImage/Api/Admin.php:42 templates/admin/picture/view.tpl:4
+#: templates/user/picture/view.tpl:4
+msgid "Picture list"
+msgstr ""
+
+#: lib/MUImage/Api/Base/Import.php:77
+msgid "There is no album with the id you entered!"
+msgstr ""
+
+#: lib/MUImage/Api/Base/Import.php:90
+msgid "Sorry! There is already an album with this title in MUImage!"
+msgstr ""
+
+#: lib/MUImage/Api/Base/Import.php:96
+msgid "Could not build data array to import this album"
+msgstr ""
+
+#: lib/MUImage/Api/Base/Import.php:118
+#, php-format
 msgid ""
-"Please use numbers only in this field. please avoid spaces or other "
-"characters such as dots or commas."
+"For the album  %s there was no main album found. If you are sure, there is "
+"one in the mediashare table, you should edit the imported album to assign "
+"the main album."
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:46
-msgid "Please use letters only (a-z) in this field."
+#: lib/MUImage/Api/Base/Import.php:137 lib/MUImage/Api/Base/Import.php:140
+#, php-format
+msgid "Success! The album %s is imported!"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:49
-msgid ""
-"Please use only letters (a-z) or numbers (0-9) only in this field. No spaces "
-"or other characters are allowed."
+#: lib/MUImage/Api/Base/Import.php:202
+msgid "Invalid data pool for this picture"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:52
-msgid "Please enter a valid date."
+#: lib/MUImage/Api/Base/Import.php:208 lib/MUImage/Api/Base/Import.php:211
+#: lib/MUImage/Api/Base/Import.php:227 lib/MUImage/Api/Base/Import.php:230
+msgid "No valid pictures for this album!"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:55
-msgid "Please enter a valid email address. For example yourname@example.com ."
+#: lib/MUImage/Api/Base/Import.php:218 lib/MUImage/Api/Base/Import.php:221
+#, php-format
+msgid "%1$s Pictures imported for this album!"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:58
-msgid "Please enter a valid URL."
+#: lib/MUImage/Api/Base/Import.php:235
+msgid "Not able to create the correct structure for album import"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:61
-msgid ""
-"Please use this date format: dd/mm/yyyy. For example 17/03/2010 for the 17th "
-"of March, 2010."
+#: lib/MUImage/Api/Base/Import.php:565
+msgid "Connection to database failed"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:64
-msgid "Please enter a valid $ amount. For example $100.00 ."
+#: lib/MUImage/Api/Base/Admin.php:30 lib/MUImage/Api/Admin.php:30
+msgid "Frontend"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:67
-msgid "Please make a selection."
+#: lib/MUImage/Api/Base/Admin.php:31 lib/MUImage/Api/Admin.php:31
+msgid "Switch to user area."
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:70
-msgid "Please select one of the above options."
+#: lib/MUImage/Api/Base/Admin.php:46 lib/MUImage/Api/Admin.php:51
+msgid "Configuration"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:75
-msgid "This value must not contain spaces."
+#: lib/MUImage/Api/Base/Admin.php:47 lib/MUImage/Api/Admin.php:52
+msgid "Manage settings for this application"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:78
-msgid "Please select a valid html colour code."
+#: lib/MUImage/Api/User.php:45
+msgid "Create Album"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:81
-#: templates/plugins/function.muimageValidationError.php:87
-#: templates/plugins/function.muimageValidationError.php:93
-msgid "Please select a value in the past."
+#: lib/MUImage/Api/User.php:46
+msgid "Create a main album"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:84
-#: templates/plugins/function.muimageValidationError.php:90
-#: templates/plugins/function.muimageValidationError.php:96
-msgid "Please select a value in the future."
+#: lib/MUImage/Api/User.php:50
+msgid "Create SubAlbum"
 msgstr ""
 
-#: templates/plugins/function.muimageValidationError.php:99
-msgid "This value is already assigned, but must be unique. Please change it."
+#: lib/MUImage/Api/User.php:51
+msgid "Create a sub album"
+msgstr ""
+
+#: lib/MUImage/Api/User.php:55
+msgid "Create Picture"
+msgstr ""
+
+#: lib/MUImage/Api/User.php:56 templates/user/album/display.tpl:29
+msgid "Load up a Picture"
+msgstr ""
+
+#: lib/MUImage/Api/User.php:60
+msgid "Create Pictures"
+msgstr ""
+
+#: lib/MUImage/Api/User.php:61 templates/user/album/display.tpl:30
+msgid "Load up few Pictures"
+msgstr ""
+
+#: lib/MUImage/Api/Admin.php:46 templates/admin/import.tpl:4
+#: templates/admin/import.tpl:7
+msgid "Import"
+msgstr ""
+
+#: lib/MUImage/Api/Admin.php:47
+msgid "Import from other modules"
+msgstr ""
+
+#: lib/MUImage/Controller/Base/User.php:193
+#: lib/MUImage/Controller/Base/User.php:274
+#: lib/MUImage/Controller/Base/Admin.php:176
+#: lib/MUImage/Controller/Base/Admin.php:257
+msgid "Error! Invalid identifier received."
+msgstr ""
+
+#: lib/MUImage/Controller/Base/Ajax.php:96 lib/MUImage/Controller/Ajax.php:84
+msgid "Item"
+msgstr ""
+
+#: lib/MUImage/Controller/Base/Ajax.php:146
+#: lib/MUImage/Controller/Base/Ajax.php:157
+#: lib/MUImage/Controller/Base/Ajax.php:198
+msgid "Error: invalid input."
+msgstr ""
+
+#: lib/MUImage/Controller/User.php:324
+msgid "You have no permissions to delete this album!"
+msgstr ""
+
+#: lib/MUImage/Controller/User.php:342
+msgid "You have no permissions to delete this picture!"
+msgstr ""
+
+#: templates/hook/edit.tpl:3
+msgid "Create MUImage Album"
+msgstr ""
+
+#: templates/hook/edit.tpl:5
+msgid "Create Album and add the uploaded pictures?"
+msgstr ""
+
+#: templates/hook/edit.tpl:9
+msgid "Add pictures to main album:"
+msgstr ""
+
+#: templates/hook/edit.tpl:11 templates/external/album/find.tpl:6
+msgid "Select a main album"
+msgstr ""
+
+#: templates/hook/edit.tpl:18
+msgid "Add pictures to sub album:"
+msgstr ""
+
+#: templates/hook/edit.tpl:20 templates/external/album/find.tpl:19
+msgid "Select a sub album"
+msgstr ""
+
+#: templates/hook/edit.tpl:27
+msgid "Select MUImage Album"
+msgstr ""
+
+#: templates/hook/edit.tpl:30
+msgid "Select an album!"
+msgstr ""
+
+#: templates/hook/edit.tpl:32
+msgid "No album selected"
+msgstr ""
+
+#: templates/external/picture/find.tpl:12
+msgid "No image found"
+msgstr ""
+
+#: templates/external/album/find.tpl:3
+msgid "Please select a main album:"
+msgstr ""
+
+#: templates/external/album/find.tpl:12
+msgid "No albums found"
+msgstr ""
+
+#: templates/external/album/find.tpl:16
+msgid "Please select a sub album:"
+msgstr ""
+
+#: templates/external/album/find.tpl:25
+msgid "No subalbums found"
+msgstr ""
+
+#: templates/admin/include_categories_edit.tpl:3
+#: templates/admin/album/view.rss:41
+#: templates/admin/include_categories_display.tpl:3
+#: templates/user/include_categories_edit.tpl:4
+#: templates/user/album/view.rss:41
+#: templates/user/include_categories_display.tpl:3
+msgid "Categories"
+msgstr ""
+
+#: templates/admin/include_categories_edit.tpl:7
+#: templates/user/include_categories_edit.tpl:8
+msgid "Category"
+msgstr ""
+
+#: templates/admin/config.tpl:6 templates/admin/config.tpl:9
+msgid "Settings"
+msgstr ""
+
+#: templates/admin/config.tpl:19
+msgid "General"
+msgstr ""
+
+#: templates/admin/config.tpl:22
+msgid "Here you can manage all basic settings for this application."
+msgstr ""
+
+#: templates/admin/config.tpl:25
+msgid "Albums per page in frontend"
+msgstr ""
+
+#: templates/admin/config.tpl:26 templates/admin/config.tpl:30
+#: templates/admin/config.tpl:34 templates/admin/config.tpl:50
+#: templates/admin/config.tpl:55 templates/admin/config.tpl:60
+msgid "Enter this setting. Only digits are allowed."
+msgstr ""
+
+#: templates/admin/config.tpl:29
+msgid "Albums per page in backend"
+msgstr ""
+
+#: templates/admin/config.tpl:33
+msgid "Pictures per page in backend"
+msgstr ""
+
+#: templates/admin/config.tpl:37 templates/admin/picture/display.tpl:16
+#: templates/admin/picture/view.tpl:53 templates/admin/picture/edit.tpl:40
+#: templates/admin/picture/view.csv:3 templates/user/picture/view.tpl:51
+#: templates/user/picture/edit.tpl:37 templates/user/picture/view.csv:3
+#: templates/user/picture/editMulti.tpl:33
+msgid "Show title"
+msgstr ""
+
+#: templates/admin/config.tpl:41 templates/admin/picture/display.tpl:30
+#: templates/admin/picture/view.tpl:56 templates/admin/picture/edit.tpl:44
+#: templates/admin/picture/view.csv:3 templates/user/picture/display.tpl:33
+#: templates/user/picture/view.tpl:54 templates/user/picture/edit.tpl:41
+#: templates/user/picture/view.csv:3 templates/user/picture/editMulti.tpl:37
+msgid "Show description"
+msgstr ""
+
+#: templates/admin/config.tpl:45
+msgid "Count image view"
+msgstr ""
+
+#: templates/admin/config.tpl:49
+msgid "Number parent albums"
+msgstr ""
+
+#: templates/admin/config.tpl:51 templates/admin/config.tpl:56
+#: templates/admin/config.tpl:61
+msgid "Enter -1 for none. Empty for unlimited."
+msgstr ""
+
+#: templates/admin/config.tpl:54
+msgid "Number sub albums"
+msgstr ""
+
+#: templates/admin/config.tpl:59
+msgid "Number pictures"
+msgstr ""
+
+#: templates/admin/config.tpl:64
+msgid "Allowed filesize?"
+msgstr ""
+
+#: templates/admin/config.tpl:65 templates/admin/config.tpl:70
+#: templates/admin/config.tpl:74 templates/admin/config.tpl:78
+#: templates/admin/config.tpl:101 templates/admin/config.tpl:106
+#: templates/admin/config.tpl:117
+msgid "Input this setting."
+msgstr ""
+
+#: templates/admin/config.tpl:66
+msgid "102400 = 100 KB."
+msgstr ""
+
+#: templates/admin/config.tpl:69
+msgid "Required width of pictures"
+msgstr ""
+
+#: templates/admin/config.tpl:73
+msgid "Maximum width of pictures"
+msgstr ""
+
+#: templates/admin/config.tpl:77
+msgid "Maximum height of pictures"
+msgstr ""
+
+#: templates/admin/config.tpl:81
+msgid "May users delete their pictures?"
+msgstr ""
+
+#: templates/admin/config.tpl:85
+msgid "Choose an ending for display of albums and pictures!"
+msgstr ""
+
+#: templates/admin/config.tpl:86
+msgid "Enter this setting."
+msgstr ""
+
+#: templates/admin/config.tpl:87
+msgid "You can select between html and htm or no ending (empty field)."
+msgstr ""
+
+#: templates/admin/config.tpl:91
+msgid "Slideshows"
+msgstr ""
+
+#: templates/admin/config.tpl:95
+msgid "Allow Slideshow1?"
+msgstr ""
+
+#: templates/admin/config.tpl:100
+msgid "Interval"
+msgstr ""
+
+#: templates/admin/config.tpl:102
+msgid "Delay in milliseconds between slides for the automatic slideshow"
+msgstr ""
+
+#: templates/admin/config.tpl:105
+msgid "Speed"
+msgstr ""
+
+#: templates/admin/config.tpl:107
+msgid "The transition speed between slide changes in milliseconds"
+msgstr ""
+
+#: templates/admin/config.tpl:111
+msgid "Allow Slideshow2?"
+msgstr ""
+
+#: templates/admin/config.tpl:116
+msgid "Autostart?"
+msgstr ""
+
+#: templates/admin/config.tpl:124
+msgid "Update configuration"
+msgstr ""
+
+#: templates/admin/config.tpl:125 templates/admin/album.tpl:31
+#: templates/admin/import.tpl:28 templates/admin/picture/edit.tpl:126
+#: templates/admin/picture/delete.tpl:22 templates/admin/album/edit.tpl:85
+#: templates/admin/album/delete.tpl:22
+#: templates/admin/album/include_selectEditOne.tpl:15
+#: templates/user/picture/multiUpload.tpl:32
+#: templates/user/picture/edit.tpl:129 templates/user/picture/delete.tpl:19
+#: templates/user/picture/editMulti.tpl:126 templates/user/album/edit.tpl:106
+#: templates/user/album/delete.tpl:21
+#: templates/user/album/include_selectEditOne.tpl:15
+msgid "Cancel"
 msgstr ""
 
 #: templates/admin/album.tpl:4
@@ -926,179 +1210,398 @@ msgstr ""
 msgid "Start import"
 msgstr ""
 
-#: templates/admin/album.tpl:31 templates/admin/album/delete.tpl:22
-#: templates/admin/album/edit.tpl:88
-#: templates/admin/album/include_selectEditOne.tpl:15
-#: templates/admin/config.tpl:57 templates/admin/import.tpl:28
-#: templates/admin/picture/delete.tpl:22 templates/admin/picture/edit.tpl:128
-#: templates/user/album/delete.tpl:21 templates/user/album/edit.tpl:87
-#: templates/user/album/include_selectEditOne.tpl:15
-#: templates/user/picture/delete.tpl:19 templates/user/picture/edit.tpl:122
-#: templates/user/picture/editMulti.tpl:126
-#: templates/user/picture/multiUpload.tpl:30
-msgid "Cancel"
+#: templates/admin/include_standardfields_edit.tpl:4
+#: templates/user/include_standardfields_edit.tpl:4
+msgid "Creation and update"
 msgstr ""
 
-#: templates/admin/album/delete.tpl:4 templates/admin/album/edit.tpl:81
-#: templates/user/album/delete.tpl:4 templates/user/album/edit.tpl:80
-msgid "Delete album"
+#: templates/admin/include_standardfields_edit.tpl:8
+#: templates/user/include_standardfields_edit.tpl:8
+#, php-format
+msgid "Created by %s"
 msgstr ""
 
-#: templates/admin/album/delete.tpl:11 templates/user/album/delete.tpl:9
-msgid "Do you really want to delete this album ?"
+#: templates/admin/include_standardfields_edit.tpl:9
+#: templates/user/include_standardfields_edit.tpl:9
+#, php-format
+msgid "Created on %s"
 msgstr ""
 
-#: templates/admin/album/delete.tpl:18 templates/admin/picture/delete.tpl:18
-#: templates/user/album/delete.tpl:17 templates/user/picture/delete.tpl:15
-msgid "Confirmation prompt"
+#: templates/admin/include_standardfields_edit.tpl:13
+#: templates/user/include_standardfields_edit.tpl:13
+#, php-format
+msgid "Updated by %s"
 msgstr ""
 
-#: templates/admin/album/display.tpl:4 templates/admin/album/display.tpl:29
-#: templates/admin/picture/display.tpl:55 templates/admin/picture/view.csv:3
-#: templates/admin/picture/view.tpl:65 templates/block/itemlist_modify.tpl:12
-#: templates/contenttype/itemlist_edit.tpl:10
-#: templates/contenttype/oneitem_edit.tpl:9 templates/user/album/display.tpl:4
-#: templates/user/album/display.tpl:9 templates/user/picture/display.tpl:67
-#: templates/user/picture/view.csv:3 templates/user/picture/view.tpl:63
-msgid "Album"
+#: templates/admin/include_standardfields_edit.tpl:14
+#: templates/user/include_standardfields_edit.tpl:14
+#, php-format
+msgid "Updated on %s"
 msgstr ""
 
-#: templates/admin/album/display.tpl:23 templates/admin/picture/edit.tpl:10
-#: templates/admin/picture/edit.tpl:124 templates/admin/picture/view.tpl:13
-#: templates/user/album/display.tpl:28 templates/user/picture/edit.tpl:9
-#: templates/user/picture/edit.tpl:118 templates/user/picture/editMulti.tpl:9
-#: templates/user/picture/editMulti.tpl:122 templates/user/picture/view.tpl:11
-msgid "Create picture"
+#: templates/admin/import.tpl:18
+msgid "Here you can import albums and pictures from other modules."
 msgstr ""
 
-#: templates/admin/album/display.tpl:39 templates/admin/album/edit.tpl:10
-#: templates/admin/album/edit.tpl:84 templates/admin/album/view.tpl:13
-#: templates/user/album/display.tpl:46 templates/user/album/edit.tpl:9
-#: templates/user/album/edit.tpl:83 templates/user/album/view.tpl:11
-#: templates/user/album/viewlist.tpl:11
-msgid "Create album"
+#: templates/admin/import.tpl:21
+msgid "module"
 msgstr ""
 
-#: templates/admin/album/display.tpl:51 templates/admin/album/edit.tpl:36
-#: templates/admin/album/view.csv:3 templates/admin/album/view.tpl:46
-#: templates/admin/picture/display.tpl:14 templates/admin/picture/edit.tpl:36
-#: templates/admin/picture/view.csv:3 templates/admin/picture/view.tpl:50
-#: templates/user/album/display.tpl:14 templates/user/album/edit.tpl:31
-#: templates/user/album/view.csv:3 templates/user/album/viewlist.tpl:45
-#: templates/user/picture/edit.tpl:29 templates/user/picture/editMulti.tpl:29
-#: templates/user/picture/view.csv:3 templates/user/picture/view.tpl:48
+#: templates/admin/picture/display.tpl:4
+#: templates/contenttype/oneitem_edit.tpl:14
+#: templates/user/picture/display.tpl:4
+msgid "Picture"
+msgstr ""
+
+#: templates/admin/picture/display.tpl:14 templates/admin/picture/view.tpl:50
+#: templates/admin/picture/edit.tpl:36 templates/admin/picture/view.csv:3
+#: templates/admin/album/display.tpl:51 templates/admin/album/view.tpl:46
+#: templates/admin/album/edit.tpl:36 templates/admin/album/view.csv:3
+#: templates/user/picture/view.tpl:48 templates/user/picture/edit.tpl:33
+#: templates/user/picture/view.csv:3 templates/user/picture/editMulti.tpl:29
+#: templates/user/album/edit.tpl:35 templates/user/album/view.csv:3
+#: templates/user/album/viewlist.tpl:45
 msgid "Description"
 msgstr ""
 
-#: templates/admin/album/display.tpl:53 templates/user/album/display.tpl:103
-#: templates/user/album/display.tpl:140 templates/user/album/view.tpl:59
-msgid "SubAlbums"
+#: templates/admin/picture/display.tpl:20
+#: templates/admin/picture/display.tpl:23
+#: templates/admin/picture/display.tpl:34
+#: templates/admin/picture/display.tpl:37 templates/admin/picture/view.tpl:84
+#: templates/admin/picture/view.tpl:87 templates/admin/picture/view.tpl:99
+#: templates/admin/picture/view.tpl:102 templates/user/picture/display.tpl:23
+#: templates/user/picture/display.tpl:26 templates/user/picture/display.tpl:37
+#: templates/user/picture/display.tpl:40 templates/user/picture/view.tpl:82
+#: templates/user/picture/view.tpl:85 templates/user/picture/view.tpl:97
+#: templates/user/picture/view.tpl:100
+msgid "This setting is enabled. Click here to disable it."
 msgstr ""
 
-#: templates/admin/album/display.tpl:60
-msgid "Main album"
+#: templates/admin/picture/display.tpl:21
+#: templates/admin/picture/display.tpl:24
+#: templates/admin/picture/display.tpl:35
+#: templates/admin/picture/display.tpl:38 templates/admin/picture/view.tpl:85
+#: templates/admin/picture/view.tpl:88 templates/admin/picture/view.tpl:100
+#: templates/admin/picture/view.tpl:103 templates/user/picture/display.tpl:24
+#: templates/user/picture/display.tpl:27 templates/user/picture/display.tpl:38
+#: templates/user/picture/display.tpl:41 templates/user/picture/view.tpl:83
+#: templates/user/picture/view.tpl:86 templates/user/picture/view.tpl:98
+#: templates/user/picture/view.tpl:101
+msgid "This setting is disabled. Click here to enable it."
 msgstr ""
 
+#: templates/admin/picture/display.tpl:44 templates/admin/picture/edit.tpl:52
+#: templates/admin/picture/view.csv:3
+#: templates/user/picture/multiUpload.tpl:19
+#: templates/user/picture/view.tpl:57 templates/user/picture/edit.tpl:49
+#: templates/user/picture/view.csv:3 templates/user/picture/zipUpload.tpl:24
+#: templates/user/picture/editMulti.tpl:45
+msgid "Image upload"
+msgstr ""
+
+#: templates/admin/picture/display.tpl:49 templates/admin/picture/view.tpl:115
+#: templates/admin/picture/edit.tpl:68
+#: templates/contenttype/itemlist_Picture_Thumbs_display.tpl:15
+#: templates/contenttype/oneitem_Picture_display.tpl:16
+#: templates/contenttype/oneitem_Picture_display_description.tpl:17
+#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:18
+#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:37
+#: templates/contenttype/oneitem_Picture_displaycontent.tpl:15
+#: templates/user/picture/display.tpl:60 templates/user/picture/view.tpl:113
+#: templates/user/picture/edit.tpl:68 templates/user/picture/editMulti.tpl:60
+msgid "Download"
+msgstr ""
+
+#: templates/admin/picture/display.tpl:53 templates/admin/picture/view.tpl:62
+#: templates/admin/picture/edit.tpl:76 templates/admin/picture/view.csv:3
+#: templates/user/picture/display.tpl:64 templates/user/picture/view.tpl:60
+#: templates/user/picture/edit.tpl:76 templates/user/picture/view.csv:3
+#: templates/user/picture/editMulti.tpl:68
+msgid "Image view"
+msgstr ""
+
+#: templates/admin/picture/display.tpl:55 templates/admin/picture/view.tpl:65
+#: templates/admin/picture/view.csv:3 templates/admin/album/display.tpl:4
+#: templates/admin/album/display.tpl:29
+#: templates/contenttype/itemlist_edit.tpl:10
+#: templates/contenttype/oneitem_edit.tpl:9
+#: templates/user/picture/display.tpl:67 templates/user/picture/view.tpl:63
+#: templates/user/picture/edit.tpl:86 templates/user/picture/edit.tpl:88
+#: templates/user/picture/view.csv:3 templates/user/album/display.tpl:4
+#: templates/user/album/edit.tpl:56 templates/block/itemlist_modify.tpl:12
+msgid "Album"
+msgstr ""
+
+#: templates/admin/picture/display.tpl:62
+#: templates/admin/picture/include_displayItemListMany.tpl:10
+#: templates/admin/picture/view.tpl:128
+#: templates/admin/picture/include_displayItemListOne.tpl:7
 #: templates/admin/album/display.tpl:67
 #: templates/admin/album/include_displayItemListMany.tpl:10
+#: templates/admin/album/view.tpl:69
 #: templates/admin/album/include_displayItemListOne.tpl:7
-#: templates/admin/album/view.tpl:69 templates/admin/picture/display.tpl:62
-#: templates/admin/picture/include_displayItemListMany.tpl:10
-#: templates/admin/picture/include_displayItemListOne.tpl:7
-#: templates/admin/picture/view.tpl:128 templates/user/album/display.tpl:155
+#: templates/user/picture/display.tpl:74
+#: templates/user/picture/include_displayItemListMany.tpl:16
+#: templates/user/picture/view.tpl:126
+#: templates/user/picture/include_displayItemListOne.tpl:7
 #: templates/user/album/include_displayItemListMany.tpl:10
 #: templates/user/album/include_displayItemListOne.tpl:7
-#: templates/user/album/viewlist.tpl:74 templates/user/picture/display.tpl:74
-#: templates/user/picture/include_displayItemListMany.tpl:16
-#: templates/user/picture/include_displayItemListOne.tpl:7
-#: templates/user/picture/view.tpl:126
+#: templates/user/album/viewlist.tpl:74
 msgid "Open quick view window"
 msgstr ""
 
+#: templates/admin/picture/display.tpl:63
+#: templates/admin/picture/include_displayItemListMany.tpl:11
+#: templates/admin/picture/view.tpl:129
+#: templates/admin/picture/include_displayItemListOne.tpl:8
 #: templates/admin/album/display.tpl:68
 #: templates/admin/album/include_displayItemListMany.tpl:11
+#: templates/admin/album/view.tpl:70
 #: templates/admin/album/include_displayItemListOne.tpl:8
-#: templates/admin/album/view.tpl:70 templates/admin/picture/display.tpl:63
-#: templates/admin/picture/include_displayItemListMany.tpl:11
-#: templates/admin/picture/include_displayItemListOne.tpl:8
-#: templates/admin/picture/view.tpl:129 templates/user/album/display.tpl:156
+#: templates/user/picture/display.tpl:75
+#: templates/user/picture/include_displayItemListMany.tpl:17
+#: templates/user/picture/view.tpl:127
+#: templates/user/picture/include_displayItemListOne.tpl:8
 #: templates/user/album/include_displayItemListMany.tpl:11
 #: templates/user/album/include_displayItemListOne.tpl:8
-#: templates/user/album/viewlist.tpl:75 templates/user/picture/display.tpl:75
-#: templates/user/picture/include_displayItemListMany.tpl:17
-#: templates/user/picture/include_displayItemListOne.tpl:8
-#: templates/user/picture/view.tpl:127
+#: templates/user/album/viewlist.tpl:75
 msgid "Quick view"
 msgstr ""
 
-#: templates/admin/album/display.tpl:80 templates/admin/picture/display.tpl:75
-#: templates/user/album/display.tpl:168 templates/user/picture/display.tpl:87
+#: templates/admin/picture/display.tpl:75 templates/admin/album/display.tpl:80
+#: templates/user/picture/display.tpl:87
 msgid "No set."
 msgstr ""
 
-#: templates/admin/album/edit.tpl:7 templates/admin/album/edit.tpl:13
-#: templates/user/album/edit.tpl:7 templates/user/album/edit.tpl:11
-msgid "Edit album"
+#: templates/admin/picture/view.rss:11 templates/admin/picture/view.atom:4
+#: templates/user/picture/view.rss:11 templates/user/picture/view.atom:4
+msgid "Latest pictures"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:28 templates/admin/picture/edit.tpl:28
-#: templates/user/album/edit.tpl:23 templates/user/picture/edit.tpl:23
-#: templates/user/picture/editMulti.tpl:23
-#: templates/user/picture/multiUpload.tpl:17
-#: templates/user/picture/zipUpload.tpl:17
-msgid "Content"
+#: templates/admin/picture/view.rss:12 templates/admin/picture/view.atom:5
+#: templates/user/picture/view.rss:12 templates/user/picture/view.atom:5
+msgid "A direct feed showing the list of pictures"
 msgstr ""
 
+#: templates/admin/picture/view.tpl:13 templates/admin/picture/edit.tpl:10
+#: templates/admin/picture/edit.tpl:122 templates/admin/album/display.tpl:23
+#: templates/user/picture/view.tpl:11 templates/user/picture/edit.tpl:13
+#: templates/user/picture/edit.tpl:125 templates/user/picture/editMulti.tpl:9
+#: templates/user/picture/editMulti.tpl:122
+msgid "Create picture"
+msgstr ""
+
+#: templates/admin/picture/view.tpl:21 templates/admin/album/view.tpl:21
+#: templates/user/picture/view.tpl:19 templates/user/album/viewlist.tpl:19
+msgid "Back to paginated view"
+msgstr ""
+
+#: templates/admin/picture/view.tpl:27 templates/admin/album/view.tpl:27
+#: templates/user/picture/view.tpl:25 templates/user/album/viewlist.tpl:25
+msgid "Show all entries"
+msgstr ""
+
+#: templates/admin/picture/view.tpl:47 templates/admin/picture/edit.tpl:30
+#: templates/admin/picture/view.csv:3 templates/admin/album/view.tpl:43
 #: templates/admin/album/edit.tpl:30 templates/admin/album/view.csv:3
-#: templates/admin/album/view.tpl:43 templates/admin/picture/edit.tpl:30
-#: templates/admin/picture/view.csv:3 templates/admin/picture/view.tpl:47
-#: templates/user/album/edit.tpl:25 templates/user/album/view.csv:3
-#: templates/user/album/viewlist.tpl:42 templates/user/picture/edit.tpl:25
-#: templates/user/picture/editMulti.tpl:25 templates/user/picture/view.csv:3
-#: templates/user/picture/view.tpl:45
+#: templates/user/picture/view.tpl:45 templates/user/picture/edit.tpl:29
+#: templates/user/picture/view.csv:3 templates/user/picture/editMulti.tpl:25
+#: templates/user/album/edit.tpl:29 templates/user/album/view.csv:3
+#: templates/user/album/viewlist.tpl:42
 msgid "Title"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:31 templates/user/album/edit.tpl:26
-msgid "Enter the title of the album"
+#: templates/admin/picture/view.tpl:59
+msgid "Current image"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:37 templates/user/album/edit.tpl:32
-msgid "Enter the description of the album"
+#: templates/admin/picture/view.tpl:67 templates/admin/album/view.tpl:51
+#: templates/user/picture/view.tpl:65 templates/user/album/viewlist.tpl:53
+msgid "Actions"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:55 templates/admin/picture/edit.tpl:95
-#: templates/user/album/edit.tpl:54 templates/user/picture/edit.tpl:89
+#: templates/admin/picture/view.tpl:138 templates/admin/album/view.tpl:79
+#: templates/user/picture/view.tpl:136 templates/user/album/viewlist.tpl:84
+msgid "Not set."
+msgstr ""
+
+#: templates/admin/picture/view.tpl:156 templates/user/picture/view.tpl:154
+#: templates/mailz/itemlist_Picture_text.tpl:7
+#: templates/mailz/itemlist_Picture_html.tpl:11
+msgid "No pictures found."
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:7 templates/admin/picture/edit.tpl:13
+#: templates/user/picture/edit.tpl:11 templates/user/picture/edit.tpl:15
+#: templates/user/picture/editMulti.tpl:7
+#: templates/user/picture/editMulti.tpl:11
+msgid "Edit picture"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:28 templates/admin/album/edit.tpl:28
+#: templates/user/picture/multiUpload.tpl:16
+#: templates/user/picture/edit.tpl:27 templates/user/picture/zipUpload.tpl:17
+#: templates/user/picture/editMulti.tpl:23 templates/user/album/edit.tpl:27
+msgid "Content"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:31 templates/user/picture/edit.tpl:30
+#: templates/user/picture/editMulti.tpl:26
+msgid "Enter the title of the picture"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:37 templates/user/picture/edit.tpl:34
+#: templates/user/picture/editMulti.tpl:30
+msgid "Enter the description of the picture"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:41 templates/user/picture/edit.tpl:38
+#: templates/user/picture/editMulti.tpl:34
+msgid "show title ?"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:45 templates/user/picture/edit.tpl:42
+#: templates/user/picture/editMulti.tpl:38
+msgid "show description ?"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:59
+#: templates/user/picture/multiUpload.tpl:21
+#: templates/user/picture/edit.tpl:56 templates/user/picture/zipUpload.tpl:30
+#: templates/user/picture/editMulti.tpl:52
+msgid "Allowed file extensions:"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:60
+#: templates/user/picture/multiUpload.tpl:22
+#: templates/user/picture/edit.tpl:57
+msgid "Allowed file size:"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:63 templates/user/picture/edit.tpl:63
+#: templates/user/picture/editMulti.tpl:55
+msgid "Current file"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:77 templates/user/picture/edit.tpl:77
+#: templates/user/picture/editMulti.tpl:69
+msgid "Enter the image view of the picture"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:93 templates/admin/album/edit.tpl:52
 #: templates/user/picture/editMulti.tpl:88
 msgid "Hooks"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:67 templates/admin/picture/edit.tpl:107
-#: templates/user/album/edit.tpl:66 templates/user/picture/edit.tpl:101
-#: templates/user/picture/editMulti.tpl:100
+#: templates/admin/picture/edit.tpl:105 templates/admin/album/edit.tpl:64
+#: templates/user/picture/edit.tpl:108
+#: templates/user/picture/editMulti.tpl:100 templates/user/album/edit.tpl:85
 msgid "Return control"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:69 templates/admin/picture/edit.tpl:109
-#: templates/user/album/edit.tpl:68 templates/user/picture/edit.tpl:103
-#: templates/user/picture/editMulti.tpl:102
+#: templates/admin/picture/edit.tpl:107 templates/admin/album/edit.tpl:66
+#: templates/user/picture/edit.tpl:110
+#: templates/user/picture/editMulti.tpl:102 templates/user/album/edit.tpl:87
 msgid "Create another item after save"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:78 templates/user/album/edit.tpl:77
+#: templates/admin/picture/edit.tpl:116 templates/user/picture/edit.tpl:119
+msgid "Update picture"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:118 templates/user/picture/edit.tpl:121
+msgid "Really delete this picture?"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:119 templates/admin/picture/delete.tpl:4
+#: templates/user/picture/edit.tpl:122 templates/user/picture/delete.tpl:4
+#: templates/user/picture/editMulti.tpl:116
+msgid "Delete picture"
+msgstr ""
+
+#: templates/admin/picture/edit.tpl:124 templates/admin/album/edit.tpl:83
+#: templates/user/picture/edit.tpl:127
+#: templates/user/picture/editMulti.tpl:124 templates/user/album/edit.tpl:104
+msgid "OK"
+msgstr ""
+
+#: templates/admin/picture/delete.tpl:11 templates/user/picture/delete.tpl:9
+msgid "Do you really want to delete this picture ?"
+msgstr ""
+
+#: templates/admin/picture/delete.tpl:18 templates/admin/album/delete.tpl:18
+#: templates/user/picture/delete.tpl:15 templates/user/album/delete.tpl:17
+msgid "Confirmation prompt"
+msgstr ""
+
+#: templates/admin/album/display.tpl:39 templates/admin/album/view.tpl:13
+#: templates/admin/album/edit.tpl:10 templates/admin/album/edit.tpl:81
+#: templates/user/album/edit.tpl:13 templates/user/album/edit.tpl:102
+#: templates/user/album/viewlist.tpl:11
+msgid "Create album"
+msgstr ""
+
+#: templates/admin/album/display.tpl:53 templates/user/album/display.tpl:72
+#: templates/user/album/display.tpl:115 templates/user/album/view.tpl:44
+msgid "SubAlbums"
+msgstr ""
+
+#: templates/admin/album/view.rss:11 templates/admin/album/view.atom:4
+#: templates/user/album/view.rss:11 templates/user/album/view.atom:4
+msgid "Latest albums"
+msgstr ""
+
+#: templates/admin/album/view.rss:12 templates/admin/album/view.atom:5
+#: templates/user/album/view.rss:12 templates/user/album/view.atom:5
+msgid "A direct feed showing the list of albums"
+msgstr ""
+
+#: templates/admin/album/view.tpl:49 templates/admin/album/view.csv:3
+#: templates/user/album/view.csv:3 templates/user/album/viewlist.tpl:51
+msgid "Parent"
+msgstr ""
+
+#: templates/admin/album/view.tpl:97 templates/user/album/viewlist.tpl:102
+#: templates/mailz/itemlist_Album_text.tpl:7
+#: templates/mailz/itemlist_Album_html.tpl:11
+msgid "No albums found."
+msgstr ""
+
+#: templates/admin/album/edit.tpl:7 templates/admin/album/edit.tpl:13
+#: templates/user/album/edit.tpl:11 templates/user/album/edit.tpl:15
+msgid "Edit album"
+msgstr ""
+
+#: templates/admin/album/edit.tpl:31 templates/user/album/edit.tpl:30
+msgid "Enter the title of the album"
+msgstr ""
+
+#: templates/admin/album/edit.tpl:37 templates/user/album/edit.tpl:36
+msgid "Enter the description of the album"
+msgstr ""
+
+#: templates/admin/album/edit.tpl:75 templates/user/album/edit.tpl:96
 msgid "Update album"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:80 templates/user/album/edit.tpl:79
+#: templates/admin/album/edit.tpl:77 templates/user/album/edit.tpl:98
 msgid ""
 "Really delete this album? Notice: If you delete this album you will delete "
 "also its sub albums and pictures of these albums too!"
 msgstr ""
 
-#: templates/admin/album/edit.tpl:86 templates/admin/picture/edit.tpl:126
-#: templates/user/album/edit.tpl:85 templates/user/picture/edit.tpl:120
-#: templates/user/picture/editMulti.tpl:124
-msgid "OK"
+#: templates/admin/album/edit.tpl:78 templates/admin/album/delete.tpl:4
+#: templates/user/album/edit.tpl:99 templates/user/album/delete.tpl:4
+msgid "Delete album"
+msgstr ""
+
+#: templates/admin/album/view.csv:3 templates/user/album/view.csv:3
+#: templates/user/album/viewlist.tpl:48
+msgid "Parent_id"
+msgstr ""
+
+#: templates/admin/album/delete.tpl:11 templates/user/album/delete.tpl:9
+msgid "Do you really want to delete this album ?"
 msgstr ""
 
 #: templates/admin/album/include_selectEditOne.tpl:3
@@ -1136,160 +1639,6 @@ msgstr ""
 msgid "This function requires JavaScript activated!"
 msgstr ""
 
-#: templates/admin/album/view.atom:4 templates/admin/album/view.rss:11
-#: templates/user/album/view.atom:4 templates/user/album/view.rss:11
-msgid "Latest albums"
-msgstr ""
-
-#: templates/admin/album/view.atom:5 templates/admin/album/view.rss:12
-#: templates/user/album/view.atom:5 templates/user/album/view.rss:12
-msgid "A direct feed showing the list of albums"
-msgstr ""
-
-#: templates/admin/album/view.csv:3 templates/user/album/view.csv:3
-#: templates/user/album/viewlist.tpl:48
-msgid "Parent_id"
-msgstr ""
-
-#: templates/admin/album/view.csv:3 templates/admin/album/view.tpl:49
-#: templates/user/album/view.csv:3 templates/user/album/viewlist.tpl:51
-msgid "Parent"
-msgstr ""
-
-#: templates/admin/album/view.rss:41
-#: templates/admin/include_categories_display.tpl:3
-#: templates/admin/include_categories_edit.tpl:3
-#: templates/user/album/view.rss:41
-#: templates/user/include_categories_display.tpl:3
-#: templates/user/include_categories_edit.tpl:3
-msgid "Categories"
-msgstr ""
-
-#: templates/admin/album/view.tpl:21 templates/admin/picture/view.tpl:21
-#: templates/user/album/view.tpl:19 templates/user/album/viewlist.tpl:19
-#: templates/user/picture/view.tpl:19
-msgid "Back to paginated view"
-msgstr ""
-
-#: templates/admin/album/view.tpl:27 templates/admin/picture/view.tpl:27
-#: templates/user/album/view.tpl:25 templates/user/album/viewlist.tpl:25
-#: templates/user/picture/view.tpl:25
-msgid "Show all entries"
-msgstr ""
-
-#: templates/admin/album/view.tpl:51 templates/admin/picture/view.tpl:67
-#: templates/user/album/viewlist.tpl:53 templates/user/picture/view.tpl:65
-msgid "Actions"
-msgstr ""
-
-#: templates/admin/album/view.tpl:79 templates/admin/picture/view.tpl:138
-#: templates/user/album/viewlist.tpl:84 templates/user/picture/view.tpl:136
-msgid "Not set."
-msgstr ""
-
-#: templates/admin/album/view.tpl:97
-#: templates/mailz/itemlist_Album_html.tpl:11
-#: templates/mailz/itemlist_Album_text.tpl:7
-#: templates/user/album/viewlist.tpl:102
-msgid "No albums found."
-msgstr ""
-
-#: templates/admin/config.tpl:4 templates/admin/config.tpl:7
-msgid "Settings"
-msgstr ""
-
-#: templates/admin/config.tpl:18
-msgid "Here you can manage all basic settings for this application."
-msgstr ""
-
-#: templates/admin/config.tpl:21
-msgid "Albums per page in frontend"
-msgstr ""
-
-msgid "Albums per page in backend"
-msgstr ""
-
-msgid "Pictures per page in backend"
-msgstr ""
-
-msgid "Required width of pictures"
-msgstr ""
-
-msgid "May users delete their pictures?"
-msgstr ""
-
-msgid "Choose an ending for display of albums and pictures!"
-msgstr ""
-
-msgid "You can select between html and htm."
-msgstr ""
-
-#: templates/admin/config.tpl:22 templates/admin/config.tpl:38
-#: templates/admin/config.tpl:42 templates/admin/config.tpl:46
-msgid "Enter this setting. Only digits are allowed."
-msgstr ""
-
-#: templates/admin/config.tpl:25 templates/admin/picture/display.tpl:16
-#: templates/admin/picture/edit.tpl:40 templates/admin/picture/view.csv:3
-#: templates/admin/picture/view.tpl:53 templates/user/picture/edit.tpl:33
-#: templates/user/picture/editMulti.tpl:33 templates/user/picture/view.csv:3
-#: templates/user/picture/view.tpl:51
-msgid "Show title"
-msgstr ""
-
-#: templates/admin/config.tpl:29 templates/admin/picture/display.tpl:30
-#: templates/admin/picture/edit.tpl:44 templates/admin/picture/view.csv:3
-#: templates/admin/picture/view.tpl:56 templates/user/picture/display.tpl:33
-#: templates/user/picture/edit.tpl:37 templates/user/picture/editMulti.tpl:37
-#: templates/user/picture/view.csv:3 templates/user/picture/view.tpl:54
-msgid "Show description"
-msgstr ""
-
-#: templates/admin/config.tpl:33
-msgid "Count image view"
-msgstr ""
-
-#: templates/admin/config.tpl:37
-msgid "Number parent albums"
-msgstr ""
-
-#: templates/admin/config.tpl:41
-msgid "Number sub albums"
-msgstr ""
-
-#: templates/admin/config.tpl:45
-msgid "Number pictures"
-msgstr ""
-
-#: templates/admin/config.tpl:49
-msgid "Allowed filesize?"
-msgstr ""
-
-#: templates/admin/config.tpl:50
-msgid "Input this setting."
-msgstr ""
-
-#: templates/admin/config.tpl:51
-msgid "102400 = 100 KB."
-msgstr ""
-
-#: templates/admin/config.tpl:56
-msgid "Update configuration"
-msgstr ""
-
-#: templates/admin/import.tpl:18
-msgid "Here you can import albums and pictures from other modules."
-msgstr ""
-
-#: templates/admin/import.tpl:21
-msgid "module"
-msgstr ""
-
-#: templates/admin/include_categories_edit.tpl:7
-#: templates/user/include_categories_edit.tpl:7
-msgid "Category"
-msgstr ""
-
 #: templates/admin/include_standardfields_display.tpl:7
 #: templates/user/include_standardfields_display.tpl:7
 msgid "Creation"
@@ -1312,249 +1661,14 @@ msgstr ""
 msgid "Updated by %1$s on %2$s"
 msgstr ""
 
-#: templates/admin/include_standardfields_edit.tpl:4
-#: templates/user/include_standardfields_edit.tpl:4
-msgid "Creation and update"
+#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:25
+msgid "Visit the album"
 msgstr ""
 
-#: templates/admin/include_standardfields_edit.tpl:8
-#: templates/user/include_standardfields_edit.tpl:8
-#, php-format
-msgid "Created by %s"
-msgstr ""
-
-#: templates/admin/include_standardfields_edit.tpl:9
-#: templates/user/include_standardfields_edit.tpl:9
-#, php-format
-msgid "Created on %s"
-msgstr ""
-
-#: templates/admin/include_standardfields_edit.tpl:13
-#: templates/user/include_standardfields_edit.tpl:13
-#, php-format
-msgid "Updated by %s"
-msgstr ""
-
-#: templates/admin/include_standardfields_edit.tpl:14
-#: templates/user/include_standardfields_edit.tpl:14
-#, php-format
-msgid "Updated on %s"
-msgstr ""
-
-#: templates/admin/picture/delete.tpl:4 templates/admin/picture/edit.tpl:121
-#: templates/user/picture/delete.tpl:4 templates/user/picture/edit.tpl:115
-#: templates/user/picture/editMulti.tpl:116
-msgid "Delete picture"
-msgstr ""
-
-#: templates/admin/picture/delete.tpl:11 templates/user/picture/delete.tpl:9
-msgid "Do you really want to delete this picture ?"
-msgstr ""
-
-#: templates/admin/picture/display.tpl:4
-#: templates/contenttype/oneitem_edit.tpl:14
-#: templates/user/picture/display.tpl:4
-msgid "Picture"
-msgstr ""
-
-#: templates/admin/picture/display.tpl:20
-#: templates/admin/picture/display.tpl:23
-#: templates/admin/picture/display.tpl:34
-#: templates/admin/picture/display.tpl:37 templates/admin/picture/view.tpl:84
-#: templates/admin/picture/view.tpl:87 templates/admin/picture/view.tpl:99
-#: templates/admin/picture/view.tpl:102 templates/user/picture/display.tpl:23
-#: templates/user/picture/display.tpl:26 templates/user/picture/display.tpl:37
-#: templates/user/picture/display.tpl:40 templates/user/picture/view.tpl:82
-#: templates/user/picture/view.tpl:85 templates/user/picture/view.tpl:97
-#: templates/user/picture/view.tpl:100
-msgid "This setting is enabled. Click here to disable it."
-msgstr ""
-
-#: templates/admin/picture/display.tpl:21
-#: templates/admin/picture/display.tpl:24
-#: templates/admin/picture/display.tpl:35
-#: templates/admin/picture/display.tpl:38 templates/admin/picture/view.tpl:85
-#: templates/admin/picture/view.tpl:88 templates/admin/picture/view.tpl:100
-#: templates/admin/picture/view.tpl:103 templates/user/picture/display.tpl:24
-#: templates/user/picture/display.tpl:27 templates/user/picture/display.tpl:38
-#: templates/user/picture/display.tpl:41 templates/user/picture/view.tpl:83
-#: templates/user/picture/view.tpl:86 templates/user/picture/view.tpl:98
-#: templates/user/picture/view.tpl:101
-msgid "This setting is disabled. Click here to enable it."
-msgstr ""
-
-#: templates/admin/picture/display.tpl:44 templates/admin/picture/edit.tpl:52
-#: templates/admin/picture/view.csv:3 templates/user/picture/edit.tpl:45
-#: templates/user/picture/editMulti.tpl:45
-#: templates/user/picture/multiUpload.tpl:20 templates/user/picture/view.csv:3
-#: templates/user/picture/view.tpl:57 templates/user/picture/zipUpload.tpl:24
-msgid "Image upload"
-msgstr ""
-
-#: templates/admin/picture/display.tpl:49 templates/admin/picture/edit.tpl:67
-#: templates/admin/picture/view.tpl:115
-#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:15
-#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:31
-#: templates/contenttype/itemlist_Picture_Thumbs_display.tpl:15
-#: templates/contenttype/oneitem_Picture_display.tpl:16
-#: templates/contenttype/oneitem_Picture_display_description.tpl:17
-#: templates/contenttype/oneitem_Picture_displaycontent.tpl:15
-#: templates/user/picture/display.tpl:60 templates/user/picture/edit.tpl:61
-#: templates/user/picture/editMulti.tpl:60 templates/user/picture/view.tpl:113
-msgid "Download"
-msgstr ""
-
-#: templates/admin/picture/display.tpl:53 templates/admin/picture/edit.tpl:75
-#: templates/admin/picture/view.csv:3 templates/admin/picture/view.tpl:62
-#: templates/user/picture/display.tpl:64 templates/user/picture/edit.tpl:69
-#: templates/user/picture/editMulti.tpl:68 templates/user/picture/view.csv:3
-#: templates/user/picture/view.tpl:60
-msgid "Image view"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:7 templates/admin/picture/edit.tpl:13
-#: templates/user/picture/edit.tpl:7 templates/user/picture/edit.tpl:11
-#: templates/user/picture/editMulti.tpl:7
-#: templates/user/picture/editMulti.tpl:11
-msgid "Edit picture"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:31 templates/user/picture/edit.tpl:26
-#: templates/user/picture/editMulti.tpl:26
-msgid "Enter the title of the picture"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:37 templates/user/picture/edit.tpl:30
-#: templates/user/picture/editMulti.tpl:30
-msgid "Enter the description of the picture"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:41 templates/user/picture/edit.tpl:34
-#: templates/user/picture/editMulti.tpl:34
-msgid "show title ?"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:45 templates/user/picture/edit.tpl:38
-#: templates/user/picture/editMulti.tpl:38
-msgid "show description ?"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:59 templates/user/picture/edit.tpl:52
-#: templates/user/picture/editMulti.tpl:52
-#: templates/user/picture/multiUpload.tpl:22
-#: templates/user/picture/zipUpload.tpl:30
-msgid "Allowed file extensions:"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:62 templates/user/picture/edit.tpl:56
-#: templates/user/picture/editMulti.tpl:55
-msgid "Current file"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:76 templates/user/picture/edit.tpl:70
-#: templates/user/picture/editMulti.tpl:69
-msgid "Enter the image view of the picture"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:118 templates/user/picture/edit.tpl:112
-msgid "Update picture"
-msgstr ""
-
-#: templates/admin/picture/edit.tpl:120 templates/user/picture/edit.tpl:114
-msgid "Really delete this picture?"
-msgstr ""
-
-#: templates/admin/picture/view.atom:4 templates/admin/picture/view.rss:11
-#: templates/user/picture/view.atom:4 templates/user/picture/view.rss:11
-msgid "Latest pictures"
-msgstr ""
-
-#: templates/admin/picture/view.atom:5 templates/admin/picture/view.rss:12
-#: templates/user/picture/view.atom:5 templates/user/picture/view.rss:12
-msgid "A direct feed showing the list of pictures"
-msgstr ""
-
-#: templates/admin/picture/view.tpl:59
-msgid "Current image"
-msgstr ""
-
-#: templates/admin/picture/view.tpl:156
-#: templates/mailz/itemlist_Picture_html.tpl:11
-#: templates/mailz/itemlist_Picture_text.tpl:7
-#: templates/user/picture/view.tpl:154
-msgid "No pictures found."
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:4 templates/block/oneitem_modify.tpl:4
-#: templates/contenttype/itemlist_edit.tpl:4
-#: templates/contenttype/oneitem_edit.tpl:4
-msgid "Object type"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:21
-#: templates/contenttype/itemlist_edit.tpl:16
-msgid "Sorting"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:23
-#: templates/contenttype/itemlist_edit.tpl:19
-msgid "Random"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:24
-#: templates/contenttype/itemlist_edit.tpl:21
-msgid "Newest"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:25
-#: templates/contenttype/itemlist_edit.tpl:23
-msgid "Default"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:30
-#: templates/contenttype/itemlist_edit.tpl:28
-msgid "Amount"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:35
-#: templates/block/oneitem_modify.tpl:31
-#: templates/contenttype/itemlist_edit.tpl:33
-#: templates/contenttype/oneitem_edit.tpl:31
-msgid "Template File"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:45
-#: templates/contenttype/itemlist_edit.tpl:39
-msgid "Filter (expert option)"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:47
-#: templates/contenttype/itemlist_edit.tpl:41
-msgid "Syntax examples"
-msgstr ""
-
-#: templates/block/itemlist_modify.tpl:47
-#: templates/contenttype/itemlist_edit.tpl:41
-msgid "or"
-msgstr ""
-
-#: templates/block/oneitem_modify.tpl:11
-#: templates/contenttype/oneitem_edit.tpl:19
-msgid "Id"
-msgstr ""
-
-#: templates/block/oneitem_modify.tpl:26
-msgid "Diplay default block title?"
-msgstr ""
-
-#: templates/block/oneitem_modify.tpl:33
-msgid "Only the picture"
-msgstr ""
-
-#: templates/contenttype/itemlist_Album_display.tpl:5
 #: templates/contenttype/itemlist_Album_display_description.tpl:9
-#: templates/contenttype/itemlist_Picture_display.tpl:5
 #: templates/contenttype/itemlist_Picture_display_description.tpl:9
+#: templates/contenttype/itemlist_Picture_display.tpl:5
+#: templates/contenttype/itemlist_Album_display.tpl:5
 msgid "Read more"
 msgstr ""
 
@@ -1563,65 +1677,62 @@ msgstr ""
 msgid "No entries found."
 msgstr ""
 
-#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:22
-msgid "Visit the album"
+#: templates/contenttype/itemlist_edit.tpl:4
+#: templates/contenttype/oneitem_edit.tpl:4
+#: templates/block/itemlist_modify.tpl:4 templates/block/oneitem_modify.tpl:4
+msgid "Object type"
 msgstr ""
 
-#: templates/hook/edit.tpl:2
-msgid "Create MUImage Album"
+#: templates/contenttype/itemlist_edit.tpl:16
+#: templates/block/itemlist_modify.tpl:21
+msgid "Sorting"
 msgstr ""
 
-#: templates/hook/edit.tpl:4
-msgid "Create Album and add the uploaded pictures?"
+#: templates/contenttype/itemlist_edit.tpl:19
+#: templates/block/itemlist_modify.tpl:23
+msgid "Random"
 msgstr ""
 
-#: templates/hook/edit.tpl:8
-msgid "Add pictures to main album:"
+#: templates/contenttype/itemlist_edit.tpl:21
+#: templates/block/itemlist_modify.tpl:24
+msgid "Newest"
 msgstr ""
 
-#: templates/hook/edit.tpl:10
-msgid "Select a main album"
+#: templates/contenttype/itemlist_edit.tpl:23
+#: templates/block/itemlist_modify.tpl:25
+msgid "Default"
 msgstr ""
 
-#: templates/hook/edit.tpl:17
-msgid "Add pictures to sub album:"
+#: templates/contenttype/itemlist_edit.tpl:28
+#: templates/block/itemlist_modify.tpl:30
+msgid "Amount"
 msgstr ""
 
-#: templates/hook/edit.tpl:19
-msgid "Select a sub album"
+#: templates/contenttype/itemlist_edit.tpl:33
+#: templates/contenttype/oneitem_edit.tpl:31
+#: templates/block/itemlist_modify.tpl:35
+#: templates/block/oneitem_modify.tpl:31
+msgid "Template File"
 msgstr ""
 
-#: templates/user/album/delete.tpl:10
-msgid ""
-"Notice. If you delete this album, you will also delete its sub albums and "
-"all their pictures!"
+#: templates/contenttype/itemlist_edit.tpl:39
+#: templates/block/itemlist_modify.tpl:45
+msgid "Filter (expert option)"
 msgstr ""
 
-#: templates/user/album/delete.tpl:11
-msgid ""
-"Notice. If there are blocks or contenttypes saved with this album you should "
-"delete them before deleting this album!"
+#: templates/contenttype/itemlist_edit.tpl:41
+#: templates/block/itemlist_modify.tpl:47
+msgid "Syntax examples"
 msgstr ""
 
-#: templates/user/album/display.tpl:36
-msgid "Main Album"
+#: templates/contenttype/itemlist_edit.tpl:41
+#: templates/block/itemlist_modify.tpl:47
+msgid "or"
 msgstr ""
 
-#: templates/user/album/display.tpl:98 templates/user/album/display.tpl:136
-#: templates/user/picture/include_displayItemListMany2.tpl:21
-msgid "No pictures"
-msgstr ""
-
-#: templates/user/album/display.tpl:172 templates/user/album/view.tpl:84
-msgid "Total number of albums:"
-msgstr ""
-
-#: templates/user/album/display.tpl:172 templates/user/album/view.tpl:84
-msgid "Total number of pictures:"
-msgstr ""
-
-#: templates/user/album/view.tpl:69
-msgid "No SubAlbums"
+#: templates/contenttype/oneitem_edit.tpl:19
+#: templates/block/oneitem_modify.tpl:11
+msgid "Id"
 msgstr ""
 
 #: templates/user/picture/display.tpl:92
@@ -1632,9 +1743,46 @@ msgstr ""
 msgid "Not supported for this picture"
 msgstr ""
 
-#: templates/user/picture/edit.tpl:53
+#: templates/user/picture/include_displayOneItem.tpl:14
+#: templates/user/picture/include_displayItemListMany2.tpl:20
+#: templates/user/album/display.tpl:67 templates/user/album/display.tpl:111
+msgid "No pictures"
+msgstr ""
+
+#: templates/user/picture/include_displayItemListMany.tpl:13
+msgid "No title"
+msgstr ""
+
+#: templates/user/picture/include_displayItemListMany.tpl:55
+msgid "No valid file"
+msgstr ""
+
+#: templates/user/picture/include_displayItemListMany.tpl:63
+msgid "Invocations:"
+msgstr ""
+
+#: templates/user/picture/multiUpload.tpl:7
+#: templates/user/picture/zipUpload.tpl:7
+msgid "Multi upload"
+msgstr ""
+
 #: templates/user/picture/multiUpload.tpl:23
-msgid "Allowed file size:"
+#: templates/user/picture/edit.tpl:58
+msgid "Required width:"
+msgstr ""
+
+#: templates/user/picture/multiUpload.tpl:24
+#: templates/user/picture/edit.tpl:59
+msgid "Maximum width:"
+msgstr ""
+
+#: templates/user/picture/multiUpload.tpl:25
+#: templates/user/picture/edit.tpl:60
+msgid "Maximum height:"
+msgstr ""
+
+#: templates/user/picture/multiUpload.tpl:31
+msgid "Create pictures"
 msgstr ""
 
 #: templates/user/picture/editMulti.tpl:111
@@ -1654,47 +1802,75 @@ msgstr ""
 msgid "Next picture"
 msgstr ""
 
-#: templates/user/picture/include_displayItemListMany.tpl:13
-msgid "No title"
+#: templates/user/album/display.tpl:29
+msgid "Add"
 msgstr ""
 
-#: templates/user/picture/include_displayItemListMany.tpl:49
-msgid "No valid file"
+#: templates/user/album/display.tpl:30
+msgid "Multi-Add"
 msgstr ""
 
-#: templates/user/picture/include_displayItemListMany.tpl:57
-msgid "Invocations:"
+#: templates/user/album/display.tpl:38
+msgid "View as:"
 msgstr ""
 
-#: templates/user/picture/multiUpload.tpl:7
-#: templates/user/picture/zipUpload.tpl:7
-msgid "Multi upload"
+#: templates/user/album/display.tpl:48
+msgid "Change view"
 msgstr ""
 
-#: templates/user/picture/multiUpload.tpl:29
-msgid "Create pictures"
+#: templates/user/album/display.tpl:103
+msgid "No description"
 msgstr ""
 
-msgid "Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!"
+#: templates/user/album/view.tpl:53
+msgid "No SubAlbums"
 msgstr ""
 
-msgid "So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!"
+#: templates/user/album/edit.tpl:47
+msgid ""
+"Notice! Your are in admin group. So you get all albums to select. Be careful "
+"to make main or sub albums in view of logic!"
 msgstr ""
 
-msgid "Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!"
+#: templates/user/album/edit.tpl:48
+msgid ""
+"So pleace avoid for example that an album becomes main album of an album, "
+"that is children album already. Otherwise you will produce big problems!"
 msgstr ""
 
-msgid "Attention! This album is a sub album and you have no quotas to make it to main album! You may select another album as main album."
+#: templates/user/album/edit.tpl:51
+msgid ""
+"Notice! You get only albums to select you have created! Also you get only "
+"albums that are qualified under aspects of logic and your quotas!"
 msgstr ""
 
-msgid "Attention! This album is on first level and you have no quotas to change!"
+#: templates/user/album/edit.tpl:62
+msgid ""
+"Attention! This album is a sub album and you have no quotas to make it to "
+"main album! You may select another album as main album."
 msgstr ""
 
-msgid "Owner"
+#: templates/user/album/edit.tpl:66
+msgid ""
+"Attention! This album is on first level and you have no quotas to change!"
 msgstr ""
 
-msgid "No main album"
+#: templates/user/album/delete.tpl:10
+msgid ""
+"Notice. If you delete this album, you will also delete its sub albums and "
+"all their pictures!"
 msgstr ""
 
-msgid "Sorry! Your enter for the ending is invalid!"
+#: templates/user/album/delete.tpl:11
+msgid ""
+"Notice. If there are blocks or contenttypes saved with this album you should "
+"delete them before deleting this album!"
+msgstr ""
+
+#: templates/block/oneitem_modify.tpl:26
+msgid "Diplay default block title?"
+msgstr ""
+
+#: templates/block/oneitem_modify.tpl:33
+msgid "Only the picture"
 msgstr ""
