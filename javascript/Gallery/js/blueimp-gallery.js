@@ -1,5 +1,5 @@
 /*
- * blueimp Gallery JS 2.6.1
+ * blueimp Gallery JS 2.14.0
  * https://github.com/blueimp/Gallery
  *
  * Copyright 2013, Sebastian Tschan
@@ -12,8 +12,7 @@
  * http://www.opensource.org/licenses/MIT
  */
 
-/*jslint regexp: true */
-/*global define, window, document, DocumentTouch */
+/* global define, window, document, DocumentTouch */
 
 (function (factory) {
     'use strict';
@@ -31,14 +30,21 @@
     'use strict';
 
     function Gallery(list, options) {
-        if (!list || !list.length || document.body.style.maxHeight === undefined) {
+        if (document.body.style.maxHeight === undefined) {
             // document.body.style.maxHeight is undefined on IE6 and lower
-            return false;
+            return null;
         }
         if (!this || this.options !== Gallery.prototype.options) {
             // Called as function instead of as constructor,
             // so we simply return a new instance:
             return new Gallery(list, options);
+        }
+        if (!list || !list.length) {
+            this.console.log(
+                'blueimp Gallery: No or empty list provided as first argument.',
+                list
+            );
+            return;
         }
         this.list = list;
         this.num = list.length;
@@ -91,12 +97,17 @@
             titleProperty: 'title',
             // The list object property (or data attribute) with the object URL:
             urlProperty: 'href',
+            // The gallery listens for transitionend events before triggering the
+            // opened and closed events, unless the following option is set to false:
+            displayTransition: true,
             // Defines if the gallery slides are cleared from the gallery modal,
             // or reused for the next gallery initialization:
             clearSlides: true,
             // Defines if images should be stretched to fill the available space,
             // while maintaining their aspect ratio (will only be enabled for browsers
-            // supporting background-size="contain", which excludes IE < 9):
+            // supporting background-size="contain", which excludes IE < 9).
+            // Set to "cover", to make images cover all available space (requires
+            // support for background-size="cover", which excludes IE < 9):
             stretchImages: false,
             // Toggle the controls on pressing the Return key:
             toggleControlsOnReturn: true,
@@ -112,6 +123,8 @@
             closeOnSwipeUpOrDown: true,
             // Emulate touch events on mouse-pointer devices such as desktop browsers:
             emulateTouchEvents: true,
+            // Stop touch events from bubbling up to ancestor elements of the Gallery:
+            stopTouchEventsPropagation: false,
             // Hide the page scrollbars: 
             hidePageScrollbars: true,
             // Stops any touches on the container from scrolling the page:
@@ -138,6 +151,16 @@
             // The transition speed for automatic slide changes, set to an integer
             // greater 0 to override the default transition speed:
             slideshowTransitionSpeed: undefined,
+            // The event object for which the default action will be canceled
+            // on Gallery initialization (e.g. the click event to open the Gallery):
+            event: undefined,
+            // Callback function executed when the Gallery is initialized.
+            // Is called with the gallery instance as "this" object:
+            onopen: undefined,
+            // Callback function executed when the Gallery has been initialized
+            // and the initialization transition has been completed.
+            // Is called with the gallery instance as "this" object:
+            onopened: undefined,
             // Callback function executed on slide change.
             // Is called with the gallery instance as "this" object and the
             // current index and slide as arguments:
@@ -150,9 +173,13 @@
             // Is called with the gallery instance as "this" object and the
             // slide index and slide element as arguments:
             onslidecomplete: undefined,
-            // Callback function executed when the Gallery is closed.
+            // Callback function executed when the Gallery is about to be closed.
             // Is called with the gallery instance as "this" object:
-            onclose: undefined
+            onclose: undefined,
+            // Callback function executed when the Gallery has been closed
+            // and the closing transition has been completed.
+            // Is called with the gallery instance as "this" object:
+            onclosed: undefined
         },
 
         carouselOptions: {
@@ -166,6 +193,10 @@
             disableScroll: false,
             startSlideshow: true
         },
+
+        console: window.console && typeof window.console.log === 'function' ?
+            window.console :
+            {log: function () {}},
 
         // Detect touch, transition, transform and background-size support:
         support: (function (element) {
@@ -191,45 +222,62 @@
                         prefix: ''
                     }
                 },
-                prop,
-                transition,
-                translateZ;
-            for (prop in transitions) {
-                if (transitions.hasOwnProperty(prop) &&
-                        element.style[prop] !== undefined) {
-                    transition = transitions[prop];
-                    transition.name = prop;
-                    support.transition = transition;
-                    break;
-                }
-            }
-            document.body.appendChild(element);
-            if (transition) {
-                prop = transition.name.slice(0, -9) + 'ransform';
-                if (element.style[prop] !== undefined) {
-                    element.style[prop] = 'translateZ(0)';
-                    translateZ = window.getComputedStyle(element)
-                        .getPropertyValue(transition.prefix + 'transform');
-                    support.transform = {
-                        prefix: transition.prefix,
-                        name: prop,
-                        translate: true,
-                        translateZ: translateZ && translateZ !== 'none'
-                    };
-                }
-            }
-            if (element.style.backgroundSize !== undefined) {
-                element.style.backgroundSize = 'contain';
-                support.backgroundSize = {
-                    contain: window.getComputedStyle(element)
-                        .getPropertyValue('background-size') === 'contain'
+                elementTests = function () {
+                    var transition = support.transition,
+                        prop,
+                        translateZ;
+                    document.body.appendChild(element);
+                    if (transition) {
+                        prop = transition.name.slice(0, -9) + 'ransform';
+                        if (element.style[prop] !== undefined) {
+                            element.style[prop] = 'translateZ(0)';
+                            translateZ = window.getComputedStyle(element)
+                                .getPropertyValue(transition.prefix + 'transform');
+                            support.transform = {
+                                prefix: transition.prefix,
+                                name: prop,
+                                translate: true,
+                                translateZ: !!translateZ && translateZ !== 'none'
+                            };
+                        }
+                    }
+                    if (element.style.backgroundSize !== undefined) {
+                        support.backgroundSize = {};
+                        element.style.backgroundSize = 'contain';
+                        support.backgroundSize.contain = window
+                                .getComputedStyle(element)
+                                .getPropertyValue('background-size') === 'contain';
+                        element.style.backgroundSize = 'cover';
+                        support.backgroundSize.cover = window
+                                .getComputedStyle(element)
+                                .getPropertyValue('background-size') === 'cover';
+                    }
+                    document.body.removeChild(element);
                 };
+            (function (support, transitions) {
+                var prop;
+                for (prop in transitions) {
+                    if (transitions.hasOwnProperty(prop) &&
+                            element.style[prop] !== undefined) {
+                        support.transition = transitions[prop];
+                        support.transition.name = prop;
+                        break;
+                    }
+                }
+            }(support, transitions));
+            if (document.body) {
+                elementTests();
+            } else {
+                $(document).on('DOMContentLoaded', elementTests);
             }
-            document.body.removeChild(element);
             return support;
             // Test element, has to be standard HTML and must not be hidden
-            // for the CSS3 transform translateZ test to be applicable:
+            // for the CSS3 tests using window.getComputedStyle to be applicable:
         }(document.createElement('div'))),
+
+        requestAnimationFrame: window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame,
 
         initialize: function () {
             this.initStartIndex();
@@ -239,6 +287,8 @@
             this.initEventListeners();
             // Load the slide at the given index:
             this.onslide(this.index);
+            // Manually trigger the slideend event for the initial slide:
+            this.ontransitionend();
             // Start the automatic slideshow if applicable:
             if (this.options.startSlideshow) {
                 this.play();
@@ -249,7 +299,7 @@
             window.clearTimeout(this.timeout);
             var index = this.index,
                 direction,
-                natural_direction,
+                naturalDirection,
                 diff;
             if (index === to || this.num === 1) {
                 return;
@@ -265,11 +315,11 @@
                 direction = Math.abs(index - to) / (index - to);
                 // Get the actual position of the slide:
                 if (this.options.continuous) {
-                    natural_direction = direction;
+                    naturalDirection = direction;
                     direction = -this.positions[this.circle(to)] / this.slideWidth;
                     // If going forward but to < index, use to = slides.length + to
                     // If going backward but to > index, use to = -slides.length + to
-                    if (direction !== natural_direction) {
+                    if (direction !== naturalDirection) {
                         to = -direction * this.num + to;
                     }
                 }
@@ -321,11 +371,19 @@
         },
 
         play: function (time) {
+            var that = this;
             window.clearTimeout(this.timeout);
             this.interval = time || this.options.slideshowInterval;
             if (this.elements[this.index] > 1) {
                 this.timeout = this.setTimeout(
-                    this.slide,
+                    (!this.requestAnimationFrame && this.slide) || function (to, speed) {
+                        that.animationFrameId = that.requestAnimationFrame.call(
+                            window,
+                            function () {
+                                that.slide(to, speed);
+                            }
+                        );
+                    },
                     [this.index + 1, this.options.slideshowTransitionSpeed],
                     this.interval
                 );
@@ -341,6 +399,14 @@
 
         add: function (list) {
             var i;
+            if (!list.concat) {
+                // Make a real array out of the list to add:
+                list = Array.prototype.slice.call(list);
+            }
+            if (!this.list.concat) {
+                // Make a real array out of the Gallery list:
+                this.list = Array.prototype.slice.call(this.list);
+            }
             this.list = this.list.concat(list);
             this.num = this.list.length;
             if (this.num > 2 && this.options.continuous === null) {
@@ -363,7 +429,7 @@
             this.slides = [];
         },
 
-        close: function () {
+        handleClose: function () {
             var options = this.options;
             this.destroyEventListeners();
             // Cancel the slideshow:
@@ -380,8 +446,33 @@
             if (this.options.clearSlides) {
                 this.resetSlides();
             }
+            if (this.options.onclosed) {
+                this.options.onclosed.call(this);
+            }
+        },
+
+        close: function () {
+            var that = this,
+                closeHandler = function (event) {
+                    if (event.target === that.container[0]) {
+                        that.container.off(
+                            that.support.transition.end,
+                            closeHandler
+                        );
+                        that.handleClose();
+                    }
+                };
             if (this.options.onclose) {
                 this.options.onclose.call(this);
+            }
+            if (this.support.transition && this.options.displayTransition) {
+                this.container.on(
+                    this.support.transition.end,
+                    closeHandler
+                );
+                this.container.removeClass(this.options.displayClass);
+            } else {
+                this.handleClose();
             }
         },
 
@@ -441,14 +532,27 @@
             }
         },
 
+        stopPropagation: function (event) {
+            if (event.stopPropagation) {
+                event.stopPropagation();
+            } else {
+                event.cancelBubble = true;
+            }
+        },
+
         onresize: function () {
             this.initSlides(true);
         },
 
         onmousedown: function (event) {
-            // Trigger on clicks of the left mouse button only:
-            if (event.which && event.which === 1) {
-                event.touches = [{
+            // Trigger on clicks of the left mouse button only
+            // and exclude video elements:
+            if (event.which && event.which === 1 &&
+                    event.target.nodeName !== 'VIDEO') {
+                // Preventing the default mousedown action is required
+                // to make touch emulation work with Firefox:
+                event.preventDefault();
+                (event.originalEvent || event).touches = [{
                     pageX: event.pageX,
                     pageY: event.pageY
                 }];
@@ -458,7 +562,7 @@
 
         onmousemove: function (event) {
             if (this.touchStart) {
-                event.touches = [{
+                (event.originalEvent || event).touches = [{
                     pageX: event.pageX,
                     pageY: event.pageY
                 }];
@@ -485,7 +589,12 @@
         },
 
         ontouchstart: function (event) {
-            var touches = event.touches[0];
+            if (this.options.stopTouchEventsPropagation) {
+                this.stopPropagation(event);
+            }
+            // jQuery doesn't copy touch event properties by default,
+            // so we have to access the originalEvent object:
+            var touches = (event.originalEvent || event).touches[0];
             this.touchStart = {
                 // Remember the initial touch coordinates:
                 x: touches.pageX,
@@ -500,17 +609,23 @@
         },
 
         ontouchmove: function (event) {
+            if (this.options.stopTouchEventsPropagation) {
+                this.stopPropagation(event);
+            }
+            // jQuery doesn't copy touch event properties by default,
+            // so we have to access the originalEvent object:
+            var touches = (event.originalEvent || event).touches[0],
+                scale = (event.originalEvent || event).scale,
+                index = this.index,
+                touchDeltaX,
+                indices;
             // Ensure this is a one touch swipe and not, e.g. a pinch:
-            if (event.touches.length > 1 || (event.scale && event.scale !== 1)) {
+            if (touches.length > 1 || (scale && scale !== 1)) {
                 return;
             }
             if (this.options.disableScroll) {
                 event.preventDefault();
             }
-            var touches = event.touches[0],
-                index = this.index,
-                touchDeltaX,
-                indices;
             // Measure change in x and y coordinates:
             this.touchDelta = {
                 x: touches.pageX - this.touchStart.x,
@@ -558,7 +673,10 @@
             }
         },
 
-        ontouchend: function () {
+        ontouchend: function (event) {
+            if (this.options.stopTouchEventsPropagation) {
+                this.stopPropagation(event);
+            }
             var index = this.index,
                 speed = this.options.transitionSpeed,
                 slideWidth = this.slideWidth,
@@ -567,8 +685,8 @@
                 isValidSlide = (isShortDuration && Math.abs(this.touchDelta.x) > 20) ||
                     Math.abs(this.touchDelta.x) > slideWidth / 2,
                 // Determine if slide attempt is past start or end:
-                isPastBounds = (!index && this.touchDelta.x > 0)
-                        || (index === this.num - 1 && this.touchDelta.x < 0),
+                isPastBounds = (!index && this.touchDelta.x > 0) ||
+                        (index === this.num - 1 && this.touchDelta.x < 0),
                 isValidClose = !isValidSlide && this.options.closeOnSwipeUpOrDown &&
                     ((isShortDuration && Math.abs(this.touchDelta.y) > 20) ||
                         Math.abs(this.touchDelta.y) > this.slideHeight / 2),
@@ -626,6 +744,13 @@
                     // Move back into position
                     this.translateY(index, 0, speed);
                 }
+            }
+        },
+
+        ontouchcancel: function (event) {
+            if (this.touchStart) {
+                this.ontouchend(event);
+                delete this.touchStart;
             }
         },
 
@@ -720,20 +845,7 @@
                     return $(target).hasClass(className) ||
                         $(parent).hasClass(className);
                 };
-            if (parent === this.slidesContainer[0]) {
-                // Click on slide background
-                this.preventDefault(event);
-                if (options.closeOnSlideClick) {
-                    this.close();
-                } else {
-                    this.toggleControls();
-                }
-            } else if (parent.parentNode &&
-                    parent.parentNode === this.slidesContainer[0]) {
-                // Click on displayed element
-                this.preventDefault(event);
-                this.toggleControls();
-            } else if (isTarget(options.toggleClass)) {
+            if (isTarget(options.toggleClass)) {
                 // Click on "toggle" control
                 this.preventDefault(event);
                 this.toggleControls();
@@ -753,6 +865,19 @@
                 // Click on "play-pause" control
                 this.preventDefault(event);
                 this.toggleSlideshow();
+            } else if (parent === this.slidesContainer[0]) {
+                // Click on slide background
+                this.preventDefault(event);
+                if (options.closeOnSlideClick) {
+                    this.close();
+                } else {
+                    this.toggleControls();
+                }
+            } else if (parent.parentNode &&
+                    parent.parentNode === this.slidesContainer[0]) {
+                // Click on displayed element
+                this.preventDefault(event);
+                this.toggleControls();
             }
         },
 
@@ -815,42 +940,56 @@
         },
 
         imageFactory: function (obj, callback) {
-            var img = this.imagePrototype.cloneNode(false),
-                element,
+            var that = this,
+                img = this.imagePrototype.cloneNode(false),
                 url = obj,
+                backgroundSize = this.options.stretchImages,
+                called,
+                element,
+                callbackWrapper = function (event) {
+                    if (!called) {
+                        event = {
+                            type: event.type,
+                            target: element
+                        };
+                        if (!element.parentNode) {
+                            // Fix for IE7 firing the load event for
+                            // cached images before the element could
+                            // be added to the DOM:
+                            return that.setTimeout(callbackWrapper, [event]);
+                        }
+                        called = true;
+                        $(img).off('load error', callbackWrapper);
+                        if (backgroundSize) {
+                            if (event.type === 'load') {
+                                element.style.background = 'url("' + url +
+                                    '") center no-repeat';
+                                element.style.backgroundSize = backgroundSize;
+                            }
+                        }
+                        callback(event);
+                    }
+                },
                 title;
             if (typeof url !== 'string') {
                 url = this.getItemProperty(obj, this.options.urlProperty);
                 title = this.getItemProperty(obj, this.options.titleProperty);
             }
-            if (this.options.stretchImages && this.support.backgroundSize &&
-                    this.support.backgroundSize.contain) {
+            if (backgroundSize === true) {
+                backgroundSize = 'contain';
+            }
+            backgroundSize = this.support.backgroundSize &&
+                this.support.backgroundSize[backgroundSize] && backgroundSize;
+            if (backgroundSize) {
                 element = this.elementPrototype.cloneNode(false);
-                $(img)
-                    .on('load', function () {
-                        element.style.background = 'url("' + url +
-                            '") center no-repeat';
-                        element.style.backgroundSize = 'contain';
-                        callback({
-                            type: 'load',
-                            target: element
-                        });
-                    })
-                    .on('error', function () {
-                        callback({
-                            type: 'error',
-                            target: element
-                        });
-                    });
             } else {
                 element = img;
                 img.draggable = false;
-                $(img)
-                    .on('load error', callback);
             }
             if (title) {
                 element.title = title;
             }
+            $(img).on('load error', callbackWrapper);
             img.src = url;
             return element;
         },
@@ -1014,10 +1153,31 @@
             return obj;
         },
 
+        getDataProperty: function (obj, property) {
+            if (obj.getAttribute) {
+                var prop = obj.getAttribute('data-' +
+                        property.replace(/([A-Z])/g, '-$1').toLowerCase());
+                if (typeof prop === 'string') {
+                    if (/^(true|false|null|-?\d+(\.\d+)?|\{[\s\S]*\}|\[[\s\S]*\])$/
+                            .test(prop)) {
+                        try {
+                            return $.parseJSON(prop);
+                        } catch (ignore) {}
+                    }
+                    return prop;
+                }
+            }
+        },
+
         getItemProperty: function (obj, property) {
-            return obj[property] || (obj.getAttribute &&
-                obj.getAttribute('data-' + property)) ||
-                this.getNestedProperty(obj, property);
+            var prop = obj[property];
+            if (prop === undefined) {
+                prop = this.getDataProperty(obj, property);
+                if (prop === undefined) {
+                    prop = this.getNestedProperty(obj, property);
+                }
+            }
+            return prop;
         },
 
         initStartIndex: function () {
@@ -1053,7 +1213,7 @@
             this.container.on('click', proxyListener);
             if (this.support.touch) {
                 slidesContainer
-                    .on('touchstart touchmove touchend', proxyListener);
+                    .on('touchstart touchmove touchend touchcancel', proxyListener);
             } else if (this.options.emulateTouchEvents &&
                     this.support.transition) {
                 slidesContainer
@@ -1076,7 +1236,7 @@
             this.container.off('click', proxyListener);
             if (this.support.touch) {
                 slidesContainer
-                    .off('touchstart touchmove touchend', proxyListener);
+                    .off('touchstart touchmove touchend touchcancel', proxyListener);
             } else if (this.options.emulateTouchEvents &&
                     this.support.transition) {
                 slidesContainer
@@ -1090,27 +1250,62 @@
             }
         },
 
+        handleOpen: function () {
+            if (this.options.onopened) {
+                this.options.onopened.call(this);
+            }
+        },
+
         initWidget: function () {
+            var that = this,
+                openHandler = function (event) {
+                    if (event.target === that.container[0]) {
+                        that.container.off(
+                            that.support.transition.end,
+                            openHandler
+                        );
+                        that.handleOpen();
+                    }
+                };
             this.container = $(this.options.container);
             if (!this.container.length) {
+                this.console.log(
+                    'blueimp Gallery: Widget container not found.',
+                    this.options.container
+                );
                 return false;
             }
             this.slidesContainer = this.container.find(
                 this.options.slidesContainer
-            );
+            ).first();
             if (!this.slidesContainer.length) {
+                this.console.log(
+                    'blueimp Gallery: Slides container not found.',
+                    this.options.slidesContainer
+                );
                 return false;
             }
             this.titleElement = this.container.find(
                 this.options.titleElement
-            );
+            ).first();
+            if (this.num === 1) {
+                this.container.addClass(this.options.singleClass);
+            }
+            if (this.options.onopen) {
+                this.options.onopen.call(this);
+            }
+            if (this.support.transition && this.options.displayTransition) {
+                this.container.on(
+                    this.support.transition.end,
+                    openHandler
+                );
+            } else {
+                this.handleOpen();
+            }
             if (this.options.hidePageScrollbars) {
                 // Hide the page scrollbars:
                 this.bodyOverflowStyle = document.body.style.overflow;
                 document.body.style.overflow = 'hidden';
-            }
-            if (this.num === 1) {
-                this.container.addClass(this.options.singleClass);
             }
             this.container[0].style.display = 'block';
             this.initSlides();
@@ -1134,6 +1329,9 @@
             }
             if (!this.support.transition) {
                 this.options.emulateTouchEvents = false;
+            }
+            if (this.options.event) {
+                this.preventDefault(this.options.event);
             }
         }
 
