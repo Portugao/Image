@@ -1,9 +1,13 @@
 {* purpose of this template: reusable display of entity categories *}
 {if isset($obj.categories)}
-    {gt text='Categories'}: 
-    {foreach key='propName' item='catMapping' from=$obj.categories name='Catetgories'}
-	{if $smarty.foreach.Categories.index>0}, {/if}
-	{$catMapping.category.name|safetext}
-    {/foreach}
-    &nbsp;|&nbsp;
+<h4 class="categories">{gt text='Categories'}</h4>
+{*
+<dl class="propertylist">
+{foreach key='propName' item='catMapping' from=$obj.categories}
+    <dt>{$propName}</dt>
+    <dd>{$catMapping.category.name|safetext}</dd>
+{/foreach}
+</dl>
+*}
+{assignedcategorieslist categories=$obj.categories doctrine2=true}
 {/if}
