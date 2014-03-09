@@ -38,14 +38,12 @@
 			<div class="muimage_view_album_image">
 			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{include file='user/picture/include_displayItemListMany3.tpl' items=$album.picture}</a>
 			</div>
-
-			{if isset($album.children) && $album.children ne null && count($album.children) > 0}
-			    <div class="muimage_view_album_bottom">
-			    {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$album.children}<br />
-			    {gt text='Pictures'}: {$album.picture|@count}
-			    </div>
+            <div class="muimage_view_album_bottom">
+			{if isset($album.children) && $album.children ne null && count($album.children) > 0}			    
+			    {gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$album.children}<br />	    
 			{/if}
-
+			{gt text='Pictures'}: {$album.picture|@count}
+            </div>
 		    </div>
 		{/if}
 	    {/foreach}
