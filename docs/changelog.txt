@@ -3,7 +3,7 @@ CHANGELOG
 
 Changes in 1.2.0
 
-# closed #23 now it is poosible to set no ending in urls
+# closed #23 now it is possible to set no ending in urls
 
 # closed #27 we have no hook container if no hooks enabled
 
@@ -17,11 +17,27 @@ Changes in 1.2.0
 
 # closed #55 we can set a maximum width and maximum height for pictures
 
+# closed #56 we have one slideshow impletended now
+
 # closed #59 to set 0 for allowed albums and pictures we can set -1 now;
              we have an information in the template
              
 # closed #60 changing album view is possible now with shorturls with no ending
              without error message 
+
+# closed #61 titles with apostrophe are possible now
+
+# closed #62 gettext fix in album display
+
+# closed #63 cleaning of templates
+
+# closed #65 missing type parameter in module calling fixed
+
+# closed #68 line brek fixed
+
+# closed #71 readme updated
+
+# closed #72 layout with rectangular pictures fixed 
 
 Changes in 1.1.1
 
