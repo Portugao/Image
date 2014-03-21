@@ -15,10 +15,14 @@ changed files
 *templates/admin/album/display.tpl
 *templates/admin/picture/view.tpl
 
+*templates7user/header.tpl
+
 *templates/user/album/delete.tpl
 *templates/user/album/edit.tpl
 *templates/user/album/display.tpl
 *templates/user/album/picture.tpl
+
+*templates/user/picture/edit.tpl
 *templates/user/picture/include_displayItemListMany.tpl
 
 
@@ -29,8 +33,11 @@ implemented classes
 *lib/MUImage/HookHandlers.php
 *lib/MUImage/Installer.php
 *lib/MUImage/UploadHandler.php
+*lib/MUImage/RouterFacade.php
 *lib/MUImage/Version.php
 
+
+*lib/MUImage/Api/Admin.php
 *lib/MUImage/Api/User.php
 *lib/MUImage/Api/Import.php
 *lib/MUImage/Api/Base/Import.php
@@ -44,6 +51,8 @@ implemented classes
 
 *lib/MUImage/Entity/Album.php
 *lib/MUImage/Entity/Picture.php
+
+*lib/MUImage/Entity/Repository/Album.php
 
 *lib/MUImage/Form/Handler/Admin/Config.php
 *lib/MUImage/Form/Handler/Admin/Base/Import.php
