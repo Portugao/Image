@@ -1,25 +1,31 @@
-{* purpose of this template: inclusion template for display of related Albums in admin area *}
-
-{if isset($items) && $items ne null}
-<ul class="relatedItemList Album">
+{* purpose of this template: inclusion template for display of related albums in admin area *}
+{if !isset($nolink)}
+    {assign var='nolink' value=false}
+{/if}
+{if isset($items) && $items ne null && count($items) gt 0}
+<ul class="muimage-related-item-list album">
 {foreach name='relLoop' item='item' from=$items}
     <li>
-    <a href="{modurl modname='MUImage' type='admin' func='display' ot='album' id=$item.id}">
-        {$item.title}
+{strip}
+{if !$nolink}
+    <a href="{modurl modname='MUImage' type='admin' func='display' ot='album' id=$item.id}" title="{$item->getTitleFromDisplayPattern()|replace:"\"":""}">
+{/if}
+    {$item->getTitleFromDisplayPattern()}
+{if !$nolink}
     </a>
-    <a id="albumItem{$item.id}Display" href="{modurl modname='MUImage' type='admin' func='display' ot='album' id=$item.id theme='Printer'}" title="{gt text='Open quick view window'}" style="display: none">
-        {icon type='view' size='extrasmall' __alt='Quick view'}
-    </a>
-    <script type="text/javascript" charset="utf-8">
-    /* <![CDATA[ */
-        document.observe('dom:loaded', function() {
-            muimageInitInlineWindow($('albumItem{{$item.id}}Display'), '{{$item.title|replace:"'":""}}');
-        });
-    /* ]]> */
-    </script>
-
+    <a id="albumItem{$item.id}Display" href="{modurl modname='MUImage' type='admin' func='display' ot='album' id=$item.id theme='Printer'}" title="{gt text='Open quick view window'}" class="z-hide">{icon type='view' size='extrasmall' __alt='Quick view'}</a>
+{/if}
+{/strip}
+{if !$nolink}
+<script type="text/javascript">
+/* <![CDATA[ */
+    document.observe('dom:loaded', function() {
+        muimageInitInlineWindow($('albumItem{{$item.id}}Display'), '{{$item->getTitleFromDisplayPattern()|replace:"'":""}}');
+    });
+/* ]]> */
+</script>
+{/if}
     </li>
 {/foreach}
 </ul>
 {/if}
-

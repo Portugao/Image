@@ -1,32 +1,35 @@
-{* purpose of this template: inclusion template for managing related Albums in admin area *}
-<fieldset>
-    <legend>{gt text='Parent Album'}</legend>
+{* purpose of this template: inclusion template for managing related album in admin area *}
+{if !isset($displayMode)}
+    {assign var='displayMode' value='dropdown'}
+{/if}
+{if !isset($allowEditing)}
+    {assign var='allowEditing' value=false}
+{/if}
+{if isset($panel) && $panel eq true}
+    <h3 class="album z-panel-header z-panel-indicator z-pointer">{gt text='Album'}</h3>
+    <fieldset class="album z-panel-content" style="display: none">
+{else}
+    <fieldset class="album">
+{/if}
+    <legend>{gt text='Album'}</legend>
     <div class="z-formrow">
-    <div class="muimageRelationRightSide">
-        <a id="{$idPrefix}AddLink" href="javascript:void(0);" style="display: none">{gt text='Select album'}</a>
-        <div id="{$idPrefix}AddFields">
-            <label for="{$idPrefix}Selector">{gt text='Find album'}</label>
-            <br />
-            {icon type='search' size='extrasmall' __alt='Search album'}
-            <input type="text" name="{$idPrefix}Selector" id="{$idPrefix}Selector" value="" />
-            <input type="hidden" name="{$idPrefix}Scope" id="{$idPrefix}Scope" value="0" />
-            {img src='indicator_circle.gif' modname='core' set='ajax' alt='' id="`$idPrefix`Indicator" style='display: none'}
-            <div id="{$idPrefix}SelectorChoices" class="muimageAutoComplete"></div>
-            <input type="button" id="{$idPrefix}SelectorDoCancel" name="{$idPrefix}SelectorDoCancel" value="{gt text='Cancel'}" class="z-button muimageInlineButton" />
-            <a id="{$idPrefix}SelectorDoNew" href="{modurl modname='MUImage' type='admin' func='edit' ot='album'}" title="{gt text='Create new album'}" class="z-button muimageInlineButton">{gt text='Create'}</a>
-        </div>
-        <noscript><p>{gt text='This function requires JavaScript activated!'}</p></noscript>
-    </div>
-    <div class="muimageRelationLeftSide">
-        {if isset($userSelection.$aliasName) && $userSelection.$aliasName ne ''}
-            {* the user has submitted something *}
-            {include file='admin/album/include_selectEditItemListOne.tpl' item=$userSelection.$aliasName}
-        {elseif $mode ne 'create' || isset($relItem.$aliasName)}
-            {include file='admin/album/include_selectEditItemListOne.tpl' item=$relItem.$aliasName}
-        {else}
-            {include file='admin/album/include_selectEditItemListOne.tpl'}
+    {if $displayMode eq 'dropdown'}
+        {formlabel for=$alias __text='Choose album'}
+            {muimageRelationSelectorList group=$group id=$alias aliasReverse=$aliasReverse mandatory=$mandatory __title='Choose the album' selectionMode='single' objectType='album' linkingItem=$linkingItem}
+    {elseif $displayMode eq 'autocomplete'}
+        {assign var='createLink' value=''}
+        {if $allowEditing eq true}
+            {modurl modname='MUImage' type='admin' func='edit' ot='album' assign='createLink'}
         {/if}
-    </div>
-    <br style="clear: both" />
+        {muimageRelationSelectorAutoComplete group=$group id=$alias aliasReverse=$aliasReverse mandatory=$mandatory __title='Choose the album' selectionMode='single' objectType='album' linkingItem=$linkingItem idPrefix=$idPrefix createLink=$createLink withImage=false}
+        <div class="muimage-relation-leftside">
+            {if isset($linkingItem.$alias)}
+                {include file='admin/album/include_selectEditItemListOne.tpl'  item=$linkingItem.$alias}
+            {else}
+                {include file='admin/album/include_selectEditItemListOne.tpl' }
+            {/if}
+        </div>
+        <br class="z-clearer" />
+    {/if}
     </div>
 </fieldset>

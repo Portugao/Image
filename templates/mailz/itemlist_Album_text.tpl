@@ -1,8 +1,8 @@
 {* Purpose of this template: Display albums in text mailings *}
-{foreach item='item' from=$items}
-        {$item.title}
-        {modurl modname='MUImage' type='user' func='display' ot=$objectType id=$item.id fqurl=true}
+{foreach item='album' from=$items}
+{$album->getTitleFromDisplayPattern()}
+{modurl modname='MUImage' type='user' func='display' ot='album'  id=$$objectType.id fqurl=true}
 -----
 {foreachelse}
-    {gt text='No albums found.'}
+{gt text='No albums found.'}
 {/foreach}

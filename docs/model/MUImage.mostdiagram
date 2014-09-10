@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:modulestudio="http://modulestudio.de/modulestudio" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation">
+  <notation:Diagram xmi:id="_zFXPcDdOEeS_5MVtUcdLIw" type="Module" measurementUnit="Pixel">
+    <children xmi:type="notation:Shape" xmi:id="_jIrCEDd2EeSyeo3guurVmQ" type="2001" fontName="monospaced" fontHeight="12" lineColor="4210752">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jIrpIDd2EeSyeo3guurVmQ" type="5001"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_jIrCETd2EeSyeo3guurVmQ" diagramLink="_jXC1QDd2EeSyeo3guurVmQ" hint="Model"/>
+      <element xmi:type="modulestudio:Models" href="MUImage.mostapp#//@models.0"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jIrCEjd2EeSyeo3guurVmQ" x="147" y="371" width="106" height="82"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_jIrpITd2EeSyeo3guurVmQ" type="2002" fontName="monospaced" fontHeight="12" lineColor="4210752">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jIrpJDd2EeSyeo3guurVmQ" type="5002"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_jIrpIjd2EeSyeo3guurVmQ" hint="Controller"/>
+      <element xmi:type="modulestudio:Controllers" href="MUImage.mostapp#//@controllers.0"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jIrpIzd2EeSyeo3guurVmQ" x="237" y="94"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_jIrpJTd2EeSyeo3guurVmQ" type="2003" fontName="monospaced" fontHeight="12" lineColor="4210752">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jIsQMDd2EeSyeo3guurVmQ" type="5003"/>
+      <element xmi:type="modulestudio:Views" href="MUImage.mostapp#//@views.0"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jIrpJjd2EeSyeo3guurVmQ" x="325" y="371" width="128" height="90"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_jIsQMTd2EeSyeo3guurVmQ" type="2004" fontName="monospaced" fontHeight="12" lineColor="4210752">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jIsQMzd2EeSyeo3guurVmQ" type="5004"/>
+      <element xmi:type="modulestudio:SettingsContainer" href="MUImage.mostapp#//@generatorSettings.0"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jIsQMjd2EeSyeo3guurVmQ" x="468" y="167" height="137"/>
+    </children>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_zFXPcTdOEeS_5MVtUcdLIw"/>
+    <element xmi:type="modulestudio:Application" href="MUImage.mostapp#/"/>
+  </notation:Diagram>
+  <notation:Diagram xmi:id="_jXC1QDd2EeSyeo3guurVmQ" type="Model" measurementUnit="Pixel">
+    <children xmi:type="notation:Shape" xmi:id="_jcGUYDd2EeSyeo3guurVmQ" type="2101" fontColor="4210752" fontName="Lucida Grande" fontHeight="12" lineColor="0">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jcG7cDd2EeSyeo3guurVmQ" type="5102"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_jcG7cTd2EeSyeo3guurVmQ" type="7101">
+        <children xmi:type="notation:Node" xmi:id="_jcKl0Dd2EeSyeo3guurVmQ" type="3104">
+          <element xmi:type="modulestudio:StringField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.0"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_jcKl0Td2EeSyeo3guurVmQ"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_jcKl0jd2EeSyeo3guurVmQ" type="3105">
+          <element xmi:type="modulestudio:TextField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.1"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_jcKl0zd2EeSyeo3guurVmQ"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_jcKl1Dd2EeSyeo3guurVmQ" type="3102">
+          <element xmi:type="modulestudio:IntegerField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.2"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_jcKl1Td2EeSyeo3guurVmQ"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_jcKl1jd2EeSyeo3guurVmQ" type="3109" fontColor="4210752" fontName="Lucida Grande" fontHeight="12" lineColor="0">
+          <children xmi:type="notation:DecorationNode" xmi:id="_jcLM4Dd2EeSyeo3guurVmQ" type="5201"/>
+          <children xmi:type="notation:DecorationNode" xmi:id="_jcLM4Td2EeSyeo3guurVmQ" type="7102">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_jcLM4jd2EeSyeo3guurVmQ"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_jcLM4zd2EeSyeo3guurVmQ"/>
+          </children>
+          <element xmi:type="modulestudio:ListField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.3"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jcKl1zd2EeSyeo3guurVmQ"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_jcLM5Dd2EeSyeo3guurVmQ" type="3112">
+          <element xmi:type="modulestudio:ArrayField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.4"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_jcLM5Td2EeSyeo3guurVmQ"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_jcLM5jd2EeSyeo3guurVmQ" type="3104">
+          <element xmi:type="modulestudio:StringField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.5"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_jcLM5zd2EeSyeo3guurVmQ"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_nYTrQDd2EeSyeo3guurVmQ" type="3101">
+          <element xmi:type="modulestudio:BooleanField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.6"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_nYTrQTd2EeSyeo3guurVmQ"/>
+        </children>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_jcG7cjd2EeSyeo3guurVmQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_jcG7czd2EeSyeo3guurVmQ"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_jcG7dDd2EeSyeo3guurVmQ" type="7103"/>
+      <element xmi:type="modulestudio:Entity" href="MUImage.mostapp#//@models.0/@entities.0"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jcGUYTd2EeSyeo3guurVmQ"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_jcG7dTd2EeSyeo3guurVmQ" type="2101" fontColor="4210752" fontName="Lucida Grande" fontHeight="12" lineColor="0">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jcG7dzd2EeSyeo3guurVmQ" type="5102"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_jcG7eDd2EeSyeo3guurVmQ" type="7101">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_jcG7eTd2EeSyeo3guurVmQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_jcG7ejd2EeSyeo3guurVmQ"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_jcHigDd2EeSyeo3guurVmQ" type="7103"/>
+      <element xmi:type="modulestudio:Entity" href="MUImage.mostapp#//@models.0/@entities.1"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jcG7djd2EeSyeo3guurVmQ" x="20" y="500"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_jcHigTd2EeSyeo3guurVmQ" type="2102" fontColor="4210752" fontName="Lucida Grande" fontHeight="12" lineColor="0">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jcHigzd2EeSyeo3guurVmQ" type="5103"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_jcHihDd2EeSyeo3guurVmQ" type="7105">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_jcHihTd2EeSyeo3guurVmQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_jcHihjd2EeSyeo3guurVmQ"/>
+      </children>
+      <element xmi:type="modulestudio:Variables" href="MUImage.mostapp#//@models.0/@variables.0"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jcHigjd2EeSyeo3guurVmQ" x="326"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_jcHihzd2EeSyeo3guurVmQ" type="2102" fontColor="4210752" fontName="Lucida Grande" fontHeight="12" lineColor="0">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jcIJkDd2EeSyeo3guurVmQ" type="5103"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_jcIJkTd2EeSyeo3guurVmQ" type="7105">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_jcIJkjd2EeSyeo3guurVmQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_jcIJkzd2EeSyeo3guurVmQ"/>
+      </children>
+      <element xmi:type="modulestudio:Variables" href="MUImage.mostapp#//@models.0/@variables.1"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jcHiiDd2EeSyeo3guurVmQ" x="606"/>
+    </children>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_jXDcUDd2EeSyeo3guurVmQ"/>
+    <element xmi:type="modulestudio:Models" href="MUImage.mostapp#//@models.0"/>
+  </notation:Diagram>
+</xmi:XMI>

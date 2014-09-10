@@ -4,121 +4,308 @@ var currentMUImageEditor = null;
 var currentMUImageInput = null;
 
 /**
- * Returns the attributes used for the popup window.
- * 
+ * Returns the attributes used for the popup window. 
  * @return {String}
  */
-/*
- * function getPopupAttributes() { var pWidth, pHeight;
- * 
- * pWidth = screen.width * 0.75; pHeight = screen.height * 0.66; return 'width=' +
- * pWidth + ',height=' + pHeight + ',scrollbars,resizable'; }
- * 
- * /** Open a popup window with the finder triggered by a Xinha button.
- */
-/*
- * function MUImageFinderXinha(editor, muimageURL) { var popupAttributes; //
- * Save editor for access in selector window currentMUImageEditor = editor;
- * 
- * popupAttributes = getPopupAttributes(); window.open(muimageURL, 'neu',
- * popupAttributes); }
- * 
- * /** Open a dialog box with the finder triggered by a Xinha button.
- */
-function MUImageFinderXinha(editor, muimageURL) {
-	var MU = jQuery.noConflict();
-	var albumdialog = MU('<div id="albumwindow"></div>');
-	var imagedialog = MU('<div id="imagewindow"></div>');
-	
-	function LoadAlbums(editor, muimageURL) {
-        MU.ajax({
-        	url: muimageURL,
-        	success: function(ergebnis) {
-            if (ergebnis) {
-                albumdialog.html(ergebnis);   
-            }
-            },
-            cache: false
-        });
-	}
-	LoadAlbums(editor, muimageURL);
+function getPopupAttributes()
+{
+    var pWidth, pHeight;
 
-	MU(albumdialog).dialog({
-		title: Zikula.__('Choose an image of an MUImage album', 'module_muimage'),
-		modal: true, 
-	    width: 600,	
-	    height: 400,
-	    buttons: [
-	        {
-	        	text: Zikula.__('Load albums', 'module_muimage'),
-	        	click: function() {
-	        	    LoadAlbums(editor, muimageURL);	      	    
-	        	}, 
-	        },      
-	        { 
-	    	text: Zikula.__('Load images of the selected album', 'module_muimage'),
-	    	click: function(e) {
+    pWidth = screen.width * 0.75;
+    pHeight = screen.height * 0.66;
 
-	    	var url2 = Zikula.Config.baseURL + 'index.php'/* Zikula.Config.entrypoint */ + '?module=MUImage&type=external&func=finderImages&editor=xinha';
-
-	    	MU(imagedialog).dialog({
-	    		title: Zikula.__('Choose an image with a kind of inclusion!', 'module_muimage'),
-	    		modal: true,
-	    		width: 600,
-	    		height: 400,
-	    	    buttons: [
-	    	  	        {
-	    	  	        	text: Zikula.__('Reload albums', 'module_muimage'),
-	    	  	        	click: LoadAlbums(editor, muimageURL)
-	    	  	        },
-	    	  	        {
-	    	  	        	text: Zikula.__('Close', 'module_muimage'),
-	    	  		        click: function() {
-	    	  		        	MU(this).dialog('close');
-	    	  		        }
-	    	  	        }
-	    	  	        ]
-	    	});
-
-	    	// datas from fields to js vars translate
-	    	var mainalbum = MU("select[name=muimage-album]");
-	    	var subalbum = MU("select[name=muimage-subalbum]");
-	    	  
-	    	// datas to string
-	    	var data = 'mainalbum=' + mainalbum.val() + '&subalbum=' + subalbum.val();
-
-	    	MU.ajax({
-	    		type: 'GET',
-	    		url: url2,
-	    		success: function(ergebnis2) {
-		    		if (ergebnis2) {
-		    			MU(albumdialog).dialog('close');
-		    			imagedialog.html(ergebnis2);
-		    		} else {
-		    			imagedialog.html('keine Bilder');
-		    		}
-		    	},
-	    		data: data,
-	    		cache: false
-	    		});
-	    	
-	    	MU(".muimage-editor-plugin-image-slideshow", imagedialog).click(function(f) {
-	    		f.preventDefault();
-	    		var url3 = MU(this).attr('href');
-	    	    MU.get(url3, function(ergebnis3) {
-	    	    	if(ergebnis3) {
-	    	    		alert('hallo');
-	    	    	}
-	    	    });	
-	    	});
-	    	}
-	        
-	        },
-	    	{
-	        text: Zikula.__('Close', 'module_muimage'),
-	        click: function() {
-	        	MU(this).dialog('close');
-	        }
-	        }]
-	});
+    return 'width=' + pWidth + ',height=' + pHeight + ',scrollbars,resizable';
 }
+
+/**
+ * Open a popup window with the finder triggered by a Xinha button.
+ */
+function MUImageFinderXinha(editor, muimageURL)
+{
+    var popupAttributes;
+
+    // Save editor for access in selector window
+    currentMUImageEditor = editor;
+
+    popupAttributes = getPopupAttributes();
+    window.open(muimageURL, '', popupAttributes);
+}
+
+/**
+ * Open a popup window with the finder triggered by a CKEditor button.
+ */
+function MUImageFinderCKEditor(editor, muimageURL)
+{
+    // Save editor for access in selector window
+    currentMUImageEditor = editor;
+
+    editor.popup(
+        Zikula.Config.baseURL + Zikula.Config.entrypoint + '?module=MUImage&type=external&func=finder&editor=ckeditor',
+        /*width*/ '80%', /*height*/ '70%',
+        'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'
+    );
+}
+
+
+
+var muimage = {};
+
+muimage.finder = {};
+
+muimage.finder.onLoad = function (baseId, selectedId)
+{
+    $$('div.categoryselector select').invoke('observe', 'change', muimage.finder.onParamChanged);
+    $('mUImageSort').observe('change', muimage.finder.onParamChanged);
+    $('mUImageSortDir').observe('change', muimage.finder.onParamChanged);
+    $('mUImagePageSize').observe('change', muimage.finder.onParamChanged);
+    $('mUImageSearchGo').observe('click', muimage.finder.onParamChanged);
+    $('mUImageSearchGo').observe('keypress', muimage.finder.onParamChanged);
+    $('mUImageSubmit').addClassName('z-hide');
+    $('mUImageCancel').observe('click', muimage.finder.handleCancel);
+};
+
+muimage.finder.onParamChanged = function ()
+{
+    $('mUImageSelectorForm').submit();
+};
+
+muimage.finder.handleCancel = function ()
+{
+    var editor, w;
+
+    editor = $F('editorName');
+    if (editor === 'xinha') {
+        w = parent.window;
+        window.close();
+        w.focus();
+    } else if (editor === 'tinymce') {
+        muimageClosePopup();
+    } else if (editor === 'ckeditor') {
+        muimageClosePopup();
+    } else {
+        alert('Close Editor: ' + editor);
+    }
+};
+
+
+function getPasteSnippet(mode, itemId)
+{
+    var itemUrl, itemTitle, itemDescription, pasteMode;
+
+    itemUrl = $F('url' + itemId);
+    itemTitle = $F('title' + itemId);
+    itemDescription = $F('desc' + itemId);
+    pasteMode = $F('mUImagePasteAs');
+
+    if (pasteMode === '2' || pasteMode !== '1') {
+        return itemId;
+    }
+
+    // return link to item
+    if (mode === 'url') {
+        // plugin mode
+        return itemUrl;
+    }
+
+    // editor mode
+    return '<a href="' + itemUrl + '" title="' + itemDescription + '">' + itemTitle + '</a>';
+}
+
+
+// User clicks on "select item" button
+muimage.finder.selectItem = function (itemId)
+{
+    var editor, html;
+
+    editor = $F('editorName');
+    if (editor === 'xinha') {
+        if (window.opener.currentMUImageEditor !== null) {
+            html = getPasteSnippet('html', itemId);
+
+            window.opener.currentMUImageEditor.focusEditor();
+            window.opener.currentMUImageEditor.insertHTML(html);
+        } else {
+            html = getPasteSnippet('url', itemId);
+            var currentInput = window.opener.currentMUImageInput;
+
+            if (currentInput.tagName === 'INPUT') {
+                // Simply overwrite value of input elements
+                currentInput.value = html;
+            } else if (currentInput.tagName === 'TEXTAREA') {
+                // Try to paste into textarea - technique depends on environment
+                if (typeof document.selection !== 'undefined') {
+                    // IE: Move focus to textarea (which fortunately keeps its current selection) and overwrite selection
+                    currentInput.focus();
+                    window.opener.document.selection.createRange().text = html;
+                } else if (typeof currentInput.selectionStart !== 'undefined') {
+                    // Firefox: Get start and end points of selection and create new value based on old value
+                    var startPos = currentInput.selectionStart;
+                    var endPos = currentInput.selectionEnd;
+                    currentInput.value = currentInput.value.substring(0, startPos)
+                                        + html
+                                        + currentInput.value.substring(endPos, currentInput.value.length);
+                } else {
+                    // Others: just append to the current value
+                    currentInput.value += html;
+                }
+            }
+        }
+    } else if (editor === 'tinymce') {
+        html = getPasteSnippet('html', itemId);
+        window.opener.tinyMCE.activeEditor.execCommand('mceInsertContent', false, html);
+        // other tinymce commands: mceImage, mceInsertLink, mceReplaceContent, see http://www.tinymce.com/wiki.php/Command_identifiers
+    } else if (editor === 'ckeditor') {
+        if (window.opener.currentMUImageEditor !== null) {
+            html = getPasteSnippet('html', itemId);
+
+            window.opener.currentMUImageEditor.insertHtml(html);
+        }
+    } else {
+        alert('Insert into Editor: ' + editor);
+    }
+    muimageClosePopup();
+};
+
+
+function muimageClosePopup()
+{
+    window.opener.focus();
+    window.close();
+}
+
+
+
+
+//=============================================================================
+// MUImage item selector for Forms
+//=============================================================================
+
+muimage.itemSelector = {};
+muimage.itemSelector.items = {};
+muimage.itemSelector.baseId = 0;
+muimage.itemSelector.selectedId = 0;
+
+muimage.itemSelector.onLoad = function (baseId, selectedId)
+{
+    muimage.itemSelector.baseId = baseId;
+    muimage.itemSelector.selectedId = selectedId;
+
+    // required as a changed object type requires a new instance of the item selector plugin
+    $('mUImageObjectType').observe('change', muimage.itemSelector.onParamChanged);
+
+    if ($(baseId + '_catidMain') != undefined) {
+        $(baseId + '_catidMain').observe('change', muimage.itemSelector.onParamChanged);
+    } else if ($(baseId + '_catidsMain') != undefined) {
+        $(baseId + '_catidsMain').observe('change', muimage.itemSelector.onParamChanged);
+    }
+    $(baseId + 'Id').observe('change', muimage.itemSelector.onItemChanged);
+    $(baseId + 'Sort').observe('change', muimage.itemSelector.onParamChanged);
+    $(baseId + 'SortDir').observe('change', muimage.itemSelector.onParamChanged);
+    $('mUImageSearchGo').observe('click', muimage.itemSelector.onParamChanged);
+    $('mUImageSearchGo').observe('keypress', muimage.itemSelector.onParamChanged);
+
+    muimage.itemSelector.getItemList();
+};
+
+muimage.itemSelector.onParamChanged = function ()
+{
+    $('ajax_indicator').removeClassName('z-hide');
+
+    muimage.itemSelector.getItemList();
+};
+
+muimage.itemSelector.getItemList = function ()
+{
+    var baseId, params, request;
+
+    baseId = muimage.itemSelector.baseId;
+    params = 'ot=' + baseId + '&';
+    if ($(baseId + '_catidMain') != undefined) {
+        params += 'catidMain=' + $F(baseId + '_catidMain') + '&';
+    } else if ($(baseId + '_catidsMain') != undefined) {
+        params += 'catidsMain=' + $F(baseId + '_catidsMain') + '&';
+    }
+    params += 'sort=' + $F(baseId + 'Sort') + '&' +
+              'sortdir=' + $F(baseId + 'SortDir') + '&' +
+              'searchterm=' + $F(baseId + 'SearchTerm');
+
+    request = new Zikula.Ajax.Request(
+        Zikula.Config.baseURL + 'ajax.php?module=MUImage&func=getItemListFinder',
+        {
+            method: 'post',
+            parameters: params,
+            onFailure: function(req) {
+                Zikula.showajaxerror(req.getMessage());
+            },
+            onSuccess: function(req) {
+                var baseId;
+                baseId = muimage.itemSelector.baseId;
+                muimage.itemSelector.items[baseId] = req.getData();
+                $('ajax_indicator').addClassName('z-hide');
+                muimage.itemSelector.updateItemDropdownEntries();
+                muimage.itemSelector.updatePreview();
+            }
+        }
+    );
+};
+
+muimage.itemSelector.updateItemDropdownEntries = function ()
+{
+    var baseId, itemSelector, items, i, item;
+
+    baseId = muimage.itemSelector.baseId;
+    itemSelector = $(baseId + 'Id');
+    itemSelector.length = 0;
+
+    items = muimage.itemSelector.items[baseId];
+    for (i = 0; i < items.length; ++i) {
+        item = items[i];
+        itemSelector.options[i] = new Option(item.title, item.id, false);
+    }
+
+    if (muimage.itemSelector.selectedId > 0) {
+        $(baseId + 'Id').value = muimage.itemSelector.selectedId;
+    }
+};
+
+muimage.itemSelector.updatePreview = function ()
+{
+    var baseId, items, selectedElement, i;
+
+    baseId = muimage.itemSelector.baseId;
+    items = muimage.itemSelector.items[baseId];
+
+    $(baseId + 'PreviewContainer').addClassName('z-hide');
+
+    if (items.length === 0) {
+        return;
+    }
+
+    selectedElement = items[0];
+    if (muimage.itemSelector.selectedId > 0) {
+        for (var i = 0; i < items.length; ++i) {
+            if (items[i].id === muimage.itemSelector.selectedId) {
+                selectedElement = items[i];
+                break;
+            }
+        }
+    }
+
+    if (selectedElement !== null) {
+        $(baseId + 'PreviewContainer')
+            .update(window.atob(selectedElement.previewInfo))
+            .removeClassName('z-hide');
+    }
+};
+
+muimage.itemSelector.onItemChanged = function ()
+{
+    var baseId, itemSelector, preview;
+
+    baseId = muimage.itemSelector.baseId;
+    itemSelector = $(baseId + 'Id');
+    preview = window.atob(muimage.itemSelector.items[baseId][itemSelector.selectedIndex].previewInfo);
+
+    $(baseId + 'PreviewContainer').update(preview);
+    muimage.itemSelector.selectedId = $F(baseId + 'Id');
+};

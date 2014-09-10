@@ -1,0 +1,51 @@
+body {
+    background-color: #ddd;
+    margin: 10px;
+    text-align: left;
+}
+
+.muimage-finderform fieldset,
+.muimage-finderform fieldset legend {
+    background-color: #fff;
+    border: none;
+}
+
+#muimageItemContainer {
+    background-color: #eee;
+    height: 300px;
+    overflow: auto;
+    padding: 5px;
+}
+
+#muimageItemContainer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#muimageItemContainer a {
+    color: #000;
+    margin: 0.1em 0.2em;
+    text-decoration: underline;
+}
+#muimageItemContainer a:hover,
+#muimageItemContainer a:focus,
+#muimageItemContainer a:active {
+    color: #900;
+    text-decoration: none;
+}
+
+#muimageItemContainer a img {
+    border: none;
+}
+
+#muimageItemContainer a img {
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    padding: 0.5em;
+}
+#muimageItemContainer a:hover img,
+#muimageItemContainer a:focus img,
+#muimageItemContainer a:active img {
+    background-color: #fff;
+}

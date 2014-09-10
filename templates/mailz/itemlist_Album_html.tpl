@@ -1,11 +1,11 @@
 {* Purpose of this template: Display albums in html mailings *}
 {*
 <ul>
-{foreach item='item' from=$items}
+{foreach item='album' from=$items}
     <li>
-        <a href="{modurl modname='MUImage' type='user' func='display' ot=$objectType id=$item.id fqurl=true}
-">{$item.title}
-</a>
+        <a href="{modurl modname='MUImage' type='user' func='display' ot='album'  id=$$objectType.id fqurl=true}
+        ">{$album->getTitleFromDisplayPattern()}
+        </a>
     </li>
 {foreachelse}
     <li>{gt text='No albums found.'}</li>
@@ -13,4 +13,4 @@
 </ul>
 *}
 
-{include file='contenttype/itemlist_Album_display_description.tpl'}
+{include file='contenttype/itemlist_album_display_description.tpl'}

@@ -1,172 +1,100 @@
+'use strict';
+
 
 /**
- * Initialise a relation field section with autocompletion and optional edit capabilities
+ * Override method of Scriptaculous auto completer method.
+ * Purpose: better feedback if no results are found (#247).
+ * See http://stackoverflow.com/questions/657839/scriptaculous-ajax-autocomplete-empty-response for more information.
  */
-function muimageInitRelationItemsForm(objectType, idPrefix, includeEditing)
+Ajax.Autocompleter.prototype.updateChoices = function (choices)
 {
-    // add handling for the toggle link if existing
-    if ($(idPrefix + 'AddLink') != undefined) {
-        $(idPrefix + 'AddLink').observe('click', function(e) { muimageToggleRelatedItemForm(idPrefix); });
-    }
-    // add handling for the cancel button
-    if ($(idPrefix + 'SelectorDoCancel') != undefined) {
-        $(idPrefix + 'SelectorDoCancel').observe('click', function(e) { muimageResetRelatedItemForm(idPrefix); });
-    }
-    // clear values and ensure starting state
-    muimageResetRelatedItemForm(idPrefix);
-
-    var acOptions = {
-            paramName: 'fragment',
-            minChars: 2,
-            indicator: idPrefix + 'Indicator',
-            callback: function(inputField, defaultQueryString) {
-                    // modify the query string before the request
-                    defaultQueryString += '&ot=' + objectType;
-                    if ($(idPrefix + 'ItemList') != undefined) {
-                        defaultQueryString += '&exclude=' + $F(idPrefix + 'ItemList');
-                    }
-                    return defaultQueryString;
-            },
-            afterUpdateElement: function(inputField, selectedListItem) {
-                    // Called after the input element has been updated (i.e. when the user has selected an entry).
-                    // This function is called after the built-in function that adds the list item text to the input field.
-                    muimageSelectRelatedItem(objectType, idPrefix, inputField, selectedListItem);
+    if (!this.changed && this.hasFocus) {
+        if (!choices || choices == '<ul></ul>') {
+            this.stopIndicator();
+            var idPrefix = this.options.indicator.replace('Indicator', '');
+            if ($(idPrefix + 'NoResultsHint') != null) {
+                $(idPrefix + 'NoResultsHint').removeClassName('z-hide');
             }
-    };
-    relationHandler.each(function(relationHandler) {
-        if (relationHandler['prefix'] == (idPrefix + 'SelectorDoNew') && relationHandler['acInstance'] == null) {
-            relationHandler['acInstance'] = new Ajax.Autocompleter(
-                idPrefix + 'Selector',
-                idPrefix + 'SelectorChoices',
-                Zikula.Config['baseURL'] + 'ajax.php?module=MUImage&func=getItemList',
-                acOptions
-            );
-        }
-    });
+        } else {
+            this.update.innerHTML = choices;
+            Element.cleanWhitespace(this.update);
+            Element.cleanWhitespace(this.update.down());
 
-    if (!includeEditing || $(idPrefix + 'SelectorDoNew') == undefined) {
+            if (this.update.firstChild && this.update.down().childNodes) {
+                this.entryCount = this.update.down().childNodes.length;
+                for (var i = 0; i < this.entryCount; i++) {
+                    var entry = this.getEntry(i);
+                    entry.autocompleteIndex = i;
+                    this.addObservers(entry);
+                }
+            } else {
+                this.entryCount = 0;
+            }
+
+            this.stopIndicator();
+            this.index = 0;
+
+            if (this.entryCount == 1 && this.options.autoSelect) {
+                this.selectEntry();
+                this.hide();
+            } else {
+                this.render();
+            }
+        }
+    }
+}
+
+/**
+ * Resets the value of an upload / file input field.
+ */
+function muimageResetUploadField(fieldName)
+{
+    if ($(fieldName) != null) {
+        $(fieldName).setAttribute('type', 'input');
+        $(fieldName).setAttribute('type', 'file');
+    }
+}
+
+/**
+ * Initialises the reset button for a certain upload input.
+ */
+function muimageInitUploadField(fieldName)
+{
+    if ($('reset' + fieldName.capitalize() + 'Val') != null) {
+        $('reset' + fieldName.capitalize() + 'Val').observe('click', function (evt) {
+            evt.preventDefault();
+            muimageResetUploadField(fieldName);
+        }).removeClassName('z-hide');
+    }
+}
+
+/**
+ * Toggles the fields of an auto completion field.
+ */
+function muimageToggleRelatedItemForm(idPrefix)
+{
+    // if we don't have a toggle link do nothing
+    if ($(idPrefix + 'AddLink') === null) {
         return;
     }
 
-    // from here inline editing will be handled
-    $(idPrefix + 'SelectorDoNew').href += '&theme=Printer&idp=' + idPrefix + 'SelectorDoNew';
-    $(idPrefix + 'SelectorDoNew').observe('click', function(e) {
-        muimageInitInlineWindow(objectType, idPrefix + 'SelectorDoNew')
-        e.stop();
-    });
+    // show/hide the toggle link
+    $(idPrefix + 'AddLink').toggleClassName('z-hide');
 
-    var itemIds = $F(idPrefix + 'ItemList');
-    var itemIdsArr = itemIds.split(',');
-    itemIdsArr.each(function(existingId) {
-        if (existingId) {
-            var elemPrefix = idPrefix + 'Reference_' + existingId + 'Edit';
-            $(elemPrefix).href += '&theme=Printer&idp=' + elemPrefix;
-            $(elemPrefix).observe('click', function(e) {
-                muimageInitInlineWindow(objectType, elemPrefix);
-                e.stop();
-            });
-        }
-    });
+    // hide/show the fields
+    $(idPrefix + 'AddFields').toggleClassName('z-hide');
 }
 
 /**
- * Add a related item to selection which has been chosen by auto completion
+ * Resets an auto completion field.
  */
-function muimageSelectRelatedItem(objectType, idPrefix, inputField, selectedListItem)
+function muimageResetRelatedItemForm(idPrefix)
 {
-    var newItemId = selectedListItem.id;
-    var newTitle = $F(idPrefix + 'Selector');
-    var includeEditing = ($F(idPrefix + 'Mode') == '1') ? true : false;
-    var editLink;
-    var removeLink;
-    var elemPrefix = idPrefix + 'Reference_' + newItemId;
-    var itemPreview = '';
-    if ($('itempreview' + selectedListItem.id) != undefined) {
-        itemPreview = $('itempreview' + selectedListItem.id).innerHTML;
-    }
+    // hide the sub form
+    muimageToggleRelatedItemForm(idPrefix);
 
-    var li = Builder.node('li', {id: elemPrefix}, newTitle);
-    if (includeEditing == true) {
-        var editHref = $(idPrefix + 'SelectorDoNew').href + '&id=' + newItemId;
-        editLink = Builder.node('a', {id: elemPrefix + 'Edit', href: editHref}, 'edit');
-        li.appendChild(editLink);
-    }
-    removeLink = Builder.node('a', {id: elemPrefix + 'Remove', href: 'javascript:muimageRemoveRelatedItem(\'' + idPrefix + '\', ' + newItemId + ');'}, 'remove');
-    li.appendChild(removeLink);
-    if (itemPreview != '') {
-        var fldPreview = Builder.node('div', {id: elemPrefix + 'preview', name: idPrefix + 'preview'}, '');
-        fldPreview.update(itemPreview);
-        li.appendChild(fldPreview);
-        itemPreview = '';
-    }
-    $(idPrefix + 'ReferenceList').appendChild(li);
-
-    if (includeEditing == true) {
-        editLink.update(' ' + editImage);
-
-        $(elemPrefix + 'Edit').observe('click', function(e) {
-            muimageInitInlineWindow(objectType, idPrefix + 'Reference_' + newItemId + 'Edit');
-            e.stop();
-        });
-    }
-    removeLink.update(' ' + removeImage);
-
-    var itemIds = $F(idPrefix + 'ItemList');
-    if (itemIds != '') {
-        if ($F(idPrefix + 'Scope') == '0') {
-            var itemIdsArr = itemIds.split(',');
-            itemIdsArr.each(function(existingId) {
-                if (existingId) {
-                    muimageRemoveRelatedItem(idPrefix, existingId);
-                }
-            });
-            itemIds = '';
-        }
-        else {
-            itemIds += ',';
-        }
-    }
-    itemIds += newItemId;
-    $(idPrefix + 'ItemList').value = itemIds;
-
-    muimageResetRelatedItemForm(idPrefix);
-}
-/**
- * Observe a link for opening an inline window
- */
-function muimageInitInlineWindow(objectType, containerID)
-{
-    // whether the handler has been found
-    var found = false;
-
-    // search for the handler
-    relationHandler.each(function(relationHandler) {
-        // is this the right one
-        if (relationHandler['prefix'] == containerID) {
-            // yes, it is
-            found = true;
-            // look whether there is already a window instance
-            if (relationHandler['windowInstance'] != null) {
-                // unset it
-                relationHandler['windowInstance'].destroy();
-            }
-            // create and assign the new window instance
-            relationHandler['windowInstance'] = muimageCreateWindowInstance($(containerID), true);
-        }
-    });
-
-    // if no handler was found
-    if (found === false) {
-        // create a new one
-        var newItem = new Object();
-        newItem['ot'] = objectType;
-        newItem['alias'] = '';
-        newItem['prefix'] = containerID;
-        newItem['acInstance'] = null;
-        newItem['windowInstance'] = muimageCreateWindowInstance($(containerID), true);
-        // add it to the list of handlers
-        relationHandler.push(newItem);
-    }
+    // reset value of the auto completion field
+    $(idPrefix + 'Selector').value = '';
 }
 
 /**
@@ -174,10 +102,12 @@ function muimageInitInlineWindow(objectType, containerID)
  * For edit forms we use "iframe: true" to ensure file uploads work without problems.
  * For all other windows we use "iframe: false" because we want the escape key working.
  */
-function muimageCreateWindowInstance(containerElem, useIframe)
+function muimageCreateRelationWindowInstance(containerElem, useIframe)
 {
+    var newWindow;
+
     // define the new window instance
-    var newWindow = new Zikula.UI.Window(
+    newWindow = new Zikula.UI.Window(
         containerElem,
         {
             minmax: true,
@@ -198,80 +128,243 @@ function muimageCreateWindowInstance(containerElem, useIframe)
 }
 
 /**
+ * Observe a link for opening an inline window
+ */
+function muimageinitInlineRelationWindow(objectType, containerID)
+{
+    var found, newItem;
+
+    // whether the handler has been found
+    found = false;
+
+    // search for the handler
+    relationHandler.each(function (relationHandler) {
+        // is this the right one
+        if (relationHandler.prefix === containerID) {
+            // yes, it is
+            found = true;
+            // look whether there is already a window instance
+            if (relationHandler.windowInstance !== null) {
+                // unset it
+                relationHandler.windowInstance.destroy();
+            }
+            // create and assign the new window instance
+            relationHandler.windowInstance = muimageCreateRelationWindowInstance($(containerID), true);
+        }
+    });
+
+    // if no handler was found
+    if (found === false) {
+        // create a new one
+        newItem = new Object();
+        newItem.ot = objectType;
+        newItem.alias = '';
+        newItem.prefix = containerID;
+        newItem.acInstance = null;
+        newItem.windowInstance = muimageCreateRelationWindowInstance($(containerID), true);
+
+        // add it to the list of handlers
+        relationHandler.push(newItem);
+    }
+}
+
+/**
  * Removes a related item from the list of selected ones.
  */
 function muimageRemoveRelatedItem(idPrefix, removeId)
 {
-    var itemIds = $F(idPrefix + 'ItemList');
-    var itemIdsArr = itemIds.split(',');
+    var itemIds, itemIdsArr;
+
+    itemIds = $F(idPrefix + 'ItemList');
+    itemIdsArr = itemIds.split(',');
+
     itemIdsArr = itemIdsArr.without(removeId);
+
     itemIds = itemIdsArr.join(',');
+
     $(idPrefix + 'ItemList').value = itemIds;
     $(idPrefix + 'Reference_' + removeId).remove();
 }
 
 /**
- * Resets an auto completion field.
+ * Adds a related item to selection which has been chosen by auto completion.
  */
-function muimageResetRelatedItemForm(idPrefix)
+function muimageSelectRelatedItem(objectType, idPrefix, inputField, selectedListItem)
 {
-    // hide the sub form
-    muimageToggleRelatedItemForm(idPrefix);
+    var newItemId, newTitle, includeEditing, editLink, removeLink, elemPrefix, itemPreview, li, editHref, fldPreview, itemIds, itemIdsArr;
 
-    // reset value of the auto completion field
-    $(idPrefix + 'Selector').value = '';
+    newItemId = selectedListItem.id;
+    newTitle = $F(idPrefix + 'Selector');
+    includeEditing = !!(($F(idPrefix + 'Mode') == '1'));
+    elemPrefix = idPrefix + 'Reference_' + newItemId;
+    itemPreview = '';
+
+    if ($('itemPreview' + selectedListItem.id) !== null) {
+        itemPreview = $('itemPreview' + selectedListItem.id).innerHTML;
+    }
+
+    var li = Builder.node('li', {id: elemPrefix}, newTitle);
+    if (includeEditing === true) {
+        var editHref = $(idPrefix + 'SelectorDoNew').href + '&id=' + newItemId;
+        editLink = Builder.node('a', {id: elemPrefix + 'Edit', href: editHref}, 'edit');
+        li.appendChild(editLink);
+    }
+    removeLink = Builder.node('a', {id: elemPrefix + 'Remove', href: 'javascript:muimageRemoveRelatedItem(\'' + idPrefix + '\', ' + newItemId + ');'}, 'remove');
+    li.appendChild(removeLink);
+    if (itemPreview !== '') {
+        fldPreview = Builder.node('div', {id: elemPrefix + 'preview', name: idPrefix + 'preview'}, '');
+        fldPreview.update(itemPreview);
+        li.appendChild(fldPreview);
+        itemPreview = '';
+    }
+    $(idPrefix + 'ReferenceList').appendChild(li);
+
+    if (includeEditing === true) {
+        editLink.update(' ' + editImage);
+
+        $(elemPrefix + 'Edit').observe('click', function (e) {
+            muimageinitInlineRelationWindow(objectType, idPrefix + 'Reference_' + newItemId + 'Edit');
+            e.stop();
+        });
+    }
+    removeLink.update(' ' + removeImage);
+
+    itemIds = $F(idPrefix + 'ItemList');
+    if (itemIds !== '') {
+        if ($F(idPrefix + 'Scope') === '0') {
+            itemIdsArr = itemIds.split(',');
+            itemIdsArr.each(function (existingId) {
+                if (existingId) {
+                    muimageRemoveRelatedItem(idPrefix, existingId);
+                }
+            });
+            itemIds = '';
+        } else {
+            itemIds += ',';
+        }
+    }
+    itemIds += newItemId;
+    $(idPrefix + 'ItemList').value = itemIds;
+
+    muimageResetRelatedItemForm(idPrefix);
 }
 
 /**
- * Toggles the fields of an auto completion field.
+ * Initialise a relation field section with autocompletion and optional edit capabilities
  */
-function muimageToggleRelatedItemForm(idPrefix)
+function muimageInitRelationItemsForm(objectType, idPrefix, includeEditing)
 {
-    // if we don't have a toggle link do nothing
-    if ($(idPrefix + 'AddLink') == undefined) {
+    var acOptions, itemIds, itemIdsArr;
+
+    // add handling for the toggle link if existing
+    if ($(idPrefix + 'AddLink') !== null) {
+        $(idPrefix + 'AddLink').observe('click', function (e) {
+            muimageToggleRelatedItemForm(idPrefix);
+        });
+    }
+    // add handling for the cancel button
+    if ($(idPrefix + 'SelectorDoCancel') !== null) {
+        $(idPrefix + 'SelectorDoCancel').observe('click', function (e) {
+            muimageResetRelatedItemForm(idPrefix);
+        });
+    }
+    // clear values and ensure starting state
+    muimageResetRelatedItemForm(idPrefix);
+
+    acOptions = {
+        paramName: 'fragment',
+        minChars: 2,
+        indicator: idPrefix + 'Indicator',
+        callback: function (inputField, defaultQueryString) {
+            var queryString;
+
+            // modify the query string before the request
+            queryString = defaultQueryString + '&ot=' + objectType;
+            if ($(idPrefix + 'ItemList') !== null) {
+                queryString += '&exclude=' + $F(idPrefix + 'ItemList');
+            }
+
+            if ($(idPrefix + 'NoResultsHint') != null) {
+                $(idPrefix + 'NoResultsHint').addClassName('z-hide');
+            }
+
+            return queryString;
+        },
+        afterUpdateElement: function (inputField, selectedListItem) {
+            // Called after the input element has been updated (i.e. when the user has selected an entry).
+            // This function is called after the built-in function that adds the list item text to the input field.
+            muimageSelectRelatedItem(objectType, idPrefix, inputField, selectedListItem);
+        }
+    };
+    relationHandler.each(function (relationHandler) {
+        if (relationHandler.prefix === (idPrefix + 'SelectorDoNew') && relationHandler.acInstance === null) {
+            relationHandler.acInstance = new Ajax.Autocompleter(
+                idPrefix + 'Selector',
+                idPrefix + 'SelectorChoices',
+                Zikula.Config.baseURL + 'ajax.php?module=' + relationHandler.moduleName + '&func=getItemListAutoCompletion',
+                acOptions
+            );
+        }
+    });
+
+    if (!includeEditing || $(idPrefix + 'SelectorDoNew') === null) {
         return;
     }
 
-    // show/hide the toggle link
-    $(idPrefix + 'AddLink').toggle();
+    // from here inline editing will be handled
+    $(idPrefix + 'SelectorDoNew').href += '&theme=Printer&idp=' + idPrefix + 'SelectorDoNew';
+    $(idPrefix + 'SelectorDoNew').observe('click', function(e) {
+        muimageinitInlineRelationWindow(objectType, idPrefix + 'SelectorDoNew');
+        e.stop();
+    });
 
-    // hide/show the fields
-    $(idPrefix + 'AddFields').toggle();
+    itemIds = $F(idPrefix + 'ItemList');
+    itemIdsArr = itemIds.split(',');
+    itemIdsArr.each(function (existingId) {
+        var elemPrefix;
+
+        if (existingId) {
+            elemPrefix = idPrefix + 'Reference_' + existingId + 'Edit';
+            $(elemPrefix).href += '&theme=Printer&idp=' + elemPrefix;
+            $(elemPrefix).observe('click', function (e) {
+                muimageinitInlineRelationWindow(objectType, elemPrefix);
+                e.stop();
+            });
+        }
+    });
 }
 
 /**
  * Closes an iframe from the document displayed in it
  */
-function muimageCloseWindowFromInside(idPrefix, itemID)
+function muimageCloseWindowFromInside(idPrefix, itemId)
 {
     // if there is no parent window do nothing
-    if (window.parent == '') {
+    if (window.parent === '') {
         return;
     }
 
     // search for the handler of the current window
-    window.parent.relationHandler.each(function(relationHandler) {
+    window.parent.relationHandler.each(function (relationHandler) {
         // look if this handler is the right one
-        if (relationHandler['prefix'] == idPrefix) {
+        if (relationHandler['prefix'] === idPrefix) {
             // do we have an item created
-            if (itemID > 0) {
+            if (itemId > 0) {
                 // look whether there is an auto completion instance
-                if (relationHandler['acInstance'] != null) {
+                if (relationHandler.acInstance !== null) {
                     // activate it
-                    relationHandler['acInstance'].activate();
-                    // show a message 
-                    Zikula.UI.Alert('Action has been completed.', 'Information');
+                    relationHandler.acInstance.activate();
+                    // show a message
+                    Zikula.UI.Alert(Zikula.__('Action has been completed.', 'module_muimage_js'), Zikula.__('Information', 'module_muimage_js'), {
+                        autoClose: 3 // time in seconds
+                    });
                 }
             }
             // look whether there is a windows instance
-            if (relationHandler['windowInstance'] != null) {
+            if (relationHandler.windowInstance !== null) {
                 // close it
-                relationHandler['windowInstance'].closeHandler();
+                relationHandler.windowInstance.closeHandler();
             }
         }
     });
 }
-
-
-// TODO: support auto-hiding notification windows (see https://github.com/zikula/core/issues/121 for more information)
-

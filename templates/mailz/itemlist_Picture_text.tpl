@@ -1,8 +1,8 @@
 {* Purpose of this template: Display pictures in text mailings *}
-{foreach item='item' from=$items}
-        {$item.title}
-        {modurl modname='MUImage' type='user' func='display' ot=$objectType id=$item.id fqurl=true}
+{foreach item='picture' from=$items}
+{$picture->getTitleFromDisplayPattern()}
+{modurl modname='MUImage' type='user' func='display' ot='picture'  id=$$objectType.id fqurl=true}
 -----
 {foreachelse}
-    {gt text='No pictures found.'}
+{gt text='No pictures found.'}
 {/foreach}

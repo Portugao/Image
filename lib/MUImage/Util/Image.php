@@ -16,6 +16,50 @@
  */
 class MUImage_Util_Image extends MUImage_Util_Base_Image
 {
+    /**
+     * This method returns an Imagine preset for the given arguments.
+     *
+     * @param string $objectType Currently treated entity type.
+     * @param string $fieldName  Name of upload field.
+     * @param string $presetName Name of desired preset.
+     * @param string $context    Usage context (allowed values: controllerAction, api, actionHandler, block, contentType).
+     * @param array  $args       Additional arguments.
+     *
+     * @return SystemPlugin_Imagine_Preset The selected preset.
+     */
+    public function getCustomPreset($objectType = '', $fieldName = '', $presetName = '', $context = '', $args = array())
+    {
+        $presetData = array(
+            'width'     => 100,      // thumbnail width in pixels
+            'height'    => 100,      // thumbnail height in pixels
+            'mode'      => 'inset',  // inset or outbound
+            'extension' => null      // file extension for thumbnails (jpg, png, gif; null for original file type)
+        );
+    
+        if ($presetName == $this->name . '_ajax_autocomplete') {
+            $presetData['width'] = 100;
+            $presetData['height'] = 80;
+        } elseif ($presetName == $this->name . '_relateditem') {
+            $presetData['width'] = 50;
+            $presetData['height'] = 40;
+        } elseif ($presetName == $this->name . '_displaycontainer') {
+                $presetData['width'] = 100;
+                $presetData['height'] = 70;
+        } elseif ($context == 'controllerAction') {
+            if ($args['action'] == 'view') {
+                $presetData['width'] = 32;
+                $presetData['height'] = 20;
+            } elseif ($args['action'] == 'display') {
+                $presetData['width'] = 250;
+                $presetData['height'] = 150;
+            }
+        }
+    
+        $preset = new SystemPlugin_Imagine_Preset($presetName, $presetData);
+    
+        return $preset;
+    }
+    
 	public static function getMetaDatas($imageurl) {
 
 		$dom = ZLanguage::getModuleDomain('MUImage');
