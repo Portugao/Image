@@ -12,9 +12,9 @@
  */
 
 /**
- * Picture controller class providing navigation and interaction functionality.
+ * Album controller class providing navigation and interaction functionality.
  */
-class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
+class MUImage_Controller_Album extends MUImage_Controller_Base_Album
 {
     /**
      * This method provides a item list overview.
@@ -33,62 +33,65 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         $legacyControllerType = $this->request->query->filter('lct', 'user', FILTER_SANITIZE_STRING);
         System::queryStringSetVar('type', $legacyControllerType);
         $this->request->query->set('type', $legacyControllerType);
-    
+
         $controllerHelper = new MUImage_Util_Controller($this->serviceManager);
-        
+
         // parameter specifying which type of objects we are treating
-        $objectType = 'picture';
-        $utilArgs = array('controller' => 'picture', 'action' => 'view');
+        $objectType = 'album';
+        $utilArgs = array('controller' => 'album', 'action' => 'view');
         $permLevel = $legacyControllerType == 'admin' ? ACCESS_ADMIN : ACCESS_READ;
         $this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel), LogUtil::getErrorMsgPermission());
         $entityClass = $this->name . '_Entity_' . ucfirst($objectType);
         $repository = $this->entityManager->getRepository($entityClass);
         $repository->setControllerArguments(array());
         $viewHelper = new MUImage_Util_View($this->serviceManager);
-        
+
         // parameter for used sorting field
         $sort = $this->request->query->filter('sort', '', FILTER_SANITIZE_STRING);
         if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
             $sort = $repository->getDefaultSortingField();
         }
-        
+
         // parameter for used sort order
         $sortdir = $this->request->query->filter('sortdir', '', FILTER_SANITIZE_STRING);
         $sortdir = strtolower($sortdir);
         if ($sortdir != 'asc' && $sortdir != 'desc') {
             $sortdir = 'asc';
         }
-        
+
         // convenience vars to make code clearer
         $currentUrlArgs = array();
-        
+
         $where = '';
-        
+        if ($legacyControllerType == 'user') {
+            $where = 'tbl.parent IS NULL';
+        }
+
         $selectionArgs = array(
-            'ot' => $objectType,
-            'where' => $where,
-            'orderBy' => $sort . ' ' . $sortdir
+                'ot' => $objectType,
+                'where' => $where,
+                'orderBy' => $sort . ' ' . $sortdir
         );
-        
+
         $showOwnEntries = (int) $this->request->query->filter('own', $this->getVar('showOnlyOwnEntries', 0), FILTER_VALIDATE_INT);
         $showAllEntries = (int) $this->request->query->filter('all', 0, FILTER_VALIDATE_INT);
-        
+
         if (!$showAllEntries) {
             $csv = (int) $this->request->query->filter('usecsvext', 0, FILTER_VALIDATE_INT);
             if ($csv == 1) {
                 $showAllEntries = 1;
             }
         }
-        
+
         $this->view->assign('showOwnEntries', $showOwnEntries)
-                   ->assign('showAllEntries', $showAllEntries);
+        ->assign('showAllEntries', $showAllEntries);
         if ($showOwnEntries == 1) {
             $currentUrlArgs['own'] = 1;
         }
         if ($showAllEntries == 1) {
             $currentUrlArgs['all'] = 1;
         }
-        
+
         // prepare access level for cache id
         $accessLevel = ACCESS_READ;
         $component = 'MUImage:' . ucfirst($objectType) . ':';
@@ -99,71 +102,70 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         if (SecurityUtil::checkPermission($component, $instance, ACCESS_EDIT)) {
             $accessLevel = ACCESS_EDIT;
         }
-        
+
         $templateFile = $viewHelper->getViewTemplate($this->view, $objectType, 'view', array());
         $cacheId = 'view|ot_' . $objectType . '_sort_' . $sort . '_' . $sortdir;
         $resultsPerPage = 0;
         if ($showAllEntries == 1) {
             // set cache id
             $this->view->setCacheId($cacheId . '_all_1_own_' . $showOwnEntries . '_' . $accessLevel);
-        
+
             // if page is cached return cached content
             if ($this->view->is_cached($templateFile)) {
                 return $viewHelper->processTemplate($this->view, $objectType, 'view', array(), $templateFile);
             }
-        
+
             // retrieve item list without pagination
             $entities = ModUtil::apiFunc($this->name, 'selection', 'getEntities', $selectionArgs);
         } else {
             // the current offset which is used to calculate the pagination
             $currentPage = (int) $this->request->query->filter('pos', 1, FILTER_VALIDATE_INT);
-        
+
             // the number of items displayed on a page for pagination
             $resultsPerPage = (int) $this->request->query->filter('num', 0, FILTER_VALIDATE_INT);
             if ($resultsPerPage == 0) {
-                $resultsPerPage = $this->getVar('pageSize', 10);
+                $resultsPerPage = $this->getVar('pagesize', 10);
             }
-            
             if ($legacyControllerType == 'admin') {
-                $resultsPerPage = ModUtil::getVar($this->name, 'pageSizeAdminPictures', 10);
+                $resultsPerPage = ModUtil::getVar($this->name, 'pageSizeAdminAlbums', 10);
             }
-        
+
             // set cache id
             $this->view->setCacheId($cacheId . '_amount_' . $resultsPerPage . '_page_' . $currentPage . '_own_' . $showOwnEntries . '_' . $accessLevel);
-        
+
             // if page is cached return cached content
             if ($this->view->is_cached($templateFile)) {
                 return $viewHelper->processTemplate($this->view, $objectType, 'view', array(), $templateFile);
             }
-        
+
             // retrieve item list with pagination
             $selectionArgs['currentPage'] = $currentPage;
             $selectionArgs['resultsPerPage'] = $resultsPerPage;
             list($entities, $objectCount) = ModUtil::apiFunc($this->name, 'selection', 'getEntitiesPaginated', $selectionArgs);
-        
+
             $this->view->assign('currentPage', $currentPage)
-                       ->assign('pager', array('numitems'     => $objectCount,
-                                               'itemsperpage' => $resultsPerPage));
+            ->assign('pager', array('numitems'     => $objectCount,
+                    'itemsperpage' => $resultsPerPage));
         }
-        
+
         foreach ($entities as $k => $entity) {
             $entity->initWorkflow();
         }
-        
+
         // build ModUrl instance for display hooks
-        $currentUrlObject = new Zikula_ModUrl($this->name, 'picture', 'view', ZLanguage::getLanguageCode(), $currentUrlArgs);
-        
+        $currentUrlObject = new Zikula_ModUrl($this->name, 'album', 'view', ZLanguage::getLanguageCode(), $currentUrlArgs);
+
         // assign the object data, sorting information and details for creating the pager
         $this->view->assign('items', $entities)
-                   ->assign('sort', $sort)
-                   ->assign('sdir', $sortdir)
-                   ->assign('pageSize', $resultsPerPage)
-                   ->assign('currentUrlObject', $currentUrlObject)
-                   ->assign($repository->getAdditionalTemplateParameters('controllerAction', $utilArgs));
-        
+        ->assign('sort', $sort)
+        ->assign('sdir', $sortdir)
+        ->assign('pageSize', $resultsPerPage)
+        ->assign('currentUrlObject', $currentUrlObject)
+        ->assign($repository->getAdditionalTemplateParameters('controllerAction', $utilArgs));
+
         $modelHelper = new MUImage_Util_Model($this->serviceManager);
         $this->view->assign('canBeCreated', $modelHelper->canBeCreated($objectType));
-        
+
         // fetch and return the appropriate template
         return $viewHelper->processTemplate($this->view, $objectType, 'view', array(), $templateFile);
     }
