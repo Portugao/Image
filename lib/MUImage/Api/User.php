@@ -25,9 +25,9 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 	{
 		$links = array();
 
-		$func = $this->request->getGet()->filter('func', 'main', FILTER_SANITIZE_STRING);
-		$ot = $this->request->getGet()->filter('ot', 'album', FILTER_SANITIZE_STRING);
-		$id = $this->request->getGet()->filter('id' , 0 , FILTER_SANITIZE_NUMBER_INT);
+		$func = $this->request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
+		$ot = $this->request->query->filter('ot', 'album', FILTER_SANITIZE_STRING);
+		$id = $this->request->query->filter('id' , 0 , FILTER_SANITIZE_NUMBER_INT);
 
 		if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
 			$links[] = array('url'   => ModUtil::url($this->name, 'admin', 'main'),
@@ -36,7 +36,7 @@ class MUImage_Api_User extends MUImage_Api_Base_User
                 'class' => 'z-icon-es-options');
 		}
 		if (SecurityUtil::checkPermission($this->name . ':Album:', '::', ACCESS_READ)) {
-			$links[] = array('url'   => ModUtil::url($this->name, 'user', 'view', array('ot' => 'album')),
+			$links[] = array('url'   => ModUtil::url($this->name, 'user'),
                 'text'  => $this->__('Albums'),
                 'title' => $this->__('Album list'));
 		}
@@ -68,7 +68,7 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 	 *
 	 * @return       string custom url string
 	 */
-	public function encodeurl($args)
+	public function encodeurl(array $args = array())
 	{
 		// check if we have the required input
 		if (!is_array($args) || !isset($args['modname']) || !isset($args['func'])) {
@@ -207,7 +207,7 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 	 *
 	 * @return       bool true if successful, false otherwise
 	 */
-	public function decodeurl($args)
+	public function decodeurl(array $args = array())
 	{
 		// check we actually have some vars to work with
 		if (!is_array($args) || !isset($args['vars']) || !is_array($args['vars']) || !count($args['vars'])) {
