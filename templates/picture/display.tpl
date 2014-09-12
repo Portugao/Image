@@ -20,11 +20,13 @@
     {/if}
 
     <dl>
-        <dt>{gt text='Title'}</dt>
-        <dd>{$picture.title}</dd>
+       {* <dt>{gt text='Title'}</dt>
+        <dd>{$picture.title}</dd> *}
+        {if $picture.description ne ''}
         <dt>{gt text='Description'}</dt>
         <dd>{$picture.description}</dd>
-        <dt>{gt text='Show title'}</dt>
+        {/if}
+        {* <dt>{gt text='Show title'}</dt>
         <dd>{assign var='itemid' value=$picture.id}
         <a id="toggleShowTitle{$itemid}" href="javascript:void(0);" class="z-hide">
         {if $picture.showTitle}
@@ -38,7 +40,7 @@
         <noscript><div id="noscriptShowTitle{$itemid}">
             {$picture.showTitle|yesno:true}
         </div></noscript>
-        </dd>
+        </dd> 
         <dt>{gt text='Show description'}</dt>
         <dd>{assign var='itemid' value=$picture.id}
         <a id="toggleShowDescription{$itemid}" href="javascript:void(0);" class="z-hide">
@@ -53,8 +55,8 @@
         <noscript><div id="noscriptShowDescription{$itemid}">
             {$picture.showDescription|yesno:true}
         </div></noscript>
-        </dd>
-        <dt>{gt text='Image upload'}</dt>
+        </dd> 
+        <dt>{gt text='Image upload'}</dt> *}
         <dd>  <a href="{$picture.imageUploadFullPathURL}" title="{$picture->getTitleFromDisplayPattern()|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
           {if $picture.imageUploadMeta.isImage}
               {thumb image=$picture.imageUploadFullPath objectid="picture-`$picture.id`" preset=$pictureThumbPresetImageUpload tag=true img_alt=$picture->getTitleFromDisplayPattern()}
@@ -63,12 +65,15 @@
           {/if}
           </a>
         </dd>
+        {modgetvar module='MUImage' name='countImageView' assign='imageView'}
+        {if $imageView eq 1}
         <dt>{gt text='Image view'}</dt>
         <dd>{$picture.imageView}</dd>
-        <dt>{gt text='Album image'}</dt>
+        {/if}               
+       {* <dt>{gt text='Album image'}</dt>
         <dd>{$picture.albumImage|yesno:true}</dd>
         <dt>{gt text='Pos'}</dt>
-        <dd>{$picture.pos}</dd>
+        <dd>{$picture.pos}</dd> *}
         <dt>{gt text='Album'}</dt>
         <dd>
         {if isset($picture.Album) && $picture.Album ne null}
@@ -94,6 +99,18 @@
         
     </dl>
     {include file='helper/include_standardfields_display.tpl' obj=$picture}
+     <div class="z-panels" id="panel">
+    <h2 class="z-panel-header z-panel-indicator z-pointer z-panel-active">{gt text='Meta Datas'}</h2>
+    {if $picture.imageUploadMeta.extension eq 'jpg' || $picture.imageUploadMeta.extension eq 'TIFF'}
+    <div class="z-panel-content z-panel-active" style="overflow: visible;">
+    {$picture.imageUploadFullPath|muimageImageMeta}
+    </div>
+    {else}
+    <div>
+    {gt text='Not supported for this picture'}
+    </div>
+    {/if}
+    </div>
 
     {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
         {* include display hooks *}
@@ -123,6 +140,12 @@
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
     <script type="text/javascript">
     /* <![CDATA[ */
+        var panel = new Zikula.UI.Panels('panel', {
+        headerSelector: 'h2',
+        headerClassName: 'z-panel-header z-panel-indicator',
+        contentClassName: 'z-panel-content'
+        }); 
+    
         document.observe('dom:loaded', function() {
             {{assign var='itemid' value=$picture.id}}
             muimageInitToggle('picture', 'showTitle', '{{$itemid}}');
