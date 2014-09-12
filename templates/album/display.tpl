@@ -12,7 +12,7 @@
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
 		{$album.description}<br />
 	    {/if}
-	    {include file='user/include_categories_display.tpl' obj=$album}
+	    {include file='helper/include_categories_display.tpl' obj=$album}
 	    {if $album.createdUserId eq $coredata.user.uid}
 		{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
 		    {if count($album._actions) gt 0}
@@ -107,7 +107,7 @@
 			    <div class="muimage_album_image" style="background: url({$picture.imageUploadFullPathURL}) no-repeat center center; background-size: cover">
 			    </div>
 			    <div class="muimage_album_bottom">
-				{gt text='SubAlbums'}: {include file='user/album/include_displayItemListMany.tpl' items=$childAlbum.children}<br /> 
+				{gt text='SubAlbums'}: {include file='album/include_displayItemListMany.tpl' items=$childAlbum.children}<br /> 
 				{gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}
 			    </div>
 			</div>

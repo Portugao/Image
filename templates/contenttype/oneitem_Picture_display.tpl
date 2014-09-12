@@ -3,15 +3,7 @@
 <h2>{$item.title}</h2>
 <a href="{$item.imageUploadFullPathURL}" title="{$item.title|replace:"\"":""}"{if $item.imageUploadMeta.isImage} rel="imageviewer[item]"{/if}>
     {if $item.imageUploadMeta.isImage}
-    {if $item.imageUploadMeta.format eq 'landscape'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:$vars.width:$vars.height}" width={$vars.width} height={$vars.height} alt="{$item.title|replace:"\"":""}" />
-    {/if}
-    {if $item.imageUploadMeta.format eq 'portrait'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:$vars.height:$vars.width}" width={$vars.height} height={$vars.width} alt="{$item.title|replace:"\"":""}" />
-    {/if}
-    {if $item.imageUploadMeta.format eq 'square'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:$vars.width:$vars.width}" width={$vars.width} height={$vars.width} alt="{$item.title|replace:"\"":""}" />
-    {/if}
+        {thumb image=$item.imageUploadFullPath objectid="picture-`$item.id`" preset=$itemThumbPresetImageUpload tag=true img_alt=$formattedEntityTitle}
     {else}
         {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
     {/if}
