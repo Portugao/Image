@@ -35,7 +35,7 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
         if ($id > 0) {
             $picture = $picturerepository->selectById($id);
         }
-        	
+         
         // we get the allowed filesize
         $fileSize = MUImage_Util_Controller::maxSize();
         // we check if deleting of pictures is allowed
@@ -81,7 +81,7 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
 
             $this->view->assign('savedAlbum', $pictureAlbumId);
         }
-        	
+         
         $this->view->assign('fileSize', $fileSize)
         ->assign('minWidth', $minWidth)
         ->assign('maxWidth', $maxWidth)
@@ -104,6 +104,7 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
     {
         parent::fetchInputData($view, $args);
 
+
         // get treated entity reference from persisted member var
         $entity = $this->entityRef;
 
@@ -117,12 +118,32 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
             $album = $this->request->getPost()->filter('muimageAlbum_AlbumItemList', 0, FILTER_SANITIZE_NUMBER_INT);
             if ($album[0] > 0 && is_array($album)) {
                 $albumrepository = MUImage_Util_Model::getAlbumRepository();
-                $album = $albumrepository->selectById($album[0]);
-                if ($album) {
-                    $entityData['Album'] = $album;
+                $thisalbum = $albumrepository->selectById($album[0]);
+                if ($thisalbum) {
+                    $entityData['Album'] = $thisalbum;
                 }
             } else {
                 $entityData['Album'] = null;
+            }
+            $serviceManager = ServiceUtil::getManager();
+            $entityManager = $serviceManager->getService('doctrine.entitymanager');
+            $picturerepository = MUImage_Util_Model::getPictureRepository();
+
+            if ($thisalbum) {
+                $pictures = $thisalbum->getPicture();
+                // if (count($pictures) > 0 && is_array($pictures)) {
+                foreach ($pictures as $picture) {
+                    $thisPicture = $picturerepository->selectById($picture['id']);
+                    $thisPicture->setAlbumImage(0);
+                    $entityManager->flush();
+                }
+                // }
+            }
+            $albumImage = $this->request->request->filter('albumImage', 0, FILTER_SANITIZE_NUMBER_INT);
+            if ($albumImage == 1) {
+                $entityData['albumImage'] = 1;
+            } else {
+                $entityData['albumImage'] = 0;
             }
         }
 
@@ -162,7 +183,7 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
             $url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
             return $url;
         }
-        	
+         
         // redirect to the album if existing
         if ($albumid > 0) {
             $viewArgs = array('ot' => 'album', 'id' => $albumid);
