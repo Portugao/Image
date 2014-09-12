@@ -140,7 +140,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
     public static function countAlbumPictures($albumid)
     {
         $view = new Zikula_Request_Http();
-        $id = (int) $view->getGet()->filter('id', 0, FILTER_SANITIZE_STRING);
+        $id = $view->query->filter('id', 0, FILTER_SANITIZE_STRING);
         $where = 'tbl.id = \'' . DataUtil::formatForStore($albumid) . '\'';
 
         $repository = MUImage_Util_Model::getAlbumRepository();
