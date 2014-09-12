@@ -63,7 +63,7 @@ class MUImage_Version extends MUImage_Base_Version
     }
     
     /**
-     * Define hook subscriber bundles.
+     * Define hook provider bundles.
      */
     protected function setupHookBundles()
     {
