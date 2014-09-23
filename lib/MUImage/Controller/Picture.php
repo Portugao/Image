@@ -167,4 +167,57 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         // fetch and return the appropriate template
         return $viewHelper->processTemplate($this->view, $objectType, 'view', array(), $templateFile);
     }
+    
+    /**
+     * This is a custom method. Documentation for this will be improved in later versions.
+     *
+     * @return mixed Output.
+     */
+    public function multiUpload()
+    {
+        // DEBUG: permission check aspect starts
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
+        // DEBUG: permission check aspect ends
+        // parameter specifying which type of objects we are treating
+        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
+        $utilArgs = array('controller' => 'user', 'action' => 'multiUpload');
+        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
+            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
+        }
+        // create new Form reference
+        $view = FormUtil::newForm($this->name, $this);
+    
+        // build form handler class name
+        $handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_MultiUpload';
+    
+        // execute form using supplied template and page event handler
+        return $view->execute($objectType . '/multiUpload.tpl', new $handlerClass());
+    }
+    
+    /**
+     * This is a custom method. Documentation for this will be improved in later versions.
+     *
+     * @return mixed Output.
+     */
+    public function editMulti()
+    {
+        // DEBUG: permission check aspect starts
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
+        // DEBUG: permission check aspect ends
+        // parameter specifying which type of objects we are treating
+        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
+        $utilArgs = array('controller' => 'user', 'action' => 'editMulti');
+        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
+            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
+        }
+        // create new Form reference
+        $view = FormUtil::newForm($this->name, $this);
+    
+        // build form handler class name
+        $handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_EditMulti';
+    
+        // execute form using supplied template and page event handler
+        return $view->execute($objectType . '/editMulti.tpl', new $handlerClass());
+    
+    }
 }

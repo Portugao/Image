@@ -17,7 +17,7 @@
  *
  * More documentation is provided in the parent class.
  */
-class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler_User_Edit
+class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler_Common_Edit
 {
 	/**
 	 * Persistent member vars

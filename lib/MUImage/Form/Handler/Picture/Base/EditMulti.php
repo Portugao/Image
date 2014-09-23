@@ -57,7 +57,7 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
     	$pictures = unserialize($pictureids);
     	//LogUtil::registerStatus($pictures);
     	
-    	$pictureid = $this->request->getGet()->filter('id', 0);
+    	$pictureid = $this->request->query->filter('id', 0);
     	//LogUtil::registerStatus($pictureid);
     	
       /*  if ($pictureid == 0) {
