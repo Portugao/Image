@@ -17,138 +17,148 @@
  */
 class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Edit
 {
-	/**
-	 * Initialize form handler.
-	 *
-	 * This method takes care of all necessary initialisation of our data and form states.
-	 *
-	 * @return boolean False in case of initialization errors, otherwise true.
-	 */
-	public function initialize(Zikula_Form_View $view)
-	{
-		$dom = ZLanguage::getModuleDomain('MUImage');
-		$id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+    /**
+     * Initialize form handler.
+     *
+     * This method takes care of all necessary initialisation of our data and form states.
+     *
+     * @return boolean False in case of initialization errors, otherwise true.
+     */
+    public function initialize(Zikula_Form_View $view)
+    {
+        $dom = ZLanguage::getModuleDomain('MUImage');
+        $id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
-		$mainAlbumMode = MUImage_Util_Controller::ruleEditMainAlbum($id);
+        $mainAlbumMode = MUImage_Util_Controller::ruleEditMainAlbum($id);
 
-		// we check if user is in admin group
-		$inAdminGroup = MUImage_Util_View::isAdmin();
+        // we check if user is in admin group
+        $inAdminGroup = MUImage_Util_View::isAdmin();
 
-		// if we want to edit an item
-		if ($id > 0) {
-			$myAlbums = MUImage_Util_View::getAlbums($id);
+        // if we want to edit an item
+        if ($id > 0) {
+            $myAlbums = MUImage_Util_View::getAlbums($id);
 
-			$myalbums = array();
+            $myalbums = array();
 
-			if (MUImage_Util_View::isAdmin() === true || ($mainAlbumMode != C && $mainAlbumMode != D)) {
-				$myalbums[] = array('value' => '', 'text' => __('No main album', $dom));
-			}
+            if (MUImage_Util_View::isAdmin() === true || ($mainAlbumMode != C && $mainAlbumMode != D)) {
+                $myalbums[] = array('value' => '', 'text' => __('No main album', $dom));
+            }
 
-			if (MUImage_Util_View::isAdmin() === true || $mainAlbumMode == 1 || $mainAlbumMode == 2 || $mainAlbumMode == 3 || $mainAlbumMode == A || $mainAlbumMode == B || $mainAlbumMode == C || $mainAlbumMode == D) {
-				foreach ($myAlbums as $myAlbum) {
-					$myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner', $dom) . ': ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album', $dom) . ': ' . $myAlbum['parent']['title']);
-				}
-			}
-		}
-		// we check if there is an item in the dropdownlist
-		$countmyalbums = count($myalbums);
+            if (MUImage_Util_View::isAdmin() === true || $mainAlbumMode == 1 || $mainAlbumMode == 2 || $mainAlbumMode == 3 || $mainAlbumMode == A || $mainAlbumMode == B || $mainAlbumMode == C || $mainAlbumMode == D) {
+                foreach ($myAlbums as $myAlbum) {
+                    $myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner', $dom) . ': ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album', $dom) . ': ' . $myAlbum['parent']['title']);
+                }
+            }
+        }
+        // we check if there is an item in the dropdownlist
+        $countmyalbums = count($myalbums);
 
-		$this->view->assign('mainAlbumMode', $mainAlbumMode)
-		->assign('inAdminGroup', $inAdminGroup)
-		->assign('countmyalbums', $countmyalbums);
+        $this->view->assign('mainAlbumMode', $mainAlbumMode)
+        ->assign('inAdminGroup', $inAdminGroup)
+        ->assign('countmyalbums', $countmyalbums);
 
-		// controlling of albums in edit form
-		// of pictures and albums
-		$mainalbum = $this->view->get_template_vars('mainalbum');
-		$mainalbum['muimageAlbum_ParentItemListItems'] = $myalbums;
-		$this->view->assign('mainalbum', $mainalbum);
+        // controlling of albums in edit form
+        // of pictures and albums
+        $mainalbum = $this->view->get_template_vars('mainalbum');
+        $mainalbum['muimageAlbum_ParentItemListItems'] = $myalbums;
+        $this->view->assign('mainalbum', $mainalbum);
 
-		$albumrepository = MUImage_Util_Model::getAlbumRepository();
-		if ($id > 0) {
-			// we get this album to edit
-			$thisalbum = $albumrepository->selectById($id);
-			$parent = $thisalbum->getParent();
-			if ($parent) {
-				$parentid = $parent->getId();
-			}
-			else {
-				$parentid = '';
-			}
+        $albumrepository = MUImage_Util_Model::getAlbumRepository();
+        if ($id > 0) {
+            // we get this album to edit
+            $thisalbum = $albumrepository->selectById($id);
+            $parent = $thisalbum->getParent();
+            if ($parent) {
+                $parentid = $parent->getId();
+            }
+            else {
+                $parentid = '';
+            }
 
-			$this->view->assign('savedParent', $parentid);
-		}
+            $this->view->assign('savedParent', $parentid);
+        }
 
-		if (MUImage_Util_View::otherUserMainAlbums() == true) {
-			$this->view->assign('otherMainAlbum', true);
-		} else {
-			$this->view->assign('otherMainAlbum', false);
-		}
-		parent::initialize($view);
-	}
+        if (MUImage_Util_View::otherUserMainAlbums() == true) {
+            $this->view->assign('otherMainAlbum', true);
+        } else {
+            $this->view->assign('otherMainAlbum', false);
+        }
+        parent::initialize($view);
+    }
 
-	/**
-	 * Input data processing called by handleCommand method.
-	 */
-	public function fetchInputData(Zikula_Form_View $view, &$args)
-	{
-		parent::fetchInputData($view, $args);
-		
-		$query = new Zikula_Request_Http();
+    /**
+     * Input data processing called by handleCommand method.
+     */
+    public function fetchInputData(Zikula_Form_View $view, &$args)
+    {
+        parent::fetchInputData($view, $args);
 
-		// get treated entity reference from persisted member var
-		$entity = $this->entityRef;
+        $query = new Zikula_Request_Http();
+        
+        $albumrepository = MUImage_Util_Model::getAlbumRepository();
 
-		$entityData = array();
+        // get treated entity reference from persisted member var
+        $entity = $this->entityRef;
 
-		if ($args['commandName'] == 'create') {
-			//$this->reassignRelatedObjects();
-			$entityData['Parent'] = $query->request->filter('album', 'muimageAlbum_ParentItemList', FILTER_SANITIZE_NUMBER_INT);
-			LogUtil::registerError($entityData['Parent']);
-		}
-		if ($args['commandName'] == 'update') {
-			$parent = $this->request->getPost()->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
-			if ($parent[0] > 0 && is_array($parent)) {
-				$albumrepository = MUImage_Util_Model::getAlbumRepository();
-				$album = $albumrepository->selectById($parent[0]);
-				if ($album) {
-					$entityData['Parent'] = $album;
-				}
-			} else {
-				$entityData['Parent'] = null;
-			}
-		}
+        $entityData = array();
+        
+        $parent = '';
 
-		// assign fetched data
-		if (count($entityData) > 0) {
-			$entity->merge($entityData);
-		}
+        if ($args['commandName'] == 'submit') {
+            // we get parent id
+            $parent = $query->query->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
 
-		// save updated entity
-		$this->entityRef = $entity;
-	}
+            if ($parent == 0) {
+                $entityData['Parent'] = null;
+            }
+            if ($parent > 0) {
+                $album = $albumrepository->selectById($parent);          
+                $entityData['Parent'] = $album;
+            }
+        }
+        if ($args['commandName'] == 'update') {
+            $parent = $this->request->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
+            if ($parent[0] > 0 && is_array($parent)) {
+                $album = $albumrepository->selectById($parent[0]);
+                if ($album) {
+                    $entityData['Parent'] = $album;
+                }
+            } else {
+                $entityData['Parent'] = null;
+            }
+        }
 
-	/**
-	 * Get the default redirect url. Required if no returnTo parameter has been supplied.
-	 * This method is called in handleCommand so we know which command has been performed.
-	 */
-	protected function getDefaultReturnUrl($args, $obj)
-	{
-		$albumId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+        // assign fetched data
+        if (count($entityData) > 0) {
+            $entity->merge($entityData);
+        }
 
-		// redirect to the list of albums
-		$viewArgs = array('ot' => $this->objectType);
-		$url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
+        // save updated entity
+        $this->entityRef = $entity;
+    }
 
-		//if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
-			if ($args['commandName'] == 'create') {
-				// redirect to the detail page of treated album
-				$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $this->idValues['id']));
-			}
-			if ($args['commandName'] == 'update') {
-				$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumId));
+    /**
+     * Get the default redirect url. Required if no returnTo parameter has been supplied.
+     * This method is called in handleCommand so we know which command has been performed.
+     */
+    protected function getDefaultReturnUrl($args, $obj)
+    {
+        $albumId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
-			}
-		//}
-		return $url;
-	}
+        // redirect to the list of albums
+        $viewArgs = array('ot' => $this->objectType);
+        $url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
+
+        //if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
+        if ($args['commandName'] == 'submit') {
+            // redirect to the detail page of treated album
+            $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $this->idValues['id']));
+        }
+        if ($args['commandName'] == 'update') {
+            $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumId));
+
+        }
+        //}
+        return $url;
+    }
 }
