@@ -90,9 +90,14 @@ added files
 *templates/hook/edit.tpl
 
 *templates/plugins/block.muimageform.php
+
+*templates/plugins/function.muimageSelectorAlbums.php
+*templates/plugins/function.muimageSelectorPictures.php
+
 *templates/plugins/modifier.muimageContingent.php
 *templates/plugins/modifier.muimageCountAlbumPictures.php
 *templates/plugins/modifier.muimageImageMeta.php
+
 
 *templates/user/picture/editMulti.tpl
 *templates/user/picture/multiUpload.tpl
