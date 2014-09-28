@@ -46,6 +46,9 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
      */
     public function prePersistCallback()
     {
+        if ($this->pos == 0) {
+            $this->setPos(1);
+        }
         $this->performPrePersistCallback();
     }
 
@@ -107,6 +110,9 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
      */
     public function preUpdateCallback()
     {
+        if ($this->pos == 0) {
+            $this->setPos(1);
+        }
         $this->performPreUpdateCallback();
     }
 
