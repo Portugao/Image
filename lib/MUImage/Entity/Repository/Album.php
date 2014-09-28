@@ -37,9 +37,9 @@ class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Alb
         if (!in_array($context, array('controllerAction', 'api', 'actionHandler', 'block', 'contentType'))) {
             $context = 'controllerAction';
         }
-    
+
         $templateParameters = array();
-    
+
         if ($context == 'controllerAction') {
             if (!isset($args['action'])) {
                 $args['action'] = FormUtil::getPassedValue('func', 'main', 'GETPOST');
@@ -50,12 +50,12 @@ class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Alb
                 $templateParameters['workflowStateItems'] = $listHelper->getEntries('album', 'workflowState');
                 $templateParameters['albumAccessItems'] = $listHelper->getEntries('album', 'albumAccess');
                 $booleanSelectorItems = array(
-                    array('value' => 'no', 'text' => __('No')),
-                    array('value' => 'yes', 'text' => __('Yes'))
+                        array('value' => 'no', 'text' => __('No')),
+                        array('value' => 'yes', 'text' => __('Yes'))
                 );
                 $templateParameters['notInFrontendItems'] = $booleanSelectorItems;
             }
-    
+
             // initialise Imagine preset instances
             $imageHelper = new MUImage_Util_Image(ServiceUtil::getManager());
             if (in_array($args['action'], array('display', 'view'))) {
@@ -63,15 +63,15 @@ class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Alb
                 $templateParameters['relationThumbPreset'] = $imageHelper->getCustomPreset('', '', 'MUImage_displaycontainer', $context, $args);
             }
         }
-    
+
         // in the concrete child class you could do something like
         // $parameters = parent::getAdditionalTemplateParameters($context, $args);
         // $parameters['myvar'] = 'myvalue';
         // return $parameters;
-    
+
         return $templateParameters;
     }
-    
+
     /**
      * Adds default filters as where clauses.
      *
@@ -87,14 +87,89 @@ class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Alb
         if ($currentType == 'admin' && ($currentModule == 'MUImage' || $currentModule == 'Extensions')) {
             return $qb;
         }
-    
+
         if (!in_array('workflowState', array_keys($parameters)) || empty($parameters['workflowState'])) {
             // per default we show approved albums only
             $onlineStates = array('approved');
             $qb->andWhere('tbl.workflowState IN (:onlineStates)')
             ->setParameter('onlineStates', $onlineStates);
         }
-    
+
+        return $qb;
+    }
+
+    /**
+     * Builds a generic Doctrine query supporting WHERE and ORDER BY.
+     *
+     * @param string  $where    The where clause to use when retrieving the collection (optional) (default='').
+     * @param string  $orderBy  The order-by clause to use when retrieving the collection (optional) (default='').
+     * @param boolean $useJoins Whether to include joining related objects (optional) (default=true).
+     * @param boolean $slimMode If activated only some basic fields are selected without using any joins (optional) (default=false).
+     *
+     * @return Doctrine\ORM\QueryBuilder query builder instance to be further processed
+     */
+    public function genericBaseQuery($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
+    {
+        // normally we select the whole table
+        $selection = 'tbl';
+
+        if ($slimMode === true) {
+            // but for the slim version we select only the basic fields, and no joins
+
+            $selection = 'tbl.id';
+
+
+            $selection .= ', tbl.title';
+            $useJoins = false;
+        }
+
+        if ($useJoins === true) {
+            $selection .= $this->addJoinsToSelection();
+        }
+
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select($selection)
+        ->from('MUImage_Entity_Album', 'tbl');
+
+        if ($useJoins === true) {
+            $this->addJoinsToFrom($qb);
+        }
+
+        $request = new Zikula_Request_Http();
+        $type = $request->query->filter('type', 'user', FILTER_SANITIZE_STRING);
+        $func = $request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
+
+        if ($type == 'user' && $func = 'view') {
+           /* if (UserUtil::isLoggedIn() == true) {
+                if ($where != '') {
+                    $where .= ' AND ';
+                    $where .= 'tbl.albumAccess = all';
+                } else {
+                    $where = 'tbl.albumAccess = all';
+                }
+                $where .= ' AND ';
+                $where .= '(tblChildren is NULL OR tblChildren.albumAccess = all)';
+            }*/
+            if ($where != '') {
+                $where .= ' AND ';
+                $where .= 'tbl.notInFrontend = 0';
+            } else {
+                $where = 'tbl.notInFrontend = 0';
+            }
+            if ($where != '') {
+                $where .= ' AND ';
+                $where .= '(tblChildren is NULL OR tblChildren.notInFrontend = 0)';
+            } else {
+                $where = '(tblChildren is NULL OR tblChildren.notInFrontend = 0)';
+            }
+        }
+        /*if (UserUtil::isLoggedIn() == true) {
+         $qb->where(' AND tblChildren is NULL OR tblChildren.albumAccess = all');
+        }*/
+
+        $this->genericBaseQueryAddWhere($qb, $where);
+        $this->genericBaseQueryAddOrderBy($qb, $orderBy);
+
         return $qb;
     }
 }
