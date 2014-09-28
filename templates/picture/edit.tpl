@@ -6,33 +6,22 @@
 {include file="`$lct`/header.tpl"}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
+{pageaddvar name='javascript' value='jquery'}
+{pageaddvar name='javascript' value='jquery-ui'}
+{pageaddvar name='javascript' value='modules/MUImage/javascript/chosen/chosen.jquery.js'}
+{pageaddvar name='stylesheet' value='modules/MUImage/javascript/chosen/chosen.css'}
 
 {if $mode eq 'edit'}
     {gt text='Edit picture' assign='templateTitle'}
-    {if $lct eq 'admin'}
-        {assign var='adminPageIcon' value='edit'}
-    {/if}
 {elseif $mode eq 'create'}
     {gt text='Create picture' assign='templateTitle'}
-    {if $lct eq 'admin'}
-        {assign var='adminPageIcon' value='new'}
-    {/if}
 {else}
     {gt text='Edit picture' assign='templateTitle'}
-    {if $lct eq 'admin'}
-        {assign var='adminPageIcon' value='edit'}
-    {/if}
 {/if}
 <div class="muimage-picture muimage-edit">
-    {pagesetvar name='title' value=$templateTitle}
-    {if $lct eq 'admin'}
-        <div class="z-admin-content-pagetitle">
-            {icon type=$adminPageIcon size='small' alt=$templateTitle}
-            <h3>{$templateTitle}</h3>
-        </div>
-    {else}
-        <h2>{$templateTitle}</h2>
-    {/if}
+{pagesetvar name='title' value=$templateTitle}
+<div class="z-frontendcontainer">
+    <h2>{$templateTitle}</h2>
 {form enctype='multipart/form-data' cssClass='z-form'}
     {* add validation summary and a <div> element for styling the form *}
     {muimageFormFrame}
@@ -40,41 +29,39 @@
 
     <fieldset>
         <legend>{gt text='Content'}</legend>
-        
         <div class="z-formrow">
-            {formlabel for='title' __text='Title' cssClass=''}
-            {formtextinput group='picture' id='title' mandatory=false readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass='' }
+            {formlabel for='title' __text='Title'}
+            {formtextinput group='picture' id='title' mandatory=false readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass=''}
         </div>
-        
         <div class="z-formrow">
-            {formlabel for='description' __text='Description' cssClass=''}
-            {formtextinput group='picture' id='description' mandatory=false __title='Enter the description of the picture' textMode='multiline' rows='6' cols='50' cssClass='' }
+            {formlabel for='description' __text='Description'}
+            {formtextinput group='picture' id='description' mandatory=false __title='Enter the description of the picture' textMode='multiline' rows='6' cols='50' cssClass=''}
         </div>
-        
         <div class="z-formrow">
-            {formlabel for='showTitle' __text='Show title' cssClass=''}
-            {formcheckbox group='picture' id='showTitle' readOnly=false __title='show title ?' cssClass='' }
+            {formlabel for='showTitle' __text='Show title'}
+            {formcheckbox group='picture' id='showTitle' readOnly=false __title='show title ?' cssClass=''}
         </div>
-        
         <div class="z-formrow">
-            {formlabel for='showDescription' __text='Show description' cssClass=''}
-            {formcheckbox group='picture' id='showDescription' readOnly=false __title='show description ?' cssClass='' }
+            {formlabel for='showDescription' __text='Show description'}
+            {formcheckbox group='picture' id='showDescription' readOnly=false __title='show description ?' cssClass=''}
         </div>
-        
         <div class="z-formrow">
             {assign var='mandatorySym' value='1'}
             {if $mode ne 'create'}
                 {assign var='mandatorySym' value='0'}
             {/if}
-            {formlabel for='imageUpload' __text='Image upload' mandatorysym=$mandatorySym cssClass=''}<br />{* break required for Google Chrome *}
-            {if $mode eq 'create'}
-                {formuploadinput group='picture' id='imageUpload' mandatory=true readOnly=false cssClass='required validate-upload' }
-            {else}
-                {formuploadinput group='picture' id='imageUpload' mandatory=false readOnly=false cssClass=' validate-upload' }
-                <span class="z-formnote"><a id="resetImageUploadVal" href="javascript:void(0);" class="z-hide">{gt text='Reset to empty value'}</a></span>
-            {/if}
-            
-                <span class="z-formnote">{gt text='Allowed file extensions:'} <span id="imageUploadFileExtensions">gif, jpeg, jpg, png</span></span>
+            {formlabel for='imageUpload' __text='Image upload' mandatorysym=$mandatorySym}<br />{* break required for Google Chrome *}
+{if $mode eq 'create'}
+            {formuploadinput group='picture' id='imageUpload' mandatory=true readOnly=false cssClass='required'}
+{else}
+            {formuploadinput group='picture' id='imageUpload' mandatory=false readOnly=false cssClass=''}
+{/if}
+
+            <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
+            <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
+            <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
+            <div class="z-formnote">{gt text='Maximum width:'} {$maxWidth} </div>
+            <div class="z-formnote">{gt text='Maximum height:'} {$maxHeight} </div>
             {if $mode ne 'create'}
                 {if $picture.imageUpload ne ''}
                     <span class="z-formnote">
@@ -90,12 +77,11 @@
                 {/if}
             {/if}
             {muimageValidationError id='imageUpload' class='required'}
-            {muimageValidationError id='imageUpload' class='validate-upload'}
         </div>
-        
-        <div class="z-formrow">
-            {formlabel for='imageView' __text='Image view' cssClass=''}
-            {formintinput group='picture' id='imageView' mandatory=false __title='Enter the image view of the picture' maxLength=11 cssClass=' validate-digits' }
+        <div class="z-formrow" style="display: none;">
+            {formlabel for='imageView' __text='Image view' mandatorysym='1'}
+            {formintinput group='picture' id='imageView' mandatory=true __title='Enter the image view of the picture' maxLength=11 cssClass='required validate-digits'}
+            {muimageValidationError id='imageView' class='required'}
             {muimageValidationError id='imageView' class='validate-digits'}
         </div>
         
@@ -103,47 +89,41 @@
             {formlabel for='albumImage' __text='Album image' cssClass=''}
             {formcheckbox group='picture' id='albumImage' readOnly=false __title='album image ?' cssClass='' }
         </div>
-        
-        <div class="z-formrow">
-            {formlabel for='pos' __text='Pos' mandatorysym='1' cssClass=''}
-            {formintinput group='picture' id='pos' mandatory=true __title='Enter the pos of the picture' maxLength=11 cssClass='required validate-digits' }
-            {muimageValidationError id='pos' class='required'}
-            {muimageValidationError id='pos' class='validate-digits'}
-        </div>
     </fieldset>
-    
-    {include file='album/include_selectEditOne.tpl' group='picture' alias='album' aliasReverse='picture' mandatory=false idPrefix='muimagePicture_Album' linkingItem=$picture displayMode='dropdown' allowEditing=true}
+
     {if $mode ne 'create'}
-        {include file='helper/include_standardfields_edit.tpl' obj=$picture}
-    {/if}
-    
-    {* include display hooks *}
-    {if $mode ne 'create'}
-        {assign var='hookId' value=$picture.id}
-        {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=$hookId assign='hooks'}
+        {* {include file='user/album/include_selectEditOne.tpl' relItem=$picture aliasName='album' idPrefix='muimageAlbum_Album'} *}
+        <fieldset>
+        <legend>{gt text='Album'}</legend>
+            <div class="z-formrow">
+                {formlabel for='muimageAlbum_AlbumItemList' __text='Album'}
+                {formdropdownlist selectedValue=$savedAlbum group='mainalbum' id='muimageAlbum_AlbumItemList' cssClass='chzn-select'}
+                <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="1">
+            </div>
+        </fieldset>  
     {else}
-        {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=null assign='hooks'}
+        <input id="muimageAlbum_AlbumItemList" type="hidden" value="{$albumid}" name="muimageAlbum_AlbumItemList">
+        <input id="muimageAlbum_AlbumMode" type="hidden" value="1" name="muimageAlbum_AlbumMode">
     {/if}
-    {if is_array($hooks) && count($hooks)}
-        {foreach name='hookLoop' key='providerArea' item='hook' from=$hooks}
-            <fieldset>
-                {$hook}
-            </fieldset>
-        {/foreach}
+
+    {* include display hooks *}
+    {if $mode eq 'create'}
+        {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=null}
+    {else}
+        {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=$picture.id}
     {/if}
-    
-    
-    {* include return control *}
+
+    {* include return control 
     {if $mode eq 'create'}
         <fieldset>
             <legend>{gt text='Return control'}</legend>
             <div class="z-formrow">
-                {formlabel for='repeatCreation' __text='Create another item after save'}
-                    {formcheckbox group='picture' id='repeatCreation' readOnly=false}
+                {formlabel for='repeatcreation' __text='Create another item after save'}
+                {formcheckbox group='picture' id='repeatcreation' readOnly=false}
             </div>
         </fieldset>
-    {/if}
-    
+    {/if} *}
+
     {* include possible submit actions *}
     <div class="z-buttons z-formbuttons">
     {foreach item='action' from=$actions}
@@ -159,54 +139,63 @@
     {/foreach}
     {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
     </div>
-    {/muimageFormFrame}
+  {/muimageFormFrame}
 {/form}
+    {if $mode ne 'create'}
+        {include file='helper/include_standardfields_edit.tpl' obj=$picture}
+   {/if}
 </div>
-{include file="`$lct`/footer.tpl"}
+</div>
+{include file='user/footer.tpl'}
 
 {icon type='edit' size='extrasmall' assign='editImageArray'}
-{icon type='delete' size='extrasmall' assign='removeImageArray'}
+{icon type='delete' size='extrasmall' assign='deleteImageArray'}
 
-
-<script type="text/javascript">
+<script type="text/javascript" charset="utf-8">
 /* <![CDATA[ */
-    
-    var formButtons, formValidator;
-    
-    function handleFormButton (event) {
-        var result = formValidator.validate();
-        if (!result) {
-            // validation error, abort form submit
-            Event.stop(event);
-        } else {
-            // hide form buttons to prevent double submits by accident
-            formButtons.each(function (btn) {
-                btn.addClassName('z-hide');
-            });
-        }
-    
-        return result;
-    }
-    
+    var editImage = '<img src="{{$editImageArray.src}}" width="16" height="16" alt="" />';
+    var removeImage = '<img src="{{$deleteImageArray.src}}" width="16" height="16" alt="" />';
+    var relationHandler = new Array();
+    var newItem = new Object();
+    newItem['ot'] = 'album';
+    newItem['alias'] = 'Album';
+    newItem['prefix'] = 'muimageAlbum_AlbumSelectorDoNew';
+    newItem['acInstance'] = null;
+    newItem['windowInstance'] = null;
+    relationHandler.push(newItem);
+
     document.observe('dom:loaded', function() {
-    
-        muimageAddCommonValidationRules('picture', '{{if $mode ne 'create'}}{{$picture.id}}{{/if}}');
-        {{* observe validation on button events instead of form submit to exclude the cancel command *}}
-        formValidator = new Validation('{{$__formid}}', {onSubmit: false, immediate: true, focusOnError: false});
+        muimageInitRelationItemsForm('album', 'muimageAlbum_Album', true);
+
+        muimageAddCommonValidationRules('picture', '{{if $mode eq 'create'}}{{else}}{{$picture.id}}{{/if}}');
+
+        // observe button events instead of form submit
+        var valid = new Validation('{{$__formid}}', {onSubmit: false, immediate: true, focusOnError: false});
         {{if $mode ne 'create'}}
-            var result = formValidator.validate();
+            var result = valid.validate();
         {{/if}}
-    
-        formButtons = $('{{$__formid}}').select('div.z-formbuttons input');
-    
-        formButtons.each(function (elem) {
-            if (elem.id != 'btnCancel') {
-                elem.observe('click', handleFormButton);
+
+        $('{{if $mode eq 'create'}}btnCreate{{else}}btnUpdate{{/if}}').observe('click', function(event) {
+            var result = valid.validate();
+            if (!result) {
+                // validation error, abort form submit
+                Event.stop(event);
+            } else {
+                // hide form buttons to prevent double submits by accident
+                $$('div.z-formbuttons input').each(function(btn) {
+                    btn.hide();
+                });
             }
+            return result;
         });
-    
-        Zikula.UI.Tooltips($$('.muimage-form-tooltips'));
-        muimageInitUploadField('imageUpload');
+
+        Zikula.UI.Tooltips($$('.muimageFormTooltips'));
     });
+    
+    var MU = jQuery.noConflict();
+    MU(document).ready( function() { 
+        MU(".chzn-select").chosen();
+    });
+
 /* ]]> */
 </script>

@@ -205,7 +205,7 @@
         </table>
         
         {if !isset($showAllEntries) || $showAllEntries ne 1}
-            {pager rowcount=$pager.numitems limit=$pager.itemsperpage display='page' modname='MUImage' type='picture' func='view' lct=$lct}
+            {pager rowcount=$pager.numitems limit=$pager.itemsperpage display='page' modname='MUImage' type=$lct func='view' ot='picture' lct=$lct}
         {/if}
     {if $lct eq 'admin'}
             <fieldset>

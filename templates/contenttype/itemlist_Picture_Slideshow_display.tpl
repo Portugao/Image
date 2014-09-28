@@ -4,38 +4,22 @@
 {pageaddvar name='stylesheet' value='modules/MUImage/style/style.css'}
 <div style="display: none">
 {foreach item='item' from=$items}
-    {if $item.imageUploadMeta.isImage}
-    {if $item.imageUploadMeta.format eq 'landscape'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:160:120}" width="160px" height="120px" alt="{$item.title|replace:"\"":""}" />
-    {/if}
-    {if $item.imageUploadMeta.format eq 'portrait'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:120:160}" width="120px" height="160px" alt="{$item.title|replace:"\"":""}" />
-    {/if}
-    {if $item.imageUploadMeta.format eq 'square'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:160:160}" width="160px" height="160px" alt="{$item.title|replace:"\"":""}" />
-    {/if}
-    {else}
-        {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
-    {/if}
+          {if $item.imageUploadMeta.isImage}
+              {thumb image=$item.imageUploadFullPath objectid="picture-`$item.id`" preset=$pictureThumbPresetImageUpload tag=true img_alt=$item->getTitleFromDisplayPattern()}
+          {else}
+              {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
+          {/if}
 {/foreach}
 </div>
 <div id="muimage-block-slideshow">
 {foreach item='item' from=$items}
 <div class="muimage-block-slideshow-pictures">
 <a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$vars.selectalbum}" title="{gt text='Visit the album'}">
-    {if $item.imageUploadMeta.isImage}
-    {if $item.imageUploadMeta.format eq 'landscape'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:160:120}" width="160px" height="120px" alt="{$item.title|replace:"\"":""}" />
-    {/if}
-    {if $item.imageUploadMeta.format eq 'portrait'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:120:160}" width="120px" height="160px" alt="{$item.title|replace:"\"":""}" />
-    {/if}
-    {if $item.imageUploadMeta.format eq 'square'}
-        <img src="{$item.imageUpload|muimageImageThumb:$item.imageUploadFullPath:160:160}" width="160px" height="160px" alt="{$item.title|replace:"\"":""}" />
-    {/if}
-    {else}
-        {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
-    {/if}
+          {if $item.imageUploadMeta.isImage}
+              {thumb image=$item.imageUploadFullPath objectid="picture-`$item.id`" preset=$itemThumbPresetImageUpload tag=true img_alt=$item->getTitleFromDisplayPattern()}
+          {else}
+              {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
+          {/if}
 </a>
 </div>
 {/foreach}

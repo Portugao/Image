@@ -55,10 +55,8 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
     		LogUtil::registerPermissionError($url);    		
     	}
     	$pictures = unserialize($pictureids);
-    	//LogUtil::registerStatus($pictures);
     	
     	$pictureid = $this->request->query->filter('id', 0);
-    	//LogUtil::registerStatus($pictureid);
     	
       /*  if ($pictureid == 0) {
     		$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => 30));
@@ -97,10 +95,10 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
     	}
     	
         $this->inlineUsage = ((UserUtil::getTheme() == 'Printer') ? true : false);
-        $this->idPrefix = $this->request->getGet()->filter('idp', '', FILTER_SANITIZE_STRING);
+        $this->idPrefix = $this->request->query->filter('idp', '', FILTER_SANITIZE_STRING);
 
         // initialise redirect goal
-        $this->returnTo = $this->request->getGet()->filter('returnTo', null, FILTER_SANITIZE_STRING);
+        $this->returnTo = $this->request->query->filter('returnTo', null, FILTER_SANITIZE_STRING);
         // store current uri for repeated creations
         $this->repeatReturnUrl = System::getCurrentURI();
 
@@ -156,20 +154,8 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
         // save entity reference for later reuse
         $this->entityRef = $entity;
 
-        $this->initializeAdditions();
-
         // everything okay, no initialization errors occured
         return true;
-    }
-    
-    /**
-     * Method stub for own additions in subclasses.
-     *
-     * @depreciated to be removed in favour of postInitialize().
-     */
-    protected function initializeAdditions()
-    {
-
     }
     
     /**
@@ -302,50 +288,7 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
         }
         return $message;
     }
-    
-
-    /**
-     * Input data processing called by handleCommand method.
-     */
-    public function fetchInputData(Zikula_Form_View $view, &$args)
-    {
-        parent::fetchInputData($view, $args);
-
-        // get treated entity reference from persisted member var
-        $entity = $this->entityRef;
-
-        $entityData = array();
-
-        $this->reassignRelatedObjects();
-        $entityData['Album'] = ((isset($selectedRelations['album'])) ? $selectedRelations['album'] : $this->retrieveRelatedObjects('album', 'muimageAlbum_AlbumItemList', false, 'POST'));
-
-        // assign fetched data
-        if (count($entityData) > 0) {
-            $entity->merge($entityData);
-        }
-
-        // save updated entity
-        $this->entityRef = $entity;
-    }
-    
-    
-    /**
-     * Executing insert and update statements
-     *
-     * @param Array   $args    arguments from handleCommand method.
-     */
-    public function performUpdate($args)
-    {
-        // get treated entity reference from persisted member var
-        $entity = $this->entityRef;
-
-        $this->updateRelationLinks($entity);
-        //$this->entityManager->transactional(function($entityManager) {
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-        //});
-     }
-     
+         
     /**
      * Get url to redirect to.
      */
@@ -410,24 +353,5 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
             default:
                 return $this->getDefaultReturnUrl($args, $obj);
         }
-    }
-
-    /**
-     * Reassign options chosen by the user to avoid unwanted form state resets.
-     * Necessary until issue #23 is solved.
-     */
-    public function reassignRelatedObjects()
-    {
-        $selectedRelations = array();
-        // reassign the album eventually chosen by the user
-        $selectedRelations['album'] = $this->retrieveRelatedObjects('album', 'muimageAlbum_AlbumItemList', false, 'POST');
-        $this->view->assign('selectedRelations', $selectedRelations);
-    }
-    
-    /**
-     * Helper method for updating links to related records.
-     */
-    protected function updateRelationLinks($entity)
-    {
     }
 }
