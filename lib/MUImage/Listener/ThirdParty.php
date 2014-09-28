@@ -74,26 +74,18 @@ class MUImage_Listener_ThirdParty extends MUImage_Listener_Base_ThirdParty
      */
     public static function contentGetTypes(Zikula_Event $event)
     {
-        parent::contentGetTypes($event);
-    
-        // you can access general data available in the event
+        // intended is using the add() method to add a plugin like below
+        $types = $event->getSubject();
         
-        // the event name
-        // echo 'Event: ' . $event->getName();
         
-        // type of current request: MASTER_REQUEST or SUB_REQUEST
-        // if a listener should only be active for the master request,
-        // be sure to check that at the beginning of your method
-        // if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-        //     // don't do anything if it's not the master request
-        //     return;
-        // }
+        // plugin for showing a single item
+        $types->add('MUImage_ContentType_Item');
         
-        // kernel instance handling the current request
-        // $kernel = $event->getKernel();
+        // plugin for showing a list of multiple items
+        $types->add('MUImage_ContentType_ItemList');
         
-        // the currently handled request
-        // $request = $event->getRequest();
+        // plugin for showing an item in a special way
+        $types->add('MUImage_ContentType_OneItem');
     }
     
     /**
@@ -126,6 +118,8 @@ class MUImage_Listener_ThirdParty extends MUImage_Listener_Base_ThirdParty
         
         // the currently handled request
         // $request = $event->getRequest();
+        
+        // plugin for showing a list of multiple items
     }
     
     /**
