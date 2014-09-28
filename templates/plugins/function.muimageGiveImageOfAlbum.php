@@ -24,10 +24,17 @@
  */
 function smarty_function_muimageGiveImageOfAlbum($params, $view)
 {
-    $moduleid = $params['moduleid'];
+    $albumid = $params['albumid'];
     $repository = MUImage_Util_Model::getPictureRepository();
-    $where = 'tbl.album = ' . DataUtil::formatForStore($moduleid);
+    $where = 'tbl.album = ' . DataUtil::formatForStore($albumid);
+    $where .= ' AND ';
+    $where .= 'tbl.albumImage = 1';
     $pictures = $repository->selectWhere($where);
+    
+    if (count($pictures) == 0) {
+        $where = 'tbl.album = ' . DataUtil::formatForStore($albumid);
+        $pictures = $repository->selectWhere($where);
+    }
 
     if (array_key_exists('assign', $params)) {
         $view->assign($params['assign'], $pictures[0]);
