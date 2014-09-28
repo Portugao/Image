@@ -188,13 +188,13 @@ width: 98%; */
 
 .muimage_picture_view {
 	float: left;
-	margin: 5px;
+	/*margin: 5px;*/
 	width: 100px;
 	border: 1px solid #333;
 }
 
 .muimage_picture_view_header {
-	float: left;
+	/*float: left;*/
 	height: 25px;
 	width: 90px;
 	background: #ddd;
@@ -330,9 +330,10 @@ width: 98%; */
 
 .muimage_view_album_bottom {
 	padding: 5px 0;
-	height: 30px;
+	height: 40px;
 	overflow: auto;
 	float: left;
+	width: 100%;
 	font-size: 0.7em;
 }
 
@@ -708,6 +709,17 @@ color: #fff;
 
 #slider3-pager a {
 	padding: 0;
+}
+
+/**********SORTABLE*********************/
+
+#muimage_pictures_content ul {
+	list-style: none;
+}
+
+#muimage_pictures_content ul li {
+	float: left;
+	margin: 3px;
 }
 
 @media screen and (max-width: 600px) {
