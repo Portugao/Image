@@ -220,4 +220,37 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         return $view->execute($objectType . '/editMulti.tpl', new $handlerClass());
     
     }
+    
+    /**
+     * 
+     */
+    public function savePosition()
+    {
+        $request = new Zikula_Request_Http();
+        
+        $pictures = $request->request->filter('pictures', '');
+        $picturerepository = MUImage_Util_Model::getPictureRepository();
+
+        
+        $serviceManager = ServiceUtil::getManager();
+        $entityManager = $serviceManager->getService('doctrine.entitymanager');
+                
+        if (is_array($pictures)) {
+            $index = 0;
+            foreach ($pictures as $picture) {
+                $index = $index + 1;
+
+                $thispicture = $picturerepository->selectById($picture);
+                $thispicture->setPos($index);
+                $entityManager->flush();
+                $thisalbum = $thispicture->getAlbum();
+                $thisAlbumId = $thisalbum['id'];
+                
+            }
+        }
+        $url = ModUtil::url('MUImage', 'user', 'display', array('ot' => 'album', 'id' => $thisAlbumId));
+        return System::redirect($url);
+        
+        
+    }
 }
