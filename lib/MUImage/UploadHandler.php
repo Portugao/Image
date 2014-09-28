@@ -34,7 +34,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $this->allowedFileSizes = array('picture' => array('imageUpload' => $filesize));
 
     }
-
+    
     /**
      * Process a file upload.
      *
@@ -47,41 +47,48 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
     public function performFileUpload($objectType, $fileData, $fieldName)
     {
         $dom = ZLanguage::getModuleDomain('MUImage');
-
+    
         $result = array('fileName' => '',
                 'metaData' => array());
-
+    
         // check whether uploads are allowed for the given object type
         if (!in_array($objectType, $this->allowedObjectTypes)) {
             return $result;
         }
-
+    
         // perform validation
         if (!$this->validateFileUpload($objectType, $fileData[$fieldName], $fieldName)) {
             // skip this upload field
-            return false; //$result;
+            return $result;
         }
-
+    
         // retrieve the final file name
         $fileName = $fileData[$fieldName]['name'];
         $fileNameParts = explode('.', $fileName);
-        $extension = $fileNameParts[count($fileNameParts) - 1];
-        $extension = str_replace('jpeg', 'jpg', strtolower($extension));
+        $extension = strtolower($fileNameParts[count($fileNameParts) - 1]);
+        $extension = str_replace('jpeg', 'jpg', $extension);
         $fileNameParts[count($fileNameParts) - 1] = $extension;
         $fileName = implode('.', $fileNameParts);
-
+    
+        $serviceManager = ServiceUtil::getManager();
+        $controllerHelper = new MUImage_Util_Controller($serviceManager);
+    
         // retrieve the final file name
-        $basePath = MUImage_Util_Controller::getFileBaseFolder($objectType, $fieldName);
+        try {
+            $basePath = $controllerHelper->getFileBaseFolder($objectType, $fieldName);
+        } catch (\Exception $e) {
+            return LogUtil::registerError($e->getMessage());
+        }
         $fileName = $this->determineFileName($objectType, $fieldName, $basePath, $fileName, $extension);
-
+    
         if (!move_uploaded_file($fileData[$fieldName]['tmp_name'], $basePath . $fileName)) {
             return LogUtil::registerError(__('Error! Could not move your file to the destination folder.', $dom));
         }
-
+    
         // collect data to return
         $result['fileName'] = $fileName;
         $result['metaData'] = $this->readMetaDataForFile($fileName, $basePath . $fileName);
-
+    
         return $result;
     }
 
