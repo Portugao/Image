@@ -40,5 +40,5 @@ function smarty_function_muimageGiveImageOfAlbum($params, $view)
         $view->assign($params['assign'], $pictures[0]);
         return;
     }
-    return $picture[0];
+    return $pictures[0];
 }
