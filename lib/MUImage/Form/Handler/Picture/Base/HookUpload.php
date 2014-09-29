@@ -17,7 +17,7 @@
  *
  * More documentation is provided in the parent class.
  */
-class MUImage_Form_Handler_User_Picture_HookUpload extends Zikula_Form_AbstractHandler
+class MUImage_Form_Handler_Picture_Base_HookUpload extends MUImage_Form_Handler_Common_Edit
 {
 	/**
 	 * Pre-initialise hook.
@@ -111,7 +111,7 @@ class MUImage_Form_Handler_User_Picture_HookUpload extends Zikula_Form_AbstractH
 	 *
 	 * This event handler is called when a command is issued by the user.
 	 */
-	public function HandleCommand(Zikula_Form_View $view, &$args)
+	public function handleCommand(Zikula_Form_View $view, &$args)
 	{
 		//$files = News_ImageUtil::reArrayFiles(FormUtil::getPassedValue('news_files', null, 'FILES'));
 		$sid = $args['sid'];
