@@ -46,6 +46,11 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
      */
     public function prePersistCallback()
     {
+        $request = new Zikula_Request_Http();
+        $func = $request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
+        if ($func == multiUpload) {
+            $this->setWorkflowState('approved');
+        }
         if ($this->pos == 0) {
             $this->setPos(1);
         }
