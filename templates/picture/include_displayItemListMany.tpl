@@ -54,8 +54,8 @@
 {gt text='Rotate picture to left' assign='leftRotate'}
 {gt text='Rotate picture to right' assign='rightRotate'}
 {if $coredata.user.uid eq $item.createdUserId}
-<span style="width: 16px; height: 16px; position: absolute; left: 0; bottom: 0;"><a title={$leftRotate} href="{modurl modname='MUImage' type='picture' func='rotateLeft' id=$item.id}"><img src="images/icons/extrasmall/tab_left.png"></a></span>
-<span style="width: 16px; height: 16px; position: absolute; right: 0; bottom: 0;"><a title={$rightRotate} href="{modurl modname='MUImage' type='picture' func='rotateRight' id=$item.id}"><img src="images/icons/extrasmall/tab_right.png"></a></span>
+<span class="rotateButtonLeft"><a title={$leftRotate} href="{modurl modname='MUImage' type='picture' func='rotateLeft' id=$item.id}"><img src="images/icons/extrasmall/tab_left.png"></a></span>
+<span class="rotateButtonRight"><a title={$rightRotate} href="{modurl modname='MUImage' type='picture' func='rotateRight' id=$item.id}"><img src="images/icons/extrasmall/tab_right.png"></a></span>
 {/if}
 </div>   
 </div>
@@ -65,7 +65,7 @@
 
 {if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId }
 {gt text='Save positions' assign='savePositions'}
-<br style="clear: both; "/><input type="submit" value=$savePostions />
+<br style="clear: both; "/><input type="submit" value=$savePositions />
 </form>
 {/if}
 {/if}
@@ -80,5 +80,13 @@
 
     });
     
+   /* MU(".muimage_picture_view_bottom").hover(
+        function() {
+            MU(this > .rotateButtonLeft).css("display", "block");
+        },
+        function() {
+            MU(this > .rotateButtonLeft).css("display", "none");
+        }
+    );*/
     /* ]]> */
 </script>

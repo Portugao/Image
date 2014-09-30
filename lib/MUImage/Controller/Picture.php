@@ -1,4 +1,6 @@
 <?php
+use Imagine\Gd\Imagine;
+
 /**
  * MUImage.
  *
@@ -252,5 +254,53 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         return System::redirect($url);
         
         
+    }
+    
+    /**
+     *
+     */
+    public function rotateRight()
+    {
+        $request = new Zikula_Request_Http();
+    
+        $id = $request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+        $picturerepository = MUImage_Util_Model::getPictureRepository();
+    
+        $thispicture = $picturerepository->selectById($id);
+        $thisalbum = $thispicture->getAlbum();
+        $thisAlbumId = $thisalbum['id'];
+        $fullPath = $thispicture->getImageUploadFullPath();
+    
+        $imagine = new Imagine();
+        $image = $imagine->open($fullPath);
+        $image->rotate(90);
+        $image->save($fullPath);
+    
+        $url = ModUtil::url('MUImage', 'user', 'display', array('ot' => 'album', 'id' => $thisAlbumId));
+        return System::redirect($url);
+    }
+    
+    /**
+     * 
+     */
+    public function rotateLeft()
+    {
+        $request = new Zikula_Request_Http();
+        
+        $id = $request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+        $picturerepository = MUImage_Util_Model::getPictureRepository();
+        
+        $thispicture = $picturerepository->selectById($id);
+        $thisalbum = $thispicture->getAlbum();
+        $thisAlbumId = $thisalbum['id'];
+        $fullPath = $thispicture->getImageUploadFullPath();
+        
+        $imagine = new Imagine();
+        $image = $imagine->open($fullPath);
+        $image->rotate(-90);
+        $image->save($fullPath);
+        
+        $url = ModUtil::url('MUImage', 'user', 'display', array('ot' => 'album', 'id' => $thisAlbumId));
+        return System::redirect($url);
     }
 }
