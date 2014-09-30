@@ -345,18 +345,24 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
     /**
      *
-     * @param int $id picture id
      * @return boolean
      */
-    public static function myPicture($id)
+    public static function myPicture()
     {
+
+        $request = new Zikula_Request_Http();
+        $id = $request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+
         $picturerepository = MUImage_Util_Model::getPictureRepository();
         $myPicture = $picturerepository->selectById($id);
 
-        if (in_array(2, UserUtil::getGroupsForUser(UserUtil::getVar('uid')))) {
+        $uid = UserUtil::getVar('uid');
+        $groups = UserUtil::getGroupsForUser($uid);
+        die($groups);
+        if (in_array(2, $groups)) {
             return true;
         } else {
-            if (UserUtil::getVar('uid') == $myPicture->getCreatedUserId()) {
+            if ($uid == $myPicture->getCreatedUserId()) {
                 return true;
             } else {
                 return false;
@@ -446,6 +452,38 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
         return $out;
 
+    }
+    
+    /**
+     * 
+     */
+    public static function checkAlbumAccess($albumid)
+    {
+        $albumrepository = MUImage_Util_Model::getAlbumRepository();
+        $thisAlbum = $albumrepository->selectById($albumid);
+        if ($thisAlbum['notInFrontend'] == 1) {
+            return false;
+        }
+        if ($thisAlbum['albumAccess'] == 'all' ) {
+            return true;
+        }
+        if ($thisAlbum['albumAccess'] == 'users' && UserUtil::isLoggedIn()) {
+            return true;
+        }
+        if ($thisAlbum['albumAccess'] == 'friends') {
+            $username = UserUtil::getVar('uname', $uid);
+            //$friends = explode(',', $thisAlbum['myFriends']);
+            $friends = $thisAlbum['myFriends'];
+            LogUtil::registerError($friends);
+            if (in_array($username, $friends)) {
+                return true;
+            }
+        }
+        if ($thisAlbum['albumAccess'] == 'known') {
+            return true;
+        }
+        
+        return false;
     }
 
     /**
