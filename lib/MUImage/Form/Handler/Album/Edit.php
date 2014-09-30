@@ -72,11 +72,15 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
                 $parentid = $parent->getId();
             }
             else {
-                $parentid = '';
+                $parentid = 0;
             }
 
-            $this->view->assign('savedParent', $parentid);
+
+        } else {
+            $parentid = $this->request->query->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
         }
+
+        $this->view->assign('savedParent', $parentid);
 
         if (MUImage_Util_View::otherUserMainAlbums() == true) {
             $this->view->assign('otherMainAlbum', true);
@@ -94,29 +98,34 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
         parent::fetchInputData($view, $args);
 
         $query = new Zikula_Request_Http();
-        
+
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
 
         // get treated entity reference from persisted member var
         $entity = $this->entityRef;
 
         $entityData = array();
-        
+
         $parent = '';
 
-        if ($args['commandName'] == 'submit') {
+       /* if ($args['commandName'] == 'submit') {
             // we get parent id
-            $parent = $query->query->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
+            $parent = $query->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
 
             if ($parent == 0) {
                 $entityData['Parent'] = null;
             }
             if ($parent > 0) {
-                $album = $albumrepository->selectById($parent);          
-                $entityData['Parent'] = $album;
+                $album = $albumrepository->selectById($parent);
+                if ($album) {
+                    LogUtil::registerError($album['title']);
+                    $entityData['Parent'] = $album;
+                } else {
+                    $entityData['Parent'] = null;
+                }
             }
         }
-        if ($args['commandName'] == 'update') {
+        if ($args['commandName'] == 'submit' || $args['commandName'] == 'update') {
             $parent = $this->request->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
             if ($parent[0] > 0 && is_array($parent)) {
                 $album = $albumrepository->selectById($parent[0]);
@@ -126,7 +135,7 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
             } else {
                 $entityData['Parent'] = null;
             }
-        }
+        }*/
 
         // assign fetched data
         if (count($entityData) > 0) {

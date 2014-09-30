@@ -169,4 +169,28 @@ class MUImage_Controller_Album extends MUImage_Controller_Base_Album
         // fetch and return the appropriate template
         return $viewHelper->processTemplate($this->view, $objectType, 'view', array(), $templateFile);
     }
+
+    /**
+     * This method provides a item detail view.
+     *
+     * @param int     $id           Identifier of entity to be shown.
+     * @param string  $tpl          Name of alternative template (to be used instead of the default template).
+     * @param boolean $raw          Optional way to display a template instead of fetching it (required for standalone output).
+     *
+     * @return mixed Output.
+     */
+    public function display()
+    {
+        $id = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+
+        $checkAlbum = MUImage_Util_View::checkAlbumAccess($id);
+
+        if ($checkAlbum == 1) {
+            return parent::display();
+        } else {
+            $url = ModUtil::url($this->name, 'user', 'view', array('lct' => 'user'));
+            return System::redirect(url);
+        }
+
+    }
 }

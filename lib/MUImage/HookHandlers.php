@@ -165,7 +165,7 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
                     // create new Form reference
                     $view = new Zikula_Form_View($serviceManager, 'MUImage');
 
-                    MUImage_Form_Handler_User_Picture_HookUpload::HandleCommand($view, &$args);
+                    //MUImage_Form_Handler_Picture_Base_HookUpload::handleCommand($view, &$args);
 
                 }
                 else {
@@ -173,14 +173,14 @@ class MUImage_HookHandlers extends Zikula_Hook_AbstractHandler
                         $albumrepository = MUImage_Util_Model::getAlbumRepository();
                         $where = 'tbl.id = \'' . DataUtil::formatForStore($muimagealbum) . '\'';
                         $args['albumid'] = $muimagealbum;
-                        MUImage_Form_Handler_User_Picture_HookUpload::HandleCommand($view, &$args);
+                        //MUImage_Form_Handler_User_Picture_Base_HookUpload::handleCommand($view, &$args);
 
                     }
                     if ($muimagesubalbum >= 1) {
                         $albumrepository = MUImage_Util_Model::getAlbumRepository();
                         $where = 'tbl.id = \'' . DataUtil::formatForStore($muimagesubalbum) . '\'';
                         $args['albumid'] = $muimagesubalbum;
-                        MUImage_Form_Handler_User_Picture_HookUpload::HandleCommand($view, &$args);
+                        //MUImage_Form_Handler_User_Picture_Base_HookUpload::handleCommand($view, &$args);
                          
                     }
 

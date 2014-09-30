@@ -129,7 +129,7 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 	{
 		$albumid = $this->request->getGet()->filter('album', 0, FILTER_SANITIZE_NUMBER_INT);
 			
-		if ($args['commandName'] == 'create') {
+		if ($args['commandName'] == 'submit') {
 
 			$entityClass = $this->name . '_Entity_' . ucfirst($this->objectType);
 			$repository = $this->entityManager->getRepository($entityClass);

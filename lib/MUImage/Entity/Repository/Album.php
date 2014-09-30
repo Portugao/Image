@@ -108,7 +108,7 @@ class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Alb
      *
      * @return Doctrine\ORM\QueryBuilder query builder instance to be further processed
      */
-    public function genericBaseQuery($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
+   /* public function genericBaseQuery($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
     {
         // normally we select the whole table
         $selection = 'tbl';
@@ -136,10 +136,11 @@ class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Alb
         }
 
         $request = new Zikula_Request_Http();
+        $module = $request->query->filter('module', '', FILTER_SANITIZE_STRING);
         $type = $request->query->filter('type', 'user', FILTER_SANITIZE_STRING);
         $func = $request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
 
-        if ($type == 'user' && $func = 'view') {
+        if ($module = 'MUImage' && $type == 'user' && $func = 'view') {
            /* if (UserUtil::isLoggedIn() == true) {
                 if ($where != '') {
                     $where .= ' AND ';
@@ -150,7 +151,7 @@ class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Alb
                 $where .= ' AND ';
                 $where .= '(tblChildren is NULL OR tblChildren.albumAccess = all)';
             }*/
-            if ($where != '') {
+           /* if ($where != '') {
                 $where .= ' AND ';
                 $where .= 'tbl.notInFrontend = 0';
             } else {
@@ -167,9 +168,9 @@ class MUImage_Entity_Repository_Album extends MUImage_Entity_Repository_Base_Alb
          $qb->where(' AND tblChildren is NULL OR tblChildren.albumAccess = all');
         }*/
 
-        $this->genericBaseQueryAddWhere($qb, $where);
+       /* $this->genericBaseQueryAddWhere($qb, $where);
         $this->genericBaseQueryAddOrderBy($qb, $orderBy);
 
         return $qb;
-    }
+    }*/
 }

@@ -155,7 +155,7 @@ class MUImage_Installer extends MUImage_Base_Installer
                  
                  $workflowHelper = new Zikula_Workflow('none', 'MUImage');
 
-                 $where = 'tbl.myFriends = \'' . '' . '\'';
+                 //$where = 'tbl.myFriends = \'' . '' . '\'';
                  
                  // we get all albums
                  //$albums = $albumrepository->selectWhere();
@@ -170,7 +170,7 @@ class MUImage_Installer extends MUImage_Base_Installer
                      $thisalbum->setWorkflowState('approved');
                      $thisalbum->setAlbumAccess('all');
                      $thisalbum->setMyFriends('a:0:{}');
-                     $entityManager2->flush();
+                     $entityManager->flush();
                      
                      $obj['__WORKFLOW__']['obj_table'] = 'album';
                      $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';

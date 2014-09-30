@@ -28,7 +28,7 @@
       </fieldset>
           {* include possible submit actions *}
     <div class="z-buttons z-formbuttons">
-        {formbutton id='btnCreate' commandName='create' __text='Create pictures' class='z-bt-ok'}
+        {formbutton id='btnSubmit' commandName='submit' __text='Create pictures' class='z-bt-ok'}
         {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
     </div>
     
