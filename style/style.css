@@ -242,11 +242,12 @@ width: 98%; */
 }
 
 .muimage_picture_view_bottom {
+	position: relative;
 	float: left;
 	width: 90px;
-	height: 20px;
+	height: 26px;
 	font-size: 0.7em;
-	padding: 5px;
+	padding: 2px 5px;
 }
 /***********albums style in view********************/
 #muimage_albums_header {

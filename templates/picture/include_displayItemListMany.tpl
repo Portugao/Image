@@ -36,21 +36,26 @@
 <div class="muimage_picture_view_content">
 
 {if $item.imageUpload ne '' && isset($item.imageUploadFullPathURL)}
-  <a href="{$item.imageUploadFullPathURL}" title="{$item.title|replace:"\"":""}"{if $item.imageUploadMeta.isImage} rel="imageviewer[item]"{/if}>
-    {thumb image=$item.imageUploadFullPath objectid="picture-`$item.id`" preset=$relationThumbPreset tag=true img_alt=$item->getTitleFromDisplayPattern()}
-  </a>
+    <a href="{$item.imageUploadFullPathURL}" title="{$item.title|replace:"\"":""}"{if $item.imageUploadMeta.isImage} rel="imageviewer[item]"{/if}>
+    <span style="display: block; width: 100px; height: 70px; background: url({thumb image=$item.imageUploadFullPath width=200 height=200 mode='inset' extension='jpg'}) center center; background-size: cover;"></span>
+    </a>
 {/if}
-    {if $item.imageUploadMeta.format eq ''}
-        <span class="muimage-valid">{gt text='No valid file'}</span>
-    {/if}  
+{if $item.imageUploadMeta.format eq ''}
+    <span class="muimage-valid">{gt text='No valid file'}</span>
+{/if}  
 
-   {* </li> *}
 </div>
 <div class="muimage_picture_view_bottom">
 <input name="pictures[]" type="hidden" value={$item.id} />
 {modgetvar module='MUImage' name='countImageView' assign='imageView'}
 {if $imageView eq 1}
 {gt text='Invocations:'} {$item.imageView}
+{/if}
+{gt text='Rotate picture to left' assign='leftRotate'}
+{gt text='Rotate picture to right' assign='rightRotate'}
+{if $coredata.user.uid eq $item.createdUserId}
+<span style="width: 16px; height: 16px; position: absolute; left: 0; bottom: 0;"><a title={$leftRotate} href="{modurl modname='MUImage' type='picture' func='rotateLeft' id=$item.id}"><img src="images/icons/extrasmall/tab_left.png"></a></span>
+<span style="width: 16px; height: 16px; position: absolute; right: 0; bottom: 0;"><a title={$rightRotate} href="{modurl modname='MUImage' type='picture' func='rotateRight' id=$item.id}"><img src="images/icons/extrasmall/tab_right.png"></a></span>
 {/if}
 </div>   
 </div>
@@ -59,7 +64,8 @@
 </ul>
 
 {if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId }
-<br style="clear: both; "/><input type="submit" value="Save positions" />
+{gt text='Save positions' assign='savePositions'}
+<br style="clear: both; "/><input type="submit" value=$savePostions />
 </form>
 {/if}
 {/if}
