@@ -94,66 +94,53 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
     		LogUtil::registerArgsError(__('Sorry. There is an error with session var.', $url));
     	}
     	
-        $this->inlineUsage = ((UserUtil::getTheme() == 'Printer') ? true : false);
-        $this->idPrefix = $this->request->query->filter('idp', '', FILTER_SANITIZE_STRING);
-
-        // initialise redirect goal
-        $this->returnTo = $this->request->query->filter('returnTo', null, FILTER_SANITIZE_STRING);
-        // store current uri for repeated creations
-        $this->repeatReturnUrl = System::getCurrentURI();
-
-        $this->permissionComponent = $this->name . ':' . $this->objectTypeCapital . ':';
-
-        $entityClass = $this->name . '_Entity_' . ucfirst($this->objectType);
-        $objectTemp = new $entityClass();
-        $this->idFields = ModUtil::apiFunc($this->name, 'selection', 'getIdFields', array('ot' => $this->objectType));
-
-        // retrieve identifier of the object we wish to view
-        $controllerHelper = new MUImage_Util_Controller($this->view->getServiceManager());
+        parent::initialize($view);
     
-        $this->idValues = $controllerHelper->retrieveIdentifier($this->request, array(), $this->objectType, $this->idFields);
-        $hasIdentifier = $controllerHelper->isValidIdentifier($this->idValues);
-
-        $entity = null;
-        $this->mode = ($hasIdentifier) ? 'edit' : 'create';
-
-        if ($this->mode == 'edit') {
-            if (!SecurityUtil::checkPermission($this->permissionComponent, '::', ACCESS_EDIT)) {
-                // set an error message and return false
-                return LogUtil::registerPermissionError();
+        if ($this->mode == 'create') {
+            $modelHelper = new MUImage_Util_Model($this->view->getServiceManager());
+            if (!$modelHelper->canBeCreated($this->objectType)) {
+                LogUtil::registerError($this->__('Sorry, but you can not create the picture yet as other items are required which must be created before!'));
+    
+                return $this->view->redirect($this->getRedirectUrl(null));
             }
-
-            $entity = $this->initEntityForEdit();
-
-            if ($this->hasPageLockSupport === true && ModUtil::available('PageLock')) {
-                // try to guarantee that only one person at a time can be editing this entity
-                ModUtil::apiFunc('PageLock', 'user', 'pageLock',
-                    array('lockName'  => $this->name . $this->objectTypeCapital . $this->createCompositeIdentifier(),
-                    'returnUrl' => $this->getRedirectUrl(null, $entity)));
-            }
-        } else {
-            if (!SecurityUtil::checkPermission($this->permissionComponent, '::', ACCESS_ADD)) {
-                return LogUtil::registerPermissionError();
-            }
-
-            $entity = $this->initEntityForCreation($entityClass);
         }
-
-        $this->view->assign('mode', $this->mode)
-            ->assign('inlineUsage', $this->inlineUsage);
-
-        if ($this->hasCategories === true) {
-            $this->initCategoriesForEdit($entity);
+    
+        $entity = $this->entityRef;
+        
+        // assign identifiers of predefined incoming relationships
+        // editable relation, we store the id and assign it now to show it in UI
+        $this->relationPresets['album'] = FormUtil::getPassedValue('album', '', 'GET');
+        if (!empty($this->relationPresets['album'])) {
+            $relObj = ModUtil::apiFunc($this->name, 'selection', 'getEntity', array('ot' => 'album', 'id' => $this->relationPresets['album']));
+            if ($relObj != null) {
+                $relObj->addPicture($entity);
+            }
         }
-
-        $entityData = $entity->toArray();
-
-        // assign data to template as array (makes translatable support easier)
-        $this->view->assign($this->objectTypeLower, $entityData);
-
+    
         // save entity reference for later reuse
         $this->entityRef = $entity;
-
+    
+        $entityData = $entity->toArray();
+    
+        if (count($this->listFields) > 0) {
+            $helper = new MUImage_Util_ListEntries($this->view->getServiceManager());
+    
+            foreach ($this->listFields as $listField => $isMultiple) {
+                $entityData[$listField . 'Items'] = $helper->getEntries($this->objectType, $listField);
+                if ($isMultiple) {
+                    $entityData[$listField] = $helper->extractMultiList($entityData[$listField]);
+                }
+            }
+        }
+    
+        // assign data to template as array (makes translatable support easier)
+        $this->view->assign($this->objectTypeLower, $entityData);
+    
+        if ($this->mode == 'edit') {
+            // assign formatted title
+            $this->view->assign('formattedEntityTitle', $entity->getTitleFromDisplayPattern());
+        }
+    
         // everything okay, no initialization errors occured
         return true;
     }
@@ -224,6 +211,7 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
         // get the relevant album for redirect
         // with finish editing of just uploaded pictures
     	$albumid = $this->request->query->filter('album', 0, FILTER_SANITIZE_NUMBER_INT);
+    	LogUtil::registerError($args['commandName']);
     	
     	if ($args['commandName'] == 'next') {
     		$args['status'] = 'next';
@@ -287,6 +275,41 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
                 break;
         }
         return $message;
+    }
+    
+    /**
+     * This method executes a certain workflow action.
+     *
+     * @param Array $args Arguments from handleCommand method.
+     *
+     * @return bool Whether everything worked well or not.
+     */
+    public function applyAction(array $args = array())
+    {
+        // get treated entity reference from persisted member var
+        $entity = $this->entityRef;
+    
+        $action = $args['commandName'];
+    
+        try {
+            // execute the workflow action
+            $workflowHelper = new MUImage_Util_Workflow($this->view->getServiceManager());
+            $success = $workflowHelper->executeAction($entity, $action);
+        } catch(\Exception $e) {
+            LogUtil::registerError($this->__f('Sorry, but an unknown error occured during the %s action. Please apply the changes again!', array($action)));
+        }
+    
+        $this->addDefaultMessage($args, $success);
+    
+        if ($success && $this->mode == 'create') {
+            // store new identifier
+            foreach ($this->idFields as $idField) {
+                $this->idValues[$idField] = $entity[$idField];
+            }
+        }
+    
+    
+        return $success;
     }
          
     /**

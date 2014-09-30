@@ -168,12 +168,11 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
             return;
         }
 
-        $currentType = FormUtil::getPassedValue('type', 'user', 'GETPOST', FILTER_SANITIZE_STRING);
+        $currentLegacyControllerType = FormUtil::getPassedValue('lct', 'user', 'GETPOST', FILTER_SANITIZE_STRING);
         $currentFunc = FormUtil::getPassedValue('func', 'main', 'GETPOST', FILTER_SANITIZE_STRING);
-
         $dom = ZLanguage::getModuleDomain('MUImage');
 
-        if ($currentType == 'admin') {
+        if ($currentLegacyControllerType == 'admin') {
             if (in_array($currentFunc, array('main', 'view'))) {
                 /* $this->_actions[] = array(
                  'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
@@ -223,7 +222,7 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
                 );
             }
         }
-        if ($currentType == 'user') {
+        if ($currentLegacyControllerType == 'user') {
             if (in_array($currentFunc, array('main', 'view'))) {
                 $this->_actions[] = array(
                         'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
@@ -236,20 +235,20 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
             if (in_array($currentFunc, array('main', 'view', 'display'))) {
                 if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
 
-                    $this->_actions[] = array(
+                   /* $this->_actions[] = array(
                             'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
                             'icon' => 'edit',
                             'linkTitle' => __('Edit', $dom),
                             'linkText' => __('Edit', $dom)
                     );
-                    /*  $this->_actions[] = array(
+                      $this->_actions[] = array(
                      'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'astemplate' => $this['id'])),
                             'icon' => 'saveas',
                             'linkTitle' => __('Reuse for new item', $dom),
                             'linkText' => __('Reuse', $dom)
                     );*/
                 }
-                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE)) {
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE) && (MUImage_Util_View::isAdmin())) {
                     $this->_actions[] = array(
                             'url' => array('type' => 'user', 'func' => 'delete', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
                             'icon' => 'delete',

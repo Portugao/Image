@@ -25,7 +25,7 @@ use DoctrineExtensions\StandardFields\Mapping\Annotation as ZK;
  * @ORM\HasLifecycleCallbacks
  */
 class MUImage_Entity_Album extends MUImage_Entity_Base_Album
-{   
+{
     /**
      * Bidirectional - Many children [albums] are linked by one parent [album] (OWNING SIDE).
      *
@@ -34,13 +34,13 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
      * @var MUImage_Entity_Album $parent.
      */
     protected $parent;
-    
+
     /**
      * @ORM\Column(type="bigint", nullable=true)
      * @var integer $parent_id.
      */
     protected $parent_id = NULL;
-    
+
     /**
      * Bidirectional - One album [album] has many picture [pictures] (INVERSE SIDE).
      *
@@ -50,243 +50,258 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
      * @var MUImage_Entity_Picture[] $picture.
      */
     protected $picture = null;
-    
-	/**
-	 * Collect available actions for this entity.
-	 */
-	protected function prepareItemActions()
-	{
-		if (!empty($this->_actions)) {
-			return;
-		}
 
-		$currentType = FormUtil::getPassedValue('type', 'user', 'GETPOST', FILTER_SANITIZE_STRING);
-		$currentFunc = FormUtil::getPassedValue('func', 'main', 'GETPOST', FILTER_SANITIZE_STRING);
-		$dom = ZLanguage::getModuleDomain('MUImage');
-		if ($currentType == 'admin') {
-			if (in_array($currentFunc, array('main', 'view'))) {
-				/* $this->_actions[] = array(
-				 'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
-						'icon' => 'preview',
-						'linkTitle' => __('Open preview page', $dom),
-						'linkText' => __('Preview', $dom)
-				); */
-				$this->_actions[] = array(
-						'url' => array('type' => 'admin', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
-						'icon' => 'display',
-						'linkTitle' => str_replace('"', '', $this['title']),
-						'linkText' => __('Details', $dom)
-				);
-			}
+    /**
+     * Collect available actions for this entity.
+     */
+    protected function prepareItemActions()
+    {
+        if (!empty($this->_actions)) {
+            return;
+        }
 
-			if (in_array($currentFunc, array('main', 'view', 'display'))) {
-				if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
+        $currentLegacyControllerType = FormUtil::getPassedValue('lct', 'user', 'GETPOST', FILTER_SANITIZE_STRING);
+        $currentFunc = FormUtil::getPassedValue('func', 'main', 'GETPOST', FILTER_SANITIZE_STRING);
+        $dom = ZLanguage::getModuleDomain('MUImage');
+        if ($currentLegacyControllerType == 'admin') {
+            if (in_array($currentFunc, array('main', 'view'))) {
+                /* $this->_actions[] = array(
+                 'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'preview',
+                        'linkTitle' => __('Open preview page', $dom),
+                        'linkText' => __('Preview', $dom)
+                ); */
+                $this->_actions[] = array(
+                        'url' => array('type' => 'admin', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                        'icon' => 'display',
+                        'linkTitle' => str_replace('"', '', $this['title']),
+                        'linkText' => __('Details', $dom)
+                );
+            }
 
-					$this->_actions[] = array(
-							'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
-							'icon' => 'edit',
-							'linkTitle' => __('Edit', $dom),
-							'linkText' => __('Edit', $dom)
-					);
-					/*  $this->_actions[] = array(
-					 'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'astemplate' => $this['id'])),
-							'icon' => 'saveas',
-							'linkTitle' => __('Reuse for new item', $dom),
-							'linkText' => __('Reuse', $dom)
-					); */
-				}
-				if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE)) {
-					$this->_actions[] = array(
-							'url' => array('type' => 'admin', 'func' => 'delete', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
-							'icon' => 'delete',
-							'linkTitle' => __('Delete', $dom),
-							'linkText' => __('Delete', $dom)
-					);
-				}
-			}
-			if ($currentFunc == 'display') {
-				$this->_actions[] = array(
-						'url' => array('type' => 'admin', 'func' => 'view', 'arguments' => array('ot' => 'album')),
-						'icon' => 'back',
-						'linkTitle' => __('Back to overview', $dom),
-						'linkText' => __('Back to overview', $dom)
-				);
-			}
-		}
-		if ($currentType == 'user') {
-			/* if (in_array($currentFunc, array('main', 'view'))) {
-			 $this->_actions[] = array(
-			 		'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
-			 		'icon' => 'display',
-			 		'linkTitle' => str_replace('"', '', $this['title']),
-			 		'linkText' => __('Details', $dom)
-			 );
-			}*/
+            if (in_array($currentFunc, array('main', 'view', 'display'))) {
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
 
-			if (in_array($currentFunc, array('main', 'view', 'display'))) {
-				if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
-					$this->_actions[] = array(
-							'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
-							'icon' => 'display',
-							'linkTitle' => str_replace('"', '', $this['title']),
-							'linkText' => __('Details', $dom)
-					);
-					$this->_actions[] = array(
-							'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
-							'icon' => 'edit',
-							'linkTitle' => __('Edit', $dom),
-							'linkText' => __('Edit', $dom)
-					);
-					/*  $this->_actions[] = array(
-					 'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'astemplate' => $this['id'])),
-							'icon' => 'saveas',
-							'linkTitle' => __('Reuse for new item', $dom),
-							'linkText' => __('Reuse', $dom)
-					);*/
-				}
-				if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE) && MUImage_Util_View::isAdmin() === true) {
-					$this->_actions[] = array(
-							'url' => array('type' => 'user', 'func' => 'delete', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
-							'icon' => 'delete',
-							'linkTitle' => __('Delete', $dom),
-							'linkText' => __('Delete', $dom)
-					);
-				}
-			}
-			if ($currentFunc == 'display') {
-				/*  $this->_actions[] = array(
-				 'url' => array('type' => 'user', 'func' => 'view', 'arguments' => array('ot' => 'album')),
-						'icon' => 'back',
-						'linkTitle' => __('Back to overview', $dom),
-						'linkText' => __('Back to overview', $dom)
-				);*/
-			}
-		}
-	}
+                    $this->_actions[] = array(
+                            'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                            'icon' => 'edit',
+                            'linkTitle' => __('Edit', $dom),
+                            'linkText' => __('Edit', $dom)
+                    );
+                    /*  $this->_actions[] = array(
+                     'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'astemplate' => $this['id'])),
+                            'icon' => 'saveas',
+                            'linkTitle' => __('Reuse for new item', $dom),
+                            'linkText' => __('Reuse', $dom)
+                    ); */
+                }
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE)) {
+                    $this->_actions[] = array(
+                            'url' => array('type' => 'admin', 'func' => 'delete', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                            'icon' => 'delete',
+                            'linkTitle' => __('Delete', $dom),
+                            'linkText' => __('Delete', $dom)
+                    );
+                }
+            }
+            if ($currentFunc == 'display') {
+                $this->_actions[] = array(
+                        'url' => array('type' => 'admin', 'func' => 'view', 'arguments' => array('ot' => 'album')),
+                        'icon' => 'back',
+                        'linkTitle' => __('Back to overview', $dom),
+                        'linkText' => __('Back to overview', $dom)
+                );
+            }
+        }
+        if ($currentLegacyControllerType == 'user') {
+            /* if (in_array($currentFunc, array('main', 'view'))) {
+             $this->_actions[] = array(
+                     'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                     'icon' => 'display',
+                     'linkTitle' => str_replace('"', '', $this['title']),
+                     'linkText' => __('Details', $dom)
+             );
+            }*/
 
-	/**
-	 * Post-Process the data after the entity has been constructed by the entity manager.
-	 *
-	 * @ORM\PostLoad
-	 * @see MUImage_Entity_Base_Album::performPostLoadCallback()
-	 * @return void.
-	 */
-	public function postLoadCallback()
-	{
-		$this->performPostLoadCallback();
-	}
+            if (in_array($currentFunc, array('main', 'view', 'display'))) {
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
+                    $this->_actions[] = array(
+                            'url' => array('type' => 'user', 'func' => 'display', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                            'icon' => 'display',
+                            'linkTitle' => str_replace('"', '', $this['title']),
+                            'linkText' => __('Details', $dom)
+                    );
+                    $this->_actions[] = array(
+                            'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                            'icon' => 'edit',
+                            'linkTitle' => __('Edit', $dom),
+                            'linkText' => __('Edit', $dom)
+                    );
+                    /*  $this->_actions[] = array(
+                     'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'astemplate' => $this['id'])),
+                            'icon' => 'saveas',
+                            'linkTitle' => __('Reuse for new item', $dom),
+                            'linkText' => __('Reuse', $dom)
+                    );*/
+                }
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE) && MUImage_Util_View::isAdmin() === true) {
+                    $this->_actions[] = array(
+                            'url' => array('type' => 'user', 'func' => 'delete', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
+                            'icon' => 'delete',
+                            'linkTitle' => __('Delete', $dom),
+                            'linkText' => __('Delete', $dom)
+                    );
+                }
+            }
+            if ($currentFunc == 'display') {
+                /*  $this->_actions[] = array(
+                 'url' => array('type' => 'user', 'func' => 'view', 'arguments' => array('ot' => 'album')),
+                        'icon' => 'back',
+                        'linkTitle' => __('Back to overview', $dom),
+                        'linkText' => __('Back to overview', $dom)
+                );*/
+            }
+        }
+    }
 
-	/**
-	 * Pre-Process the data prior to an insert operation.
-	 *
-	 * @ORM\PrePersist
-	 * @see MUImage_Entity_Base_Album::performPrePersistCallback()
-	 * @return void.
-	 */
-	public function prePersistCallback()
-	{
-	    $query = new Zikula_Request_Http();
-	    // we get an album repository
-	    $albumrepository = MUImage_Util_Model::getAlbumRepository();
-	    
-	    // we get parent id
-	    $parent = $query->query->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
+    /**
+     * Post-Process the data after the entity has been constructed by the entity manager.
+     *
+     * @ORM\PostLoad
+     * @see MUImage_Entity_Base_Album::performPostLoadCallback()
+     * @return void.
+     */
+    public function postLoadCallback()
+    {
+        $this->performPostLoadCallback();
+    }
 
-	    if ($parent == 0) {
-	        $this->setParent(null);
-	    }
-	    if ($parent > 0) {
-	        $album = $albumrepository->selectById($parent);
-	        $this->setParent($album);
-	    }
-		$this->performPrePersistCallback();
-	}
+    /**
+     * Pre-Process the data prior to an insert operation.
+     *
+     * @ORM\PrePersist
+     * @see MUImage_Entity_Base_Album::performPrePersistCallback()
+     * @return void.
+     */
+    public function prePersistCallback()
+    {
+        $query = new Zikula_Request_Http();
+        // we get an album repository
+        $albumrepository = MUImage_Util_Model::getAlbumRepository();
+         
+        // we get parent id
+        $parent = $query->query->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
 
-	/**
-	 * Post-Process the data after an insert operation.
-	 *
-	 * @ORM\PostPersist
-	 * @see MUImage_Entity_Base_Album::performPostPersistCallback()
-	 * @return void.
-	 */
-	public function postPersistCallback()
-	{
-		$this->performPostPersistCallback();
-	}
+        if ($parent == 0) {
+            $this->setParent(null);
+        }
+        if ($parent > 0) {
+            $album = $albumrepository->selectById($parent);
+            $this->setParent($album);
+        }
+        $this->performPrePersistCallback();
+    }
 
-	/**
-	 * Pre-Process the data prior a delete operation.
-	 *
-	 * @ORM\PreRemove
-	 * @see MUImage_Entity_Base_Album::performPreRemoveCallback()
-	 * @return void.
-	 */
-	public function preRemoveCallback()
-	{
-		$this->performPreRemoveCallback();
-	}
+    /**
+     * Post-Process the data after an insert operation.
+     *
+     * @ORM\PostPersist
+     * @see MUImage_Entity_Base_Album::performPostPersistCallback()
+     * @return void.
+     */
+    public function postPersistCallback()
+    {
+        $this->performPostPersistCallback();
+    }
 
-	/**
-	 * Post-Process the data after a delete.
-	 *
-	 * @ORM\PostRemove
-	 * @see MUImage_Entity_Base_Album::performPostRemoveCallback()
-	 * @return void
-	 */
-	public function postRemoveCallback()
-	{
-		$this->performPostRemoveCallback();
-	}
+    /**
+     * Pre-Process the data prior a delete operation.
+     *
+     * @ORM\PreRemove
+     * @see MUImage_Entity_Base_Album::performPreRemoveCallback()
+     * @return void.
+     */
+    public function preRemoveCallback()
+    {
+        $this->performPreRemoveCallback();
+    }
 
-	/**
-	 * Pre-Process the data prior to an update operation.
-	 *
-	 * @ORM\PreUpdate
-	 * @see MUImage_Entity_Base_Album::performPreUpdateCallback()
-	 * @return void.
-	 */
-	public function preUpdateCallback()
-	{
+    /**
+     * Post-Process the data after a delete.
+     *
+     * @ORM\PostRemove
+     * @see MUImage_Entity_Base_Album::performPostRemoveCallback()
+     * @return void
+     */
+    public function postRemoveCallback()
+    {
+        $this->performPostRemoveCallback();
+    }
 
-		$this->performPreUpdateCallback();
-	}
+    /**
+     * Pre-Process the data prior to an update operation.
+     *
+     * @ORM\PreUpdate
+     * @see MUImage_Entity_Base_Album::performPreUpdateCallback()
+     * @return void.
+     */
+    public function preUpdateCallback()
+    {
+        $query = new Zikula_Request_Http();
+        // we get an album repository
+        $albumrepository = MUImage_Util_Model::getAlbumRepository();
+         
+        // we get parent id
+        $parent = $query->query->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
+        LogUtil::registerError($parent);
 
-	/**
-	 * Post-Process the data after an update operation.
-	 *
-	 * @ORM\PostUpdate
-	 * @see MUImage_Entity_Base_Album::performPostUpdateCallback()
-	 * @return void.
-	 */
-	public function postUpdateCallback()
-	{
-		$this->performPostUpdateCallback();
-	}
+        if ($parent == 0) {
+            $this->setParent(null);
+        }
+        if ($parent > 0) {
+            $album = $albumrepository->selectById($parent);
+            $this->setParent($album);
+        }
 
-	/**
-	 * Pre-Process the data prior to a save operation.
-	 *
-	 * @ORM\PrePersist
-	 * @ORM\PreUpdate
-	 * @see MUImage_Entity_Base_Album::performPreSaveCallback()
-	 * @return void.
-	 */
-	public function preSaveCallback()
-	{
-		$this->performPreSaveCallback();
-	}
+        $this->performPreUpdateCallback();
+    }
 
-	/**
-	 * Post-Process the data after a save operation.
-	 *
-	 * @ORM\PostPersist
-	 * @ORM\PostUpdate
-	 * @see MUImage_Entity_Base_Album::performPostSaveCallback()
-	 * @return void.
-	 */
-	public function postSaveCallback()
-	{
-		$this->performPostSaveCallback();
-	}
+    /**
+     * Post-Process the data after an update operation.
+     *
+     * @ORM\PostUpdate
+     * @see MUImage_Entity_Base_Album::performPostUpdateCallback()
+     * @return void.
+     */
+    public function postUpdateCallback()
+    {
+        $this->performPostUpdateCallback();
+    }
+
+    /**
+     * Pre-Process the data prior to a save operation.
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     * @see MUImage_Entity_Base_Album::performPreSaveCallback()
+     * @return void.
+     */
+    public function preSaveCallback()
+    {
+        $this->performPreSaveCallback();
+    }
+
+    /**
+     * Post-Process the data after a save operation.
+     *
+     * @ORM\PostPersist
+     * @ORM\PostUpdate
+     * @see MUImage_Entity_Base_Album::performPostSaveCallback()
+     * @return void.
+     */
+    public function postSaveCallback()
+    {
+        $this->performPostSaveCallback();
+    }
 
 }
