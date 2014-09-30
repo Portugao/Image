@@ -72,6 +72,7 @@ implemented classes
 
 *lib/MUImage/Util/Controller.php
 *lib/MUImage/Util/Image.php
+*lib/MUImage/Util/ListEntries.php
 *lib/MUImage/Util/Model.php
 *lib/MUImage/Util/View.php
 
