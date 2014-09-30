@@ -103,7 +103,11 @@
                     <a href="{modurl modname='MUImage' type=$lct func='display' ot='album'  id=$album.id}" title="{gt text='View detail page'}">{$album.title|notifyfilters:'muimage.filterhook.albums'}</a>
                 </td>
                 <td headers="hDescription" class="z-left">
-                    {$album.description}
+                    {if $album.description ne ''}
+                        {$album.description}
+                    {else}
+                        {gt text='No description'}
+                    {/if}
                 </td>
                 <td headers="hParent_id" class="z-right">
                     {$album.parent_id}
@@ -209,6 +213,8 @@
 	{if isset($items)}
 	    {foreach item='album' from=$items}
 		{if $album.parent eq NULL}
+		    {muimageCheckAlbumAccess albumid=$album.id assign='albumAccess'}
+		    {if $albumAccess eq true}
 		    <div class="muimage_view_album_container">
 			<div class="muimage_view_album_title">
 			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:25}</a>
@@ -235,12 +241,16 @@
 			</div>
 			    <div class="muimage_view_album_description">
 			    {useravatar uid=$album.createdUserId size=30}
-			    {$album.description|safehtml|truncate:100}
+			    {if $album.description ne ''}
+			        {$album.description|safehtml|truncate:100}
+			    {else}
+			        {gt text='No description'}
+			    {/if}
 			    </div>
 			    {muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
 			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">			    
 			<span class="muimage_view_album_image" style="background: url({$albumpicture.imageUploadFullPathURL}) no-repeat center center; background-size: cover">
-	        {muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
+	       {* {muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'} *}
 			
 			</span>
 			</a>
@@ -251,6 +261,7 @@
 			{gt text='Pictures'}: {$album.picture|@count}
             </div>
 		    </div>
+		{/if}
 		{/if}
 	    {/foreach}
 	{else}
