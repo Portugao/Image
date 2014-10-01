@@ -13,6 +13,16 @@
 </div>
 
 <div class="z-formrow">
+    {formlabel for='MUImage_width' __text='Width'}
+    {formtextinput id='MUImage_width' dataField='width' group='data' mandatory=true maxLength=10}
+</div>
+
+<div class="z-formrow">
+    {formlabel for='MUImage_height' __text='Height'}
+    {formtextinput id='MUImage_height' dataField='height' group='data' mandatory=true maxLength=10}
+</div>
+
+<div class="z-formrow">
     {formlabel __text='Sorting'}
     <div>
         {formradiobutton id='MUImage_srandom' value='random' dataField='sorting' group='data' mandatory=true}

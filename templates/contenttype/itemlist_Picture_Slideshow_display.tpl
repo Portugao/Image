@@ -5,19 +5,20 @@
 <div style="display: none">
 {foreach item='item' from=$items}
           {if $item.imageUploadMeta.isImage}
-              {thumb image=$item.imageUploadFullPath objectid="picture-`$item.id`" preset=$pictureThumbPresetImageUpload tag=true img_alt=$item->getTitleFromDisplayPattern()}
-          {else}
+              <div style="background:url({thumb image=$item.imageUploadFullPath width=$vars.width height=$vars.height}
+       ) no-repeat center center"></div>
+        {else}
               {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
           {/if}
 {/foreach}
 </div>
-<div id="muimage-block-slideshow">
+<div style="float: left; height: {$vars.height}px;" id="muimage-block-slideshow">
 {foreach item='item' from=$items}
 <div class="muimage-block-slideshow-pictures">
 <a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$vars.selectalbum}" title="{gt text='Visit the album'}">
           {if $item.imageUploadMeta.isImage}
-              {thumb image=$item.imageUploadFullPath objectid="picture-`$item.id`" preset=$itemThumbPresetImageUpload tag=true img_alt=$item->getTitleFromDisplayPattern()}
-          {else}
+              <div style="float: left; width: {$vars.width}px; height: {$vars.height}px; background:url({$item.imageUploadFullPathURL}) no-repeat center center; background-size: contain"></div>
+     {else}
               {gt text='Download'} ({$item.imageUploadMeta.size|muimageGetFileSize:$item.imageUploadFullPath:false:false})
           {/if}
 </a>

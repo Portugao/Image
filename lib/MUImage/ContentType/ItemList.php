@@ -18,6 +18,8 @@ class MUImage_ContentType_ItemList extends MUImage_ContentType_Base_ItemList
 {
     private $objectType;
     private $albums;
+    private $width;
+    private $height;
     private $sorting;
     private $amount;
     private $template;
@@ -52,8 +54,12 @@ class MUImage_ContentType_ItemList extends MUImage_ContentType_Base_ItemList
         }
 
         $this->objectType = $data['objectType'];
-        
+
         $this->albums = $data['albums'];
+
+        $this->width = $data['width'];
+
+        $this->height = $data['height'];
 
         if (!isset($data['sorting'])) {
             $data['sorting'] = 'default';
@@ -107,27 +113,27 @@ class MUImage_ContentType_ItemList extends MUImage_ContentType_Base_ItemList
 
         // get objects from database
         $selectionArgs = array(
-            'ot'             => $this->objectType,
-            'where'          => $this->filter,
-            'orderBy'        => $sortParam,
-            'currentPage'    => 1,
-            'resultsPerPage' => $resultsPerPage
+                'ot'             => $this->objectType,
+                'where'          => $this->filter,
+                'orderBy'        => $sortParam,
+                'currentPage'    => 1,
+                'resultsPerPage' => $resultsPerPage
         );
-        
+
         if ($this->objectType == 'picture') {
-        	$selectionArgs['where'] .= 'tbl.album = \'' . DataUtil::formatForStore($this->albums) . '\'';
+            $selectionArgs['where'] .= 'tbl.album = \'' . DataUtil::formatForStore($this->albums) . '\'';
         }
         list($entities, $objectCount) = ModUtil::apiFunc('MUImage', 'selection', 'getEntitiesPaginated', $selectionArgs);
 
         //$this->view->setCaching(true);
 
-        $data = array('objectType' => $this->objectType, 'selectalbum' => $this->albums, 'sorting' => $this->sorting, 'amount' => $this->amount, 'filter' => $this->filter, 'template' => $this->template);
+        $data = array('objectType' => $this->objectType, 'selectalbum' => $this->albums, 'width' => $this->width, 'height' => $this->height, 'sorting' => $this->sorting, 'amount' => $this->amount, 'filter' => $this->filter, 'template' => $this->template);
 
         // assign block vars and fetched data
         $this->view->assign('vars', $data)
-            ->assign('objectType', $this->objectType)
-            ->assign('items', $entities)
-            ->assign($repository->getAdditionalTemplateParameters('contentType'));
+        ->assign('objectType', $this->objectType)
+        ->assign('items', $entities)
+        ->assign($repository->getAdditionalTemplateParameters('contentType'));
 
         $output = '';
         if (!empty($this->template) && $this->view->template_exists('contenttype/' . $this->template)) {
@@ -153,11 +159,13 @@ class MUImage_ContentType_ItemList extends MUImage_ContentType_Base_ItemList
     public function getDefaultData()
     {
         return array('objectType' => 'album',
-            'albums' => '',
-            'sorting'    => 'default',
-            'amount'     => 1,
-            'template'   => 'itemlist_display.tpl',
-            'filter'     => '');
+                'albums' => '',
+                'width' => 100,
+                'height' => 100,
+                'sorting'    => 'default',
+                'amount'     => 1,
+                'template'   => 'itemlist_display.tpl',
+                'filter'     => '');
     }
 
     public function startEditing()

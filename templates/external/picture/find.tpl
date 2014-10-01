@@ -40,9 +40,13 @@
                     <select id="mUImagePasteAs" name="pasteas">
                         <option value="1">{gt text='Link to the picture'}</option>
                         <option value="2">{gt text='ID of picture'}</option>
+                        <option value="3">{gt text='Thumbnail of picture'}</option>
                     </select>
             </div>
             <br />
+            <div class="z-formrow">
+                <label for="mUImageWidth">{gt text='Width'}:</label>
+            </div>
 
             <div class="z-formrow">
                 <label for="mUImageObjectId">{gt text='Picture'}:</label>

@@ -8,6 +8,15 @@
         <span class="z-sub z-formnote">{gt text='If you change this please save the block once to reload the parameters below.'}</span>
 </div>
 
+<div class="z-formrow">
+    <label for="MUImage_selectalbum">{gt text='Album'}:</label>
+    <select id="MUImage_selectalbum" name="selectalbum" size="1">
+    {foreach item='item' from=$albums}
+        <option value={$item.id} {if $selectalbum eq $item.id} selected="selected"{/if}>{gt text=$item.title}</option>
+    {/foreach}
+    </select>
+</div>
+
 {if $catIds ne null && is_array($catIds)}
     {gt text='All' assign='lblDefault'}
     {nocache}
@@ -48,12 +57,13 @@
 </div>
 
 <div class="z-formrow">
-    <label for="mUImageTemplate">{gt text='Template'}:</label>
-        <select id="mUImageTemplate" name="template">
-            <option value="itemlist_display.tpl"{if $template eq 'itemlist_display.tpl'} selected="selected"{/if}>{gt text='Only item titles'}</option>
-            <option value="itemlist_display_description.tpl"{if $template eq 'itemlist_display_description.tpl'} selected="selected"{/if}>{gt text='With description'}</option>
-            <option value="custom"{if $template eq 'custom'} selected="selected"{/if}>{gt text='Custom template'}</option>
-        </select>
+    <label for="MUImage_template">{gt text='Template File'}:</label>
+    <select id="MUImage_template" name="template">
+        <option value="itemlist_display.tpl"{if $template eq 'itemlist_display.tpl'} selected="selected"{/if}>{gt text='Only item titles'}</option>
+        <option value="itemlist_display_description.tpl"{if $template eq 'itemlist_display_description.tpl'} selected="selected"{/if}>{gt text='With description'}</option>
+        <option value="itemlist_Thumbs_display.tpl"{if $template eq 'itemlist_Thumbs_display.tpl'} selected="selected"{/if}>{gt text='Thumbnails'}</option>   
+        <option value="itemlist_Slideshow_display.tpl"{if $template eq 'itemlist_Slideshow_display.tpl'} selected="selected"{/if}>{gt text='Slideshow'}</option>
+       </select>
 </div>
 
 <div id="customTemplateArea" class="z-formrow z-hide">
