@@ -93,22 +93,26 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
     /**
      * Input data processing called by handleCommand method.
      */
-    public function fetchInputData(Zikula_Form_View $view, &$args)
+   /* public function fetchInputData(Zikula_Form_View $view, &$args)
     {
         parent::fetchInputData($view, $args);
+        
+        // we want the array with our field values
+        $entityData = $formData[$this->objectTypeLower];
+        unset($formData[$this->objectTypeLower]);
+        
+        // get treated entity reference from persisted member var
+        $entity = $this->entityRef;
 
         $query = new Zikula_Request_Http();
 
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
 
-        // get treated entity reference from persisted member var
-        $entity = $this->entityRef;
-
         $entityData = array();
 
         $parent = '';
 
-       /* if ($args['commandName'] == 'submit') {
+        if ($args['commandName'] == 'submit') {
             // we get parent id
             $parent = $query->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
 
@@ -118,7 +122,6 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
             if ($parent > 0) {
                 $album = $albumrepository->selectById($parent);
                 if ($album) {
-                    LogUtil::registerError($album['title']);
                     $entityData['Parent'] = $album;
                 } else {
                     $entityData['Parent'] = null;
@@ -135,13 +138,18 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
             } else {
                 $entityData['Parent'] = null;
             }
-        }*/
-
-        // assign fetched data
-        if (count($entityData) > 0) {
-            $entity->merge($entityData);
         }
-
+        
+        // search for relationship plugins to update the corresponding data
+        $entityData = $this->writeRelationDataToEntity($view, $entity, $entityData);
+        
+        // assign fetched data
+        $entity->merge($entityData);
+        
+        // we must persist related items now (after the merge) to avoid validation errors
+        // if cascades cause the main entity becoming persisted automatically, too
+        $this->persistRelationData($view);
+        
         // save updated entity
         $this->entityRef = $entity;
     }
