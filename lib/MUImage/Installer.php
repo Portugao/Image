@@ -94,7 +94,7 @@ class MUImage_Installer extends MUImage_Base_Installer
         HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
 
         // Set up module hooks
-        HookUtil::registerProviderBundles($this->version->getHookProviderBundles());
+        //HookUtil::registerProviderBundles($this->version->getHookProviderBundles()); TODO maybe in 1.4.0
 
         // initialisation successful
         return true;
@@ -196,7 +196,7 @@ class MUImage_Installer extends MUImage_Base_Installer
                  
                  // unregister and register hook providers
                  HookUtil::unregisterProviderBundles($this->version->getHookProviderBundles());
-                 HookUtil::registerProviderBundles($this->version->getHookProviderBundles());
+                 //HookUtil::registerProviderBundles($this->version->getHookProviderBundles()); TODO maybe in 1.4.0
                  
                  EventUtil::registerPersistentModuleHandler('MUImage', 'module.scribite.editorhelpers', array('MUImage_Listener_ThirdParty', 'getEditorHelpers'));
                  EventUtil::registerPersistentModuleHandler('MUImage', 'moduleplugin.tinymce.externalplugins', array('MUImage_Listener_ThirdParty', 'getTinyMcePlugins'));
