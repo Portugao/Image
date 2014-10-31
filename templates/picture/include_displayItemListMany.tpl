@@ -65,7 +65,7 @@
 
 {if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId }
 {gt text='Save positions' assign='savePositions'}
-<br style="clear: both; "/><input type="submit" value=$savePositions />
+<br style="clear: both; "/><input type="submit" value={$savePositions} />
 </form>
 {/if}
 {/if}
