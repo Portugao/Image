@@ -147,31 +147,27 @@ class MUImage_Installer extends MUImage_Base_Installer
                  // we get entityManager
                  $entityManager = $serviceManager->getService('doctrine.entitymanager');
 
-                 // we get a repository for albums
-                 $albumrepository = MUImage_Util_Model::getAlbumRepository();
-                 //$albumrepository = $this->entityManager->getRepository('MUImage_Entity_Album');
-                 $picturerepository = MUImage_Util_Model::getPictureRepository();
                  $selectionHelper = new MUImage_Api_Selection($serviceManager);
+                 // we get a repository for albums
+                 $albumrepository = $this->getEntityManager()->getRepository('MUImage_Entity_Album');
+                 // we get a repository for pictures
+                 $picturerepository = $this->getEntityManager()->getRepository('MUImage_Entity_Picture');
                  
+                 // we get a workflow helper
                  $workflowHelper = new Zikula_Workflow('none', 'MUImage');
-
-                 //$where = 'tbl.myFriends = \'' . '' . '\'';
                  
                  // we get all albums
-                 //$albums = $albumrepository->selectWhere();
-
-                 
-                 // we get all albums
-                 //$albums = ModUtil::apiFunc($this->name, 'selection', 'getEntities', array('ot' => 'album', 'where' => $where));
-                            
-                 // we set each album to approved
+                 $result = DBUtil::executeSQL('SELECT * FROM `muimage_album`');
+                 $albums = $result->fetchAll(Doctrine::FETCH_ASSOC);
+                           
+                 // we set each album to approved and all
                  foreach ($albums as $album) {
-                     $thisalbum = $albumrepository->selectById($album['id']);
+                     $thisalbum = $albumrepository->findOneBy(array('id' => $album['id']));
                      $thisalbum->setWorkflowState('approved');
                      $thisalbum->setAlbumAccess('all');
-                     $thisalbum->setMyFriends('a:0:{}');
                      $entityManager->flush();
                      
+                     // we set the datas into the workflow table
                      $obj['__WORKFLOW__']['obj_table'] = 'album';
                      $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';
                      $obj['id'] = $album['id'];
@@ -180,14 +176,16 @@ class MUImage_Installer extends MUImage_Base_Installer
                  
                  // we get all pictures
                  $pictures = $picturerepository->selectWhere();
-                 //$pictures = ModUtil::apiFunc($this->name, 'selection', 'getEntities', array('ot' => 'picture'));
+
+                 $result2 = DBUtil::executeSQL('SELECT * FROM `muimage_picture`');
+                 $pictures = $result2->fetchAll(Doctrine::FETCH_ASSOC);
                  
                  // we set each picture to approved
                  foreach ($pictures as $picture) {
-                     $thispicture = $picturerepository->selectById($picture['id']);
+                     $thispicture = $picturerepository->findOneBy(array('id' => $picture['id']));
                      $thispicture->setWorkflowState('approved');
                      $entityManager->flush();
-                     
+                     // we set the datas into the workflow table
                      $obj['__WORKFLOW__']['obj_table'] = 'picture';
                      $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';
                      $obj['id'] = $picture['id'];
