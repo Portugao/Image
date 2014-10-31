@@ -1,5 +1,7 @@
 {* purpose of this template: albums display view in user area *}
 {include file='user/header.tpl'}
+{pageaddvar name='javascript' value='jquery'}
+{pageaddvar name='javascript' value='jquery-ui'}
 <div class="muimage-album muimage-display">
     {gt text='Album' assign='templateTitle'}
     {assign var='templateTitle' value=$album.title|default:$templateTitle}
@@ -74,7 +76,7 @@
 		    {foreach item='childAlbum' from=$album.children}
 			<div class="muimage_album_container">
 			    <div class="muimage_album_title">
-				<a title="{$childAlbum.title}" href="{modurl modname='MUIMage' type='user' func='display' ot='album' id="`$childAlbum.id`"}">{$childAlbum.title|truncate:30}</a>
+				<a title="{$childAlbum.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$childAlbum.id`"}">{$childAlbum.title|truncate:30}</a>
 				<div class="muimage_display_album_title_action">
 				    {if count($childAlbum._actions) gt 0}
 					{strip}
