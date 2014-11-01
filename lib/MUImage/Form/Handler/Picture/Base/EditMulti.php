@@ -135,6 +135,32 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
     
         // assign data to template as array (makes translatable support easier)
         $this->view->assign($this->objectTypeLower, $entityData);
+        
+        // we get the allowed filesize
+        $fileSize = MUImage_Util_Controller::maxSize();
+        // we check if deleting of pictures is allowed
+        $deletePictures = ModUtil::getVar($this->name, 'userDeletePictures');
+        // we check for required width for pictures
+        $minWidth = MUImage_Util_Controller::minWidth();
+        // we check for maximum width for pictures
+        $maxWidth = MUImage_Util_Controller::maxWidth();
+        // we check for maximum height for pictures
+        $maxHeight = MUImage_Util_Controller::maxHeight();
+        // we check for user is in admin group
+        $inAdminGroup = MUImage_Util_View::isAdmin();
+        
+        $this->view->assign('fileSize', $fileSize)
+        ->assign('minWidth', $minWidth)
+        ->assign('maxWidth', $maxWidth)
+        ->assign('maxHeight', $maxHeight)
+        ->assign('deletePictures', $deletePictures)
+        ->assign('inAdminGroup', $inAdminGroup);
+        
+        if (MUImage_Util_View::otherUserMainAlbums() == true) {
+            $this->view->assign('otherMainAlbum', true);
+        } else {
+            $this->view->assign('otherMainAlbum', false);
+        }
     
         if ($this->mode == 'edit') {
             // assign formatted title
