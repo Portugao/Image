@@ -23,25 +23,26 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 	 * Persistent member vars
 	 */
 
-	/**
-	 * Pre-initialise hook.
-	 *
-	 * @return void
-	 */
-	public function preInitialize()
-	{
-		parent::preInitialize();
-
-		$this->objectType = 'picture';
-		$this->objectTypeCapital = 'Picture';
-		$this->objectTypeLower = 'picture';
-		$this->objectTypeLowerMultiple = 'pictures';
-
-		$this->hasPageLockSupport = true;
-		$this->hasCategories = false;
-		// array with upload fields and mandatory flags
-		$this->uploadFields = array('imageUpload' => false);
-	}
+    /**
+     * Pre-initialise hook.
+     *
+     * @return void
+     */
+    public function preInitialize()
+    {
+        parent::preInitialize();
+    
+        $this->objectType = 'picture';
+        $this->objectTypeCapital = 'Picture';
+        $this->objectTypeLower = 'picture';
+    
+        $this->hasPageLockSupport = true;
+        $this->hasCategories = false;
+        // array with upload fields and mandatory flags
+        $this->uploadFields = array('imageUpload' => true);
+        // array with list fields and multiple flags
+        $this->listFields = array('workflowState' => false);
+    }
 
 	/**
 	 * Initialize form handler.
@@ -52,6 +53,8 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 	 */
 	public function initialize(Zikula_Form_View $view)
 	{
+	    parent::initialize();
+	    
 		$dom = ZLanguage::getModuleDomain('MUImage');
 			
 		SessionUtil::delVar('muimagepictureids');
@@ -125,7 +128,7 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 	 *
 	 * This event handler is called when a command is issued by the user.
 	 */
-	public function HandleCommand(Zikula_Form_View $view, &$args)
+	public function handleCommand(Zikula_Form_View $view, &$args)
 	{
 		$albumid = $this->request->getGet()->filter('album', 0, FILTER_SANITIZE_NUMBER_INT);
 			
@@ -140,7 +143,7 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 
 			foreach ($data as $key => $value) {
 				if ($value['size'] > 0) {
-
+				    
 					$entity = new MUImage_Entity_Picture();
 
 					$entityData = array($key => $value);
@@ -228,6 +231,41 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 		}
 		return $message;
 	}
+	
+	/**
+	 * This method executes a certain workflow action.
+	 *
+	 * @param Array $args Arguments from handleCommand method.
+	 *
+	 * @return bool Whether everything worked well or not.
+	 */
+	public function applyAction(array $args = array())
+	{
+	    // get treated entity reference from persisted member var
+	    $entity = $this->entityRef;
+	
+	    $action = $args['commandName'];
+	
+	    try {
+	        // execute the workflow action
+	        $workflowHelper = new MUImage_Util_Workflow($this->view->getServiceManager());
+	        $success = $workflowHelper->executeAction($entity, $action);
+	    } catch(\Exception $e) {
+	        LogUtil::registerError($this->__f('Sorry, but an unknown error occured during the %s action. Please apply the changes again!', array($action)));
+	    }
+	
+	    $this->addDefaultMessage($args, $success);
+	
+	    if ($success && $this->mode == 'create') {
+	        // store new identifier
+	        foreach ($this->idFields as $idField) {
+	            $this->idValues[$idField] = $entity[$idField];
+	        }
+	    }
+	
+	
+	    return $success;
+	}
 
 	/**
 	 * Add success or error message to session.
@@ -235,7 +273,7 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 	 * @param Array   $args    arguments from handleCommand method.
 	 * @param Boolean $success true if this is a success, false for default error.
 	 */
-	protected function addDefaultMessage($args, $success = false)
+	/*protected function addDefaultMessage($args, $success = false)
 	{
 		$message = $this->getDefaultMessage($args, $success);
 		if (!empty($message)) {
@@ -250,7 +288,7 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 	/**
 	 * Input data processing called by handleCommand method.
 	 */
-	public function fetchInputData(Zikula_Form_View $view, &$args)
+	/*public function fetchInputData(Zikula_Form_View $view, &$args)
 	{
 
 		// get treated entity reference from persisted member var
@@ -279,96 +317,99 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 		// get treated entity reference from persisted member var
 		$entity = $this->entityRef;
 
-		$this->updateRelationLinks($entity);
-		//$this->entityManager->transactional(function($entityManager) {
 		$this->entityManager->persist($entity);
 		$this->entityManager->flush();
-		//});
+
 	}
 
-	/**
-	 * Get url to redirect to.
-	 */
-	private function getRedirectUrl($args, $obj, $repeatCreateAction = false)
-	{
-		if ($this->inlineUsage == true) {
-			$urlArgs = array('idp' => $this->idPrefix,
-                'com' => $args['commandName']);
-			$urlArgs = $this->addIdentifiersToUrlArgs($urlArgs);
-			// inline usage, return to special function for closing the Zikula.UI.Window instance
-			return ModUtil::url($this->name, 'user', 'handleInlineRedirect', $urlArgs);
-		}
-
-		if ($repeatCreateAction) {
-			return $this->repeatReturnUrl;
-		}
-
-		// normal usage, compute return url from given redirect code
-		if (!in_array($this->returnTo, $this->getRedirectCodes())) {
-			// invalid return code, so return the default url
-			return $this->getDefaultReturnUrl($args, $obj);
-		}
-
-		// parse given redirect code and return corresponding url
-		switch ($this->returnTo) {
-			case 'admin':
-				return ModUtil::url($this->name, 'admin', 'main');
-			case 'adminView':
-				return ModUtil::url($this->name, 'admin', 'view',
-				array('ot' => $this->objectType));
-			case 'adminDisplay':
-				if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
-					return ModUtil::url($this->name, 'admin', $this->addIdentifiersToUrlArgs());
-				}
-				return $this->getDefaultReturnUrl($args, $obj);
-			case 'user':
-				return ModUtil::url($this->name, 'user', 'main');
-			case 'userView':
-				return ModUtil::url($this->name, 'user', 'view',
-				array('ot' => $this->objectType));
-			case 'userDisplay':
-				if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
-					return ModUtil::url($this->name, 'user', $this->addIdentifiersToUrlArgs());
-				}
-				return $this->getDefaultReturnUrl($args, $obj);
-			case 'adminViewAlbum':
-				return ModUtil::url($this->name, 'admin', 'view',
-				array('ot' => 'album'));
-			case 'adminDisplayAlbum':
-				if (!empty($this->album)) {
-					return ModUtil::url($this->name, 'admin', 'display', array('ot' => 'album', 'id' => $this->album));
-				}
-				return $this->getDefaultReturnUrl($args, $obj);
-			case 'userViewAlbum':
-				return ModUtil::url($this->name, 'user', 'view',
-				array('ot' => 'album'));
-			case 'userDisplayAlbum':
-				if (!empty($this->album)) {
-					return ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $this->album));
-				}
-				return $this->getDefaultReturnUrl($args, $obj);
-			default:
-				return $this->getDefaultReturnUrl($args, $obj);
-		}
-	}
+    /**
+     * Get url to redirect to.
+     *
+     * @param array  $args List of arguments.
+     *
+     * @return string The redirect url.
+     */
+    protected function getRedirectUrl($args)
+    {
+        if ($this->inlineUsage == true) {
+            $urlArgs = array('idPrefix'    => $this->idPrefix,
+                             'commandName' => $args['commandName']);
+            foreach ($this->idFields as $idField) {
+                $urlArgs[$idField] = $this->idValues[$idField];
+            }
+    
+            // inline usage, return to special function for closing the Zikula.UI.Window instance
+            return ModUtil::url($this->name, FormUtil::getPassedValue('type', 'user', 'GETPOST'), 'handleInlineRedirect', $urlArgs);
+        }
+    
+        if ($this->repeatCreateAction) {
+            return $this->repeatReturnUrl;
+        }
+    
+        // normal usage, compute return url from given redirect code
+        if (!in_array($this->returnTo, $this->getRedirectCodes())) {
+            // invalid return code, so return the default url
+            return $this->getDefaultReturnUrl($args);
+        }
+    
+        // parse given redirect code and return corresponding url
+        switch ($this->returnTo) {
+            case 'admin':
+                return ModUtil::url($this->name, 'admin', 'main');
+            case 'adminView':
+                return ModUtil::url($this->name, 'admin', 'view', array('ot' => $this->objectType));
+            case 'adminDisplay':
+                if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
+                    $urlArgs['ot'] = $this->objectType;
+                    foreach ($this->idFields as $idField) {
+                        $urlArgs[$idField] = $this->idValues[$idField];
+                    }
+                    return ModUtil::url($this->name, 'admin', 'display', $urlArgs);
+                }
+                return $this->getDefaultReturnUrl($args);
+            case 'user':
+                return ModUtil::url($this->name, 'user', 'main');
+            case 'userView':
+                return ModUtil::url($this->name, 'user', 'view', array('ot' => $this->objectType));
+            case 'userDisplay':
+                if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
+                    $urlArgs['ot'] = $this->objectType;
+                    foreach ($this->idFields as $idField) {
+                        $urlArgs[$idField] = $this->idValues[$idField];
+                    }
+                    return ModUtil::url($this->name, 'user', 'display', $urlArgs);
+                }
+                return $this->getDefaultReturnUrl($args);
+            case 'adminViewAlbum':
+                return ModUtil::url($this->name, 'admin', 'view', array('ot' => 'album'));
+            case 'adminDisplayAlbum':
+                if (!empty($this->relationPresets['album'])) {
+                    return ModUtil::url($this->name, 'admin', 'display', array('ot' => 'album', 'id' => $this->relationPresets['album']));
+                }
+                return $this->getDefaultReturnUrl($args);
+            case 'userViewAlbum':
+                return ModUtil::url($this->name, 'user', 'view', array('ot' => 'album'));
+            case 'userDisplayAlbum':
+                if (!empty($this->relationPresets['album'])) {
+                    return ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $this->relationPresets['album']));
+                }
+                return $this->getDefaultReturnUrl($args);
+            default:
+                return $this->getDefaultReturnUrl($args);
+        }
+    }
 
 
 	/**
 	 * Reassign options chosen by the user to avoid unwanted form state resets.
 	 * Necessary until issue #23 is solved.
 	 */
-	public function reassignRelatedObjects()
+	/*public function reassignRelatedObjects()
 	{
 		$selectedRelations = array();
 		// reassign the album eventually chosen by the user
 		$selectedRelations['album'] = $this->retrieveRelatedObjects('album', 'muimageAlbum_AlbumItemList', false, 'POST');
 		$this->view->assign('selectedRelations', $selectedRelations);
-	}
-	/**
-	 * Helper method for updating links to related records.
-	 */
-	protected function updateRelationLinks($entity)
-	{
 	}
 
 	/**

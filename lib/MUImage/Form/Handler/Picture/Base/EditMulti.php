@@ -211,7 +211,6 @@ class MUImage_Form_Handler_Picture_Base_EditMulti extends MUImage_Form_Handler_C
         // get the relevant album for redirect
         // with finish editing of just uploaded pictures
     	$albumid = $this->request->query->filter('album', 0, FILTER_SANITIZE_NUMBER_INT);
-    	LogUtil::registerError($args['commandName']);
     	
     	if ($args['commandName'] == 'next') {
     		$args['status'] = 'next';

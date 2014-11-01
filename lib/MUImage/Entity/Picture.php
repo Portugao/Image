@@ -46,14 +46,6 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
      */
     public function prePersistCallback()
     {
-        $request = new Zikula_Request_Http();
-        $func = $request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
-        if ($func == multiUpload) {
-            $this->setWorkflowState('approved');
-        }
-        if ($this->pos == 0) {
-            $this->setPos(1);
-        }
         $this->performPrePersistCallback();
     }
 
@@ -66,6 +58,23 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
      */
     public function postPersistCallback()
     {
+        $request = new Zikula_Request_Http();
+        $func = $request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
+        if ($func == 'multiUpload') {
+            $this->setWorkflowState('approved');
+            $id = $this->getId();
+        
+            $workflowHelper = new Zikula_Workflow('none', 'MUImage');
+        
+            $obj['__WORKFLOW__']['obj_table'] = 'picture';
+            $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';
+            $obj['id'] = $id;
+            $workflowHelper->registerWorkflow($obj, 'approved');
+        }
+        if ($this->pos == 0) {
+            $this->setPos(1);
+        }
+        
         if (!SessionUtil::getVar('muimagepictureids')) {
             $idcollection[] = $this->id;
             $pictureids = serialize($idcollection);
