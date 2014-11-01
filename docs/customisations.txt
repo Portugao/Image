@@ -3,6 +3,9 @@
 CUSTOMISATIONS
 --------------
 
+To change in the model
+
+We have to change field $myFriends to string TODO
 
 MUImage - Manual additions and amendments
 
