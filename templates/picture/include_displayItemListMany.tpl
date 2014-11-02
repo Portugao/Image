@@ -63,9 +63,8 @@
 {/foreach}
 </ul>
 
-{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId }
-{gt text='Save positions' assign='savePositions'}
-<br style="clear: both; "/><input type="submit" value={$savePositions} />
+{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}
+<br style="clear: both; "/><input type="submit" value='{gt text="Save positions"}' />
 </form>
 {/if}
 {/if}
@@ -75,10 +74,11 @@
 
     var MU = jQuery.noConflict();
 
-    MU(function() {
-        MU( "#sortable" ).sortable();
-
-    });
+    {{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}}
+        MU(function() {
+            MU( "#sortable" ).sortable();
+        });
+    {{/if}}
     
    /* MU(".muimage_picture_view_bottom").hover(
         function() {
