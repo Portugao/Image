@@ -38,17 +38,17 @@
                     {formtextinput group='album' id='description' mandatory=false __title='Enter the description of the album' textMode='multiline' rows='6' cols='50' cssClass=''}
                 </div>
 
-                <div class="z-formrow">
-                    {formlabel for='albumAccess' __text='Album access' mandatorysym='1' cssClass=''}
+                <div id="MUImage_Albumaccess" class="z-formrow">
+                    {formlabel for='albumAccess' __text='Album access' mandatorysym='1' cssClass='accessSelect'}
                     {formdropdownlist group='album' id='albumAccess' mandatory=true __title='Choose the album access' selectionMode='single'}
                 </div>
 
-                <div class="z-formrow">
+                <div id="MUImage_Myfriends" class="z-formrow" style="display: none">
                     {formlabel for='myFriends' __text='My friends' cssClass=''}
                     {formtextinput group='album' id='myFriends' mandatory=false readOnly=false __title='Enter your friends (comma seperated)!' textMode='singleline' maxLength=255 cssClass='' }
                 </div>
                                 
-                <div class="z-formrow">
+                <div id="MUImage_Password" class="z-formrow" style="display: none">
                     {formlabel for='passwordAccess' __text='Password access' cssClass=''}
                     {formtextinput group='album' id='passwordAccess' mandatory=false readOnly=false __title='Enter the password access of the album' textMode='password' maxLength=255 cssClass='' }
                 </div>
@@ -58,21 +58,21 @@
                     {formcheckbox group='album' id='notInFrontend' readOnly=false __title='not in frontend ?' cssClass='' }
                 </div>
                 {/if}
-            </fieldset>
-        {include file='helper/include_categories_edit.tpl' obj=$album groupName='albumObj'}
-{if $mode eq 'create'}
-<input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$savedParent}">
-<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
-{else}
-{if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
-{if $inAdminGroup eq true}
-<p class="z-informationmsg">{gt text='Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!'}</p>
-<p class="z-informationmsg">{gt text='So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!'}</p>
-{/if}
-{if $inAdminGroup eq false}
-<p class="z-informationmsg">{gt text='Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!'}</p>
-{/if}
-<fieldset>
+                </fieldset>
+                {include file='helper/include_categories_edit.tpl' obj=$album groupName='albumObj'}
+                {if $mode eq 'create'}
+                    <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$savedParent}">
+                    <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
+                {else}
+                {if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
+                 {if $inAdminGroup eq true}
+                <p class="z-informationmsg">{gt text='Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!'}</p>
+                <p class="z-informationmsg">{gt text='So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!'}</p>
+            {/if}
+            {if $inAdminGroup eq false}
+                <p class="z-informationmsg">{gt text='Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!'}</p>
+            {/if}
+      <fieldset>
 <legend>{gt text='Main album'}</legend>
 <div class="z-formrow">
 {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
@@ -134,43 +134,74 @@
 {icon type='edit' size='extrasmall' assign='editImageArray'}
 {icon type='delete' size='extrasmall' assign='deleteImageArray'}
 <script type="text/javascript" charset="utf-8">
-/* <![CDATA[ */
-var editImage = '<img src="{{$editImageArray.src}}" width="16" height="16" alt="" />';
-var removeImage = '<img src="{{$deleteImageArray.src}}" width="16" height="16" alt="" />';
-var relationHandler = new Array();
-var newItem = new Object();
-newItem['ot'] = 'album';
-newItem['alias'] = 'Parent';
-newItem['prefix'] = 'muimageAlbum_ParentSelectorDoNew';
-newItem['acInstance'] = null;
-newItem['windowInstance'] = null;
-relationHandler.push(newItem);
-document.observe('dom:loaded', function() {
-muimageInitRelationItemsForm('album', 'muimageAlbum_Parent', true);
-muimageAddCommonValidationRules('album', '{{if $mode eq 'create'}}{{else}}{{$album.id}}{{/if}}');
-// observe button events instead of form submit
-var valid = new Validation('{{$__formid}}', {onSubmit: false, immediate: true, focusOnError: false});
-{{if $mode ne 'create'}}
-var result = valid.validate();
-{{/if}}
-$('{{if $mode eq 'create'}}btnCreate{{else}}btnUpdate{{/if}}').observe('click', function(event) {
-var result = valid.validate();
-if (!result) {
-// validation error, abort form submit
-Event.stop(event);
-} else {
-// hide form buttons to prevent double submits by accident
-$$('div.z-formbuttons input').each(function(btn) {
-btn.hide();
-});
-}
-return result;
-});
-Zikula.UI.Tooltips($$('.muimageFormTooltips'));
-});
-var MU = jQuery.noConflict();
-MU(document).ready( function() {
-MU(".chzn-select").chosen();
-});
+    /* <![CDATA[ */
+        var editImage = '<img src="{{$editImageArray.src}}" width="16" height="16" alt="" />';
+        var removeImage = '<img src="{{$deleteImageArray.src}}" width="16" height="16" alt="" />';
+        var relationHandler = new Array();
+        var newItem = new Object();
+        newItem['ot'] = 'album';
+        newItem['alias'] = 'Parent';
+        newItem['prefix'] = 'muimageAlbum_ParentSelectorDoNew';
+        newItem['acInstance'] = null;
+        newItem['windowInstance'] = null;
+        relationHandler.push(newItem);
+        document.observe('dom:loaded', function() {
+            muimageInitRelationItemsForm('album', 'muimageAlbum_Parent', true);
+            muimageAddCommonValidationRules('album', '{{if $mode eq 'create'}}{{else}}{{$album.id}}{{/if}}');
+        // observe button events instead of form submit
+        var valid = new Validation('{{$__formid}}', {onSubmit: false, immediate: true, focusOnError: false});
+            {{if $mode ne 'create'}}
+                var result = valid.validate();
+            {{/if}}
+        $('{{if $mode eq 'create'}}btnCreate{{else}}btnUpdate{{/if}}').observe('click', function(event) {
+            var result = valid.validate();
+                if (!result) {
+                    // validation error, abort form submit
+                    Event.stop(event);
+                } else {
+                    // hide form buttons to prevent double submits by accident
+                    $$('div.z-formbuttons input').each(function(btn) {
+                        btn.hide();
+                    });
+                }
+                return result;
+                });
+    Zikula.UI.Tooltips($$('.muimageFormTooltips'));
+    });
+    var MU = jQuery.noConflict();
+    MU(document).ready( function() {
+    MU(".chzn-select").chosen();
+    });
+    
+    MU(document).ready( function() {
+    MU("#MUImage_Albumaccess select option:selected").each(
+        function(){
+            if (MU(this).val() == 'friends') {
+                MU("#MUImage_Myfriends").css("display", "block");
+            }
+            if (MU(this).val() == 'known') {
+                MU("#MUImage_Password").css("display", "block");
+            } 
+    });
+    MU("#MUImage_Albumaccess select").change(
+        function(){
+            MU("#MUImage_Albumaccess select option:selected").each(
+                function(){
+                    if (MU(this).val() == 'all' || MU(this).val() == 'users') {
+                        MU("#MUImage_Myfriends").css("display", "none");
+                        MU("#MUImage_Password").css("display", "none");
+                    } 
+                    if (MU(this).val() == 'friends') {
+                        MU("#MUImage_Myfriends").css("display", "block");
+                        MU("#MUImage_Password").css("display", "none");
+                    }
+                    if (MU(this).val() == 'known') {
+                        MU("#MUImage_Password").css("display", "block");
+                        MU("#MUImage_Myfriends").css("display", "none");
+                    } 
+            });        
+    });
+    });
+
 /* ]]> */
 </script>

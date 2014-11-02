@@ -461,26 +461,33 @@ class MUImage_Util_View extends MUImage_Util_Base_View
     {
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
         $thisAlbum = $albumrepository->selectById($albumid);
-        if ($thisAlbum['notInFrontend'] == 1) {
+        if ($thisAlbum['notInFrontend'] == 1 && $thisAlbum['createduserId'] != UserUtil::getVar('uid')) {
             return false;
         }
         if ($thisAlbum['albumAccess'] == 'all' ) {
             return true;
         }
-        if ($thisAlbum['albumAccess'] == 'users' && UserUtil::isLoggedIn()) {
+        if ($thisAlbum['albumAccess'] == 'users' && UserUtil::isLoggedIn() === true) {
             return true;
         }
         if ($thisAlbum['albumAccess'] == 'friends') {
-            $username = UserUtil::getVar('uname', $uid);
-            //$friends = explode(',', $thisAlbum['myFriends']);
-            $friends = $thisAlbum['myFriends'];
-            LogUtil::registerError($friends);
-            if (in_array($username, $friends)) {
+            $userid = UserUtil::getVar('uid');
+            if ($thisAlbum['createdUserId'] == $userid) {
+                return true;
+            }
+            $friends = explode(',', $thisAlbum['myFriends']);
+            foreach ($friends as $friend) {
+                $friendIds[] = UserUtil::getIdFromName($friend);
+            }
+            if (in_array($userid, $friendIds)) {
                 return true;
             }
         }
         if ($thisAlbum['albumAccess'] == 'known') {
-            return true;
+            $userid = UserUtil::getVar('uid');
+            if ($thisAlbum['createdUserId'] == $userid) {
+                return true;
+            }
         }
         
         return false;
