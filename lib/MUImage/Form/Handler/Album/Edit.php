@@ -93,14 +93,14 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
     /**
      * Input data processing called by handleCommand method.
      */
-   /* public function fetchInputData(Zikula_Form_View $view, &$args)
+    public function fetchInputData(Zikula_Form_View $view, &$args)
     {
         parent::fetchInputData($view, $args);
-        
+
         // we want the array with our field values
         $entityData = $formData[$this->objectTypeLower];
         unset($formData[$this->objectTypeLower]);
-        
+
         // get treated entity reference from persisted member var
         $entity = $this->entityRef;
 
@@ -108,28 +108,29 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
 
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
 
-        $entityData = array();
+        //$entityData = array();
 
         $parent = '';
+        // we get parent id
+        $parent = $query->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
+        LogUtil::registerStatus('Edit.php: ' . $parent);
 
         if ($args['commandName'] == 'submit') {
-            // we get parent id
-            $parent = $query->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
 
             if ($parent == 0) {
                 $entityData['Parent'] = null;
             }
             if ($parent > 0) {
                 $album = $albumrepository->selectById($parent);
-                if ($album) {
+                if (is_object($album)) {
                     $entityData['Parent'] = $album;
                 } else {
                     $entityData['Parent'] = null;
                 }
             }
         }
-        if ($args['commandName'] == 'submit' || $args['commandName'] == 'update') {
-            $parent = $this->request->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
+        if ($args['commandName'] == 'update') {
+
             if ($parent[0] > 0 && is_array($parent)) {
                 $album = $albumrepository->selectById($parent[0]);
                 if ($album) {
@@ -139,17 +140,17 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
                 $entityData['Parent'] = null;
             }
         }
-        
+
         // search for relationship plugins to update the corresponding data
         $entityData = $this->writeRelationDataToEntity($view, $entity, $entityData);
-        
+
         // assign fetched data
         $entity->merge($entityData);
-        
+
         // we must persist related items now (after the merge) to avoid validation errors
         // if cascades cause the main entity becoming persisted automatically, too
         $this->persistRelationData($view);
-        
+
         // save updated entity
         $this->entityRef = $entity;
     }
