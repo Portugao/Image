@@ -90,12 +90,24 @@ muimage.finder.handleCancel = function ()
 
 function getPasteSnippet(mode, itemId)
 {
-    var itemUrl, itemTitle, itemDescription, pasteMode;
+    var itemUrl, itemTitle, itemDescription, itemPath, selectedWidth, itemWidth, itemHeight, resultedHeight, pasteMode;
 
     itemUrl = $F('url' + itemId);
     itemTitle = $F('title' + itemId);
     itemDescription = $F('desc' + itemId);
+    itemPath = $F('path' + itemId);
+    selectedWidth = $F('mUImageWidth');
+    itemWidth = $F('path' . itemId);
+    itemHeight = $F('path' . itemId);
+    if (itemWidth >= itemHeight)
+    	ratio = itemHeight / itemWidth;
+    ratio = Math.round(ratio);
+    resultedHeight = selectedWidth * ratio;
     pasteMode = $F('mUImagePasteAs');
+    
+    if (pasteMode === '3') {
+    	return '<img title="' + itemTitle + '" src="' + itemPath + '" width="' + selectedWidth + '" height="' + resultedHeight + '" />';
+    }
 
     if (pasteMode === '2' || pasteMode !== '1') {
         return itemId;
