@@ -43,9 +43,15 @@
                         <option value="3">{gt text='Thumbnail of picture'}</option>
                     </select>
             </div>
-            <br />
+
             <div class="z-formrow">
                 <label for="mUImageWidth">{gt text='Width'}:</label>
+                    <input type="text" id="mUImageWidth" name="width" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
+            </div>
+            
+            <div class="z-formrow">
+                <label for="mUImageHeight">{gt text='Height'}:</label>
+                    <input type="text" id="mUImageHeight" name="height" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
             </div>
 
             <div class="z-formrow">
@@ -59,6 +65,9 @@
                                 <input type="hidden" id="title{$picture.id}" value="{$picture->getTitleFromDisplayPattern()|replace:"\"":""}" />
                                 <input type="hidden" id="desc{$picture.id}" value="{capture assign='description'}{if $picture.description ne ''}{$picture.description}{/if}
                                 {/capture}{$description|strip_tags|replace:"\"":""}" />
+                                <input type="hidden" id="path{$picture.id}" value="{$picture.imageUploadFullPathURL}" />
+                                <input type="hidden" id="width{$picture.id}" value="{$picture.imageUploadMeta.width}" />
+                                <input type="hidden" id="height{$picture.id}" value="{$picture.imageUploadMeta.height}" />
                             </li>
                         {foreachelse}
                             <li>{gt text='No entries found.'}</li>
