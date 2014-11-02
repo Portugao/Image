@@ -93,10 +93,10 @@
         protected $albumAccess = null;
         
         /**
-         * @ORM\Column(type="array")
-         * @var array $myFriends.
+         * @ORM\Column(length=255)
+         * @var string $myFriends.
          */
-        protected $myFriends = array();
+        protected $myFriends = '';
         
         /**
          * @ORM\Column(length=255)
@@ -470,7 +470,7 @@
         /**
          * Get my friends.
          *
-         * @return array
+         * @return string
          */
         public function getMyFriends()
         {
@@ -480,7 +480,7 @@
         /**
          * Set my friends.
          *
-         * @param array $myFriends.
+         * @param string $myFriends.
          *
          * @return void
          */
