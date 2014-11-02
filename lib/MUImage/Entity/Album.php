@@ -190,7 +190,7 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
          
         // we get parent id
-        $parent = $query->query->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
+        $parent = $query->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
 
         if ($parent == 0) {
             $this->setParent(null);
@@ -247,22 +247,6 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
      */
     public function preUpdateCallback()
     {
-        $query = new Zikula_Request_Http();
-        // we get an album repository
-        $albumrepository = MUImage_Util_Model::getAlbumRepository();
-         
-        // we get parent id
-        $parent = $query->query->filter('parent', 0, FILTER_SANITIZE_NUMBER_INT);
-        LogUtil::registerError($parent);
-
-        if ($parent == 0) {
-            $this->setParent(null);
-        }
-        if ($parent > 0) {
-            $album = $albumrepository->selectById($parent);
-            $this->setParent($album);
-        }
-
         $this->performPreUpdateCallback();
     }
 
