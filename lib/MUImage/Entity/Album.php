@@ -27,31 +27,6 @@ use DoctrineExtensions\StandardFields\Mapping\Annotation as ZK;
 class MUImage_Entity_Album extends MUImage_Entity_Base_Album
 {
     /**
-     * Bidirectional - Many children [albums] are linked by one parent [album] (OWNING SIDE).
-     *
-     * @ORM\ManyToOne(targetEntity="MUImage_Entity_Album", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id" )
-     * @var MUImage_Entity_Album $parent.
-     */
-    protected $parent;
-
-    /**
-     * @ORM\Column(type="bigint", nullable=true)
-     * @var integer $parent_id.
-     */
-    protected $parent_id = NULL;
-
-    /**
-     * Bidirectional - One album [album] has many picture [pictures] (INVERSE SIDE).
-     *
-     * @ORM\OneToMany(targetEntity="MUImage_Entity_Picture", mappedBy="album", cascade={"all"})
-     * @ORM\JoinTable(name="muimage_albumpicture")
-     * @ORM\OrderBy({"pos" = "ASC"})
-     * @var MUImage_Entity_Picture[] $picture.
-     */
-    protected $picture = null;
-
-    /**
      * Collect available actions for this entity.
      */
     protected function prepareItemActions()
@@ -185,20 +160,6 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
      */
     public function prePersistCallback()
     {
-        $query = new Zikula_Request_Http();
-        // we get an album repository
-        $albumrepository = MUImage_Util_Model::getAlbumRepository();
-         
-        // we get parent id
-        $parent = $query->request->filter('muimageAlbum_ParentItemList', 0, FILTER_SANITIZE_NUMBER_INT);
-
-        if ($parent == 0) {
-            $this->setParent(null);
-        }
-        if ($parent > 0) {
-            $album = $albumrepository->selectById($parent);
-            $this->setParent($album);
-        }
         $this->performPrePersistCallback();
     }
 
