@@ -90,18 +90,24 @@ muimage.finder.handleCancel = function ()
 
 function getPasteSnippet(mode, itemId)
 {
-    var itemUrl, itemTitle, itemDescription, itemPath, selectedWidth, itemWidth, itemHeight, resultedHeight, pasteMode;
+    var itemUrl, itemTitle, itemDescription, itemPath, selectedWidth, itemWidth, itemHeight, ratio, ratio2, resultedHeight, pasteMode;
 
     itemUrl = $F('url' + itemId);
     itemTitle = $F('title' + itemId);
     itemDescription = $F('desc' + itemId);
     itemPath = $F('path' + itemId);
     selectedWidth = $F('mUImageWidth');
-    itemWidth = $F('path' . itemId);
-    itemHeight = $F('path' . itemId);
-    if (itemWidth >= itemHeight)
+    itemWidth = $F('width' + itemId);
+    itemHeight = $F('height' + itemId);
+    ratio = '';
+    ratio2 = '';
+    if (itemWidth >= itemHeight) {
     	ratio = itemHeight / itemWidth;
-    ratio = Math.round(ratio);
+    }
+    if (itemWidth < itemHeight) {
+    	ratio = itemWidth / itemHeight;
+    }
+    ratio2 = Math.round(ratio);
     resultedHeight = selectedWidth * ratio;
     pasteMode = $F('mUImagePasteAs');
     
@@ -295,7 +301,7 @@ muimage.itemSelector.updatePreview = function ()
 
     selectedElement = items[0];
     if (muimage.itemSelector.selectedId > 0) {
-        for (var i = 0; i < items.length; ++i) {
+        for (i = 0; i < items.length; ++i) {
             if (items[i].id === muimage.itemSelector.selectedId) {
                 selectedElement = items[i];
                 break;

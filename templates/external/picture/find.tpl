@@ -46,13 +46,13 @@
 
             <div class="z-formrow">
                 <label for="mUImageWidth">{gt text='Width'}:</label>
-                    <input type="text" id="mUImageWidth" name="width" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
+                    <input type="text" id="mUImageWidth" name="mUImageWidth" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
             </div>
             
-            <div class="z-formrow">
+           {* <div class="z-formrow">
                 <label for="mUImageHeight">{gt text='Height'}:</label>
-                    <input type="text" id="mUImageHeight" name="height" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
-            </div>
+                    <input type="text" id="mUImageHeight" name="mUImageHeight" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
+            </div> *}
 
             <div class="z-formrow">
                 <label for="mUImageObjectId">{gt text='Picture'}:</label>
