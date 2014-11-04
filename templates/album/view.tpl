@@ -263,10 +263,16 @@
 		{/if}
 		{if $accessThisAlbum eq 2}
 		<div class="muimage_view_album_container">
-		    <div class="muimage_view_album_container_form">
+		    <div class="muimage_album_title">
+			    {$album.title|truncate:30}
+			</div>
+			<div class="muimage_album_description">
+			</div>
+		    <div class="muimage_album_container_form">
 		        {usergetvar name='uname' uid=$album.createdUserId assign='username'}
 		        {gt text='This album is saved with a password by'}: {$username}<br /><br />
-                {include file='album/enterPassword.tpl'}
+		        {gt text=$album.id assign='albumid'}
+                {include file='album/enterPassword.tpl' id=$albumid}
 		    </div>
 		</div>
 		{/if}

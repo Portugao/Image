@@ -74,6 +74,8 @@
 		<h3 class="z-acc-header">{gt text='SubAlbums'}</h3> 
 		<div id="muimage_albums" class="z-acc-content">
 		    {foreach item='childAlbum' from=$album.children}
+		    {muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}
+		    {if $accessThisAlbum eq 1}
 			<div class="muimage_album_container">
 			    <div class="muimage_album_title">
 				<a title="{$childAlbum.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$childAlbum.id`"}">{$childAlbum.title|truncate:30}</a>
@@ -113,6 +115,22 @@
 				{gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}
 			    </div>
 			</div>
+			{/if}
+			{if $accessThisAlbum eq 2}
+			<div class="muimage_album_container">
+			<div class="muimage_album_title">
+			    {$childAlbum.title|truncate:30}
+			</div>
+			<div class="muimage_album_description">
+			</div>
+		    <div class="muimage_album_container_form">
+		        {usergetvar name='uname' uid=$childAlbum.createdUserId assign='username'}
+		        <span>{gt text='This album is saved with a password by'}: {$username}<br /><br /></span>
+		        {gt text=$childAlbum.id assign='albumid'}
+                {include file='album/enterPassword.tpl' id=$albumid}
+		    </div>
+		</div>
+		{/if}
 		    {/foreach}
 		</div>
 		{/if}
