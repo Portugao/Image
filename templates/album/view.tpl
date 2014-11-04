@@ -213,8 +213,8 @@
 	{if isset($items)}
 	    {foreach item='album' from=$items}
 		{if $album.parent eq NULL}
-		    {muimageCheckAlbumAccess albumid=$album.id assign='albumAccess'}
-		    {if $albumAccess eq true}
+		    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
+		    {if $accessThisAlbum eq 1}
 		    <div class="muimage_view_album_container">
 			<div class="muimage_view_album_title">
 			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:25}</a>
@@ -233,7 +233,6 @@
 					{icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
 					</a>                    
 				   {/if}
-
 				{/foreach}
 				{/strip}
 			    {/if}
@@ -261,6 +260,15 @@
 			{gt text='Pictures'}: {$album.picture|@count}
             </div>
 		    </div>
+		{/if}
+		{if $accessThisAlbum eq 2}
+		<div class="muimage_view_album_container">
+		    <div class="muimage_view_album_container_form">
+		        {usergetvar name='uname' uid=$album.createdUserId assign='username'}
+		        {gt text='This album is saved with a password by'}: {$username}<br /><br />
+                {include file='album/enterPassword.tpl'}
+		    </div>
+		</div>
 		{/if}
 		{/if}
 	    {/foreach}

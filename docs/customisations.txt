@@ -11,7 +11,7 @@ MUImage - Manual additions and amendments
 
 changed files
 
-
+*javascript/MUImage_finder.js
 *styles/style.css
 *templates/admin/config.tpl
 

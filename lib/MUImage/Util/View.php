@@ -375,7 +375,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
      * @param int $id user id
      * @return array
      */
-    public static function myAlbums($id) 
+    public static function myAlbums($id)
     {
         $uid = UserUtil::getVar('uid');
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
@@ -415,7 +415,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
      *
      * @return string $out
      */
-    public static function contingent() 
+    public static function contingent()
     {
         $dom = ZLanguage::getModuleDomain('MUImage');
 
@@ -453,43 +453,60 @@ class MUImage_Util_View extends MUImage_Util_Base_View
         return $out;
 
     }
-    
+
     /**
-     * 
+     *
      */
     public static function checkAlbumAccess($albumid)
     {
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
         $thisAlbum = $albumrepository->selectById($albumid);
         if ($thisAlbum['notInFrontend'] == 1 && $thisAlbum['createduserId'] != UserUtil::getVar('uid')) {
-            return false;
+            return 0;
         }
         if ($thisAlbum['albumAccess'] == 'all' ) {
-            return true;
+            return 1;
         }
         if ($thisAlbum['albumAccess'] == 'users' && UserUtil::isLoggedIn() === true) {
-            return true;
+            return 1;
         }
         if ($thisAlbum['albumAccess'] == 'friends') {
             $userid = UserUtil::getVar('uid');
             if ($thisAlbum['createdUserId'] == $userid) {
-                return true;
+                return 1;
             }
             $friends = explode(',', $thisAlbum['myFriends']);
-            foreach ($friends as $friend) {
-                $friendIds[] = UserUtil::getIdFromName($friend);
+            if (is_array($friends)) {
+                foreach ($friends as $friend) {
+                    $friendIds[] = UserUtil::getIdFromName($friend);
+                }
             }
-            if (in_array($userid, $friendIds)) {
-                return true;
+            if (is_array($friendIds)) {
+                if (in_array($userid, $friendIds)) {
+                    return 1;
+                }
             }
         }
         if ($thisAlbum['albumAccess'] == 'known') {
             $userid = UserUtil::getVar('uid');
             if ($thisAlbum['createdUserId'] == $userid) {
-                return true;
+                return 1;
+            } else {
+                $passwordArray = SessionUtil::getVar('muimagePasswordArray');
+                if (is_array($passwordArray)) {
+                    foreach ($passwordArray as $key => $password) {
+                        if ($key == $thisAlbum['id'] && $password = $thisAlbum['passwordAccess']) {
+                            return 1;
+                        }
+                    }
+                    return 2;
+
+                } else {
+                    return 2;
+                }
             }
         }
-        
+
         return false;
     }
 

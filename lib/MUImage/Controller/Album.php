@@ -193,4 +193,36 @@ class MUImage_Controller_Album extends MUImage_Controller_Base_Album
         }
 
     }
+
+    public function enterPassword()
+    {
+        $dom = ZLanguage::getModuleDomain($this->name);
+        
+        $albumid = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+        if ($albumid == 0) {
+            $url = ModUtil::url($this->name, 'user', 'view', array('lct' => 'user'));
+            return System::redirect($url);
+        }
+        $password = $this->request->request->filter('albumPassword', 0);
+
+        $albumrepository = $this->getEntityManager()->getRepository('MUImage_Entity_Album');
+        $thisalbum = $albumrepository->findOneBy(array('id' => $albumid));
+        if ($thisalbum['passwordAccess'] == $password) {
+            $passwordData[$albumid] = $password;
+            if (!SessionUtil::getVar('muimagePasswordArray')) {
+            SessionUtil::setVar('muimagePasswordArray', $passwordData);
+            } else {
+                $passwordSession = SessionUtil::getVar('muimagePasswordArray');
+                $passwordSession[$albumid] = $password;
+                SessionUtil::setVar('muimagePasswordArray', $passwordSession);
+            }
+            $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumid));
+            LogUtil::registerStatus(__('Congratulation! You have access to this album now.', $dom));
+            return System::redirect($url);
+        } else {
+            $url = ModUtil::url($this->name, 'user', 'view', array('lct' => 'user'));
+            LogUtil::registerError(__('Sorry. You did not enter the correct password.', $dom));
+            return System::redirect($url);
+        }
+    }
 }
