@@ -61,8 +61,8 @@
                 </fieldset>
                 {include file='helper/include_categories_edit.tpl' obj=$album groupName='albumObj'}
                 {if $mode eq 'create'}
-                    <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$savedParent}">
-                    <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
+                    <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList[]" value="{$savedParent}">
+                    <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="1">
                 {else}
                 {if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
                  {if $inAdminGroup eq true}
@@ -77,7 +77,7 @@
 <div class="z-formrow">
 {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
 {formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select'}
-<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="1">
+<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
 </div>
 </fieldset>
 {if $mainAlbumMode eq D}
@@ -87,7 +87,7 @@
 {if $mainAlbumMode eq 4}
 <p class="z-warningmsg">{gt text='Attention! This album is on first level and you have no quotas to change!'}</p>
 {/if}
-<input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList" value="{$savedParent}">
+<input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList[]" value="{$savedParent}">
 <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
 {/if}
 {* {include file='album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'}
