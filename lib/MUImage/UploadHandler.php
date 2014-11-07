@@ -174,7 +174,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
                 $maxSizeMB = $maxSizeKB / 1024;
                 $maxSizeMB = DataUtil::formatNumber($maxSizeMB);
                 $fileName = $file['name'];
-                LogUtil::registerError(__f('Error! Your file is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
+                LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
                 return false;
             }
 
@@ -189,6 +189,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $isValidExtension = $this->isAllowedFileExtension($objectType, $fieldName, $extension);
         if ($isValidExtension === false) {
             LogUtil::registerError(__('Error! This file type is not allowed. Please choose another file format.', $dom));
+            return false;
             	
         }
 
