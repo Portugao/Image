@@ -78,8 +78,8 @@
                     <option value="description"{if $sort eq 'description'} selected="selected"{/if}>{gt text='Description'}</option>
                     <option value="parent_id"{if $sort eq 'parent_id'} selected="selected"{/if}>{gt text='Parent_id'}</option>
                     <option value="albumAccess"{if $sort eq 'albumAccess'} selected="selected"{/if}>{gt text='Album access'}</option>
-                    <option value="myFriends"{if $sort eq 'myFriends'} selected="selected"{/if}>{gt text='My friends'}</option>
                     <option value="passwordAccess"{if $sort eq 'passwordAccess'} selected="selected"{/if}>{gt text='Password access'}</option>
+                    <option value="myFriends"{if $sort eq 'myFriends'} selected="selected"{/if}>{gt text='My friends'}</option>
                     <option value="notInFrontend"{if $sort eq 'notInFrontend'} selected="selected"{/if}>{gt text='Not in frontend'}</option>
                     <option value="createdDate"{if $sort eq 'createdDate'} selected="selected"{/if}>{gt text='Creation date'}</option>
                     <option value="createdUserId"{if $sort eq 'createdUserId'} selected="selected"{/if}>{gt text='Creator'}</option>

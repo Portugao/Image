@@ -216,11 +216,6 @@ class MUImage_Util_Base_ListEntries extends Zikula_AbstractBase
                           'title'   => '',
                           'image'   => '',
                           'default' => false);
-        $states[] = array('value'   => 'forme',
-                          'text'    => $this->__('Only for me'),
-                          'title'   => '',
-                          'image'   => '',
-                          'default' => false);
     
         return $states;
     }

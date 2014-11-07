@@ -51,13 +51,13 @@
           <element xmi:type="modulestudio:ListField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.3"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jcKl1zd2EeSyeo3guurVmQ"/>
         </children>
-        <children xmi:type="notation:Node" xmi:id="_jcLM5Dd2EeSyeo3guurVmQ" type="3112">
-          <element xmi:type="modulestudio:ArrayField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.4"/>
-          <layoutConstraint xmi:type="notation:Location" xmi:id="_jcLM5Td2EeSyeo3guurVmQ"/>
-        </children>
         <children xmi:type="notation:Node" xmi:id="_jcLM5jd2EeSyeo3guurVmQ" type="3104">
-          <element xmi:type="modulestudio:StringField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.5"/>
+          <element xmi:type="modulestudio:ArrayField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.4"/>
           <layoutConstraint xmi:type="notation:Location" xmi:id="_jcLM5zd2EeSyeo3guurVmQ"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_06jwUGXOEeS8HdNamd0A6g" type="3104">
+          <element xmi:type="modulestudio:StringField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.5"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_06jwUWXOEeS8HdNamd0A6g"/>
         </children>
         <children xmi:type="notation:Node" xmi:id="_nYTrQDd2EeSyeo3guurVmQ" type="3101">
           <element xmi:type="modulestudio:BooleanField" href="MUImage.mostapp#//@models.0/@entities.0/@fields.6"/>

@@ -93,6 +93,7 @@ class MUImage_Api_Base_Search extends Zikula_AbstractApi
                     $whereArray[] = 'tbl.description';
                     $whereArray[] = 'tbl.albumAccess';
                     $whereArray[] = 'tbl.passwordAccess';
+                    $whereArray[] = 'tbl.myFriends';
                     break;
                 case 'picture':
                     $whereArray[] = 'tbl.workflowState';

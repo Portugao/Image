@@ -48,8 +48,8 @@ class MUImage_Entity_Repository_Base_Album extends EntityRepository
             'description',
             'album',
             'albumAccess',
-            'myFriends',
             'passwordAccess',
+            'myFriends',
             'notInFrontend',
             'createdUserId',
             'updatedUserId',
@@ -694,6 +694,8 @@ class MUImage_Entity_Repository_Base_Album extends EntityRepository
             $where .= 'tbl.albumAccess = \'' . $fragment . '\'';
             $where .= ((!empty($where)) ? ' OR ' : '');
             $where .= 'tbl.passwordAccess LIKE \'%' . $fragment . '%\'';
+            $where .= ((!empty($where)) ? ' OR ' : '');
+            $where .= 'tbl.myFriends LIKE \'%' . $fragment . '%\'';
         } else {
             $where .= ((!empty($where)) ? ' OR ' : '');
             $where .= 'tbl.title LIKE \'%' . $fragment . '%\'';
@@ -705,6 +707,8 @@ class MUImage_Entity_Repository_Base_Album extends EntityRepository
             $where .= 'tbl.albumAccess = \'' . $fragment . '\'';
             $where .= ((!empty($where)) ? ' OR ' : '');
             $where .= 'tbl.passwordAccess LIKE \'%' . $fragment . '%\'';
+            $where .= ((!empty($where)) ? ' OR ' : '');
+            $where .= 'tbl.myFriends LIKE \'%' . $fragment . '%\'';
         }
         $where = '(' . $where . ')';
     

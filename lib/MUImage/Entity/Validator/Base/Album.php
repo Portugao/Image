@@ -51,6 +51,10 @@ class MUImage_Entity_Validator_Base_Album extends MUImage_Validator
             $errorInfo['message'] = __f('Error! Length of field value must not be higher than %2$s (%1$s).', array('password access', 255), $dom);
             return $errorInfo;
         }
+        if (!$this->isStringNotLongerThan('myFriends', 255)) {
+            $errorInfo['message'] = __f('Error! Length of field value must not be higher than %2$s (%1$s).', array('my friends', 255), $dom);
+            return $errorInfo;
+        }
         if (!$this->isValidBoolean('notInFrontend')) {
             $errorInfo['message'] = __f('Error! Field value must be a valid boolean (%s).', array('not in frontend'), $dom);
             return $errorInfo;

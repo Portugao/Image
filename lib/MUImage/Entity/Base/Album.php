@@ -94,15 +94,15 @@
         
         /**
          * @ORM\Column(length=255)
-         * @var string $myFriends.
-         */
-        protected $myFriends = '';
-        
-        /**
-         * @ORM\Column(length=255)
          * @var string $passwordAccess.
          */
         protected $passwordAccess = '';
+        
+        /**
+         * @ORM\Column(length=255)
+         * @var string $myFriends.
+         */
+        protected $myFriends = '';
         
         /**
          * @ORM\Column(type="boolean")
@@ -164,6 +164,7 @@
          *
          * @ORM\OneToMany(targetEntity="MUImage_Entity_Picture", mappedBy="album", cascade={"all"})
          * @ORM\JoinTable(name="muimage_albumpicture")
+         * @ORM\OrderBy({"pos" = "ASC"})
          * @var MUImage_Entity_Picture[] $picture.
          */
         protected $picture = null;
@@ -468,30 +469,6 @@
         }
         
         /**
-         * Get my friends.
-         *
-         * @return string
-         */
-        public function getMyFriends()
-        {
-            return $this->myFriends;
-        }
-        
-        /**
-         * Set my friends.
-         *
-         * @param string $myFriends.
-         *
-         * @return void
-         */
-        public function setMyFriends($myFriends)
-        {
-            if ($myFriends != $this->myFriends) {
-                $this->myFriends = $myFriends;
-            }
-        }
-        
-        /**
          * Get password access.
          *
          * @return string
@@ -512,6 +489,30 @@
         {
             if ($passwordAccess != $this->passwordAccess) {
                 $this->passwordAccess = $passwordAccess;
+            }
+        }
+        
+        /**
+         * Get my friends.
+         *
+         * @return string
+         */
+        public function getMyFriends()
+        {
+            return $this->myFriends;
+        }
+        
+        /**
+         * Set my friends.
+         *
+         * @param string $myFriends.
+         *
+         * @return void
+         */
+        public function setMyFriends($myFriends)
+        {
+            if ($myFriends != $this->myFriends) {
+                $this->myFriends = $myFriends;
             }
         }
         
@@ -797,8 +798,8 @@
             $this->formatTextualField('description', $currentFunc, $usesCsvOutput);
             $this['parent_id'] = (int) ((isset($this['parent_id']) && !empty($this['parent_id'])) ? DataUtil::formatForDisplay($this['parent_id']) : 0);
             $this->formatTextualField('albumAccess', $currentFunc, $usesCsvOutput, true);
-            $this['myFriends'] = ((isset($this['myFriends']) && is_array($this['myFriends'])) ? DataUtil::formatForDisplay($this['myFriends']) : array());
             $this->formatTextualField('passwordAccess', $currentFunc, $usesCsvOutput);
+            $this->formatTextualField('myFriends', $currentFunc, $usesCsvOutput);
             $this['notInFrontend'] = (bool) $this['notInFrontend'];
         
             $this->prepareItemActions();
