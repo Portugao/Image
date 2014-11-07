@@ -36,11 +36,10 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $this->allowedObjectTypes = array('picture');
         $this->imageFileTypes = array('gif', 'jpeg', 'jpg', 'png');
         $this->forbiddenFileTypes = array('cgi', 'pl', 'asp', 'phtml', 'php', 'php3', 'php4', 'php5', 'exe', 'com', 'bat', 'jsp', 'cfm', 'shtml');
-        $filesize = ModUtil::getVar('MUImage', 'fileSize');
         $this->allowedFileSizes = array('picture' => array('imageUpload' => $filesize));
 
     }
-    
+
     /**
      * Process a file upload.
      *
@@ -53,21 +52,21 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
     public function performFileUpload($objectType, $fileData, $fieldName)
     {
         $dom = ZLanguage::getModuleDomain('MUImage');
-    
+
         $result = array('fileName' => '',
                 'metaData' => array());
-    
+
         // check whether uploads are allowed for the given object type
         if (!in_array($objectType, $this->allowedObjectTypes)) {
             return $result;
         }
-    
+
         // perform validation
         if (!$this->validateFileUpload($objectType, $fileData[$fieldName], $fieldName)) {
             // skip this upload field
             return $result;
         }
-    
+
         // retrieve the final file name
         $fileName = $fileData[$fieldName]['name'];
         $fileNameParts = explode('.', $fileName);
@@ -75,10 +74,10 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $extension = str_replace('jpeg', 'jpg', $extension);
         $fileNameParts[count($fileNameParts) - 1] = $extension;
         $fileName = implode('.', $fileNameParts);
-    
+
         $serviceManager = ServiceUtil::getManager();
         $controllerHelper = new MUImage_Util_Controller($serviceManager);
-    
+
         // retrieve the final file name
         try {
             $basePath = $controllerHelper->getFileBaseFolder($objectType, $fieldName);
@@ -86,14 +85,14 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
             return LogUtil::registerError($e->getMessage());
         }
         $fileName = $this->determineFileName($objectType, $fieldName, $basePath, $fileName, $extension);
-    
+
         if (!move_uploaded_file($fileData[$fieldName]['tmp_name'], $basePath . $fileName)) {
             return LogUtil::registerError(__('Error! Could not move your file to the destination folder.', $dom));
         }
-        
+
         $maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
         $maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
-        
+
         if (ModUtil::getVar('MUImage', 'shrinkPictures') == 1) {
             $imagine = new Imagine();
             $image = $imagine->open($basePath . $fileName);
@@ -103,34 +102,34 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
             $ratio = $imageHeight / $imageWidth;
             $ratio = round($ratio, 2);
             if ($imageWidth >= $imageHeight) {
-            if ($imageWidth > $maxWidth) {
-                $newWidth = $maxWidth;
-                $newHeight = $newWidth * $ratio;
-            } else {
-                $newWidth = $imageWidth;
-                $newHeight = $imageHeight;
-            }
+                if ($imageWidth > $maxWidth) {
+                    $newWidth = $maxWidth;
+                    $newHeight = $newWidth * $ratio;
+                } else {
+                    $newWidth = $imageWidth;
+                    $newHeight = $imageHeight;
+                }
             }
             if ($imageHeight > $imageWidth) {
-            if ($imageHeight > $maxHeight) {
-                $newHeight = $maxHeight;
-                $newWidth = $newHeight / $ratio;
-            } else {
-                $newHeight = $imageHeight;
-                $newWidth = $imageWidth;
-            }
+                if ($imageHeight > $maxHeight) {
+                    $newHeight = $maxHeight;
+                    $newWidth = $newHeight / $ratio;
+                } else {
+                    $newHeight = $imageHeight;
+                    $newWidth = $imageWidth;
+                }
             }
             if ($newWidth != $imageWidth || $newHeight != $imageHeight) {
-            $image->resize(new Box($newWidth, $newHeight));
-            //$image->crop(new Point(0, 0), new Box($newWidth, $newHeight));
-            $image->save($basePath . $fileName);
+                $image->resize(new Box($newWidth, $newHeight));
+                //$image->crop(new Point(0, 0), new Box($newWidth, $newHeight));
+                $image->save($basePath . $fileName);
             }
         }
-    
+
         // collect data to return
         $result['fileName'] = $fileName;
         $result['metaData'] = $this->readMetaDataForFile($fileName, $basePath . $fileName);
-    
+
         return $result;
     }
 
@@ -154,7 +153,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
             return LogUtil::registerError(__('Error! No file found.', $dom));
         }
 
-        $maxSize = $this->allowedFileSizes[$objectType][$fieldName];
+        $maxSize = ModUtil::getVar('MUImage', 'fileSize');
 
         if ($maxSize > 0) {
 
@@ -190,7 +189,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         if ($isValidExtension === false) {
             LogUtil::registerError(__('Error! This file type is not allowed. Please choose another file format.', $dom));
             return false;
-            	
+             
         }
 
         // validate image file
