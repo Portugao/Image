@@ -125,7 +125,7 @@
 			</div>
 		    <div class="muimage_album_container_form">
 		        {usergetvar name='uname' uid=$childAlbum.createdUserId assign='username'}
-		        <span>{gt text='This album is saved with a password by'}: {$username}<br /><br /></span>
+		        {gt text='This album is saved with a password by'}: {$username}<br /><br />
 		        {gt text=$childAlbum.id assign='albumid'}
                 {include file='album/enterPassword.tpl' id=$albumid}
 		    </div>
