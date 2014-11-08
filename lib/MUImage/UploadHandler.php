@@ -36,7 +36,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $this->allowedObjectTypes = array('picture');
         $this->imageFileTypes = array('gif', 'jpeg', 'jpg', 'png');
         $this->forbiddenFileTypes = array('cgi', 'pl', 'asp', 'phtml', 'php', 'php3', 'php4', 'php5', 'exe', 'com', 'bat', 'jsp', 'cfm', 'shtml');
-        $this->allowedFileSizes = array('picture' => array('imageUpload' => $filesize));
+        //$this->allowedFileSizes = array('picture' => array('imageUpload' => $filesize));
 
     }
 
@@ -144,13 +144,16 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
     protected function validateFileUpload($objectType, $file, $fieldName)
     {
         $dom = ZLanguage::getModuleDomain('MUImage');
+        
+        $result = true;
 
         // check if a file has been uploaded properly without errors
         if ((!is_array($file)) || (is_array($file) && ($file['error'] != '0'))) {
             if (is_array($file)) {
                 return $this->handleError($file);
             }
-            return LogUtil::registerError(__('Error! No file found.', $dom));
+            LogUtil::registerError(__('Error! No file found.', $dom));
+            $result = false;
         }
 
         $maxSize = ModUtil::getVar('MUImage', 'fileSize');
@@ -166,7 +169,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
                     $maxSizeKB = DataUtil::formatNumber($maxSizeKB);
                     $fileName = $file['name'];
                     LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s kilobytes.', array($fileName, $maxSizeKB), $dom));
-                    return false;
+                    $result = false;
 
                 }
 
@@ -174,9 +177,8 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
                 $maxSizeMB = DataUtil::formatNumber($maxSizeMB);
                 $fileName = $file['name'];
                 LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
-                return false;
+                $result = false;
             }
-
         }
 
         // extract file extension
@@ -188,7 +190,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $isValidExtension = $this->isAllowedFileExtension($objectType, $fieldName, $extension);
         if ($isValidExtension === false) {
             LogUtil::registerError(__('Error! This file type is not allowed. Please choose another file format.', $dom));
-            return false;
+            $result = false;
              
         }
 
@@ -207,25 +209,25 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
                 if ($imgInfo[0] < $requiredWidth) {
                     LogUtil::registerError(__('Sorry! Your picture does not have the required width.', $dom));
                     $url = ModUtil::url('MUImage', 'user', 'view');
-                    return false;
+                    $result = false;
                 }
             }
             if ($maxWidth != '') {
                 if ($imgInfo[0] > $maxWidth && ModUtil::getVar('MUImage', 'shrinkPictures') == 0) {
                     LogUtil::registerError(__('Sorry! Your picture is wider than allowed.', $dom));
                     $url = ModUtil::url('MUImage', 'user', 'view');
-                    return false;
+                    $result = false;
                 }
             }
             if ($maxHeight != '') {
                 if ($imgInfo[1] > $maxHeight && ModUtil::getVar('MUImage', 'shrinkPictures') == 0) {
                     LogUtil::registerError(__('Sorry! Your picture is higher than allowed.', $dom));
                     $url = ModUtil::url('MUImage', 'user', 'view');
-                    return false;
+                    $result = false;
                 }
             }
         }
 
-        return true;
+        return $result;
     }
 }

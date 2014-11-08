@@ -19,10 +19,6 @@
  */
 class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler_Common_Edit
 {
-	/**
-	 * Persistent member vars
-	 */
-
     /**
      * Pre-initialise hook.
      *
@@ -31,11 +27,11 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
     public function preInitialize()
     {
         parent::preInitialize();
-    
+
         $this->objectType = 'picture';
         $this->objectTypeCapital = 'Picture';
         $this->objectTypeLower = 'picture';
-    
+
         $this->hasPageLockSupport = true;
         $this->hasCategories = false;
         // array with upload fields and mandatory flags
@@ -44,283 +40,290 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
         $this->listFields = array('workflowState' => false);
     }
 
-	/**
-	 * Initialize form handler.
-	 *
-	 * This method takes care of all necessary initialisation of our data and form states.
-	 *
-	 * @return boolean False in case of initialization errors, otherwise true.
-	 */
-	public function initialize(Zikula_Form_View $view)
-	{
-	    parent::initialize();
-	    
-		$dom = ZLanguage::getModuleDomain('MUImage');
-			
-		SessionUtil::delVar('muimagepictureids');
-		
-		$allowedFields = MUImage_Util_Controller::allowedFields();
-		
-		$fileSize = MUImage_Util_Controller::maxSize();
-		
-		// we check for required width for pictures
-		$minWidth = MUImage_Util_Controller::minWidth();
-		// we check for maximum width for pictures
-		$maxWidth = MUImage_Util_Controller::maxWidth();
-		// we check for maximum height for pictures
-		$maxHeight = MUImage_Util_Controller::maxHeight();
-			
-		$this->view->assign('allowedFields', $allowedFields)
-		           ->assign('minWidth', $minWidth)
-		           ->assign('maxWidth', $maxWidth)
-		           ->assign('maxHeight', $maxHeight)
-		           ->assign('fileSize', $fileSize);
+    /**
+     * Initialize form handler.
+     *
+     * This method takes care of all necessary initialisation of our data and form states.
+     *
+     * @return boolean False in case of initialization errors, otherwise true.
+     */
+    public function initialize(Zikula_Form_View $view)
+    {
+        parent::initialize($view);
+         
+        $dom = ZLanguage::getModuleDomain('MUImage');
+         
+        SessionUtil::delVar('muimagepictureids');
 
-		// everything okay, no initialization errors occured
-		return true;
-	}
+        $allowedFields = MUImage_Util_Controller::allowedFields();
 
-	/**
-	 * Post-initialise hook.
-	 *
-	 * @return void
-	 */
-	public function postInitialize()
-	{
-		parent::postInitialize();
-	}
+        $fileSize = MUImage_Util_Controller::maxSize();
 
-	/**
-	 * Get list of allowed redirect codes.
-	 */
-	protected function getRedirectCodes()
-	{
-		// admin list of albums
-		$codes[] = 'adminViewAlbum';
-		// admin display page of treated album
-		$codes[] = 'adminDisplayAlbum';
-		// user list of albums
-		$codes[] = 'userViewAlbum';
-		// user display page of treated album
-		$codes[] = 'userDisplayAlbum';
-		return $codes;
-	}
+        // we check for required width for pictures
+        $minWidth = MUImage_Util_Controller::minWidth();
+        // we check for maximum width for pictures
+        $maxWidth = MUImage_Util_Controller::maxWidth();
+        // we check for maximum height for pictures
+        $maxHeight = MUImage_Util_Controller::maxHeight();
+         
+        $this->view->assign('allowedFields', $allowedFields)
+        ->assign('minWidth', $minWidth)
+        ->assign('maxWidth', $maxWidth)
+        ->assign('maxHeight', $maxHeight)
+        ->assign('fileSize', $fileSize);
 
-	/**
-	 * Get the default redirect url. Required if no returnTo parameter has been supplied.
-	 * This method is called in handleCommand so we know which command has been performed.
-	 */
-	protected function getDefaultReturnUrl($args, $obj)
-	{
-		// redirect to the list of pictures
-		$viewArgs = array('ot' => $this->objectType);
-		$url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
+        // everything okay, no initialization errors occured
+        return true;
+    }
 
-		if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
-			// redirect to the detail page of treated picture
-			$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'picture', 'id' => $this->idValues['id']));
-		}
-		return $url;
-	}
+    /**
+     * Post-initialise hook.
+     *
+     * @return void
+     */
+    public function postInitialize()
+    {
+        parent::postInitialize();
+    }
 
-	/**
-	 * Command event handler.
-	 *
-	 * This event handler is called when a command is issued by the user.
-	 */
-	public function handleCommand(Zikula_Form_View $view, &$args)
-	{
-		$albumid = $this->request->getGet()->filter('album', 0, FILTER_SANITIZE_NUMBER_INT);
-			
-		if ($args['commandName'] == 'submit') {
+    /**
+     * Get list of allowed redirect codes.
+     */
+    protected function getRedirectCodes()
+    {
+        // admin list of albums
+        $codes[] = 'adminViewAlbum';
+        // admin display page of treated album
+        $codes[] = 'adminDisplayAlbum';
+        // user list of albums
+        $codes[] = 'userViewAlbum';
+        // user display page of treated album
+        $codes[] = 'userDisplayAlbum';
+        return $codes;
+    }
 
-			$entityClass = $this->name . '_Entity_' . ucfirst($this->objectType);
-			$repository = $this->entityManager->getRepository($entityClass);
+    /**
+     * Get the default redirect url. Required if no returnTo parameter has been supplied.
+     * This method is called in handleCommand so we know which command has been performed.
+     */
+    protected function getDefaultReturnUrl($args, $obj)
+    {
+        // redirect to the list of pictures
+        $viewArgs = array('ot' => $this->objectType);
+        $url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
 
-			// fetch posted data input values as an associative array
-			$formData = $this->view->getValues();
-			$data = $formData[$this->objectTypeLower];
+        if ($args['commandName'] != 'delete' && !($this->mode == 'create' && $args['commandName'] == 'cancel')) {
+            // redirect to the detail page of treated picture
+            $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'picture', 'id' => $this->idValues['id']));
+        }
+        return $url;
+    }
 
-			foreach ($data as $key => $value) {
-				if ($value['size'] > 0) {
-				    
-					$entity = new MUImage_Entity_Picture();
+    /**
+     * Command event handler.
+     *
+     * This event handler is called when a command is issued by the user.
+     */
+    public function handleCommand(Zikula_Form_View $view, &$args)
+    {
+        $albumid = $this->request->getGet()->filter('album', 0, FILTER_SANITIZE_NUMBER_INT);
+         
+        if ($args['commandName'] == 'submit') {
 
-					$entityData = array($key => $value);
+            $entityClass = $this->name . '_Entity_' . ucfirst($this->objectType);
+            $repository = $this->entityManager->getRepository($entityClass);
 
-					$this->uploadFields = array($key => false);
-					//$upload
-					$entityData = $this->handleUploads($entityData, $entity);
+            // fetch posted data input values as an associative array
+            $formData = $this->view->getValues();
+            $data = $formData[$this->objectTypeLower];
+
+            foreach ($data as $key => $value) {
+                if ($value['size'] > 0) {
+
+                    $entity = new MUImage_Entity_Picture();
+
+                    $entityData = array($key => $value);
+
+                    $this->uploadFields = array($key => false);
+                    //$upload
+                    $entityData = $this->handleUploads($entityData, $entity);
                     // if upload failed go to next file to upload
-					if ($entityData == false) {
-						continue;
-					}
+                    $uploaded = $entityData[$key];
 
-					// save the entered datas to the allowed upload field
-					$entityData['imageUpload'] = $entityData[$key];
-					unset($entityData[$key]);
-					$entityData['imageUploadMeta'] = $entityData[$key . 'Meta'];
-					unset($entityData[$key . 'Meta']);
+                    if ($uploaded == '') {
+                        continue;
+                    }
+                    if ($uploaded != '') {
 
-					// get the selected album as object
-					$albumrepository = MUImage_Util_Model::getAlbumRepository();
-					$album = $albumrepository->selectById($albumid);
-					$entityData['Album'] = $album;
+                        // save the entered datas to the allowed upload field
+                        $entityData['imageUpload'] = $entityData[$key];
+                        unset($entityData[$key]);
+                        $entityData['imageUploadMeta'] = $entityData[$key . 'Meta'];
+                        unset($entityData[$key . 'Meta']);
 
-					// set a default title and the correct data for imageupload
-					$entity->setTitle($this->__('Please enter title...'));
-					$entity->setImageUpload($entityData['imageUpload']);
+                        // get the selected album as object
+                        $albumrepository = MUImage_Util_Model::getAlbumRepository();
+                        $album = $albumrepository->selectById($albumid);
+                        $entityData['Album'] = $album;
 
-					// assign fetched data
-					$entity->merge($entityData);
+                        // set a default title and the correct data for imageupload
+                        $entity->setTitle($this->__('Please enter title...'));
+                        $entity->setImageUpload($entityData['imageUpload']);
 
-					// save updated entity
-					$this->entityRef = $entity;
+                        // assign fetched data
+                        $entity->merge($entityData);
 
-					$this->performUpdate($args);
+                        // save updated entity
+                        $this->entityRef = $entity;
 
-					$success = true;
+                        $this->performUpdate($args);
 
-					// default message
-					$this->addDefaultMessage($args, $success);
+                        $success = true;
 
-				}
-				else {
-					continue;
-				}
-			}
-			$pictureids = SessionUtil::getVar('muimagepictureids');
-			$pictures = unserialize($pictureids);
-			$id = $pictures[0];
-			$url = ModUtil::url($this->name, 'picture', 'editMulti', array('ot' => 'picture', 'id' => $id, 'album' => $albumid));
-			return $this->view->redirect($url);
+                        // default message
+                        $this->addDefaultMessage($args, $success);
+                    }
+                }
+                else {
+                    continue;
+                }
+            }
+            $pictureids = SessionUtil::getVar('muimagepictureids');
+            $pictures = unserialize($pictureids);
+            if ($pictures) {
+                $id = $pictures[0];
+                $url = ModUtil::url($this->name, 'picture', 'editMulti', array('ot' => 'picture', 'id' => $id, 'album' => $albumid));
+            } else {
+                $url = ModUtil::url($this->name, 'picture', 'multiUpload', array('ot' => 'picture', 'album' => $albumid));
+            }
+            return System::redirect($url);
 
-		}
-			
-		if ($args['commandName'] == 'cancel') {
-			$url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumid));
-			return $this->view->redirect($url);
+        }
+         
+        if ($args['commandName'] == 'cancel') {
+            $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumid));
+            return $this->view->redirect($url);
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Get success or error message for default operations.
-	 *
-	 * @param Array   $args    arguments from handleCommand method.
-	 * @param Boolean $success true if this is a success, false for default error.
-	 * @return String desired status or error message.
-	 */
-	protected function getDefaultMessage($args, $success = false)
-	{
-		if ($success !== true) {
-			return parent::getDefaultMessage($args, $success);
-		}
+    /**
+     * Get success or error message for default operations.
+     *
+     * @param Array   $args    arguments from handleCommand method.
+     * @param Boolean $success true if this is a success, false for default error.
+     * @return String desired status or error message.
+     */
+    protected function getDefaultMessage($args, $success = false)
+    {
+        if ($success !== true) {
+            return parent::getDefaultMessage($args, $success);
+        }
 
-		$message = '';
-		switch ($args['commandName']) {
-			case 'create':
-				$message = $this->__('Done! Image uploaded.');
-				break;
-			case 'update':
-				$message = $this->__('Done! Picture updated.');
-				break;
-			case 'update':
-				$message = $this->__('Done! Picture deleted.');
-				break;
-		}
-		return $message;
-	}
-	
-	/**
-	 * This method executes a certain workflow action.
-	 *
-	 * @param Array $args Arguments from handleCommand method.
-	 *
-	 * @return bool Whether everything worked well or not.
-	 */
-	public function applyAction(array $args = array())
-	{
-	    // get treated entity reference from persisted member var
-	    $entity = $this->entityRef;
-	
-	    $action = $args['commandName'];
-	
-	    try {
-	        // execute the workflow action
-	        $workflowHelper = new MUImage_Util_Workflow($this->view->getServiceManager());
-	        $success = $workflowHelper->executeAction($entity, $action);
-	    } catch(\Exception $e) {
-	        LogUtil::registerError($this->__f('Sorry, but an unknown error occured during the %s action. Please apply the changes again!', array($action)));
-	    }
-	
-	    $this->addDefaultMessage($args, $success);
-	
-	    if ($success && $this->mode == 'create') {
-	        // store new identifier
-	        foreach ($this->idFields as $idField) {
-	            $this->idValues[$idField] = $entity[$idField];
-	        }
-	    }
-	
-	
-	    return $success;
-	}
+        $message = '';
+        switch ($args['commandName']) {
+            case 'submit':
+                $message = $this->__('Done! Picture uploaded.');
+                break;
+            case 'update':
+                $message = $this->__('Done! Picture updated.');
+                break;
+            case 'delete':
+                $message = $this->__('Done! Picture deleted.');
+                break;
+        }
+        return $message;
+    }
 
-	/**
-	 * Add success or error message to session.
-	 *
-	 * @param Array   $args    arguments from handleCommand method.
-	 * @param Boolean $success true if this is a success, false for default error.
-	 */
-	/*protected function addDefaultMessage($args, $success = false)
-	{
-		$message = $this->getDefaultMessage($args, $success);
-		if (!empty($message)) {
-			if ($success === true) {
-				LogUtil::registerStatus($message);
-			} else {
-				LogUtil::registerError($message);
-			}
-		}
-	}
+    /**
+     * This method executes a certain workflow action.
+     *
+     * @param Array $args Arguments from handleCommand method.
+     *
+     * @return bool Whether everything worked well or not.
+     */
+    public function applyAction(array $args = array())
+    {
+        // get treated entity reference from persisted member var
+        $entity = $this->entityRef;
 
-	/**
-	 * Input data processing called by handleCommand method.
-	 */
-	/*public function fetchInputData(Zikula_Form_View $view, &$args)
-	{
+        $action = $args['commandName'];
 
-		// get treated entity reference from persisted member var
-		$entity = $this->entityRef;
+        try {
+            // execute the workflow action
+            $workflowHelper = new MUImage_Util_Workflow($this->view->getServiceManager());
+            $success = $workflowHelper->executeAction($entity, $action);
+        } catch(\Exception $e) {
+            LogUtil::registerError($this->__f('Sorry, but an unknown error occured during the %s action. Please apply the changes again!', array($action)));
+        }
 
-		$entityData = array();
+        $this->addDefaultMessage($args, $success);
 
-		$this->reassignRelatedObjects();
-		$entityData['Album'] = ((isset($selectedRelations['album'])) ? $selectedRelations['album'] : $this->retrieveRelatedObjects('album', 'muimageAlbum_AlbumItemList', false, 'POST'));
+        if ($success && $this->mode == 'create') {
+            // store new identifier
+            foreach ($this->idFields as $idField) {
+                $this->idValues[$idField] = $entity[$idField];
+            }
+        }
 
-		// assign fetched data
-		if (count($entityData) > 0) {
-			$entity->merge($entityData);
-		}
 
-		// save updated entity
-		$this->entityRef = $entity;
-	}
-	/**
-	 * Executing insert and update statements
-	 *
-	 * @param Array   $args    arguments from handleCommand method.
-	 */
-	public function performUpdate($args)
-	{
-		// get treated entity reference from persisted member var
-		$entity = $this->entityRef;
+        return $success;
+    }
 
-		$this->entityManager->persist($entity);
-		$this->entityManager->flush();
+    /**
+     * Add success or error message to session.
+     *
+     * @param Array   $args    arguments from handleCommand method.
+     * @param Boolean $success true if this is a success, false for default error.
+     */
+    /*protected function addDefaultMessage($args, $success = false)
+     {
+    $message = $this->getDefaultMessage($args, $success);
+    if (!empty($message)) {
+    if ($success === true) {
+    LogUtil::registerStatus($message);
+    } else {
+    LogUtil::registerError($message);
+    }
+    }
+    }
 
-	}
+    /**
+    * Input data processing called by handleCommand method.
+    */
+    /*public function fetchInputData(Zikula_Form_View $view, &$args)
+     {
+
+    // get treated entity reference from persisted member var
+    $entity = $this->entityRef;
+
+    $entityData = array();
+
+    $this->reassignRelatedObjects();
+    $entityData['Album'] = ((isset($selectedRelations['album'])) ? $selectedRelations['album'] : $this->retrieveRelatedObjects('album', 'muimageAlbum_AlbumItemList', false, 'POST'));
+
+    // assign fetched data
+    if (count($entityData) > 0) {
+    $entity->merge($entityData);
+    }
+
+    // save updated entity
+    $this->entityRef = $entity;
+    }
+    /**
+    * Executing insert and update statements
+    *
+    * @param Array   $args    arguments from handleCommand method.
+    */
+    public function performUpdate($args)
+    {
+        // get treated entity reference from persisted member var
+        $entity = $this->entityRef;
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+    }
 
     /**
      * Get url to redirect to.
@@ -333,25 +336,25 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
     {
         if ($this->inlineUsage == true) {
             $urlArgs = array('idPrefix'    => $this->idPrefix,
-                             'commandName' => $args['commandName']);
+                    'commandName' => $args['commandName']);
             foreach ($this->idFields as $idField) {
                 $urlArgs[$idField] = $this->idValues[$idField];
             }
-    
+
             // inline usage, return to special function for closing the Zikula.UI.Window instance
             return ModUtil::url($this->name, FormUtil::getPassedValue('type', 'user', 'GETPOST'), 'handleInlineRedirect', $urlArgs);
         }
-    
+
         if ($this->repeatCreateAction) {
             return $this->repeatReturnUrl;
         }
-    
+
         // normal usage, compute return url from given redirect code
         if (!in_array($this->returnTo, $this->getRedirectCodes())) {
             // invalid return code, so return the default url
             return $this->getDefaultReturnUrl($args);
         }
-    
+
         // parse given redirect code and return corresponding url
         switch ($this->returnTo) {
             case 'admin':
@@ -400,85 +403,85 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
     }
 
 
-	/**
-	 * Reassign options chosen by the user to avoid unwanted form state resets.
-	 * Necessary until issue #23 is solved.
-	 */
-	/*public function reassignRelatedObjects()
-	{
-		$selectedRelations = array();
-		// reassign the album eventually chosen by the user
-		$selectedRelations['album'] = $this->retrieveRelatedObjects('album', 'muimageAlbum_AlbumItemList', false, 'POST');
-		$this->view->assign('selectedRelations', $selectedRelations);
-	}
+    /**
+     * Reassign options chosen by the user to avoid unwanted form state resets.
+     * Necessary until issue #23 is solved.
+     */
+    /*public function reassignRelatedObjects()
+     {
+    $selectedRelations = array();
+    // reassign the album eventually chosen by the user
+    $selectedRelations['album'] = $this->retrieveRelatedObjects('album', 'muimageAlbum_AlbumItemList', false, 'POST');
+    $this->view->assign('selectedRelations', $selectedRelations);
+    }
 
-	/**
-	 * Helper method to process upload fields
-	 */
-	protected function handleUploads($formData, $existingObject)
-	{
-		if (!count($this->uploadFields)) {
-			return $formData;
-		}
+    /**
+    * Helper method to process upload fields
+    */
+    protected function handleUploads($formData, $existingObject)
+    {
+        if (!count($this->uploadFields)) {
+            return $formData;
+        }
 
-		// initialise the upload handler
-		$uploadManager = new MUImage_UploadHandler();
-		$existingObjectData = $existingObject->toArray();
+        // initialise the upload handler
+        $uploadManager = new MUImage_UploadHandler();
+        $existingObjectData = $existingObject->toArray();
 
-		// process all fields
-		foreach ($this->uploadFields as $uploadField => $isMandatory) {
-			// check if an existing file must be deleted
-			$hasOldFile = (!empty($existingObjectData[$uploadField]));
-			$hasBeenDeleted = !$hasOldFile;
-			if ($this->mode != 'create') {
-				if (isset($formData[$uploadField . 'DeleteFile'])) {
-					if ($hasOldFile && $formData[$uploadField . 'DeleteFile'] === true) {
-						// remove upload file (and image thumbnails)
-						$existingObjectData = $uploadManager->deleteUploadFile($this->objectType, $existingObjectData, $uploadField);
-						if (empty($existingObjectData[$uploadField])) {
-							$existingObject[$uploadField] = '';
-						}
-					}
-					unset($formData[$uploadField . 'DeleteFile']);
-					$hasBeenDeleted = true;
-				}
-			}
+        // process all fields
+        foreach ($this->uploadFields as $uploadField => $isMandatory) {
+            // check if an existing file must be deleted
+            $hasOldFile = (!empty($existingObjectData[$uploadField]));
+            $hasBeenDeleted = !$hasOldFile;
+            if ($this->mode != 'create') {
+                if (isset($formData[$uploadField . 'DeleteFile'])) {
+                    if ($hasOldFile && $formData[$uploadField . 'DeleteFile'] === true) {
+                        // remove upload file (and image thumbnails)
+                        $existingObjectData = $uploadManager->deleteUploadFile($this->objectType, $existingObjectData, $uploadField);
+                        if (empty($existingObjectData[$uploadField])) {
+                            $existingObject[$uploadField] = '';
+                        }
+                    }
+                    unset($formData[$uploadField . 'DeleteFile']);
+                    $hasBeenDeleted = true;
+                }
+            }
 
-			// look whether a file has been provided
-			if (!$formData[$uploadField] || $formData[$uploadField]['size'] == 0) {
-				// no file has been uploaded
-				unset($formData[$uploadField]);
-				// skip to next one
-				continue;
-			}
+            // look whether a file has been provided
+            if (!$formData[$uploadField] || $formData[$uploadField]['size'] == 0) {
+                // no file has been uploaded
+                unset($formData[$uploadField]);
+                // skip to next one
+                continue;
+            }
 
-			if ($hasOldFile && $hasBeenDeleted !== true && $this->mode != 'create') {
-				// remove old upload file (and image thumbnails)
-				$existingObjectData = $uploadManager->deleteUploadFile($this->objectType, $existingObjectData, $uploadField);
-				if (empty($existingObjectData[$uploadField])) {
-					$existingObject[$uploadField] = '';
-				}
-			}
+            if ($hasOldFile && $hasBeenDeleted !== true && $this->mode != 'create') {
+                // remove old upload file (and image thumbnails)
+                $existingObjectData = $uploadManager->deleteUploadFile($this->objectType, $existingObjectData, $uploadField);
+                if (empty($existingObjectData[$uploadField])) {
+                    $existingObject[$uploadField] = '';
+                }
+            }
 
-			// do the actual upload (includes validation, physical file processing and reading meta data)
-			$uploadResult = $uploadManager->performFileUpload($this->objectType, $formData, $uploadField);
-			if ($uploadResult == false) {
-				return false;
-			}
-			// assign the upload file name
-			$formData[$uploadField] = $uploadResult['fileName'];
-			// assign the meta data
-			$formData[$uploadField . 'Meta'] = $uploadResult['metaData'];
+            // do the actual upload (includes validation, physical file processing and reading meta data)
+            $uploadResult = $uploadManager->performFileUpload($this->objectType, $formData, $uploadField);
+            if ($uploadResult == false) {
+                return false;
+            }
+            // assign the upload file name
+            $formData[$uploadField] = $uploadResult['fileName'];
+            // assign the meta data
+            $formData[$uploadField . 'Meta'] = $uploadResult['metaData'];
 
-			// if current field is mandatory check if everything has been done
-			if ($isMandatory && $formData[$uploadField] === false) {
-				// mandatory upload has not been completed successfully
-				return false;
-			}
+            // if current field is mandatory check if everything has been done
+            if ($isMandatory && $formData[$uploadField] === false) {
+                // mandatory upload has not been completed successfully
+                return false;
+            }
 
-			// upload succeeded
-		}
+            // upload succeeded
+        }
 
-		return $formData;
-	}
+        return $formData;
+    }
 }
