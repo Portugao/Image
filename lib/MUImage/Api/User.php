@@ -99,8 +99,10 @@ class MUImage_Api_User extends MUImage_Api_Base_User
 	
 		// initialise object type
 		$utilArgs = array('controller' => 'user', 'action' => 'encodeurl');
-		$allowedObjectTypes = MUImage_Util_Controller::getObjectTypes('api', $utilArgs);
-		$objectType = ((isset($args['args']['ot']) && in_array($args['args']['ot'], $allowedObjectTypes)) ? $args['args']['ot'] : MUImage_Util_Controller::getDefaultObjectType('api', $utilArgs));
+		$serviceManager = ServiceUtil::getManager();
+		$controllerHelper = new MUImage_Util_Controller($serviceManager);
+		$allowedObjectTypes = $controllerHelper->getObjectTypes('api', $utilArgs);
+		$objectType = ((isset($args['args']['ot']) && in_array($args['args']['ot'], $allowedObjectTypes)) ? $args['args']['ot'] : $controllerHelper->getDefaultObjectType('api', $utilArgs));
 	
 		// initialise group folder
 		$groupFolder = $routerFacade->getGroupingFolderFromObjectType($objectType, $args['func'], $args['args']);
