@@ -494,8 +494,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
             } else {
                 $passwordArray = SessionUtil::getVar('muimagePasswordArray');
                 if (is_array($passwordArray)) {
-                    foreach ($passwordArray as $key => $password) {
-                        if ($key == $thisAlbum['id'] && $password = $thisAlbum['passwordAccess']) {
+                    foreach ($passwordArray as $key => $password) {            
+                        if ($key == $thisAlbum['id'] && $password == $thisAlbum['passwordAccess']) {
                             return 1;
                         }
                     }

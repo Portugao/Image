@@ -16,14 +16,14 @@
  */
 class MUImage_ContentType_ItemList extends MUImage_ContentType_Base_ItemList
 {
-    private $objectType;
-    private $albums;
-    private $width;
-    private $height;
-    private $sorting;
-    private $amount;
-    private $template;
-    private $filter;
+    protected $objectType;
+    protected $albums;
+    protected $width;
+    protected $height;
+    protected $sorting;
+    protected $amount;
+    protected $template;
+    protected $filter;
 
     public function getModule()
     {
