@@ -171,6 +171,106 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
     }
     
     /**
+     * This method provides a item detail view.
+     *
+     * @param int     $id           Identifier of entity to be shown.
+     * @param string  $tpl          Name of alternative template (to be used instead of the default template).
+     * @param boolean $raw          Optional way to display a template instead of fetching it (required for standalone output).
+     *
+     * @return mixed Output.
+     */
+    public function display()
+    {
+        $dom = ZLanguage::getModuleDomain($this->name); 
+        
+        $legacyControllerType = $this->request->query->filter('lct', 'user', FILTER_SANITIZE_STRING);
+        System::queryStringSetVar('type', $legacyControllerType);
+        $this->request->query->set('type', $legacyControllerType);
+    
+        $controllerHelper = new MUImage_Util_Controller($this->serviceManager);
+    
+        // parameter specifying which type of objects we are treating
+        $objectType = 'picture';
+        $utilArgs = array('controller' => 'picture', 'action' => 'display');
+        $permLevel = $legacyControllerType == 'admin' ? ACCESS_ADMIN : ACCESS_READ;
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel), LogUtil::getErrorMsgPermission());
+        $entityClass = $this->name . '_Entity_' . ucfirst($objectType);
+        $repository = $this->entityManager->getRepository($entityClass);
+        $repository->setControllerArguments(array());
+    
+        $idFields = ModUtil::apiFunc($this->name, 'selection', 'getIdFields', array('ot' => $objectType));
+    
+        // retrieve identifier of the object we wish to view
+        $idValues = $controllerHelper->retrieveIdentifier($this->request, array(), $objectType, $idFields);
+        $hasIdentifier = $controllerHelper->isValidIdentifier($idValues);
+    
+        // check for unique permalinks (without id)
+        $hasSlug = false;
+        $slug = '';
+        if ($hasIdentifier === false) {
+            $entityClass = $this->name . '_Entity_' . ucfirst($objectType);
+            $meta = $this->entityManager->getClassMetadata($entityClass);
+            $hasSlug = $meta->hasField('slug') && $meta->isUniqueField('slug');
+            if ($hasSlug) {
+                $slug = $this->request->query->filter('slug', '', FILTER_SANITIZE_STRING);
+                $hasSlug = (!empty($slug));
+            }
+        }
+        $hasIdentifier |= $hasSlug;
+    
+        $this->throwNotFoundUnless($hasIdentifier, $this->__('Error! Invalid identifier received.'));
+    
+        $selectionArgs = array('ot' => $objectType, 'id' => $idValues);
+    
+        $entity = ModUtil::apiFunc($this->name, 'selection', 'getEntity', $selectionArgs);
+        $this->throwNotFoundUnless($entity != null, $this->__('No such item.'));
+        unset($idValues);
+        
+        // OWN CODE
+        $pictureAccess = MUImage_Util_View::checkAlbumAccess($entity['album']['id']);
+        // if no access redirect to the overview
+        if ($pictureAccess == 0 || $pictureAccess == 2) {
+            $url = ModUtil::url($this->name, 'user', 'view');
+            LogUtil::registerError(__('Sorry! You have no access to this picture.', $dom));
+            return System::redirect($url);
+        }      
+        // OWN CODE
+    
+        $entity->initWorkflow();
+    
+        // build ModUrl instance for display hooks; also create identifier for permission check
+        $currentUrlArgs = $entity->createUrlArgs();
+        $instanceId = $entity->createCompositeIdentifier();
+        $currentUrlArgs['id'] = $instanceId; // TODO remove this
+        $currentUrlObject = new Zikula_ModUrl($this->name, 'picture', 'display', ZLanguage::getLanguageCode(), $currentUrlArgs);
+    
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . ':' . ucfirst($objectType) . ':', $instanceId . '::', $permLevel), LogUtil::getErrorMsgPermission());
+    
+        $viewHelper = new MUImage_Util_View($this->serviceManager);
+        $templateFile = $viewHelper->getViewTemplate($this->view, $objectType, 'display', array());
+    
+        // set cache id
+        $component = $this->name . ':' . ucfirst($objectType) . ':';
+        $instance = $instanceId . '::';
+        $accessLevel = ACCESS_READ;
+        if (SecurityUtil::checkPermission($component, $instance, ACCESS_COMMENT)) {
+            $accessLevel = ACCESS_COMMENT;
+        }
+        if (SecurityUtil::checkPermission($component, $instance, ACCESS_EDIT)) {
+            $accessLevel = ACCESS_EDIT;
+        }
+        $this->view->setCacheId($objectType . '|' . $instanceId . '|a' . $accessLevel);
+    
+        // assign output data to view object.
+        $this->view->assign($objectType, $entity)
+        ->assign('currentUrlObject', $currentUrlObject)
+        ->assign($repository->getAdditionalTemplateParameters('controllerAction', $utilArgs));
+    
+        // fetch and return the appropriate template
+        return $viewHelper->processTemplate($this->view, $objectType, 'display', array(), $templateFile);
+    }
+    
+    /**
      * This is a custom method. Documentation for this will be improved in later versions.
      *
      * @return mixed Output.
