@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-08 21:39+0000\n"
+"POT-Creation-Date: 2014-11-16 18:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,56 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: javascript/MUImage.js:57
+#: javascript/MUImage.js:223
 msgid "Error"
 msgstr ""
 
-#: javascript/MUImage.js:62
+#: javascript/MUImage.js:228
 msgid "Success"
 msgstr ""
 
-#: javascript/MUImage_validation.js:8
+#: javascript/MUImage_editFunctions.js:358
+msgid "Action has been completed."
+msgstr ""
+
+#: javascript/MUImage_editFunctions.js:358
+msgid "Information"
+msgstr ""
+
+#: javascript/MUImage_validation.js:139
 msgid "No spaces"
 msgstr ""
 
-#: javascript/MUImage_validation.js:12
-msgid "Please select a valid html colour code."
+#: javascript/MUImage_validation.js:142
+msgid "Please select a valid file extension."
 msgstr ""
 
-#: javascript/MUImage_validation.js:16 javascript/MUImage_validation.js:26
-#: javascript/MUImage_validation.js:36
-msgid "Please select a value in the past."
-msgstr ""
-
-#: javascript/MUImage_validation.js:21 javascript/MUImage_validation.js:31
-#: javascript/MUImage_validation.js:40
-msgid "Please select a value in the future."
-msgstr ""
-
-#: javascript/MUImage_validation.js:44
+#: javascript/MUImage_validation.js:145
 msgid "This value is already assigned, but must be unique. Please change it."
-msgstr ""
-
-#: javascript/MUImage_finder.js:47
-msgid "Choose an image of an MUImage album"
-msgstr ""
-
-#: javascript/MUImage_finder.js:53
-msgid "Load albums"
-msgstr ""
-
-#: javascript/MUImage_finder.js:59
-msgid "Load images of the selected album"
-msgstr ""
-
-#: javascript/MUImage_finder.js:65
-msgid "Choose an image with a kind of inclusion!"
-msgstr ""
-
-#: javascript/MUImage_finder.js:71
-msgid "Reload albums"
-msgstr ""
-
-#: javascript/MUImage_finder.js:75 javascript/MUImage_finder.js:118
-msgid "Close"
 msgstr ""
