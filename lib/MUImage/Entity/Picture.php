@@ -257,7 +257,7 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
                             'linkText' => __('Reuse', $dom)
                     );*/
                 }
-                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE) && (MUImage_Util_View::isAdmin())) {
+                if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_DELETE) && (MUImage_Util_View::isAdmin() == true)) {
                     $this->_actions[] = array(
                             'url' => array('type' => 'user', 'func' => 'delete', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
                             'icon' => 'delete',
