@@ -188,25 +188,25 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
                         'icon' => 'preview',
                         'linkTitle' => __('Open preview page', $dom),
                         'linkText' => __('Preview', $dom)
-                ); */
+                ); 
                 $this->_actions[] = array(
                         'url' => array('type' => 'admin', 'func' => 'display', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
                         'icon' => 'display',
                         'linkTitle' => str_replace('"', '', $this['title']),
                         'linkText' => __('Details', $dom)
-                );
+                ); */
             }
 
             if (in_array($currentFunc, array('main', 'view', 'display'))) {
                 if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
 
-                    $this->_actions[] = array(
+                   /* $this->_actions[] = array(
                             'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
                             'icon' => 'edit',
                             'linkTitle' => __('Edit', $dom),
                             'linkText' => __('Edit', $dom)
                     );
-                    /* $this->_actions[] = array(
+                     $this->_actions[] = array(
                      'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'astemplate' => $this['id'])),
                             'icon' => 'saveas',
                             'linkTitle' => __('Reuse for new item', $dom),

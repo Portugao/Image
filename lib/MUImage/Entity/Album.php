@@ -57,13 +57,13 @@ class MUImage_Entity_Album extends MUImage_Entity_Base_Album
             if (in_array($currentFunc, array('main', 'view', 'display'))) {
                 if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
 
-                    $this->_actions[] = array(
+                   /* $this->_actions[] = array(
                             'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'id' => $this['id'])),
                             'icon' => 'edit',
                             'linkTitle' => __('Edit', $dom),
                             'linkText' => __('Edit', $dom)
                     );
-                    /*  $this->_actions[] = array(
+                      $this->_actions[] = array(
                      'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'album', 'astemplate' => $this['id'])),
                             'icon' => 'saveas',
                             'linkTitle' => __('Reuse for new item', $dom),
