@@ -81,14 +81,15 @@
           <a href="{modurl modname='MUImage' type=$lct func='display' ot='album'  id=$picture.Album.id}">{strip}
             {$picture.Album->getTitleFromDisplayPattern()|default:""}
           {/strip}</a>
-          <a id="albumItem{$picture.Album.id}Display" href="{modurl modname='MUImage' type=$lct func='display' ot='album'  id=$picture.Album.id' theme='Printer' forcelongurl=true}" title="{gt text='Open quick view window'}" class="z-hide">{icon type='view' size='extrasmall' __alt='Quick view'}</a>
+          {*
+          <a id="albumItem{$picture.Album.id}Display" href="{modurl modname='MUImage' type=$lct func='display' ot='album'  id=$picture.Album.id theme='Printer' forcelongurl=true}" title="{gt text='Open quick view window'}" class="z-hide">{icon type='view' size='extrasmall' __alt='Quick view'}</a>
           <script type="text/javascript">
           /* <![CDATA[ */
               document.observe('dom:loaded', function() {
                   muimageInitInlineWindow($('albumItem{{$picture.Album.id}}Display'), '{{$picture.Album->getTitleFromDisplayPattern()|replace:"'":""}}');
               });
           /* ]]> */
-          </script>
+          </script> *}
           {else}
             {$picture.Album->getTitleFromDisplayPattern()|default:""}
           {/if}
