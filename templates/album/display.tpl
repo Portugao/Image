@@ -60,7 +60,14 @@
 		    <div id="muimage_pictures_content">
 		    {if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
 		    {if $template eq 1}
+		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}
+                <form method="post" action="{modurl modname='MUImage' type='picture' func='savePosition'}">
+            {/if}
 		    {include file='picture/include_displayItemListMany.tpl' items=$album.picture}
+		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}
+            <br style="clear: both; "/><input type="submit" value='{gt text="Save positions"}' />
+            </form>
+            {/if}
 		    {/if}
 		    {if $template eq 2}
 		    {include file='picture/slideshow.tpl' items=$album.picture}

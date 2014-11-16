@@ -1,8 +1,6 @@
 {* purpose of this template: inclusion template for display of related Pictures in user area *}
 
 {if isset($items) && $items ne null}
-
-<form method="post" action="{modurl modname='MUImage' type='picture' func='savePosition'}">
 <ul id="sortable">
 {foreach name='relLoop' item='item' from=$items}
 <li class="ui-state-default">
@@ -62,11 +60,6 @@
 </li>   
 {/foreach}
 </ul>
-
-{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}
-<br style="clear: both; "/><input type="submit" value='{gt text="Save positions"}' />
-</form>
-{/if}
 {/if}
 
 <script type="text/javascript" charset="utf-8">
