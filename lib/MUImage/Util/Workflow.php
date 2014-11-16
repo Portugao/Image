@@ -16,5 +16,46 @@
  */
 class MUImage_Util_Workflow extends MUImage_Util_Base_Workflow
 {
-    // feel free to add your own convenience methods here
+    /**
+     * Retrieve the available actions for a given entity object.
+     *
+     * @param \Zikula_EntityAccess $entity The given entity instance.
+     *
+     * @return array List of available workflow actions.
+     */
+    public function getActionsForObject($entity)
+    {
+        // get the type of action
+        $type = $this->request->query->filter('type', 'admin', FILTER_SANITIZE_STRING);
+        // get possible actions for this object in it's current workflow state
+        $objectType = $entity['_objectType'];
+
+        $idcolumn = $entity['__WORKFLOW__']['obj_idcolumn'];
+        $wfActions = Zikula_Workflow_Util::getActionsForObject($entity, $objectType, $idcolumn, $this->name);
+
+        // as we use the workflows for multiple object types we must maybe filter out some actions
+        $listHelper = new MUImage_Util_ListEntries($this->serviceManager);
+        $states = $listHelper->getEntries($objectType, 'workflowState');
+        $allowedStates = array();
+        foreach ($states as $state) {
+            $allowedStates[] = $state['value'];
+        }
+
+        $actions = array();
+        foreach ($wfActions as $actionId => $action) {
+            $nextState = (isset($action['nextState']) ? $action['nextState'] : '');
+            if ($nextState != '' && !in_array($nextState, $allowedStates)) {
+                continue;
+            }
+
+            if ($type == 'user' && $objectType == 'picture' && $action['id'] == 'delete' && ModUtil::getVar($this->name, 'userDeletePictures') == 0 && MUImage_Util_View::isAdmin() == false) {
+                continue;
+            } else {
+                $actions[$actionId] = $action;
+                $actions[$actionId]['buttonClass'] = $this->getButtonClassForAction($actionId);
+            }
+        }
+
+        return $actions;
+    }
 }
