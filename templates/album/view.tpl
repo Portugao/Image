@@ -51,7 +51,7 @@
                 {/if}
                 <col id="cTitle" />
                 <col id="cDescription" />
-                <col id="cParent_id" />
+               {* <col id="cParent_id" /> *}
                 <col id="cAlbumAccess" />
                 <col id="cPasswordAccess" />
                 <col id="cNotInFrontend" />
@@ -72,9 +72,9 @@
                 <th id="hDescription" scope="col" class="z-left">
                     {sortlink __linktext='Description' currentsort=$sort modname='MUImage' type=$lct func='view' sort='description' sortdir=$sdir all=$all own=$own catidMain=$catIdListMainString parent=$parent workflowState=$workflowState albumAccess=$albumAccess searchterm=$searchterm pageSize=$pageSize notInFrontend=$notInFrontend ot='album'}
                 </th>
-                <th id="hParent_id" scope="col" class="z-right">
+               {* <th id="hParent_id" scope="col" class="z-right">
                     {sortlink __linktext='Parent_id' currentsort=$sort modname='MUImage' type=$lct func='view' sort='parent_id' sortdir=$sdir all=$all own=$own catidMain=$catIdListMainString parent=$parent workflowState=$workflowState albumAccess=$albumAccess searchterm=$searchterm pageSize=$pageSize notInFrontend=$notInFrontend ot='album'}
-                </th>
+                </th> *}
                 <th id="hAlbumAccess" scope="col" class="z-left">
                     {sortlink __linktext='Album access' currentsort=$sort modname='MUImage' type=$lct func='view' sort='albumAccess' sortdir=$sdir all=$all own=$own catidMain=$catIdListMainString parent=$parent workflowState=$workflowState albumAccess=$albumAccess searchterm=$searchterm pageSize=$pageSize notInFrontend=$notInFrontend ot='album'}
                 </th>
@@ -109,9 +109,9 @@
                         {gt text='No description'}
                     {/if}
                 </td>
-                <td headers="hParent_id" class="z-right">
+               {* <td headers="hParent_id" class="z-right">
                     {$album.parent_id}
-                </td>
+                </td> *}
                 <td headers="hAlbumAccess" class="z-left">
                     {$album.albumAccess|muimageGetListEntry:'album':'albumAccess'|safetext}
                 </td>
@@ -156,7 +156,7 @@
             </tr>
         {foreachelse}
             <tr class="z-{if $lct eq 'admin'}admin{else}data{/if}tableempty">
-              <td class="z-left" colspan="{if $lct eq 'admin'}9{else}8{/if}">
+              <td class="z-left" colspan="{if $lct eq 'admin'}8{else}7{/if}">
             {gt text='No albums found.'}
               </td>
             </tr>
@@ -263,7 +263,7 @@
 		{/if}
 		{if $accessThisAlbum eq 2}
 		<div class="muimage_view_album_container">
-		    <div class="muimage_album_title">
+		    <div class="muimage_view_album_title">
 			    {$album.title|truncate:30}
 			</div>
 			<div class="muimage_album_description">
