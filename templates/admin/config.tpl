@@ -21,7 +21,7 @@
                         <p class="z-confirmationmsg">{gt text='Here you can manage all basic settings for this application.'}</p>
                     
                         <div class="z-formrow">
-                            {gt text='Pagesize in adminview' assign='toolTip'}
+                            {gt text='Pagesize in frontend' assign='toolTip'}
                             {formlabel for='pagesize' __text='Pagesize' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='pagesize' group='config' maxLength=255 __title='Enter the pagesize. Only digits are allowed.'}
                         </div>
@@ -85,6 +85,7 @@
                         <div class="z-formrow">
                             {formlabel for='ending' __text='Ending' cssClass=''}
                                 {formtextinput id='ending' group='config' maxLength=255 __title='Enter the ending.'}
+                                <div class="z-informationmsg z-formnote">{gt text="You can select between html and htm or no ending (empty field)."}</div>
                         </div>
                         <div class="z-formrow">
                             {formlabel for='userDeletePictures' __text='User delete pictures' cssClass=''}
