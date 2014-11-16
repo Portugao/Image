@@ -41,6 +41,10 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         // parameter specifying which type of objects we are treating
         $objectType = 'picture';
         $utilArgs = array('controller' => 'picture', 'action' => 'view');
+        if ($legacyControllerType == 'user') {
+            $objectType = 'album';
+            $utilArgs = array('controller' => 'album', 'action' => 'view');
+        }
         $permLevel = $legacyControllerType == 'admin' ? ACCESS_ADMIN : ACCESS_READ;
         $this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel), LogUtil::getErrorMsgPermission());
         $entityClass = $this->name . '_Entity_' . ucfirst($objectType);
