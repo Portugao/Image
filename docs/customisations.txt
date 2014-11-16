@@ -78,6 +78,7 @@ implemented classes
 *lib/MUImage/Util/ListEntries.php
 *lib/MUImage/Util/Model.php
 *lib/MUImage/Util/View.php
+*lib/MUImage/Util/Workflow.php
 
 added files
 
