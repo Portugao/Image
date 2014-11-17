@@ -155,10 +155,26 @@ class MUImage_Block_OneItem extends Zikula_Controller_AbstractBlock
     {
         // Get current content
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
+        $modelHelper= new MUImage_Util_Model($this->serviceManager);
 
         // set default values for all params which are not properly set
         if (!isset($vars['objectType']) || empty($vars['objectType'])) {
             $vars['objectType'] = 'picture';
+        }
+        $uid = UserUtil::getVar('uid');
+        if ($vars['objectType'] == 'album') {
+            
+        } else {
+            $pictureRepository = $modelHelper->getPictureRepository();
+            $pictures = $pictureRepository->selectWhere();
+            foreach ($pictures as $picture) {
+                if ($vars['id'] == $picture['id']) {
+                    $selected = 'selected="selected"';
+                } else {
+                    $selected = '';
+                }
+                $vars['pictureids'] .= '<option ' . $selected . ' value="' . $picture['id'] . '"> ' . $picture['id'] . ' - ' . $picture['title'] . ' </option>'; 
+            }
         }
         if (!isset($vars['id']) || $vars['id'] == '') {
             $vars['id'] = 0;

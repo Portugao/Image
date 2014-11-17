@@ -9,7 +9,10 @@
 
 <div class="z-formrow">
     <label for="MUImage_id">{gt text='Id'}:</label>
-    <input type="text" id="MUImage_id" name="id" size="10" value="{$id}" />
+   {* <input type="text" id="MUImage_id" name="id" size="10" value="{$id}" /> *}
+    <select id="MUImage_id" name="id">
+        {$pictureids}
+    </select>
 </div>
 
 <div class="z-formrow">
