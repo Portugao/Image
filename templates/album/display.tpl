@@ -12,7 +12,7 @@
 	</div>
 	<div id="album_header">
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
-		{$album.description}<br />
+		{$album.description}<br /><br />
 	    {/if}
 	    {include file='helper/include_categories_display.tpl' obj=$album}
 	    {if $album.createdUserId eq $coredata.user.uid}
@@ -60,11 +60,11 @@
 		    <div id="muimage_pictures_content">
 		    {if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
 		    {if $template eq 1}
-		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}
+		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
                 <form method="post" action="{modurl modname='MUImage' type='picture' func='savePosition'}">
             {/if}
 		    {include file='picture/include_displayItemListMany.tpl' items=$album.picture}
-		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}
+		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
             <br style="clear: both; "/><input type="submit" value='{gt text="Save positions"}' />
             </form>
             {/if}

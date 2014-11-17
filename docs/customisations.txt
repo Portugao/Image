@@ -11,6 +11,10 @@ MUImage - Manual additions and amendments
 
 changed files
 
+*docs/scribite/plugins/ckeditor/plugins/muimage/plugin.js
+*docs/scribite/plugins/TinyMce/vendor/tinymce/plugins/muimage/editor_plugin.js
+*docs/scribite/plugins/Xinha/vendor/xinha/plugins/MUImage/MUImage.js
+
 *javascript/MUImage_finder.js
 *styles/style.css
 *templates/admin/config.tpl

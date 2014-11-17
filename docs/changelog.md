@@ -1,6 +1,47 @@
 CHANGELOG
 ---------
 
+Changes in 1.3.0
+
+# closed #5 Xinha plugin is implemented
+
+# closed #22 Scribite 5.0 plugins are available
+
+# closed #77 upgrade possible
+
+# closed #77 upgrade possible
+
+# closed #78 cosmetic in album view
+
+# closed #79 cosmetic in album display
+
+# closed #80 upgrade possible
+
+# closed #82 import function deleted
+
+# closed #83 creating albums possible
+
+# closed #84 creting pictures possible
+
+# closed #85 multi upload of pictures possible
+
+# closed #86 picture invocations not shown if disabled in setting
+
+# closed #87 controller are deleted except delete controller
+
+# closed #88 controller permissions in frontend ruled
+
+# closed #89 album image implemented
+
+# closed #90 pagesize setting work again
+
+# closed #77 upgrade possible
+
+some more fixes:
+
+increment of picture view only if the viewer is not the creator
+
+
 Changes in 1.2.0
 
 # closed #23 now it is possible to set no ending in urls
