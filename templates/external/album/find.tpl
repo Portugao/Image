@@ -29,7 +29,7 @@
         <input type="hidden" name="module" value="MUImage" />
         <input type="hidden" name="type" value="external" />
         <input type="hidden" name="func" value="finder" />
-        <input type="hidden" name="objectType" value="{$objectType}" />
+        <input type="hidden" name="objectType" id="ObjectType" value="{$objectType}" />
         <input type="hidden" name="editor" id="editorName" value="{$editorName}" />
 
         <fieldset>
