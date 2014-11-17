@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-16 18:56+0000\n"
-"PO-Revision-Date: 2014-11-16 20:01+0100\n"
+"PO-Revision-Date: 2014-11-17 14:02+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -2433,7 +2433,7 @@ msgstr "Gib die maximale Höhe ein. Nur Ziffern sind erlaubt."
 
 #: templates/admin/config.tpl:82
 msgid "Shrink pictures"
-msgstr "Bilder bechneiden"
+msgstr "Bilder anpassen"
 
 #: templates/admin/config.tpl:86
 msgid "Ending"
@@ -2449,7 +2449,7 @@ msgstr "Du kannst zwischen html, htm oder keine Endung (leeres Feld) wählen."
 
 #: templates/admin/config.tpl:91
 msgid "User delete pictures"
-msgstr "Benutzer Bilder löschen?"
+msgstr "Benutzer dürfen Bilder löschen?"
 
 #: templates/admin/config.tpl:96
 msgid "Slideshows"
