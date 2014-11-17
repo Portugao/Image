@@ -116,6 +116,7 @@
                     {$album.albumAccess|muimageGetListEntry:'album':'albumAccess'|safetext}
                 </td>
                 <td headers="hPasswordAccess" class="z-left">
+                    {$album.passwordAccess}
                 </td>
                 <td headers="hNotInFrontend" class="z-center">
                     {$album.notInFrontend|yesno:true}
