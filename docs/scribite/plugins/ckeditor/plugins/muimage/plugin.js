@@ -13,7 +13,7 @@ CKEDITOR.plugins.add('MUImage', {
             label: editor.lang.MUImage.title,
             command: 'insertMUImage',
          // icon: this.path + 'images/ed_muimage.png'
-            icon: '/images/icons/extrasmall/favorites.png'
+            icon: '/modules/MUImage/images/muimage.png'
         });
     }
 });

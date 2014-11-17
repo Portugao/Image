@@ -42,7 +42,7 @@
                 title : 'muimage.desc',
                 cmd : 'mceMUImage',
              // image : url + '/img/MUImage.gif'
-                image : '/images/icons/extrasmall/favorites.png'
+                image : '/modules/MUImage/images/muimage.png'
             });
 
             // Add a node change handler, selects the button in the UI when a image is selected
