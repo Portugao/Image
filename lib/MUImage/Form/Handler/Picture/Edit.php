@@ -163,6 +163,7 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
     protected function getDefaultReturnUrl($args, $obj)
     {
         $pictureId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+        $type = $this->request->query->filter('type', 'admin', FILTER_SANITIZE_STRING);
 
         $picturerepository = MUImage_Util_Model::getPictureRepository();
         if ($args['commandName'] == 'create') {
@@ -179,18 +180,18 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
                 $albumid = 0;
             }
         } else {
-            $viewArgs = array('ot' => 'album');
+            $viewArgs = array('ot' => 'album', 'lct' => $type);
             $url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
             return $url;
         }
          
         // redirect to the album if existing
         if ($albumid > 0) {
-            $viewArgs = array('ot' => 'album', 'id' => $albumid);
+            $viewArgs = array('lct' => $type, 'ot' => 'album', 'id' => $albumid);
             $url = ModUtil::url($this->name, 'user', 'display', $viewArgs);
             return $url;
         } else {
-            $viewArgs = array('ot' => 'album');
+            $viewArgs = array('lct' => $type, 'ot' => 'album');
             $url = ModUtil::url($this->name, 'user', 'view', $viewArgs);
             return  $url;
         }
