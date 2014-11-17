@@ -7,9 +7,25 @@ Changes in 1.3.0
 
 # closed #22 Scribite 5.0 plugins are available
 
-# closed #77 upgrade possible
+# closed #32 user defined security schemata, it's possible give set all, users, freinds, password
 
-# closed #77 upgrade possible
+# closed #45 refactored with MOST
+
+# closed #58 possible to set album to not in frontend, only visible for creator and admins
+
+# closed #66 flexible thumbnails independent of orientation
+
+# closed #67 selection of pictures by select field - shown id and title
+
+# closed #73 all hook providers deleted - TODO later
+
+# closed #74 shrinking of pictures implemented
+
+# closed #75 possible to enable shrinking of pictures in settings
+
+# closed #76 all entries set to 'approved' - upgrade possible
+
+# closed #77 entry into workflow table for each item - upgrade possible
 
 # closed #78 cosmetic in album view
 
