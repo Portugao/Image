@@ -89,7 +89,7 @@ class MUImage_ContentType_ItemList extends MUImage_ContentType_Base_ItemList
         $entityManager = $serviceManager->getService('doctrine.entitymanager');
         $repository = $entityManager->getRepository('MUImage_Entity_' . ucfirst($this->objectType));
 
-        $idFields = ModUtil::apiFunc('MUImage', 'selection', 'getIdFields', array('ot' => $objectType));
+        $idFields = ModUtil::apiFunc('MUImage', 'selection', 'getIdFields', array('ot' => $this->objectType));
 
         $sortParam = '';
         if ($this->sorting == 'random') {
