@@ -297,9 +297,9 @@ width: 98%; */
 
 .muimage_display_album_title_action {
 	background: #ddd;
-	padding: 5px 5px 0;
+	padding: 5px 0 0;
 	float: right;
-	width: 40%;
+	width: 35%;
 	text-align: right;
 	font-size: 1.2em;
 	font-weight: bolder;
