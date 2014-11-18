@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-16 18:56+0000\n"
-"PO-Revision-Date: 2014-11-17 14:02+0100\n"
+"PO-Revision-Date: 2014-11-17 22:17+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -1814,8 +1814,8 @@ msgstr "Keine gültige Datei"
 
 #: Resources/templates/picture/include_displayItemListMany.tpl:49
 #: templates/picture/include_displayItemListMany.tpl:49
-msgid "Invocations:"
-msgstr "Aufrufe:"
+msgid "Invocations"
+msgstr "Aufrufe"
 
 #: Resources/templates/picture/include_displayItemListMany.tpl:51
 #: templates/picture/include_displayItemListMany.tpl:51

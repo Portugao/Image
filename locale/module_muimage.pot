@@ -1764,7 +1764,7 @@ msgstr ""
 
 #: Resources/templates/picture/include_displayItemListMany.tpl:49
 #: templates/picture/include_displayItemListMany.tpl:49
-msgid "Invocations:"
+msgid "Invocations"
 msgstr ""
 
 #: Resources/templates/picture/include_displayItemListMany.tpl:51
