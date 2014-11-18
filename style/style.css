@@ -360,6 +360,16 @@ width: 98%; */
 	border-radius: 3px;
 }
 
+#album_header ul {
+	list-style: none;
+	margin: 0;
+}
+
+#album_header ul li {
+	float: left;
+	margin: 5px 0 0 0;
+}
+
 #muimage_albums_header {
 	width: 100%;
 	float: left;
@@ -471,6 +481,11 @@ width: 98%; */
 	float: right;
 	width: 45%;
 	padding: 0 0 0 2%;
+}
+
+.movecursor {
+    cursor: move;	
+}
 }
 /*-----------JQUERY--------------*/
 #basic_accordion h3 {

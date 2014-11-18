@@ -5,7 +5,12 @@
 {foreach name='relLoop' item='item' from=$items}
 <li class="ui-state-default">
 <div class="muimage_picture_view">
-<div class="muimage_picture_view_header">
+{if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
+{gt text='movecursor' assign='cursor'}
+{else}
+{gt text='' assign='cursor'}
+{/if}
+<div class="muimage_picture_view_header {$cursor}">
    {* <li> *}
     <a class="muimage_picture_view_header_left" href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}" title="{gt text='Details'}">      
    {if $item.title ne ''}
