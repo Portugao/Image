@@ -47,7 +47,7 @@
 <input name="pictures[]" type="hidden" value={$item.id} />
 {modgetvar module='MUImage' name='countImageView' assign='imageView'}
 {if $imageView eq 1}
-{gt text='Invocations:'} {$item.imageView}
+{gt text='Invocations'}: {$item.imageView}
 {/if}
 {gt text='Rotate picture to left' assign='leftRotate'}
 {gt text='Rotate picture to right' assign='rightRotate'}

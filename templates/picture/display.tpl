@@ -67,7 +67,7 @@
         </dd>
         {modgetvar module='MUImage' name='countImageView' assign='imageView'}
         {if $imageView eq 1}
-        <dt>{gt text='Image view'}</dt>
+        <dt>{gt text='Invocations'}</dt>
         <dd>{$picture.imageView}</dd>
         {/if}               
        {* <dt>{gt text='Album image'}</dt>
