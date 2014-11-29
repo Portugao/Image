@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-16 18:56+0000\n"
-"PO-Revision-Date: 2014-11-17 22:17+0100\n"
+"PO-Revision-Date: 2014-11-18 23:01+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -75,7 +75,7 @@ msgstr "Inhalt abschicken"
 
 #: workflows/function.none_permissioncheck.php:73
 msgid "Update"
-msgstr "Aktualisierung"
+msgstr "Aktualisieren"
 
 #: workflows/function.none_permissioncheck.php:73
 msgid "Update content."
