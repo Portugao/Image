@@ -242,6 +242,7 @@ width: 98%; */
 }
 
 .muimage_picture_view_bottom {
+	background: #eee;
 	position: relative;
 	float: left;
 	width: 90px;
@@ -463,7 +464,7 @@ width: 98%; */
 }
 
 #muimage-user-album-hooks {
-	padding: 25px;
+	padding: 20px 0 0 10px;
 	float: left;
 }
 /*-----------PICTURE STYLE IN DISPLAY--------*/
