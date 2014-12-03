@@ -488,6 +488,11 @@ width: 98%; */
     cursor: move;	
 }
 
+.muimage-admin-display-album-pictures {
+	width: 120px;
+	height: 80px;
+}
+
 /*-----------JQUERY--------------*/
 #basic_accordion h3 {
 	float: left;

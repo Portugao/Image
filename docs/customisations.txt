@@ -19,19 +19,18 @@ changed files
 *styles/style.css
 *templates/admin/config.tpl
 
-*templates/admin/album/display.tpl
-*templates/admin/picture/view.tpl
+*templates/album/display.tpl
+*templates/album/edit.tpl
+*templates/album/include_displayItemListMany.tpl
+*templates/album/view.tpl
 
-*templates7user/header.tpl
+*templates/user/header.tpl
 
-*templates/user/album/delete.tpl
-*templates/user/album/edit.tpl
-*templates/user/album/display.tpl
-*templates/user/album/picture.tpl
-
-*templates/user/picture/edit.tpl
-*templates/user/picture/include_displayItemListMany.tpl
-
+*templates/picture/display.tpl
+*templates/picture/edit.tpl
+*templates/picture/editMulti.tpl
+*templates/picture/include_displayItemListMany.tpl
+*templates/picture.view.tpl
 
 *lib/MUImage/Base/UploadHandler.php
 
@@ -42,7 +41,6 @@ implemented classes
 *lib/MUImage/UploadHandler.php
 *lib/MUImage/RouterFacade.php
 *lib/MUImage/Version.php
-
 
 *lib/MUImage/Api/Admin.php
 *lib/MUImage/Api/User.php
@@ -108,8 +106,9 @@ added files
 *templates/plugins/modifier.muimageImageMeta.php
 
 
-*templates/user/picture/editMulti.tpl
-*templates/user/picture/multiUpload.tpl
-*templates/user/picture/zipUpload.tpl
-*templates/user/picture/include_displayItemListMany2.tpl
-*templates/user/picture/include_displayItemListMany3.tpl
+*templates/picture/editMulti.tpl
+*templates/picture/multiUpload.tpl
+*templates/picture/zipUpload.tpl
+*templates/picture/include_admindisplayItemListMany2.tpl
+*templates/picture/include_displayItemListMany2.tpl
+*templates/picture/include_displayItemListMany3.tpl
