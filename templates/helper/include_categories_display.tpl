@@ -6,5 +6,7 @@
 	{$catMapping.category.name|safetext}
     {/foreach} *}
     {assignedcategorieslist categories=$obj.categories doctrine2=true}
+    {if $lct eq 'user'}
     &nbsp;|&nbsp;
+    {/if}
 {/if}

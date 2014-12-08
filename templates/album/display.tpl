@@ -1,15 +1,27 @@
 {* purpose of this template: albums display view in user area *}
-{include file='user/header.tpl'}
+{assign var='lct' value='user'}
+{if isset($smarty.get.lct) && $smarty.get.lct eq 'admin'}
+    {assign var='lct' value='admin'}
+{/if}
+{include file="`$lct`/header.tpl"}
 {pageaddvar name='javascript' value='jquery'}
 {pageaddvar name='javascript' value='jquery-ui'}
 <div class="muimage-album muimage-display">
     {gt text='Album' assign='templateTitle'}
     {assign var='templateTitle' value=$album.title|default:$templateTitle}
     {pagesetvar name='title' value=$templateTitle|@html_entity_decode}
+    {if $lct eq 'admin'}
+        <div class="z-admin-content-pagetitle">
+            {icon type='display' size='small' __alt='Details'}
+            <h3>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}{icon id="itemActions`$album.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
+            </h3>
+        </div>
+    {else}
+        <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}{icon id="itemActions`$album.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
+        </h2>
+    {/if}
     <div class="z-frontendcontainer">
-	<div id="thisalbum">
-	    <h3>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}</h3>
-	</div>
+	{if $lct eq 'user'}
 	<div id="album_header">
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
 		{$album.description}<br /><br />
@@ -151,15 +163,66 @@
 		    {$hook}
 		{/foreach}
 	    </div>
-
 	</div>
+	{/if}
+	{if $lct eq 'admin'}
+	    <div id=''>
+            <div class="muimageRightBox">
+                <h3>{gt text='Pictures'}</h3>
+
+                {if isset($album.picture) && $album.picture ne null}
+                    {include file='picture/include_admindisplayItemListMany.tpl' items=$album.picture}
+                {/if}
+
+                {* {checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
+                {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
+                <p class="manageLink">
+                    {gt text='Create picture' assign='createTitle'}
+                        <a href="{modurl modname='MUImage' type='admin' func='edit' ot='picture' album="`$album.id`" returnTo='adminDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
+                            {$createTitle}
+                        </a>
+                     </p>
+                {/if} *}
+                <h3>{gt text='Album'}</h3>
+
+                {if isset($album.parent) && $album.parent ne null}
+                    {include file='album/include_displayItemListOne.tpl' item=$album.parent}
+                {/if}
+
+                {* {if !isset($album.parent) || $album.parent eq null}
+                {checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
+                {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
+                    <p class="manageLink">
+                    {gt text='Create album' assign='createTitle'}
+                    <a href="{modurl modname='MUImage' type='admin' func='edit' ot='album' children="`$album.id`" returnTo='adminDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
+                        {$createTitle}
+                    </a>
+                    </p>
+                {/if}
+           {/if}*}
+        </div>
+	    <dl>
+	        <dt>{gt text='Description'}</dt>
+	        <dd>{$album.description}</dd>
+	    </dl>
+	    {include file='helper/include_categories_display.tpl' obj=$album}
+	    {include file='helper/include_standardfields_display.tpl' obj=$album}
+	    
+	    </div>
+	{/if}
     </div>
 </div>
-{include file='user/footer.tpl'}
+{include file="`$lct`/footer.tpl"}
 <script type="text/javascript" charset="utf-8">
 /* <![CDATA[ */
 
 var accordion = new Zikula.UI.Accordion('basic_accordion');
+
+        document.observe('dom:loaded', function() {
+            {{assign var='itemid' value=$album.id}}
+            muimageInitToggle('album', 'showTitle', '{{$itemid}}');
+            muimageInitToggle('album', 'showDescription', '{{$itemid}}');
+        });
 
 /* ]]> */
 </script>

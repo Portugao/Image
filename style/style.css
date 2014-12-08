@@ -18,6 +18,10 @@ div.muimageRightBox h3 {
 	padding-bottom: 8px;
 }
 
+div.muimageRightBox ul {
+	list-style: none;
+}
+
 div.muimageRightBox p.manageLink {
 	margin-left: 18px;
 }
