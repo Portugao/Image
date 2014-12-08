@@ -275,6 +275,117 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
     }
     
     /**
+     * This method provides a handling of simple delete requests.
+     *
+     * @param int     $id           Identifier of entity to be shown.
+     * @param boolean $confirmation Confirm the deletion, else a confirmation page is displayed.
+     * @param string  $tpl          Name of alternative template (to be used instead of the default template).
+     * @param boolean $raw          Optional way to display a template instead of fetching it (required for standalone output).
+     *
+     * @return mixed Output.
+     */
+    public function delete()
+    {
+        $legacyControllerType = $this->request->query->filter('lct', 'user', FILTER_SANITIZE_STRING);
+        System::queryStringSetVar('type', $legacyControllerType);
+        $this->request->query->set('type', $legacyControllerType);
+    
+        $controllerHelper = new MUImage_Util_Controller($this->serviceManager);
+    
+        // parameter specifying which type of objects we are treating
+        $objectType = 'picture';
+        $utilArgs = array('controller' => 'picture', 'action' => 'delete');
+        $permLevel = $legacyControllerType == 'admin' ? ACCESS_ADMIN : ACCESS_DELETE;
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel), LogUtil::getErrorMsgPermission());
+        $idFields = ModUtil::apiFunc($this->name, 'selection', 'getIdFields', array('ot' => $objectType));
+    
+        // retrieve identifier of the object we wish to delete
+        $idValues = $controllerHelper->retrieveIdentifier($this->request, array(), $objectType, $idFields);
+        $hasIdentifier = $controllerHelper->isValidIdentifier($idValues);
+    
+        $this->throwNotFoundUnless($hasIdentifier, $this->__('Error! Invalid identifier received.'));
+    
+        $selectionArgs = array('ot' => $objectType, 'id' => $idValues);
+    
+        $entity = ModUtil::apiFunc($this->name, 'selection', 'getEntity', $selectionArgs);
+        $this->throwNotFoundUnless($entity != null, $this->__('No such item.'));
+    
+        $entity->initWorkflow();
+    
+        // determine available workflow actions
+        $workflowHelper = new MUImage_Util_Workflow($this->serviceManager);
+        $actions = $workflowHelper->getActionsForObject($entity);
+        if ($actions === false || !is_array($actions)) {
+            return LogUtil::registerError($this->__('Error! Could not determine workflow actions.'));
+        }
+    
+        // check whether deletion is allowed
+        $deleteActionId = 'delete';
+        $deleteAllowed = false;
+        foreach ($actions as $actionId => $action) {
+            if ($actionId != $deleteActionId) {
+                continue;
+            }
+            $deleteAllowed = true;
+            break;
+        }
+        if (!$deleteAllowed) {
+            return LogUtil::registerError($this->__('Error! It is not allowed to delete this picture.'));
+        }
+    
+        $confirmation = (bool) $this->request->request->filter('confirmation', false, FILTER_VALIDATE_BOOLEAN);
+        if ($confirmation && $deleteAllowed) {
+            $this->checkCsrfToken();
+    
+            $hookAreaPrefix = $entity->getHookAreaPrefix();
+            $hookType = 'validate_delete';
+            // Let any hooks perform additional validation actions
+            $hook = new Zikula_ValidationHook($hookAreaPrefix . '.' . $hookType, new Zikula_Hook_ValidationProviders());
+            $validators = $this->notifyHooks($hook)->getValidators();
+            if (!$validators->hasErrors()) {
+                // execute the workflow action
+                $success = $workflowHelper->executeAction($entity, $deleteActionId);
+                if ($success) {
+                    $this->registerStatus($this->__('Done! Item deleted.'));
+                }
+    
+                // Let any hooks know that we have created, updated or deleted the picture
+                $hookType = 'process_delete';
+                $hook = new Zikula_ProcessHook($hookAreaPrefix . '.' . $hookType, $entity->createCompositeIdentifier());
+                $this->notifyHooks($hook);
+    
+                // The picture was deleted, so we clear all cached pages this item.
+                $cacheArgs = array('ot' => $objectType, 'item' => $entity);
+                ModUtil::apiFunc($this->name, 'cache', 'clearItemCache', $cacheArgs);
+    
+                if ($legacyControllerType == 'admin') {
+                    // redirect to the list of pictures
+                    $redirectUrl = ModUtil::url($this->name, 'admin', 'view', array('ot' => 'picture', 'lct' => $legacyControllerType));
+                } else {
+                    // redirect to the list of pictures
+                    $redirectUrl = ModUtil::url($this->name, 'picture', 'view', array('lct' => $legacyControllerType));
+                }
+                return $this->redirect($redirectUrl);
+            }
+        }
+    
+        $entityClass = $this->name . '_Entity_' . ucfirst($objectType);
+        $repository = $this->entityManager->getRepository($entityClass);
+    
+        // set caching id
+        $this->view->setCaching(Zikula_View::CACHE_DISABLED);
+    
+        // assign the object we loaded above
+        $this->view->assign($objectType, $entity)
+        ->assign($repository->getAdditionalTemplateParameters('controllerAction', $utilArgs));
+    
+        // fetch and return the appropriate template
+        $viewHelper = new MUImage_Util_View($this->serviceManager);
+    
+        return $viewHelper->processTemplate($this->view, $objectType, 'delete', array());
+    }
+    
+    /**
      * This is a custom method. Documentation for this will be improved in later versions.
      *
      * @return mixed Output.
