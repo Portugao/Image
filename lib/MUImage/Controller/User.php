@@ -474,10 +474,10 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 		$view = FormUtil::newForm($this->name, $this);
 
 		// build form handler class name
-		$handlerClass = 'MUImage_Form_Handler_User_' . ucfirst($objectType) . '_ZipUpload';
+		$handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_ZipUpload';
 
 		// execute form using supplied template and page event handler
-		return $view->execute('user/' . $objectType . '/zipUpload.tpl', new $handlerClass());
+		return $view->execute($objectType . '/zipUpload.tpl', new $handlerClass());
 	}
 
 	/**

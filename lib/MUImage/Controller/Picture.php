@@ -386,6 +386,33 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
     }
     
     /**
+     * This is a custom method.
+     *
+     *
+     * @return mixed Output.
+     */
+    public function zipUpload()
+    {
+        // DEBUG: permission check aspect starts
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage::', '::', ACCESS_EDIT));
+        // DEBUG: permission check aspect ends
+        // parameter specifying which type of objects we are treating
+        $objectType = (isset($args['ot']) && !empty($args['ot'])) ? $args['ot'] : $this->request->getGet()->filter('ot', 'picture', FILTER_SANITIZE_STRING);
+        $utilArgs = array('controller' => 'picture', 'action' => 'zipUpload');
+        if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
+            $objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
+        }
+        // create new Form reference
+        $view = FormUtil::newForm($this->name, $this);
+    
+        // build form handler class name
+        $handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_zipUpload';
+    
+        // execute form using supplied template and page event handler
+        return $view->execute($objectType . '/zipUpload.tpl', new $handlerClass());
+    }
+    
+    /**
      * This is a custom method. Documentation for this will be improved in later versions.
      *
      * @return mixed Output.
