@@ -144,7 +144,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
     protected function validateFileUpload($objectType, $file, $fieldName)
     {
         $dom = ZLanguage::getModuleDomain('MUImage');
-        
+
         $result = true;
 
         // check if a file has been uploaded properly without errors
@@ -229,5 +229,37 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         }
 
         return $result;
+    }
+
+    /**
+     * Determines the allowed file extensions for a given object type.
+     *
+     * @param string $objectType Currently treated entity type.
+     * @param string $fieldName  Name of upload field.
+     * @param string $extension  Input file extension.
+     *
+     * @return array the list of allowed file extensions
+     */
+    protected function isAllowedFileExtension($objectType, $fieldName, $extension)
+    {
+        // determine the allowed extensions
+        $allowedExtensions = array();
+        switch ($objectType) {
+            case 'picture':
+                $allowedExtensions = array('gif', 'jpeg', 'jpg', 'png', 'zip');
+                break;
+        }
+
+        if (count($allowedExtensions) > 0) {
+            if (!in_array($extension, $allowedExtensions)) {
+                return false;
+            }
+        }
+
+        if (in_array($extension, $this->forbiddenFileTypes)) {
+            return false;
+        }
+
+        return true;
     }
 }

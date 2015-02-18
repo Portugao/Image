@@ -60,7 +60,7 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
     {
         $request = new Zikula_Request_Http();
         $func = $request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
-        if ($func == 'multiUpload') {
+        if ($func == 'multiUpload' || $func == 'zipUpload') {
             $this->setWorkflowState('approved');
             $id = $this->getId();
         

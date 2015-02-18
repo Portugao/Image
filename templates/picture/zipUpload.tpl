@@ -15,18 +15,15 @@
     <fieldset>
         <legend>{gt text='Content'}</legend>
         <div class="z-formrow">
-        {formlabel for="zipUpload" __text='Zip upload' mandatorysym=0}<br />{* break required for Google Chrome *}
-        {formuploadinput group='picture' id="zipUpload`$smarty.section.fields.index`" mandatory=false readOnly=false cssClass=''}
+        {formlabel for="zipUpload" __text='Zip upload' mandatorysym=1}<br />{* break required for Google Chrome *}
+        {formuploadinput group='picture' id="zipUpload" mandatory=true readOnly=false cssClass='required'}
         <div class="z-formnote">{gt text='Allowed file extensions:'} zip</div>
-        <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
-        <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
-        <div class="z-formnote">{gt text='Maximum width:'} {$maxWidth} </div>
-        <div class="z-formnote">{gt text='Maximum height:'} {$maxHeight} </div>
+        <div class="z-formnote">{gt text='Allowed file size:'} {$fileSizeZip} </div>
         </div>  
       </fieldset>
           {* include possible submit actions *}
     <div class="z-buttons z-formbuttons">
-        {formbutton id='btnSubmit' commandName='submit' __text='Upload zip files' class='z-bt-ok'}
+        {formbutton id='btnSubmit' commandName='submit' __text='Upload zip file' class='z-bt-ok'}
         {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
     </div>
     

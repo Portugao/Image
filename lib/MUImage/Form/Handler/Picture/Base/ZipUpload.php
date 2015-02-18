@@ -154,6 +154,58 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                         continue;
                     }
                     if ($uploaded != '') {
+                        // if ($extension == 'zip') {
+                        $uploadHandler = new MUImage_UploadHandler();
+
+                        $serviceManager = ServiceUtil::getManager();
+                        $controllerHelper = new MUImage_Util_Controller($serviceManager);
+
+                        $basePath = $controllerHelper->getFileBaseFolder('picture', 'imageUpload');
+
+                        $openZip = zip_open($basePath . $entityData['zipUpload']);
+                        //$zip = new ZipArchive();
+                        //$zipOpen = $zip->open($basePath . $entityData['zipUpload']);
+                        if (is_resource($openZip)) {
+                            while ($zip_entry = zip_read($openZip)) {
+                                zip_entry_open($openZip, $zip_entry);
+                                $name = zip_entry_name($zip_entry);
+                                $fopen = fopen($name, 'w+');
+                                fwrite($fopen, zip_entry_read($zip_entry, zip_entry_filesize($zip_entry)));
+                                LogUtil::registerError($name);
+                                $entity = new MUImage_Entity_Picture();
+                                // save the entered datas to the allowed upload field
+                                $entityData['imageUpload'] = $name;
+                                //unset($entityData[$key]);
+                                $uploadHandler = new MUImage_UploadHandler();
+                                $metaData = $uploadHandler->readMetaDataForFile($name, $basePath . $name);
+
+                                $entityData['imageUploadMeta'] = $metaData;
+                                //unset($entityData[$key . 'Meta']);
+
+                                // get the selected album as object
+                                $albumrepository = MUImage_Util_Model::getAlbumRepository();
+                                $album = $albumrepository->selectById($albumid);
+                                $entityData['Album'] = $album;
+
+                                // set a default title and the correct data for imageupload
+                                $entity->setTitle($this->__('Please enter title...'));
+                                $entity->setImageUpload($entityData['imageUpload']);
+
+                                // assign fetched data
+                                $entity->merge($entityData);
+
+                                // save updated entity
+                                $this->entityRef = $entity;
+
+                                $this->performUpdate($args);
+
+                                $success = true;
+
+                                // default message
+                                $this->addDefaultMessage($args, $success);
+                            }
+                        }
+                        /* } else {
 
                         // save the entered datas to the allowed upload field
                         $entityData['imageUpload'] = $entityData[$key];
@@ -182,6 +234,7 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
                         // default message
                         $this->addDefaultMessage($args, $success);
+                        }*/
                     }
                 }
                 else {
@@ -431,21 +484,21 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
         // process all fields
         foreach ($this->uploadFields as $uploadField => $isMandatory) {
             // check if an existing file must be deleted
-            $hasOldFile = (!empty($existingObjectData[$uploadField]));
-            $hasBeenDeleted = !$hasOldFile;
+            /* $hasOldFile = (!empty($existingObjectData[$uploadField]));
+             $hasBeenDeleted = !$hasOldFile;
             if ($this->mode != 'create') {
-                if (isset($formData[$uploadField . 'DeleteFile'])) {
-                    if ($hasOldFile && $formData[$uploadField . 'DeleteFile'] === true) {
-                        // remove upload file (and image thumbnails)
-                        $existingObjectData = $uploadManager->deleteUploadFile($this->objectType, $existingObjectData, $uploadField);
-                        if (empty($existingObjectData[$uploadField])) {
-                            $existingObject[$uploadField] = '';
-                        }
-                    }
-                    unset($formData[$uploadField . 'DeleteFile']);
-                    $hasBeenDeleted = true;
-                }
+            if (isset($formData[$uploadField . 'DeleteFile'])) {
+            if ($hasOldFile && $formData[$uploadField . 'DeleteFile'] === true) {
+            // remove upload file (and image thumbnails)
+            $existingObjectData = $uploadManager->deleteUploadFile($this->objectType, $existingObjectData, $uploadField);
+            if (empty($existingObjectData[$uploadField])) {
+            $existingObject[$uploadField] = '';
             }
+            }
+            unset($formData[$uploadField . 'DeleteFile']);
+            $hasBeenDeleted = true;
+            }
+            }*/
 
             // look whether a file has been provided
             if (!$formData[$uploadField] || $formData[$uploadField]['size'] == 0) {
