@@ -162,7 +162,7 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                         continue;
                     }
                 }
-                $uploadHandler->
+
                 $entry = array($name);
                 $zip->extractTo($basePath, $entry);
 
