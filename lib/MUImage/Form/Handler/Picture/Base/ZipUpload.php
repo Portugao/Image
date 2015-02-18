@@ -135,112 +135,64 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
             // fetch posted data input values as an associative array
             $formData = $this->view->getValues();
-            $data = $formData[$this->objectTypeLower];
+            $entityData = $formData[$this->objectTypeLower];
+            unset($formData[$this->objectTypeLower]);
 
-            foreach ($data as $key => $value) {
-                if ($value['size'] > 0) {
+            //$upload
+            $entityData = $this->handleUploads($entityData, $entity);
+            // if upload failed go to next file to upload
 
-                    $entity = new MUImage_Entity_Picture();
+            $uploadHandler = new MUImage_UploadHandler();
 
-                    $entityData = array($key => $value);
+            $serviceManager = ServiceUtil::getManager();
+            $controllerHelper = new MUImage_Util_Controller($serviceManager);
 
-                    $this->uploadFields = array($key => false);
-                    //$upload
-                    $entityData = $this->handleUploads($entityData, $entity);
-                    // if upload failed go to next file to upload
-                    $uploaded = $entityData[$key];
+            $basePath = $controllerHelper->getFileBaseFolder('picture', 'imageUpload');
 
-                    if ($uploaded == '') {
-                        continue;
-                    }
-                    if ($uploaded != '') {
-                        // if ($extension == 'zip') {
-                        $uploadHandler = new MUImage_UploadHandler();
+            $zip = new ZipArchive();
+            $zip->open($basePath . $entityData['zipUpload']);
+            unset($entityData['zipUpload']);
+            unset($entityData['zipUploadMeta']);
 
-                        $serviceManager = ServiceUtil::getManager();
-                        $controllerHelper = new MUImage_Util_Controller($serviceManager);
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                LogUtil::registerStatus($zip->getNameIndex($i));
 
-                        $basePath = $controllerHelper->getFileBaseFolder('picture', 'imageUpload');
+                $name = $zip->getNameIndex($i);
+                $entry = array($name);
+                $zip->extractTo($basePath, $entry);
 
-                        $openZip = zip_open($basePath . $entityData['zipUpload']);
-                        //$zip = new ZipArchive();
-                        //$zipOpen = $zip->open($basePath . $entityData['zipUpload']);
-                        if (is_resource($openZip)) {
-                            while ($zip_entry = zip_read($openZip)) {
-                                zip_entry_open($openZip, $zip_entry);
-                                $name = zip_entry_name($zip_entry);
-                                $fopen = fopen($name, 'w+');
-                                fwrite($fopen, zip_entry_read($zip_entry, zip_entry_filesize($zip_entry)));
-                                LogUtil::registerError($name);
-                                $entity = new MUImage_Entity_Picture();
-                                // save the entered datas to the allowed upload field
-                                $entityData['imageUpload'] = $name;
-                                //unset($entityData[$key]);
-                                $uploadHandler = new MUImage_UploadHandler();
-                                $metaData = $uploadHandler->readMetaDataForFile($name, $basePath . $name);
+                $entity = new MUImage_Entity_Picture();
+                // save the entered datas to the allowed upload field
+                $entityData['imageUpload'] = $name;
 
-                                $entityData['imageUploadMeta'] = $metaData;
-                                //unset($entityData[$key . 'Meta']);
+                $uploadHandler = new MUImage_UploadHandler();
+                $metaData = $uploadHandler->readMetaDataForFile($name, $basePath);
 
-                                // get the selected album as object
-                                $albumrepository = MUImage_Util_Model::getAlbumRepository();
-                                $album = $albumrepository->selectById($albumid);
-                                $entityData['Album'] = $album;
+                $entityData['imageUploadMeta'] = $metaData;
 
-                                // set a default title and the correct data for imageupload
-                                $entity->setTitle($this->__('Please enter title...'));
-                                $entity->setImageUpload($entityData['imageUpload']);
+                // get the selected album as object
+                $albumrepository = MUImage_Util_Model::getAlbumRepository();
+                $album = $albumrepository->selectById($albumid);
+                $entityData['Album'] = $album;
 
-                                // assign fetched data
-                                $entity->merge($entityData);
+                // set a default title and the correct data for imageupload
+                $entity->setTitle($this->__('Please enter title...'));
+                $entity->setImageUpload($entityData['imageUpload']);
 
-                                // save updated entity
-                                $this->entityRef = $entity;
+                // assign fetched data
+                $entity->merge($entityData);
 
-                                $this->performUpdate($args);
+                // save updated entity
+                $this->entityRef = $entity;
 
-                                $success = true;
+                $this->performUpdate($args);
 
-                                // default message
-                                $this->addDefaultMessage($args, $success);
-                            }
-                        }
-                        /* } else {
+                $success = true;
 
-                        // save the entered datas to the allowed upload field
-                        $entityData['imageUpload'] = $entityData[$key];
-                        unset($entityData[$key]);
-                        $entityData['imageUploadMeta'] = $entityData[$key . 'Meta'];
-                        unset($entityData[$key . 'Meta']);
-
-                        // get the selected album as object
-                        $albumrepository = MUImage_Util_Model::getAlbumRepository();
-                        $album = $albumrepository->selectById($albumid);
-                        $entityData['Album'] = $album;
-
-                        // set a default title and the correct data for imageupload
-                        $entity->setTitle($this->__('Please enter title...'));
-                        $entity->setImageUpload($entityData['imageUpload']);
-
-                        // assign fetched data
-                        $entity->merge($entityData);
-
-                        // save updated entity
-                        $this->entityRef = $entity;
-
-                        $this->performUpdate($args);
-
-                        $success = true;
-
-                        // default message
-                        $this->addDefaultMessage($args, $success);
-                        }*/
-                    }
-                }
-                else {
-                    continue;
-                }
+                // default message
+                $this->addDefaultMessage($args, $success);
             }
+
             $pictureids = SessionUtil::getVar('muimagepictureids');
             $pictures = unserialize($pictureids);
             if ($pictures) {
@@ -479,7 +431,7 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
         // initialise the upload handler
         $uploadManager = new MUImage_UploadHandler();
-        $existingObjectData = $existingObject->toArray();
+        // $existingObjectData = $existingObject->toArray();
 
         // process all fields
         foreach ($this->uploadFields as $uploadField => $isMandatory) {
