@@ -42,7 +42,7 @@ class MUImage_Base_UploadHandler
     public function __construct()
     {
         $this->allowedObjectTypes = array('picture');
-        $this->imageFileTypes = array('gif', 'jpeg', 'jpg', 'png', 'swf');
+        $this->imageFileTypes = array('gif', 'jpeg', 'jpg', 'png');
         $this->forbiddenFileTypes = array('cgi', 'pl', 'asp', 'phtml', 'php', 'php3', 'php4', 'php5', 'exe', 'com', 'bat', 'jsp', 'cfm', 'shtml');
         $this->allowedFileSizes = array('picture' => array('imageUpload' => 0));
     }
