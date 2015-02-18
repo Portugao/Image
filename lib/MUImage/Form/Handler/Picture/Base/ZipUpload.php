@@ -151,6 +151,7 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
             $zip = new ZipArchive();
             $zip->open($basePath . $entityData['zipUpload']);
+            $zipFileName = $entityData['zipUpload'];
             unset($entityData['zipUpload']);
             unset($entityData['zipUploadMeta']);
 
@@ -192,6 +193,8 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                 // default message
                 $this->addDefaultMessage($args, $success);
             }
+            $zip->close();
+            unlink($basePath . $zipFileName);
 
             $pictureids = SessionUtil::getVar('muimagepictureids');
             $pictures = unserialize($pictureids);
