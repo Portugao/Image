@@ -34,7 +34,7 @@ MUImage._pluginInfo = {
     version       : '1.3.0',
     developer     : 'Michael Ueberschaer',
     developer_url : 'http://www.webdesign-in-bremen.com',
-    sponsor       : 'ModuleStudio 0.6.2',
+    sponsor       : 'ModuleStudio 0.7.0',
     sponsor_url   : 'http://modulestudio.de',
     license       : 'htmlArea'
 };

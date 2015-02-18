@@ -1,4 +1,4 @@
-CKEDITOR.plugins.add('MUImage', {
+CKEDITOR.plugins.add('muimage', {
     requires: 'popup',
     lang: 'en,nl,de',
     init: function (editor) {
@@ -10,7 +10,7 @@ CKEDITOR.plugins.add('MUImage', {
             }
         });
         editor.ui.addButton('muimage', {
-            label: editor.lang.MUImage.title,
+            label: editor.lang.muimage.title,
             command: 'insertMUImage',
          // icon: this.path + 'images/ed_muimage.png'
             icon: '/modules/MUImage/images/muimage.png'
