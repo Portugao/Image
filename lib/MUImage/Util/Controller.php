@@ -33,7 +33,7 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
             return $minWidth . ' ' . __('pixel');
         }
     }
-    
+
     /**
      * this function checks for the given max width
      * for a picture in the configuration
@@ -41,9 +41,9 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
      */
     public static function maxWidth()
     {
-    
+
         $dom = ZLanguage::getModuleDomain('MUImage');
-    
+
         $maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
         if ($maxWidth == '') {
             return __('No limit', $dom);
@@ -51,7 +51,7 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
             return $maxWidth . ' ' . __('pixel');
         }
     }
-    
+
     /**
      * this function checks for the given max height
      * for a picture in the configuration
@@ -59,9 +59,9 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
      */
     public static function maxHeight()
     {
-    
+
         $dom = ZLanguage::getModuleDomain('MUImage');
-    
+
         $maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
         if ($maxHeight == '') {
             return __('No limit', $dom);
@@ -74,9 +74,13 @@ class MUImage_Util_Controller extends MUImage_Util_Base_Controller
      * Get allowed filesize
      * return int filesize
      */
-    public static function maxSize()
+    public static function maxSize($kind)
     {
-        $maxSize = ModUtil::getVar('MUImage', 'fileSize');
+        if ($kind == 'picture') {
+            $maxSize = ModUtil::getVar('MUImage', 'fileSize');
+        } else {
+            $maxSize = ModUtil::getVar('MUImage', 'zipSize');
+        }
          
         $dom = ZLanguage::getModuleDomain('MUImage');
 

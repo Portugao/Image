@@ -67,6 +67,10 @@
                                 {formintinput id='fileSize' group='config' maxLength=255 __title='Enter the file size. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
+                            {formlabel for='zipSize' __text='Zip size' cssClass=''}
+                                {formintinput id='zipSize' group='config' maxLength=255 __title='Enter the file size. Only digits are allowed.'}
+                        </div>
+                        <div class="z-formrow">
                             {formlabel for='minWidth' __text='Min width' cssClass=''}
                                 {formintinput id='minWidth' group='config' maxLength=255 __title='Enter the min width. Only digits are allowed.'}
                         </div>

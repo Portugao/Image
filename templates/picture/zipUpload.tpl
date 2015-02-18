@@ -11,15 +11,17 @@
     {form enctype='multipart/form-data' cssClass='z-form'}
     {* add validation summary and a <div> element for styling the form *}
     {muimageFormFrame}
-
+                     
     <fieldset>
+
         <legend>{gt text='Content'}</legend>
         <div class="z-formrow">
         {formlabel for="zipUpload" __text='Zip upload' mandatorysym=1}<br />{* break required for Google Chrome *}
         {formuploadinput group='picture' id="zipUpload" mandatory=true readOnly=false cssClass='required'}
-        <div class="z-formnote">{gt text='Allowed file extensions:'} zip</div>
-        <div class="z-formnote">{gt text='Allowed file size:'} {$fileSizeZip} </div>
-        </div>  
+        <div class="z-formnote">{gt text='Allowed file extensions'}: zip</div>
+        <div class="z-formnote">{gt text='Allowed file size:'} {$zipSize} </div>
+        </div> 
+        <p class="z-informationmsg z-formnote">{gt text='Here you can upload a zip file. Please have attention the archive does only contain image files.'}</p> 
       </fieldset>
           {* include possible submit actions *}
     <div class="z-buttons z-formbuttons">

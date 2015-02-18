@@ -57,7 +57,7 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
 
         $allowedFields = MUImage_Util_Controller::allowedFields();
 
-        $fileSize = MUImage_Util_Controller::maxSize();
+        $fileSize = MUImage_Util_Controller::maxSize('picture');
 
         // we check for required width for pictures
         $minWidth = MUImage_Util_Controller::minWidth();

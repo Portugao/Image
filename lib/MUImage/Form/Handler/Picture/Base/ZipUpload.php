@@ -57,7 +57,7 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
         $allowedFields = MUImage_Util_Controller::allowedFields();
 
-        $fileSize = MUImage_Util_Controller::maxSize();
+        $zipSize = MUImage_Util_Controller::maxSize('zip');
 
         // we check for required width for pictures
         $minWidth = MUImage_Util_Controller::minWidth();
@@ -66,11 +66,7 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
         // we check for maximum height for pictures
         $maxHeight = MUImage_Util_Controller::maxHeight();
          
-        $this->view->assign('allowedFields', $allowedFields)
-        ->assign('minWidth', $minWidth)
-        ->assign('maxWidth', $maxWidth)
-        ->assign('maxHeight', $maxHeight)
-        ->assign('fileSize', $fileSize);
+        $this->view->assign('zipSize', $zipSize);
 
         // everything okay, no initialization errors occured
         return true;
@@ -156,9 +152,17 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
             unset($entityData['zipUploadMeta']);
 
             for ($i = 0; $i < $zip->numFiles; $i++) {
-                LogUtil::registerStatus($zip->getNameIndex($i));
 
                 $name = $zip->getNameIndex($i);
+                $fileNameParts = explode('.', $name);
+                $extension = strtolower($fileNameParts[count($fileNameParts) - 1]);
+                $allowedExtensions = array('gif', 'jpeg', 'jpg', 'png');
+                if (count($allowedExtensions) > 0) {
+                    if (!in_array($extension, $allowedExtensions)) {
+                        continue;
+                    }
+                }
+                $uploadHandler->
                 $entry = array($name);
                 $zip->extractTo($basePath, $entry);
 

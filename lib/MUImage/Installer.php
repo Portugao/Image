@@ -55,6 +55,7 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('numberSubAlbums', 2);
         $this->setVar('numberPictures', 20);
         $this->setVar('fileSize', '');
+        $this->setVar('zipSize', '');
         $this->setVar('minWidth', 400);
         $this->setVar('maxWidth', 0);
         $this->setVar('maxHeight', 0);
@@ -131,6 +132,7 @@ class MUImage_Installer extends MUImage_Base_Installer
 
             case '1.2.0':
                 $this->setVar('shrinkPictures', false);
+                $this->setVar('zipSize', '');
                 	
                 // update the database schema
                 try {
