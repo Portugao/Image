@@ -53,7 +53,7 @@
                 <col id="cDescription" />
                {* <col id="cParent_id" /> *}
                 <col id="cAlbumAccess" />
-                <col id="cPasswordAccess" />
+               {* <col id="cPasswordAccess" /> *}
                 <col id="cNotInFrontend" />
                 <col id="cParent" />
                 <col id="cItemActions" />
@@ -78,9 +78,9 @@
                 <th id="hAlbumAccess" scope="col" class="z-left">
                     {sortlink __linktext='Album access' currentsort=$sort modname='MUImage' type=$lct func='view' sort='albumAccess' sortdir=$sdir all=$all own=$own catidMain=$catIdListMainString parent=$parent workflowState=$workflowState albumAccess=$albumAccess searchterm=$searchterm pageSize=$pageSize notInFrontend=$notInFrontend ot='album'}
                 </th>
-                <th id="hPasswordAccess" scope="col" class="z-left">
+               {* <th id="hPasswordAccess" scope="col" class="z-left">
                     {sortlink __linktext='Password access' currentsort=$sort modname='MUImage' type=$lct func='view' sort='passwordAccess' sortdir=$sdir all=$all own=$own catidMain=$catIdListMainString parent=$parent workflowState=$workflowState albumAccess=$albumAccess searchterm=$searchterm pageSize=$pageSize notInFrontend=$notInFrontend ot='album'}
-                </th>
+                </th> *}
                 <th id="hNotInFrontend" scope="col" class="z-center">
                     {sortlink __linktext='Not in frontend' currentsort=$sort modname='MUImage' type=$lct func='view' sort='notInFrontend' sortdir=$sdir all=$all own=$own catidMain=$catIdListMainString parent=$parent workflowState=$workflowState albumAccess=$albumAccess searchterm=$searchterm pageSize=$pageSize notInFrontend=$notInFrontend ot='album'}
                 </th>
@@ -115,9 +115,9 @@
                 <td headers="hAlbumAccess" class="z-left">
                     {$album.albumAccess|muimageGetListEntry:'album':'albumAccess'|safetext}
                 </td>
-                <td headers="hPasswordAccess" class="z-left">
+               {* <td headers="hPasswordAccess" class="z-left">
                     {$album.passwordAccess}
-                </td>
+                </td> *}
                 <td headers="hNotInFrontend" class="z-center">
                     {$album.notInFrontend|yesno:true}
                 </td>
