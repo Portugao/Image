@@ -75,14 +75,14 @@
 		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
                 <form method="post" action="{modurl modname='MUImage' type='picture' func='savePosition'}">
             {/if}
-		    {include file='picture/include_displayItemListMany.tpl' items=$album.picture}
+		    {include file='bootstrap/picture/include_displayItemListMany.tpl' items=$album.picture}
 		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
             <br style="clear: both; "/><input type="submit" value='{gt text="Save positions"}' />
             </form>
             {/if}
 		    {/if}
 		    {if $template eq 2}
-		    {include file='picture/slideshow.tpl' items=$album.picture}
+		    {include file='bootstrap/picture/slideshow.tpl' items=$album.picture}
 		    {/if}
 		    {else}
 		    {gt text='No pictures'}
@@ -146,7 +146,7 @@
 		        {usergetvar name='uname' uid=$childAlbum.createdUserId assign='username'}
 		        {gt text='This album is saved with a password by'}: {$username}<br /><br />
 		        {gt text=$childAlbum.id assign='albumid'}
-                {include file='album/enterPassword.tpl' id=$albumid}
+                {include file='bootstrap/album/enterPassword.tpl' id=$albumid}
 		    </div>
 		</div>
 		{/if}
@@ -171,7 +171,7 @@
                 <h3>{gt text='Pictures'}</h3>
 
                 {if isset($album.picture) && $album.picture ne null}
-                    {include file='picture/include_admindisplayItemListMany.tpl' items=$album.picture}
+                    {include file='bootstrap/picture/include_admindisplayItemListMany.tpl' items=$album.picture}
                 {/if}
 
                 {* {checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
@@ -186,7 +186,7 @@
                 <h3>{gt text='Album'}</h3>
 
                 {if isset($album.parent) && $album.parent ne null}
-                    {include file='album/include_displayItemListOne.tpl' item=$album.parent}
+                    {include file='bootstrap/album/include_displayItemListOne.tpl' item=$album.parent}
                 {/if}
 
                 {* {if !isset($album.parent) || $album.parent eq null}
@@ -205,8 +205,8 @@
 	        <dt>{gt text='Description'}</dt>
 	        <dd>{$album.description}</dd>
 	    </dl>
-	    {include file='helper/include_categories_display.tpl' obj=$album}
-	    {include file='helper/include_standardfields_display.tpl' obj=$album}
+	    {include file='bootstrap/helper/include_categories_display.tpl' obj=$album}
+	    {include file='bootstrap/helper/include_standardfields_display.tpl' obj=$album}
 	    
 	    </div>
 	{/if}
