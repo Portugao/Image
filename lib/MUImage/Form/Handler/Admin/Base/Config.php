@@ -43,6 +43,10 @@ class MUImage_Form_Handler_Admin_Base_Config extends Zikula_Form_AbstractHandler
 
         // retrieve module vars
         $modVars = $this->getVars();
+        
+        $modVars['layoutItems'] = array(array('value' => 'normal', 'text' => 'Normal'),
+                array('value' => 'bootstrap', 'text' => 'Bootstrap')
+        );
 
 
         // assign all module vars

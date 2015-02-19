@@ -83,6 +83,10 @@
                                 {formintinput id='maxHeight' group='config' maxLength=255 __title='Enter the max height. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
+                            {formlabel for='layout' __text='Layout' cssClass=''}
+                                {formdropdownlist id='layout' group='config' __title='Choose the layout'}
+                        </div>
+                        <div class="z-formrow">
                             {formlabel for='shrinkPictures' __text='Shrink pictures' cssClass=''}
                                 {formcheckbox id='shrinkPictures' group='config'}
                         </div>

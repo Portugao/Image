@@ -16,6 +16,45 @@
  */
 class MUImage_Util_View extends MUImage_Util_Base_View
 {
+    
+    /**
+     * Determines the view template for a certain method with given parameters.
+     *
+     * @param Zikula_View $view    Reference to view object.
+     * @param string      $type    Current controller (name of currently treated entity).
+     * @param string      $func    Current function (main, view, ...).
+     * @param array       $args    Additional arguments.
+     *
+     * @return string name of template file.
+     */
+    public function getViewTemplate(Zikula_View $view, $type, $func, $args = array())
+    {
+        // create the base template name
+        $template = DataUtil::formatForOS($type . '/' . $func);
+    
+        // check for template extension
+        $templateExtension = $this->determineExtension($view, $type, $func, $args);
+    
+        // check whether a special template is used
+        $tpl = (isset($args['tpl']) && !empty($args['tpl'])) ? $args['tpl'] : FormUtil::getPassedValue('tpl', '', 'GETPOST', FILTER_SANITIZE_STRING);
+    
+        $templateExtension = '.' . $templateExtension;
+        if ($templateExtension != '.tpl') {
+            $templateExtension .= '.tpl';
+        }
+    
+        if (!empty($tpl) && $view->template_exists($template . '_' . DataUtil::formatForOS($tpl) . $templateExtension)) {
+            $template .= '_' . DataUtil::formatForOS($tpl);
+        }
+
+        $template .= $templateExtension;
+        
+        if (ModUtil::getVar($this->name, 'layout') == 'bootstrap') {
+            $template = '/bootstrap/' . $template;
+        }
+    
+        return $template;
+    }
 
     /*
      * this function checks if an user is in the admin group

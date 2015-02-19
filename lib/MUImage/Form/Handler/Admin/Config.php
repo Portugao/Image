@@ -27,18 +27,27 @@ class MUImage_Form_Handler_Admin_Config extends MUImage_Form_Handler_Admin_Base_
      */
     public function initialize(Zikula_Form_View $view)
     {
-        $dom = ZLanguage::getModuleDomain('MUImage');
-
         // permission check
-        if (!SecurityUtil::checkPermission('MUImage::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             return $view->registerError(LogUtil::registerPermissionError());
         }
 
         // retrieve module vars
-        $modVars = ModUtil::getVar('MUImage');
+        $modVars = $this->getVars();
         
+        $modVars['layoutItems'] = array(array('value' => 'normal', 'text' => 'Normal'),
+                array('value' => 'bootstrap', 'text' => 'Bootstrap')
+        );
+
+
         // assign all module vars
         $this->view->assign('config', $modVars);
+
+        // custom initialisation aspects
+        $this->initializeAdditions();
+
+        // everything okay, no initialization errors occured
+        return true;
     }
 
     /**

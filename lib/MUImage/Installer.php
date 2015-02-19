@@ -43,7 +43,7 @@ class MUImage_Installer extends MUImage_Base_Installer
             }
             return LogUtil::registerError($returnMessage);
         }
-    
+
         // set up all our vars with initial values
         $this->setVar('pagesize', 10);
         $this->setVar('pageSizeAdminAlbums', 10);
@@ -59,21 +59,22 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('minWidth', 400);
         $this->setVar('maxWidth', 0);
         $this->setVar('maxHeight', 0);
+        $this->setVar('layout',  'normal' );
         $this->setVar('shrinkPictures', false);
         $this->setVar('ending', 'html');
         $this->setVar('userDeletePictures', false);
         $this->setVar('slideshow1', false);
         $this->setVar('slide1Interval', 4000);
         $this->setVar('slide1Speed', 1000);
-    
+
         $categoryRegistryIdsPerEntity = array();
-    
+
         // add default entry for category registry (property named Main)
         include_once 'modules/MUImage/lib/MUImage/Api/Base/Category.php';
         include_once 'modules/MUImage/lib/MUImage/Api/Category.php';
         $categoryApi = new MUImage_Api_Category($this->serviceManager);
         $categoryGlobal = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
-    
+
         $registryData = array();
         $registryData['modname'] = $this->name;
         $registryData['table'] = 'Album';
@@ -84,13 +85,13 @@ class MUImage_Installer extends MUImage_Base_Installer
             LogUtil::registerError($this->__f('Error! Could not create a category registry for the %s entity.', array('album')));
         }
         $categoryRegistryIdsPerEntity['album'] = $registryData['id'];
-    
+
         // create the default data
         $this->createDefaultData($categoryRegistryIdsPerEntity);
-    
+
         // register persistent event handlers
         $this->registerPersistentEventHandlers();
-    
+
         // register hook subscriber bundles
         HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
 
@@ -133,75 +134,76 @@ class MUImage_Installer extends MUImage_Base_Installer
             case '1.2.0':
                 $this->setVar('shrinkPictures', false);
                 $this->setVar('zipSize', '');
-                	
+                $this->setVar('layout',  'normal' );
+                 
                 // update the database schema
                 try {
-                 DoctrineHelper::updateSchema($this->entityManager, $this->listEntityClasses());
-                 } catch (Exception $e) {
-                 if (System::isDevelopmentMode()) {
-                 LogUtil::registerError($this->__('Doctrine Exception: ') . $e->getMessage());
-                 }
-                 return LogUtil::registerError($this->__f('An error was encountered while dropping the tables for the %s module.', array($this->getName())));
-                 }
+                    DoctrineHelper::updateSchema($this->entityManager, $this->listEntityClasses());
+                } catch (Exception $e) {
+                    if (System::isDevelopmentMode()) {
+                        LogUtil::registerError($this->__('Doctrine Exception: ') . $e->getMessage());
+                    }
+                    return LogUtil::registerError($this->__f('An error was encountered while dropping the tables for the %s module.', array($this->getName())));
+                }
                  
-                 // we get serviceManager
-                 $serviceManager = ServiceUtil::getManager();
-                 // we get entityManager
-                 $entityManager = $serviceManager->getService('doctrine.entitymanager');
+                // we get serviceManager
+                $serviceManager = ServiceUtil::getManager();
+                // we get entityManager
+                $entityManager = $serviceManager->getService('doctrine.entitymanager');
 
-                 $selectionHelper = new MUImage_Api_Selection($serviceManager);
-                 // we get a repository for albums
-                 $albumrepository = $this->getEntityManager()->getRepository('MUImage_Entity_Album');
-                 // we get a repository for pictures
-                 $picturerepository = $this->getEntityManager()->getRepository('MUImage_Entity_Picture');
+                $selectionHelper = new MUImage_Api_Selection($serviceManager);
+                // we get a repository for albums
+                $albumrepository = $this->getEntityManager()->getRepository('MUImage_Entity_Album');
+                // we get a repository for pictures
+                $picturerepository = $this->getEntityManager()->getRepository('MUImage_Entity_Picture');
                  
-                 // we get a workflow helper
-                 $workflowHelper = new Zikula_Workflow('none', 'MUImage');
+                // we get a workflow helper
+                $workflowHelper = new Zikula_Workflow('none', 'MUImage');
                  
-                 // we get all albums
-                 $result = DBUtil::executeSQL('SELECT * FROM `muimage_album`');
-                 $albums = $result->fetchAll(Doctrine::FETCH_ASSOC);
-                           
-                 // we set each album to approved and all
-                 foreach ($albums as $album) {
-                     $thisalbum = $albumrepository->findOneBy(array('id' => $album['id']));
-                     $thisalbum->setWorkflowState('approved');
-                     $thisalbum->setAlbumAccess('all');
-                     $entityManager->flush();
+                // we get all albums
+                $result = DBUtil::executeSQL('SELECT * FROM `muimage_album`');
+                $albums = $result->fetchAll(Doctrine::FETCH_ASSOC);
+                 
+                // we set each album to approved and all
+                foreach ($albums as $album) {
+                    $thisalbum = $albumrepository->findOneBy(array('id' => $album['id']));
+                    $thisalbum->setWorkflowState('approved');
+                    $thisalbum->setAlbumAccess('all');
+                    $entityManager->flush();
                      
-                     // we set the datas into the workflow table
-                     $obj['__WORKFLOW__']['obj_table'] = 'album';
-                     $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';
-                     $obj['id'] = $album['id'];
-                     $workflowHelper->registerWorkflow($obj, 'approved');
-                 }
+                    // we set the datas into the workflow table
+                    $obj['__WORKFLOW__']['obj_table'] = 'album';
+                    $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';
+                    $obj['id'] = $album['id'];
+                    $workflowHelper->registerWorkflow($obj, 'approved');
+                }
                  
-                 // we get all pictures
-                 $pictures = $picturerepository->selectWhere();
+                // we get all pictures
+                $pictures = $picturerepository->selectWhere();
 
-                 $result2 = DBUtil::executeSQL('SELECT * FROM `muimage_picture`');
-                 $pictures = $result2->fetchAll(Doctrine::FETCH_ASSOC);
+                $result2 = DBUtil::executeSQL('SELECT * FROM `muimage_picture`');
+                $pictures = $result2->fetchAll(Doctrine::FETCH_ASSOC);
                  
-                 // we set each picture to approved
-                 foreach ($pictures as $picture) {
-                     $thispicture = $picturerepository->findOneBy(array('id' => $picture['id']));
-                     $thispicture->setWorkflowState('approved');
-                     $entityManager->flush();
-                     // we set the datas into the workflow table
-                     $obj['__WORKFLOW__']['obj_table'] = 'picture';
-                     $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';
-                     $obj['id'] = $picture['id'];
-                     $workflowHelper->registerWorkflow($obj, 'approved');
-                 }
+                // we set each picture to approved
+                foreach ($pictures as $picture) {
+                    $thispicture = $picturerepository->findOneBy(array('id' => $picture['id']));
+                    $thispicture->setWorkflowState('approved');
+                    $entityManager->flush();
+                    // we set the datas into the workflow table
+                    $obj['__WORKFLOW__']['obj_table'] = 'picture';
+                    $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';
+                    $obj['id'] = $picture['id'];
+                    $workflowHelper->registerWorkflow($obj, 'approved');
+                }
                  
-                 // unregister and register hook providers
-                 HookUtil::unregisterProviderBundles($this->version->getHookProviderBundles());
-                 //HookUtil::registerProviderBundles($this->version->getHookProviderBundles()); TODO maybe in 1.4.0
+                // unregister and register hook providers
+                HookUtil::unregisterProviderBundles($this->version->getHookProviderBundles());
+                //HookUtil::registerProviderBundles($this->version->getHookProviderBundles()); TODO maybe in 1.4.0
                  
-                 EventUtil::registerPersistentModuleHandler('MUImage', 'module.scribite.editorhelpers', array('MUImage_Listener_ThirdParty', 'getEditorHelpers'));
-                 EventUtil::registerPersistentModuleHandler('MUImage', 'moduleplugin.tinymce.externalplugins', array('MUImage_Listener_ThirdParty', 'getTinyMcePlugins'));
-                 EventUtil::registerPersistentModuleHandler('MUImage', 'moduleplugin.ckeditor.externalplugins', array('MUImage_Listener_ThirdParty', 'getCKEditorPlugins'));
-                                  
+                EventUtil::registerPersistentModuleHandler('MUImage', 'module.scribite.editorhelpers', array('MUImage_Listener_ThirdParty', 'getEditorHelpers'));
+                EventUtil::registerPersistentModuleHandler('MUImage', 'moduleplugin.tinymce.externalplugins', array('MUImage_Listener_ThirdParty', 'getTinyMcePlugins'));
+                EventUtil::registerPersistentModuleHandler('MUImage', 'moduleplugin.ckeditor.externalplugins', array('MUImage_Listener_ThirdParty', 'getCKEditorPlugins'));
+
             case '1.3.0':
 
                 // for later updates
@@ -252,16 +254,16 @@ class MUImage_Installer extends MUImage_Base_Installer
         // deletion successful
         return true;
     }
-    
+
     /**
      * Register persistent event handlers.
      * These are listeners for external events of the core and other modules.
      */
     protected function registerPersistentEventHandlers()
     {
-    
+
         parent::registerPersistentEventHandlers();
-    
+
         EventUtil::registerPersistentModuleHandler('MUImage', 'module.scribite.editorhelpers', array('MUImage_Listener_ThirdParty', 'getEditorHelpers'));
         EventUtil::registerPersistentModuleHandler('MUImage', 'moduleplugin.tinymce.externalplugins', array('MUImage_Listener_ThirdParty', 'getTinyMcePlugins'));
         EventUtil::registerPersistentModuleHandler('MUImage', 'moduleplugin.ckeditor.externalplugins', array('MUImage_Listener_ThirdParty', 'getCKEditorPlugins'));
