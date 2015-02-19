@@ -99,6 +99,11 @@
                             {formlabel for='userDeletePictures' __text='User delete pictures' cssClass=''}
                                 {formcheckbox id='userDeletePictures' group='config'}
                         </div>
+                        <div class="z-formrow">
+                            {gt text='If this option is set to true, for multi upload and zip upload we get the file name for a title. It is not possible to edit the title directly after upload.' assign='toolTip'}
+                            {formlabel for='fileNameForTitle' __text='File name for title' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formcheckbox id='fileNameForTitle' group='config'}
+                        </div>
                     </fieldset>
                 {/formtabbedpanel}
                 {gt text='Slideshows' assign='tabTitle'}
@@ -108,15 +113,15 @@
                     
                     
                         <div class="z-formrow">
-                            {formlabel for='slideshow1' __text='Slideshow1' cssClass=''}
+                            {formlabel for='slideshow1' __text='1. slideshow' cssClass=''}
                                 {formcheckbox id='slideshow1' group='config'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='slide1Interval' __text='Slide1 interval' cssClass=''}
+                            {formlabel for='slide1Interval' __text='Interval for 1. slideshow' cssClass=''}
                                 {formintinput id='slide1Interval' group='config' maxLength=255 __title='Enter the slide1 interval. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='slide1Speed' __text='Slide1 speed' cssClass=''}
+                            {formlabel for='slide1Speed' __text='Speed for 1. slideshow' cssClass=''}
                                 {formintinput id='slide1Speed' group='config' maxLength=255 __title='Enter the slide1 speed. Only digits are allowed.'}
                         </div>
                     </fieldset>

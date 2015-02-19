@@ -63,6 +63,7 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('shrinkPictures', false);
         $this->setVar('ending', 'html');
         $this->setVar('userDeletePictures', false);
+        $this->setVar('fileNameForTitle', false);
         $this->setVar('slideshow1', false);
         $this->setVar('slide1Interval', 4000);
         $this->setVar('slide1Speed', 1000);
@@ -135,6 +136,7 @@ class MUImage_Installer extends MUImage_Base_Installer
                 $this->setVar('shrinkPictures', false);
                 $this->setVar('zipSize', '');
                 $this->setVar('layout',  'normal' );
+                $this->setVar('fileNameForTitle', false);
                  
                 // update the database schema
                 try {

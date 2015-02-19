@@ -163,9 +163,6 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                     }
                 }
 
-                $entry = array($name);
-                $zip->extractTo($basePath, $entry);
-
                 $entity = new MUImage_Entity_Picture();
                 // save the entered datas to the allowed upload field
                 $entityData['imageUpload'] = $name;
@@ -179,9 +176,18 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                 $albumrepository = MUImage_Util_Model::getAlbumRepository();
                 $album = $albumrepository->selectById($albumid);
                 $entityData['Album'] = $album;
+                
+                // file name for title?
+                $fileNameForTitle = ModUtil::getVar($this->name, 'fileNameForTitle');
 
-                // set a default title and the correct data for imageupload
-                $entity->setTitle($this->__('Please enter title...'));
+                // set the file name as title
+                if ($fileNameForTitle == true) {
+                    $entity->setTitle($this->__($fileNameParts[count($fileNameParts) - 2]));
+                } else { // set a default title
+                    $entity->setTitle($this->__('Please enter title...'));
+                }
+
+                // set the correct data for imageupload
                 $entity->setImageUpload($entityData['imageUpload']);
 
                 // assign fetched data
@@ -196,9 +202,18 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
                 // default message
                 $this->addDefaultMessage($args, $success);
+                if ($success == true) {
+                    $entry = array($name);
+                    $zip->extractTo($basePath, $entry);
+                }
             }
             $zip->close();
             unlink($basePath . $zipFileName);
+            
+            if ($fileNameForTitle == true) {
+                $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumid));
+                return System::redirect($url);
+            }
 
             $pictureids = SessionUtil::getVar('muimagepictureids');
             $pictures = unserialize($pictureids);
