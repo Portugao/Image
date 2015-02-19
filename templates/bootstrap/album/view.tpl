@@ -3,7 +3,7 @@
 {if isset($smarty.get.lct) && $smarty.get.lct eq 'admin'}
     {assign var='lct' value='admin'}
 {/if}
-{include file="`$lct`/header.tpl"}
+{include file="bootstrap/`$lct`/header.tpl"}
 {if $lct eq 'admin'}
 <div class="muimage-album muimage-view">
     {gt text='Album list' assign='templateTitle'}
@@ -210,7 +210,7 @@
 {/if}
 
 {if $lct eq 'user'}
-    <div class="z-frontendcontainer">
+    <div class="container">
 	{if isset($items)}
 	    {foreach item='album' from=$items}
 		{if $album.parent eq NULL}

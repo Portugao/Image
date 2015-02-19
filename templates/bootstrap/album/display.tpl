@@ -3,7 +3,7 @@
 {if isset($smarty.get.lct) && $smarty.get.lct eq 'admin'}
     {assign var='lct' value='admin'}
 {/if}
-{include file="`$lct`/header.tpl"}
+{include file="bootstrap/`$lct`/header.tpl"}
 {pageaddvar name='javascript' value='jquery'}
 {pageaddvar name='javascript' value='jquery-ui'}
 <div class="muimage-album muimage-display">
