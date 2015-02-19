@@ -117,6 +117,9 @@
         {if $previouspicture eq 1}  
         {formbutton id='btnPrevious' commandName='previous' __text='Previous picture' class='z-bt-previous'}
         {/if}
+        {if $nextpicture eq 1}
+        {formbutton id='btnNext' commandName='next' __text='Next picture' class='z-bt-next'}
+        {/if}
         {formbutton id='btnFinish' commandName='finish' __text='Finish editing' class='z-bt-save'}
      {* {if !$inlineUsage}
         {gt text='Really delete this picture? If you a delete a picture' assign='deleteConfirmMsg'}
@@ -131,9 +134,7 @@
         {formbutton id='btnFinish' commandName='finish' __text='OK' class='z-bt-ok'}
     {/if}
         {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
-        {if $nextpicture eq 1}
-        {formbutton id='btnNext' commandName='next' __text='Next picture' class='z-bt-next'}
-        {/if}
+
     </div>
   {/muimageFormFrame}
 {/form}
