@@ -42,6 +42,7 @@
 			{if $otherPictures eq true}    
 			    <a title="{gt text='Load up a Picture'}" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" />{gt text='Add'}</a>
 			    <a title="{gt text='Load up few Pictures'}" href="{modurl modname='MUImage' type='user' func='multiUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /><img src="images/icons/extrasmall/edit_add.png" />{gt text='Multi-Add'}</a>
+				<a title="{gt text='Load up a zip file with Pictures'}" href="{modurl modname='MUImage' type='user' func='zipUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/folder_new.png" />{gt text='Zip-Add'}</a>
 			{/if}
 			&nbsp;|&nbsp;
 		    {/if} 
