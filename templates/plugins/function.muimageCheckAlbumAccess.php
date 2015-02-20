@@ -12,7 +12,7 @@
  */
 
 /**
- * The muimageContingent method is checking the album access
+ * The muimageCheckAlbumAccess method is checking the album access
  *
  * @return string contingent of Main Ablums, Sub Albums and Pictures
  */
