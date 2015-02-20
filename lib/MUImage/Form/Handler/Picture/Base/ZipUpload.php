@@ -136,7 +136,6 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
             //$upload
             $entityData = $this->handleUploads($entityData, $entity);
-            // if upload failed go to next file to upload
 
             $uploadHandler = new MUImage_UploadHandler();
 

@@ -156,7 +156,12 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
             $result = false;
         }
 
-        $maxSize = ModUtil::getVar('MUImage', 'fileSize');
+
+        if ($fieldName == 'zipUpload') {
+            $maxSize = ModUtil::getVar('MUImage', 'zipSize');
+        } else {
+            $maxSize = ModUtil::getVar('MUImage', 'fileSize');
+        }
 
         if ($maxSize > 0) {
 
@@ -164,20 +169,25 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
 
             if ($fileSize > $maxSize) {
                 $maxSizeKB = $maxSize / 1024;
-
                 if ($maxSizeKB < 1024) {
                     $maxSizeKB = DataUtil::formatNumber($maxSizeKB);
                     $fileName = $file['name'];
-                    LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s kilobytes.', array($fileName, $maxSizeKB), $dom));
-                    $result = false;
-
+                    if ($fieldName == 'zipUpload') {
+                        return LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s kilobytes.', array($fileName, $maxSizeKB), $dom));
+                    } else {
+                        LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s kilobytes.', array($fileName, $maxSizeKB), $dom));
+                        return false;
+                    }
                 }
-
                 $maxSizeMB = $maxSizeKB / 1024;
                 $maxSizeMB = DataUtil::formatNumber($maxSizeMB);
                 $fileName = $file['name'];
-                LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
-                $result = false;
+                if ($fieldName == 'zipUpload') {
+                    return LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
+                } else {
+                    LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
+                    return false;
+                }
             }
         }
 
