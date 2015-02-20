@@ -260,7 +260,7 @@ class MUImage_Base_UploadHandler
      *
      * @return string the resulting file name
      */
-    protected function determineFileName($objectType, $fieldName, $basePath, $fileName, $extension)
+    public function determineFileName($objectType, $fieldName, $basePath, $fileName, $extension)
     {
         $backupFileName = $fileName;
     

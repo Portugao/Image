@@ -162,12 +162,23 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                     }
                 }
 
-                $entity = new MUImage_Entity_Picture();
-                // save the entered datas to the allowed upload field
-                $entityData['imageUpload'] = $name;
+                $fileName = $uploadHandler->determineFileName('picture', 'imageUpload', $basePath, $name, $extension);
+
+                $zip->renameIndex($i, $fileName);
+
+                $entry = array($fileName);
+                $zip->extractTo($basePath, $entry);
 
                 $uploadHandler = new MUImage_UploadHandler();
-                $metaData = $uploadHandler->readMetaDataForFile($name, $basePath);
+                $metaData = $uploadHandler->readMetaDataForFile($fileName, $basePath . $fileName);
+                
+                if (!is_array($metaData)) {
+                    continue;
+                }              
+
+                $entity = new MUImage_Entity_Picture();
+                // save the entered datas to the allowed upload field
+                $entityData['imageUpload'] = $fileName;
 
                 $entityData['imageUploadMeta'] = $metaData;
 
@@ -175,22 +186,21 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                 $albumrepository = MUImage_Util_Model::getAlbumRepository();
                 $album = $albumrepository->selectById($albumid);
                 $entityData['Album'] = $album;
-                
-                //$fileName = $this->determineFileName('picture', 'imageUpload', $basePath, $name, $extension);
-                               
+
                 // file name for title?
                 $fileNameForTitle = ModUtil::getVar($this->name, 'fileNameForTitle');
 
                 // set the file name as title
                 if ($fileNameForTitle == true) {
-                    $entity->setTitle($this->__($fileNameParts[count($fileNameParts) - 2]));
+                    $fileNameParts2 = explode('.', $fileName);
+                    $entity->setTitle($this->__($fileNameParts2[count($fileNameParts2) - 2]));
                 } else { // set a default title
                     $entity->setTitle($this->__('Please enter title...'));
                 }
 
                 // set the correct data for imageupload
                 $entity->setImageUpload($entityData['imageUpload']);
-                
+
                 // set workflow state to approved
                 $entity->setWorkflowState('approved');
 
@@ -206,14 +216,11 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
                 // default message
                 $this->addDefaultMessage($args, $success);
-                if ($success == true) {
-                    $entry = array($name);
-                    $zip->extractTo($basePath, $entry);
-                }
+
             }
             $zip->close();
             unlink($basePath . $zipFileName);
-            
+
             if ($fileNameForTitle == true) {
                 $url = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumid));
                 return System::redirect($url);
