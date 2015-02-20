@@ -179,6 +179,9 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
                         
                         // set the correct data for imageupload
                         $entity->setImageUpload($entityData['imageUpload']);
+                        
+                        // set workflow state to approved
+                        $entity->setWorkflowState('approved');
 
                         // assign fetched data
                         $entity->merge($entityData);

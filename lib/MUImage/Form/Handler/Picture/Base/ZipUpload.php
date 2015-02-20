@@ -176,6 +176,8 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                 $album = $albumrepository->selectById($albumid);
                 $entityData['Album'] = $album;
                 
+                //$fileName = $this->determineFileName('picture', 'imageUpload', $basePath, $name, $extension);
+                               
                 // file name for title?
                 $fileNameForTitle = ModUtil::getVar($this->name, 'fileNameForTitle');
 
@@ -188,6 +190,9 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
 
                 // set the correct data for imageupload
                 $entity->setImageUpload($entityData['imageUpload']);
+                
+                // set workflow state to approved
+                $entity->setWorkflowState('approved');
 
                 // assign fetched data
                 $entity->merge($entityData);

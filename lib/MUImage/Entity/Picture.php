@@ -61,26 +61,26 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
         $request = new Zikula_Request_Http();
         $func = $request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
         if ($func == 'multiUpload' || $func == 'zipUpload') {
-            $this->setWorkflowState('approved');
+
             $id = $this->getId();
-        
+
             $workflowHelper = new Zikula_Workflow('none', 'MUImage');
-        
+
             $obj['__WORKFLOW__']['obj_table'] = 'picture';
             $obj['__WORKFLOW__']['obj_idcolumn'] = 'id';
             $obj['id'] = $id;
             $workflowHelper->registerWorkflow($obj, 'approved');
         }
+        
         if ($this->pos == 0) {
             $this->setPos(1);
         }
-        
+
         if (!SessionUtil::getVar('muimagepictureids')) {
             $idcollection[] = $this->id;
             $pictureids = serialize($idcollection);
             SessionUtil::setVar('muimagepictureids', $pictureids);
-        }
-        else {
+        } else {
             $pictureids = SessionUtil::getVar('muimagepictureids');
             $idcollection = unserialize($pictureids);
             $idcollection[] = $this->id;
@@ -188,7 +188,7 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
                         'icon' => 'preview',
                         'linkTitle' => __('Open preview page', $dom),
                         'linkText' => __('Preview', $dom)
-                ); 
+                );
                 $this->_actions[] = array(
                         'url' => array('type' => 'admin', 'func' => 'display', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
                         'icon' => 'display',
@@ -200,14 +200,14 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
             if (in_array($currentFunc, array('main', 'view', 'display'))) {
                 if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
 
-                   /* $this->_actions[] = array(
-                            'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
+                    /* $this->_actions[] = array(
+                     'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
                             'icon' => 'edit',
                             'linkTitle' => __('Edit', $dom),
                             'linkText' => __('Edit', $dom)
                     );
-                     $this->_actions[] = array(
-                     'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'astemplate' => $this['id'])),
+                    $this->_actions[] = array(
+                            'url' => array('type' => 'admin', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'astemplate' => $this['id'])),
                             'icon' => 'saveas',
                             'linkTitle' => __('Reuse for new item', $dom),
                             'linkText' => __('Reuse', $dom)
@@ -244,14 +244,14 @@ class MUImage_Entity_Picture extends MUImage_Entity_Base_Picture
             if (in_array($currentFunc, array('main', 'view', 'display'))) {
                 if (SecurityUtil::checkPermission('MUImage::', '.*', ACCESS_EDIT)) {
 
-                   /* $this->_actions[] = array(
-                            'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
+                    /* $this->_actions[] = array(
+                     'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'id' => $this['id'])),
                             'icon' => 'edit',
                             'linkTitle' => __('Edit', $dom),
                             'linkText' => __('Edit', $dom)
                     );
-                      $this->_actions[] = array(
-                     'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'astemplate' => $this['id'])),
+                    $this->_actions[] = array(
+                            'url' => array('type' => 'user', 'func' => 'edit', 'arguments' => array('ot' => 'picture', 'astemplate' => $this['id'])),
                             'icon' => 'saveas',
                             'linkTitle' => __('Reuse for new item', $dom),
                             'linkText' => __('Reuse', $dom)

@@ -186,7 +186,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
                     return LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
                 } else {
                     LogUtil::registerError(__f('Error! Your file %s is too big. Please keep it smaller than %s megabytes.', array($fileName, $maxSizeKB), $dom));
-                    return false;
+                    $result = false;
                 }
             }
         }
