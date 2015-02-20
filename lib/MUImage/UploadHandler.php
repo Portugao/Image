@@ -252,14 +252,23 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
      */
     protected function isAllowedFileExtension($objectType, $fieldName, $extension)
     {
+        $request = new Zikula_Request_Http();
+        $func = $request->query->filter('func', 'main', FILTER_SANITIZE_STRING);
         // determine the allowed extensions
         $allowedExtensions = array();
-        switch ($objectType) {
-            case 'picture':
-                $allowedExtensions = array('gif', 'jpeg', 'jpg', 'png', 'zip');
-                break;
+        if ($func == 'edit' || $func == 'multiUpload') {
+            switch ($objectType) {
+                case 'picture':
+                    $allowedExtensions = array('gif', 'jpeg', 'jpg', 'png');
+                    break;
+            }
+        } else {
+            switch ($objectType) {
+                case 'picture':
+                    $allowedExtensions = array('zip');
+                    break;
+            }
         }
-
         if (count($allowedExtensions) > 0) {
             if (!in_array($extension, $allowedExtensions)) {
                 return false;
