@@ -51,7 +51,49 @@ Changes in 1.3.0
 
 # closed #90 pagesize setting work again
 
-# closed #77 upgrade possible
+# closed #92 fixed, main album get saved creating sub album
+
+# closed #94 plugins are working like expected
+
+# closed #95 deletion of several pictures seems to work
+
+# closed #96 in edit multi function we get the relevant informations about settings
+
+# closed #97 it is possible to edit after multi upload
+
+# closed #98 state now approved
+
+# closed #101 no provider hook
+
+# closed #103 form for password is working for sub albums now
+
+# closed #104 fixed problems with field
+
+# closed #105 file validation is working now
+
+# closed #106 picture access depends on album access now
+
+# closed #107 one item block updated
+
+# closed #108 display of album and pictures better now
+
+# closed #109 redirect after deletion of picture is working like expected
+
+# closed #114 CKeditor does not block the editor anymore
+
+# closed #117 possible now to take file name as picture name
+
+# closed #118 password not in backend anymore
+
+# closed #119 we have an option to set a group for common access
+
+# closed #120 album menu modified to more logic
+
+# closed #121 logic in edit multi template improved
+
+# closed #122 new pot file and german translation completed
+
+# closed #123 all pictures get state 'approved' in multi and zip upload
 
 some more fixes:
 
