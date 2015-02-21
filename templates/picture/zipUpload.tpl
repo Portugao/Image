@@ -21,6 +21,7 @@
         <div class="z-formnote">{gt text='Allowed file extensions'}: zip</div>
         <div class="z-formnote">{gt text='Allowed file size:'} {$zipSize} </div>
         </div> 
+        {muimageValidationError id='zipUpload' class='required'}
         <p class="z-informationmsg z-formnote">{gt text='Here you can upload a zip file. Please have attention the archive does only contain image files.'}</p> 
       </fieldset>
           {* include possible submit actions *}
@@ -35,3 +36,37 @@
 </div>
 </div>
 {include file='user/footer.tpl'}
+{icon type='edit' size='extrasmall' assign='editImageArray'}
+{icon type='delete' size='extrasmall' assign='deleteImageArray'}
+
+<script type="text/javascript" charset="utf-8">
+/* <![CDATA[ */
+
+    document.observe('dom:loaded', function() {
+
+        muimageAddCommonValidationRules('picture', '{{if $mode eq 'create'}}{{else}}{{$picture.id}}{{/if}}');
+
+        // observe button events instead of form submit
+        var valid = new Validation('{{$__formid}}', {onSubmit: false, immediate: true, focusOnError: false});
+        {{if $mode ne 'create'}}
+            var result = valid.validate();
+        {{/if}}
+
+        $('{{if $mode eq 'create'}}btnSubmit{{else}}btnUpdate{{/if}}').observe('click', function(event) {
+            var result = valid.validate();
+            if (!result) {
+                // validation error, abort form submit
+                Event.stop(event);
+            } else {
+                // hide form buttons to prevent double submits by accident
+                $$('div.z-formbuttons input').each(function(btn) {
+                    btn.hide();
+                });
+            }
+            return result;
+        });
+
+        Zikula.UI.Tooltips($$('.muimageFormTooltips'));
+    });
+/* ]]> */
+</script>
