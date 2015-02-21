@@ -503,9 +503,18 @@ class MUImage_Util_View extends MUImage_Util_Base_View
      */
     public static function checkAlbumAccess($albumid)
     {
+        // we get the actual user id
+        $userid = UserUtil::getVar('uid');
+        
         $albumrepository = MUImage_Util_Model::getAlbumRepository();
         $thisAlbum = $albumrepository->selectById($albumid);
-        if ($thisAlbum['notInFrontend'] == 1 && $thisAlbum['createduserId'] != UserUtil::getVar('uid')) {
+        
+        $groupMember = self::checkGroupMember($thisAlbum['createdUserId']);
+        if ($groupMember == 1) {
+            return 1;
+        }
+        
+        if ($thisAlbum['notInFrontend'] == 1 && $thisAlbum['createduserId'] != $userid) {
             return 0;
         }
         if ($thisAlbum['albumAccess'] == 'all' ) {
@@ -515,7 +524,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
             return 1;
         }
         if ($thisAlbum['albumAccess'] == 'friends') {
-            $userid = UserUtil::getVar('uid');
+   
             if ($thisAlbum['createdUserId'] == $userid) {
                 return 1;
             }
