@@ -27,7 +27,8 @@
 		{$album.description}<br /><br />
 	    {/if}
 	    {include file='helper/include_categories_display.tpl' obj=$album}
-	    {if $album.createdUserId eq $coredata.user.uid}
+	    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
+	    {if $album.createdUserId eq $coredata.user.uid || $groupMember eq 1}
 		{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
 		    {if count($album._actions) gt 0}
 			{strip}
@@ -73,11 +74,11 @@
 		    <div id="muimage_pictures_content">
 		    {if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
 		    {if $template eq 1}
-		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
+		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
                 <form method="post" action="{modurl modname='MUImage' type='picture' func='savePosition'}">
             {/if}
 		    {include file='picture/include_displayItemListMany.tpl' items=$album.picture}
-		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
+		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
             <br style="clear: both; "/><input type="submit" value='{gt text="Save positions"}' />
             </form>
             {/if}
