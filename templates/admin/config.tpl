@@ -21,82 +21,93 @@
                         <p class="z-confirmationmsg">{gt text='Here you can manage all basic settings for this application.'}</p>
                     
                         <div class="z-formrow">
-                            {gt text='Pagesize in frontend' assign='toolTip'}
-                            {formlabel for='pagesize' __text='Pagesize' cssClass='muimage-form-tooltips ' title=$toolTip}
+                            {gt text='Here you can set the number of items per page in frontend' assign='toolTip'}
+                            {formlabel for='pagesize' __text='Number of items per page' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='pagesize' group='config' maxLength=255 __title='Enter the pagesize. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='pageSizeAdminAlbums' __text='Page size admin albums' cssClass=''}
+                        {gt text='Here you can set the number of albums per page in backend.' assign='toolTip'}
+                            {formlabel for='pageSizeAdminAlbums' __text='Page size admin albums' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='pageSizeAdminAlbums' group='config' maxLength=255 __title='Enter the page size admin albums. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='pageSizeAdminPictures' __text='Page size admin pictures' cssClass=''}
+                        {gt text='Here you can set the number of pictures per page in backend.' assign='toolTip'}
+                            {formlabel for='pageSizeAdminPictures' __text='Page size admin pictures' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='pageSizeAdminPictures' group='config' maxLength=255 __title='Enter the page size admin pictures. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {gt text='Standard setting for showing a title of an image' assign='toolTip'}
+                            {gt text='Standard setting for showing a title of a picture.' assign='toolTip'}
                             {formlabel for='showTitle' __text='Show title' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formcheckbox id='showTitle' group='config'}
                         </div>
                         <div class="z-formrow">
-                            {gt text='Standard setting for showing a description of an image' assign='toolTip'}
+                            {gt text='Standard setting for showing a description of a picture.' assign='toolTip'}
                             {formlabel for='showDescription' __text='Show description' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formcheckbox id='showDescription' group='config'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='countImageView' __text='Count image view' cssClass=''}
+                        	{gt text='Here you can activate the count of access to detail pages of pictures.' assign='toolTip'}
+                            {formlabel for='countImageView' __text='Count image view' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formcheckbox id='countImageView' group='config'}
                         </div>
                         <div class="z-formrow">
-                            {gt text='How many main albums may a user create' assign='toolTip'}
+                            {gt text='How many main albums may a user create? Not relevant for admins.' assign='toolTip'}
                             {formlabel for='numberParentAlbums' __text='Number parent albums' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='numberParentAlbums' group='config' maxLength=255 __title='Enter the number parent albums. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {gt text='How many sub albums may a user create' assign='toolTip'}
+                            {gt text='How many sub albums may a user create? Not relevant for admins.' assign='toolTip'}
                             {formlabel for='numberSubAlbums' __text='Number sub albums' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='numberSubAlbums' group='config' maxLength=255 __title='Enter the number sub albums. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {gt text='How many pictures may a user create' assign='toolTip'}
+                            {gt text='How many pictures may a user create? Not relevant for admins' assign='toolTip'}
                             {formlabel for='numberPictures' __text='Number pictures' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='numberPictures' group='config' maxLength=255 __title='Enter the number pictures. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='fileSize' __text='File size' cssClass=''}
+                        	{gt text='Here you can set the maximum file size for pictures.' assign='toolTip'}
+                            {formlabel for='fileSize' __text='File size' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='fileSize' group='config' maxLength=255 __title='Enter the file size. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='zipSize' __text='Zip size' cssClass=''}
+                            {gt text='Here you can set the maximum file size for zip upload.' assign='toolTip'}
+                            {formlabel for='zipSize' __text='Zip size' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='zipSize' group='config' maxLength=255 __title='Enter the file size. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='minWidth' __text='Min width' cssClass=''}
-                                {formintinput id='minWidth' group='config' maxLength=255 __title='Enter the min width. Only digits are allowed.'}
+                        	{gt text='Here you can set the minimum width for pictures.' assign='toolTip'}
+                            {formlabel for='minWidth' __text='Minimum width for pictures.' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formintinput id='minWidth' group='config' maxLength=255 __title='Enter the minimum width. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='maxWidth' __text='Max width' cssClass=''}
-                                {formintinput id='maxWidth' group='config' maxLength=255 __title='Enter the max width. Only digits are allowed.'}
+                        	{gt text='Here you can set the maximum width for pictures.' assign='toolTip'}
+                            {formlabel for='maxWidth' __text='Maximum width for pictures.' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formintinput id='maxWidth' group='config' maxLength=255 __title='Enter the maximum width. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='maxHeight' __text='Max height' cssClass=''}
+                        	{gt text='Here you can set the maximum height for pictures.' assign='toolTip'}
+                            {formlabel for='maxHeight' __text='Max height' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='maxHeight' group='config' maxLength=255 __title='Enter the max height. Only digits are allowed.'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='layout' __text='Layout' cssClass=''}
+                        	{gt text='Here you can set different layouts.' assign='toolTip'}
+                            {formlabel for='layout' __text='Layout' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formdropdownlist id='layout' group='config' __title='Choose the layout'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='groupForCommonAlbums' __text='Group for common albums' cssClass=''}
+                            {gt text='Here you can set a group for common access to albums. Admin and user group are not selectable. Create another group like editors to be able to work on albums together. Every member of this group can edit albums created by a group member.' assign='toolTip'}
+                            {formlabel for='groupForCommonAlbums' __text='Group for common albums' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formdropdownlist id='groupForCommonAlbums' group='config' __title='Choose the group for common albums'}
                         </div>
                         <div class="z-formrow">
-                            {gt text='If set to true, pictures get modified to maximum width and height for pictures set in the settings.' assign='toolTip'}   
+                            {gt text='If set to true, pictures get modified to maximum width and height for pictures set in the settings. The aspect ratio of pictures will get received' assign='toolTip'}   
                             {formlabel for='shrinkPictures' __text='Shrink pictures' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='shrinkPictures' group='config'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='ending' __text='Ending' cssClass=''}
+                        	{gt text='Here you can set an ending for detail pages.' assign='toolTip'}
+                            {formlabel for='ending' __text='Ending' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formtextinput id='ending' group='config' maxLength=255 __title='Enter the ending.'}
                                 <div class="z-informationmsg z-formnote">{gt text="You can select between html and htm or no ending (empty field)."}</div>
                         </div>
