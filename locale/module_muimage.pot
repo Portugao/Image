@@ -2402,11 +2402,6 @@ msgstr ""
 msgid "Welcome to the picture section of the M u image application."
 msgstr ""
 
-#: templates/picture/include_displayItemListMany.tpl:10
-#: templates/bootstrap/picture/include_displayItemListMany.tpl:9
-msgid "movecursor"
-msgstr ""
-
 #: templates/picture/include_displayItemListMany.tpl:20
 #: templates/bootstrap/picture/include_displayItemListMany.tpl:19
 msgid "No title"

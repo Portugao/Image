@@ -7,42 +7,47 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-13 08:51-0500\n"
-"PO-Revision-Date: 2013-01-14 11:22+0100\n"
+"POT-Creation-Date: 2015-02-21 21:02+0000\n"
+"PO-Revision-Date: 2015-02-21 23:18+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.9\n"
 
-#: javascript/MUImage.js:57
+#: javascript/MUImage.js:223
 msgid "Error"
 msgstr "Fehler"
 
-#: javascript/MUImage.js:62
+#: javascript/MUImage.js:228
 msgid "Success"
 msgstr "Erfolg"
 
-#: javascript/MUImage_validation.js:8
+#: javascript/MUImage_editFunctions.js:358
+msgid "Action has been completed."
+msgstr ""
+
+#: javascript/MUImage_editFunctions.js:358
+msgid "Information"
+msgstr "Information"
+
+#: javascript/MUImage_validation.js:139
 msgid "No spaces"
 msgstr "Keine Leerzeichen"
 
-#: javascript/MUImage_validation.js:12
-msgid "Please select a valid html colour code."
-msgstr "Bitte wähle einen gültigen Farbcode."
+#: javascript/MUImage_validation.js:142
+msgid "Please select a valid file extension."
+msgstr "Bitte wähle eine gültige Dateiendung."
 
-#: javascript/MUImage_validation.js:16 javascript/MUImage_validation.js:26
-#: javascript/MUImage_validation.js:36
-msgid "Please select a value in the past."
-msgstr "Bitte wähle einen Wert in der Vergangenheit."
-
-#: javascript/MUImage_validation.js:21 javascript/MUImage_validation.js:31
-#: javascript/MUImage_validation.js:40
-msgid "Please select a value in the future."
-msgstr "Bitte wähle einen Wert in der Zukunft."
-
-#: javascript/MUImage_validation.js:44
+#: javascript/MUImage_validation.js:145
 msgid "This value is already assigned, but must be unique. Please change it."
 msgstr ""
 "Dieser Wert existiert bereits, muss aber eindeutig sein. Bitte ändere ihn."
+
+#~ msgid "Please select a valid html colour code."
+#~ msgstr "Bitte wähle einen gültigen Farbcode."
+
+#~ msgid "Please select a value in the future."
+#~ msgstr "Bitte wähle einen Wert in der Zukunft."
