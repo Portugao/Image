@@ -16,7 +16,7 @@
  */
 class MUImage_Util_View extends MUImage_Util_Base_View
 {
-    
+
     /**
      * Determines the view template for a certain method with given parameters.
      *
@@ -31,28 +31,28 @@ class MUImage_Util_View extends MUImage_Util_Base_View
     {
         // create the base template name
         $template = DataUtil::formatForOS($type . '/' . $func);
-    
+
         // check for template extension
         $templateExtension = $this->determineExtension($view, $type, $func, $args);
-    
+
         // check whether a special template is used
         $tpl = (isset($args['tpl']) && !empty($args['tpl'])) ? $args['tpl'] : FormUtil::getPassedValue('tpl', '', 'GETPOST', FILTER_SANITIZE_STRING);
-    
+
         $templateExtension = '.' . $templateExtension;
         if ($templateExtension != '.tpl') {
             $templateExtension .= '.tpl';
         }
-    
+
         if (!empty($tpl) && $view->template_exists($template . '_' . DataUtil::formatForOS($tpl) . $templateExtension)) {
             $template .= '_' . DataUtil::formatForOS($tpl);
         }
 
         $template .= $templateExtension;
-        
+
         if (ModUtil::getVar($this->name, 'layout') == 'bootstrap') {
             $template = '/bootstrap/' . $template;
         }
-    
+
         return $template;
     }
 
@@ -533,7 +533,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
             } else {
                 $passwordArray = SessionUtil::getVar('muimagePasswordArray');
                 if (is_array($passwordArray)) {
-                    foreach ($passwordArray as $key => $password) {            
+                    foreach ($passwordArray as $key => $password) {
                         if ($key == $thisAlbum['id'] && $password == $thisAlbum['passwordAccess']) {
                             return 1;
                         }
@@ -542,6 +542,40 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
                 } else {
                     return 2;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *  @param $createdUserId     id of the user created an item
+     */
+    public static function checkGroupMember($createdUserId)
+    {
+        if (UserUtil::isLoggedIn() === false) {
+            return false;
+        }
+        $uid = UserUtil::getVar('uid');
+        $uidGroups = UserUtil::getGroupListForUser($uid);
+        $uidGroups = explode(',', $uidGroups);
+
+        $createdUserIdGroups = UserUtil::getGroupListForUser($createdUserId);
+        $createdUserIdGroups = explode(',', $createdUserIdGroups);
+        
+        if ($uid == $createdUserId) {
+            return true;
+        }
+
+        $commonGroup = ModUtil::getVar('MUImage', 'groupForCommonAlbums');
+
+        if ($commonGroup != 'notset') {
+            foreach ($uidGroups as $uidGroup) {
+                if (in_array($uidGroup, $createdUserIdGroups)) {
+                    if ($uidGroup > 2) {
+                        return true;
+                    }
                 }
             }
         }

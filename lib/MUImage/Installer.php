@@ -60,6 +60,7 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('maxWidth', 0);
         $this->setVar('maxHeight', 0);
         $this->setVar('layout',  'normal' );
+        $this->setVar('groupForCommonAlbums',  'notset' );
         $this->setVar('shrinkPictures', false);
         $this->setVar('ending', 'html');
         $this->setVar('userDeletePictures', false);
@@ -136,6 +137,7 @@ class MUImage_Installer extends MUImage_Base_Installer
                 $this->setVar('shrinkPictures', false);
                 $this->setVar('zipSize', '');
                 $this->setVar('layout',  'normal' );
+                $this->setVar('groupForCommonAlbums',  'notset' );
                 $this->setVar('fileNameForTitle', false);
                  
                 // update the database schema

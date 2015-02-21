@@ -5,7 +5,8 @@
 {foreach name='relLoop' item='item' from=$items}
 <li class="ui-state-default">
 <div class="muimage_picture_view">
-{if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
+ {muimageCheckGroupMember createdUserId=$item.createdUserId assign='groupMember'}
+{if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
 {gt text='movecursor' assign='cursor'}
 {else}
 {gt text='' assign='cursor'}
@@ -31,7 +32,8 @@
     </script> 
     <br /> *}
     {checkpermission component='MUImage:Picture:' instance='.*' level='ACCESS_EDIT' assign='authEdit'}
-    {if $authEdit && $item.createdUserId eq $coredata.user.uid}
+    {muimageCheckGroupMember createdUserId=$item.createdUserId assign='groupMember'}
+    {if $authEdit && ($item.createdUserId eq $coredata.user.uid || $groupMember eq 1)}
     <a title="Edit {$item.title}" class="muimage_picture_view_header_right" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}"><img src="images/icons/extrasmall/xedit.png" /></a>
     {/if}
 </div>
@@ -72,7 +74,8 @@
 
     var MU = jQuery.noConflict();
 
-    {{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}}
+	{{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}}
+    {{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId || $groupMember eq 1}}
         MU(function() {
             MU( "#sortable" ).sortable();
         });

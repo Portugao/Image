@@ -87,7 +87,12 @@
                                 {formdropdownlist id='layout' group='config' __title='Choose the layout'}
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='shrinkPictures' __text='Shrink pictures' cssClass=''}
+                            {formlabel for='groupForCommonAlbums' __text='Group for common albums' cssClass=''}
+                                {formdropdownlist id='groupForCommonAlbums' group='config' __title='Choose the group for common albums'}
+                        </div>
+                        <div class="z-formrow">
+                            {gt text='If set to true, pictures get modified to maximum width and height for pictures set in the settings.' assign='toolTip'}   
+                            {formlabel for='shrinkPictures' __text='Shrink pictures' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='shrinkPictures' group='config'}
                         </div>
                         <div class="z-formrow">
@@ -96,7 +101,8 @@
                                 <div class="z-informationmsg z-formnote">{gt text="You can select between html and htm or no ending (empty field)."}</div>
                         </div>
                         <div class="z-formrow">
-                            {formlabel for='userDeletePictures' __text='User delete pictures' cssClass=''}
+                            {gt text='If this option is set to true, standard users are able to delete pictures in their albums.' assign='toolTip'}      
+                            {formlabel for='userDeletePictures' __text='User delete pictures' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='userDeletePictures' group='config'}
                         </div>
                         <div class="z-formrow">

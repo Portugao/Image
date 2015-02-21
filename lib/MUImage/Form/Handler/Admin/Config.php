@@ -31,13 +31,25 @@ class MUImage_Form_Handler_Admin_Config extends MUImage_Form_Handler_Admin_Base_
         if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             return $view->registerError(LogUtil::registerPermissionError());
         }
+        
+        $dom = ZLanguage::getModuleDomain($this->name);
 
         // retrieve module vars
         $modVars = $this->getVars();
         
-        $modVars['layoutItems'] = array(array('value' => 'normal', 'text' => 'Normal'),
+        $modVars['layoutItems'] = array(array('value' => 'normal', 'text' => __('Normal', $dom)),
                 array('value' => 'bootstrap', 'text' => 'Bootstrap')
         );
+        
+        $modVars['groupForCommonAlbumsItems'] = array(array('value' => 'notset', 'text' => __('Not set', $dom))
+        );
+        
+        $groups = ModUtil::apifunc('Groups','user','getall');
+        foreach ($groups as $group) {
+            if ($group['gid'] > 2) {
+                $modVars['groupForCommonAlbumsItems'][] = array('value' => $group['gid'], 'text' => $group['name']);
+            }
+        }
 
 
         // assign all module vars
