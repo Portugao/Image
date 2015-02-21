@@ -4,13 +4,12 @@
     {assign var='lct' value='admin'}
 {/if}
 {include file="`$lct`/header.tpl"}
-
+{pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
+{pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
 {pageaddvar name='javascript' value='jquery'}
 {pageaddvar name='javascript' value='jquery-ui'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/chosen/chosen.jquery.js'}
 {pageaddvar name='stylesheet' value='modules/MUImage/javascript/chosen/chosen.css'}
-{pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
-{pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
 
 {if $mode eq 'edit'}
     {gt text='Edit picture' assign='templateTitle'}
@@ -53,12 +52,11 @@
             {/if}
             {formlabel for='imageUpload' __text='Image upload' mandatorysym=$mandatorySym}<br />{* break required for Google Chrome *}
 {if $mode eq 'create'}
-            {formuploadinput group='picture' id='imageUpload' mandatory=true readOnly=false cssClass='required validate-upload'}
-           	{muimageValidationError id='imageUpload' class='required'}
+            {formuploadinput group='picture' id='imageUpload' mandatory=true readOnly=false cssClass='required'}
 {else}
             {formuploadinput group='picture' id='imageUpload' mandatory=false readOnly=false cssClass=''}
 {/if}
-        	{muimageValidationError id='imageUpload' class='validate-upload'}
+
             <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
             <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
             <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
@@ -82,6 +80,7 @@
                     </span>
                 {/if}
             {/if}
+            {muimageValidationError id='imageUpload' class='required'}
         </div>
         <div class="z-formrow" style="display: none;">
             {formlabel for='imageView' __text='Image view' mandatorysym='1'}
@@ -158,6 +157,16 @@
 
 <script type="text/javascript" charset="utf-8">
 /* <![CDATA[ */
+    var editImage = '<img src="{{$editImageArray.src}}" width="16" height="16" alt="" />';
+    var removeImage = '<img src="{{$deleteImageArray.src}}" width="16" height="16" alt="" />';
+    var relationHandler = new Array();
+    var newItem = new Object();
+    newItem['ot'] = 'album';
+    newItem['alias'] = 'Album';
+    newItem['prefix'] = 'muimageAlbum_AlbumSelectorDoNew';
+    newItem['acInstance'] = null;
+    newItem['windowInstance'] = null;
+    relationHandler.push(newItem);
 
     document.observe('dom:loaded', function() {
         muimageInitRelationItemsForm('album', 'muimageAlbum_Album', true);
@@ -170,7 +179,7 @@
             var result = valid.validate();
         {{/if}}
 
-        $('{{if $mode eq 'create'}}btnSubmit{{else}}btnUpdate{{/if}}').observe('click', function(event) {
+        $('{{if $mode eq 'create'}}btnCreate{{else}}btnUpdate{{/if}}').observe('click', function(event) {
             var result = valid.validate();
             if (!result) {
                 // validation error, abort form submit
