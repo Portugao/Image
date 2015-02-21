@@ -7,9 +7,10 @@
 <div class="muimage_picture_view">
  {muimageCheckGroupMember createdUserId=$item.createdUserId assign='groupMember'}
 {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
-{gt text='movecursor' assign='cursor'}
+{assign var='cursor' value='movecursor'}
 {else}
-{gt text='' assign='cursor'}
+{assign var='cursor' value=''}
+
 {/if}
 <div class="muimage_picture_view_header {$cursor}">
    {* <li> *}

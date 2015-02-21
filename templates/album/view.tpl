@@ -251,7 +251,6 @@
 			    {muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
 			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">			    
 			<span class="muimage_view_album_image" style="background: url({$albumpicture.imageUploadFullPathURL}) no-repeat center center; background-size: cover">
-	       {* {muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'} *}
 			
 			</span>
 			</a>
