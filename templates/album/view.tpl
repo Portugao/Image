@@ -224,7 +224,8 @@
 				{strip}
 				{foreach item='option' from=$album._actions}
 				    {if $option.url.func == 'edit' || $option.url.func eq 'delete'}
-					{if $coredata.user.uid eq $album.createdUserId}
+				    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
+					{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
 					    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
 					    {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
 					    </a>

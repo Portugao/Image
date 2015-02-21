@@ -80,8 +80,8 @@ class MUImage_Util_View extends MUImage_Util_Base_View
     {
         $uid = UserUtil::getVar('uid');
         $repository = MUImage_Util_Model::getAlbumRepository();
-        if ($kind == 1 && $id > 0) {
-            $thisAlbum = $repository->selectById($id);
+        $thisAlbum = $repository->selectById($id);
+        if ($kind == 1 && $id > 0) {        
             if ($thisAlbum) {
                 $thisParent = $thisAlbum->getParent();
             }
@@ -109,12 +109,17 @@ class MUImage_Util_View extends MUImage_Util_Base_View
             }
         }
 
-        if (MUImage_Util_View::isAdmin() === false) {
-            if ($where != '') {
-                $where .= ' AND ';
-                $where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
-            } else {
-                $where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+        // we check for group member feature
+        $groupMember = self::checkGroupMember($thisAlbum['createdUserId']);
+        if ($groupMember == false) {
+            // if user is not in admin group only own album will be shown
+            if (MUImage_Util_View::isAdmin() === false) {
+                if ($where != '') {
+                    $where .= ' AND ';
+                    $where .= 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+                } else {
+                    $where = 'tbl.createdUserId = \'' . DataUtil::formatForStore($uid) . '\'';
+                }
             }
         }
 
@@ -563,7 +568,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
         $createdUserIdGroups = UserUtil::getGroupListForUser($createdUserId);
         $createdUserIdGroups = explode(',', $createdUserIdGroups);
-        
+
         if ($uid == $createdUserId) {
             return true;
         }
