@@ -206,8 +206,8 @@
 	        <dt>{gt text='Description'}</dt>
 	        <dd>{$album.description}</dd>
 	    </dl>
-	    {include file='bootstrap/helper/include_categories_display.tpl' obj=$album}
-	    {include file='bootstrap/helper/include_standardfields_display.tpl' obj=$album}
+	    {include file='helper/include_categories_display.tpl' obj=$album}
+	    {include file='helper/include_standardfields_display.tpl' obj=$album}
 	    
 	    </div>
 	{/if}
