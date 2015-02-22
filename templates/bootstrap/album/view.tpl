@@ -211,55 +211,20 @@
 
 {if $lct eq 'user'}
     <div class="container">
+    <ul class="row">
 	{if isset($items)}
 	    {foreach item='album' from=$items}
 		{if $album.parent eq NULL}
 		    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
 		    {if $accessThisAlbum eq 1}
-		    <div class="col-md-3">
-			<div class="muimage_view_album_title">
-			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:25}</a>
-			    <div class="muimage_view_album_title_action">
-			    {if count($album._actions) gt 0}
-				{strip}
-				{foreach item='option' from=$album._actions}
-				    {if $option.url.func == 'edit' || $option.url.func eq 'delete'}
-				    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
-					{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
-					    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
-					    {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
-					    </a>
-					{/if}            
-				   {else}
-					<a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
-					{icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
-					</a>                    
-				   {/if}
-				{/foreach}
-				{/strip}
-			    {/if}
-			    </div>
-			</div>
-			    <div class="muimage_view_album_description">
-			    {useravatar uid=$album.createdUserId size=30}
-			    {if $album.description ne ''}
-			        {$album.description|safehtml|truncate:100}
-			    {else}
-			        {gt text='No description'}
-			    {/if}
-			    </div>
-			    {muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
+		    <li class="col-lg-3 col-md-2 col-sm-3 col-xs-4">
+			{muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
 			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">			    
-			<span class="muimage_view_album_image" style="background: url({$albumpicture.imageUploadFullPathURL}) no-repeat center center; background-size: cover">	
-			</span>
+			 <span class="muimage_view_album_image" style="background: url({$albumpicture.imageUploadFullPathURL}) no-repeat center center; background-size: cover">	
+			</span> 
+			{*<img class="img-responsive" src="{$albumpicture.imageUploadFullPathURL}" />*}
 			</a>
-            <div class="muimage_view_album_bottom">
-			{if isset($album.children) && $album.children ne null && count($album.children) > 0}			    
-			    {gt text='SubAlbums'}: {include file='album/include_displayItemListMany.tpl' items=$album.children}<br />	    
-			{/if}
-			{gt text='Pictures'}: {$album.picture|@count}
-            </div>
-		    </div>
+		    </li>
 		{/if}
 		{if $accessThisAlbum eq 2}
 		<div class="muimage_view_album_container">
@@ -281,8 +246,8 @@
 	{else}
 	    {gt text='No SubAlbums'}
 	{/if}
+	</ul>
 	</div>
-
 	<div style="clear: both">&nbsp;</div>
 
 	{if !isset($showAllEntries) || $showAllEntries ne 1}
