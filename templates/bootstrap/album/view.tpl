@@ -216,7 +216,7 @@
 		{if $album.parent eq NULL}
 		    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
 		    {if $accessThisAlbum eq 1}
-		    <div class="muimage_view_album_container">
+		    <div class="col-md-3">
 			<div class="muimage_view_album_title">
 			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">{$album.title|truncate:25}</a>
 			    <div class="muimage_view_album_title_action">
@@ -224,7 +224,8 @@
 				{strip}
 				{foreach item='option' from=$album._actions}
 				    {if $option.url.func == 'edit' || $option.url.func eq 'delete'}
-					{if $coredata.user.uid eq $album.createdUserId}
+				    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
+					{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
 					    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}"{if $option.icon eq 'preview'} target="_blank"{/if}>
 					    {icon type=$option.icon size='extrasmall' alt=$option.linkText|safetext}
 					    </a>
@@ -249,9 +250,7 @@
 			    </div>
 			    {muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
 			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">			    
-			<span class="muimage_view_album_image" style="background: url({$albumpicture.imageUploadFullPathURL}) no-repeat center center; background-size: cover">
-	       {* {muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'} *}
-			
+			<span class="muimage_view_album_image" style="background: url({$albumpicture.imageUploadFullPathURL}) no-repeat center center; background-size: cover">	
 			</span>
 			</a>
             <div class="muimage_view_album_bottom">
@@ -282,6 +281,7 @@
 	{else}
 	    {gt text='No SubAlbums'}
 	{/if}
+	</div>
 
 	<div style="clear: both">&nbsp;</div>
 
