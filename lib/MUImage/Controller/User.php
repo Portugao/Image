@@ -37,8 +37,8 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	 */
 	public function display()
 	{
-		$id = $this->request->getGet()->filter('id', 0 , FILTER_SANITIZE_STRING);
-		$ot = $this->request->getget()->filter('ot','album' , FILTER_SANITIZE_STRING);
+		$id = $this->request->query->filter('id', 0 , FILTER_SANITIZE_STRING);
+		$ot = $this->request->query->filter('ot','album' , FILTER_SANITIZE_STRING);
 		
 		// DEBUG: permission check aspect starts
 		$this->throwForbiddenUnless(SecurityUtil::checkPermission('MUImage:Album:', $id.'::', ACCESS_READ));
@@ -89,7 +89,7 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 		$otherPictures = MUImage_Util_View::otherUserPictures();
 		$this->view->assign('otherPictures', $otherPictures);
 			
-		return parent::display($args);
+		return parent::display();
 			
 	}
 	

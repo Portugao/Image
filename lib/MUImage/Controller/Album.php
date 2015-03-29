@@ -188,7 +188,7 @@ class MUImage_Controller_Album extends MUImage_Controller_Base_Album
         if ($checkAlbum == 1) {
             return parent::display();
         } else {
-            $url = ModUtil::url($this->name, 'user', 'view', array('lct' => 'user'));
+            $url = ModUtil::url('MUImage', 'user', 'view', array('lct' => 'user'));
             return System::redirect(url);
         }
 
@@ -200,7 +200,7 @@ class MUImage_Controller_Album extends MUImage_Controller_Base_Album
         
         $albumid = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
         if ($albumid == 0) {
-            $url = ModUtil::url($this->name, 'user', 'view', array('lct' => 'user'));
+            $url = ModUtil::url('MUImage', 'user', 'view', array('lct' => 'user'));
             return System::redirect($url);
         }
         $password = $this->request->request->filter('albumPassword', 0);

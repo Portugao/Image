@@ -78,7 +78,8 @@
         <dd>
         {if isset($picture.Album) && $picture.Album ne null}
           {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
-          <a href="{modurl modname='MUImage' type=$lct func='display' ot='album'  id=$picture.Album.id}">{strip}
+          <a href="{modurl modname='MUImage' type=$lct func='display' ot='album'  id=$picture.Album.id}">
+          {strip}
             {$picture.Album->getTitleFromDisplayPattern()|default:""}
           {/strip}</a>
           {*

@@ -17,7 +17,7 @@
 
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
     <div class="z-frontendbox">
-        <h2>{modgetinfo info='displayname'}{if $templateTitle}: {$templateTitle}{/if}</h2>
+        <h2>{modgetinfo info='displayname'}</h2>
         {modulelinks modname='MUImage' type='user'}
     </div>
 {/if}

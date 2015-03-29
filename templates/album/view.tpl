@@ -289,10 +289,6 @@
 	    {pager rowcount=$pager.numitems limit=$pager.itemsperpage display='page'}
 	{/if}
 
-       {* {notifydisplayhooks eventname='muimage.ui_hooks.albums.display_view' urlobject=$currentUrlObject assign='hooks'} *}
-	{foreach key='hookname' item='hook' from=$hooks}
-	    {$hook}
-	{/foreach} 
     </div>
 
 {include file='user/footer.tpl'}
