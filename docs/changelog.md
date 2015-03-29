@@ -95,6 +95,8 @@ Changes in 1.3.0
 
 # closed #123 all pictures get state 'approved' in multi and zip upload
 
+# closed #124 all pictures with state initail now
+
 some more fixes:
 
 increment of picture view only if the viewer is not the creator
