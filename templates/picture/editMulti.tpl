@@ -83,7 +83,9 @@
     {if $mode ne 'create'}
         {include file='helper/include_standardfields_edit.tpl' obj=$picture}
     {/if}
+    <div style='display: none;'>
     {include file='album/include_selectEditOne.tpl' group='picture' alias='album' aliasReverse='picture' mandatory=false idPrefix='muimagePicture_Album' linkingItem=$picture displayMode='dropdown' allowEditing=true}
+    </div>
     {* include display hooks *}
     {if $mode eq 'create'}
         {notifydisplayhooks eventname='muimage.ui_hooks.pictures.form_edit' id=null assign='hooks'}
