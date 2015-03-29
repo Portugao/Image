@@ -26,20 +26,6 @@ use DoctrineExtensions\StandardFields\Mapping\Annotation as ZK;
  */
 class MUImage_Entity_Album extends MUImage_Entity_Base_Album
 {
-    
-    /**
-     * Bidirectional - One parent [album] has many children [albums] (INVERSE SIDE).
-     *
-     * @ORM\OneToMany(targetEntity="MUImage_Entity_Album", mappedBy="parent", cascade={"remove"})
-     * @ORM\JoinTable(name="muimage_parentchildren",
-     *      joinColumns={@ORM\JoinColumn(name="parent_id", referencedColumnName="id" )},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="id", referencedColumnName="id" )}
-     * )
-     * @ORM\OrderBy({"title" = "ASC"})
-     * @var MUImage_Entity_Album[] $children.
-     */
-    protected $children = null;
-    
     /**
      * Collect available actions for this entity.
      */

@@ -177,6 +177,7 @@
          *      joinColumns={@ORM\JoinColumn(name="parent_id", referencedColumnName="id" )},
          *      inverseJoinColumns={@ORM\JoinColumn(name="id", referencedColumnName="id" )}
          * )
+         * @ORM\OrderBy({"title" = "ASC"})
          * @var MUImage_Entity_Album[] $children.
          */
         protected $children = null;
