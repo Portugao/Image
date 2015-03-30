@@ -106,6 +106,16 @@
                                 {formcheckbox id='shrinkPictures' group='config'}
                         </div>
                         <div class="z-formrow">
+                        	{gt text='Here you can enable breadcrumbs in the display template for albums.' assign='toolTip'}
+                            {formlabel for='breadcrumbInFrontend' __text='Breadcrumbs in Frontend?' cssClass='muimage-form-tooltips' title=$toolTip}
+                                {formcheckbox id='breadcrumbInFrontend' group='config' maxLength=255 __title='Enable breadcrumps.'}
+   				        </div>
+                       {* <div class="z-formrow">
+                        	{gt text='Here you can enable ordering of albums in the frontend.' assign='toolTip'}
+                            {formlabel for='orderAlbums' __text='Order albums?' cssClass='muimage-form-tooltips' title=$toolTip}
+                                {formcheckbox id='orderAlbums' group='config' maxLength=255 __title='Enable ordering.'}
+	                    </div> *}
+                        <div class="z-formrow">
                         	{gt text='Here you can set an ending for detail pages.' assign='toolTip'}
                             {formlabel for='ending' __text='Ending' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formtextinput id='ending' group='config' maxLength=255 __title='Enter the ending.'}

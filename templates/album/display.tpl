@@ -17,6 +17,11 @@
             </h3>
         </div>
     {else}
+		<div id="album_breadcrump">
+			{if $coredata.MUImage.breadcrumbInFrontend eq true}
+				<a href="{modurl modname='MUImage' type='user' func='view' ot='album'}">{gt text='Album overview'}</a> {muimageBreadcrumb albumId=$album.id}
+			{/if}
+		</div>
         <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}{icon id="itemActions`$album.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
         </h2>
     {/if}
@@ -24,7 +29,7 @@
 	{if $lct eq 'user'}
 	<div id="album_header">
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
-		{$album.description}<br /><br />
+			{$album.description}<br /><br />
 	    {/if}
 	    {include file='helper/include_categories_display.tpl' obj=$album}
 	    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
@@ -49,16 +54,13 @@
 		    {/if} 
 		{/checkpermissionblock}
 	    {/if}  
-	    {if $modulevars.slideshow1 || $modulevars.slideshow2}
+	    {if $modulevars.slideshow1}
 		<form class="form-inline" style="display:inline" action="{modurl modname='MUImage' type='user' func='template' id=$album.id}" method="post">
 		    <label>{gt text="View as:"}</label>
 		    <select id="template" name="template">
 			<option value="1"{if $template eq 1} selected{/if}>Normal</option>
 			{if $modulevars.slideshow1}
 			    <option value="2"{if $template eq 2} selected{/if}>Slideshow</option>
-			{/if}
-			{if $modulevars.slideshow2}
-			    <option value="3">Slideshow2</option>
 			{/if}
 		    </select>
 		    <input type='submit' value='{gt text="Change view"}' />
