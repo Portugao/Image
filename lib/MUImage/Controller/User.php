@@ -247,8 +247,8 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 	 */
 	public function delete()
 	{
-		$id = $this->request->getGet()->filter('id' , 0, FILTER_SANITIZE_NUMBER_INT);
-		$ot = $this->request->getGet()->filter('ot' , 'album', FILTER_SANITIZE_STRING);
+		$id = $this->request->query->filter('id' , 0, FILTER_SANITIZE_NUMBER_INT);
+		$ot = $this->request->query->filter('ot' , 'album', FILTER_SANITIZE_STRING);
 
 		// we get the usergroups for the calling user
 		$usergroups = (UserUtil::getGroupsForUser(UserUtil::getVar('uid')));
