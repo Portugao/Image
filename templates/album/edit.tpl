@@ -8,7 +8,7 @@
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
 {pageaddvar name='javascript' value='jquery'}
 {pageaddvar name='javascript' value='jquery-ui'}
-{pageaddvar name='javascript' value='modules/MUImage/javascript/chosen/chosen.jquery.js'}
+{pageaddvar name='javascript' value='modules/MUImage/javascript/chosen/chosen.jquery.min.js'}
 {pageaddvar name='stylesheet' value='modules/MUImage/javascript/chosen/chosen.css'}
 {if $mode eq 'edit'}
 {gt text='Edit album' assign='templateTitle'}
