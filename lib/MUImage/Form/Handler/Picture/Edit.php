@@ -60,7 +60,7 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
             }*/
 
             foreach ($myAlbums as $myAlbum) {
-                $myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:') . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:') . ' ' . $myAlbum['parent']['title']);
+                $myalbums[] = array('value' => $myAlbum['id'], 'text' => $myAlbum['title'] . ' - ' . __('Owner:', $dom) . ' ' . UserUtil::getVar('uname', $myAlbum['createdUserId']) . ' - ' . __('Main album:', $dom) . ' ' . $myAlbum['parent']['title']);
             }
         }
 

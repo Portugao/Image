@@ -99,7 +99,8 @@ Changes in 1.3.0
 
 some more fixes:
 
-increment of picture view only if the viewer is not the creator
+# increment of picture view only if the viewer is not the creator
+# translation in chosen select menue in the the picture edit form
 
 
 Changes in 1.2.0
