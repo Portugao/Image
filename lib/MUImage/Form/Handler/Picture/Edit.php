@@ -162,9 +162,18 @@ class MUImage_Form_Handler_Picture_Edit extends MUImage_Form_Handler_Picture_Bas
      */
     protected function getDefaultReturnUrl($args, $obj)
     {
+        // get picture id
         $pictureId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
+        // get type of action
         $type = $this->request->query->filter('type', 'admin', FILTER_SANITIZE_STRING);
-
+        // get album id from form
+        $albumId = $this->request->request->filter('muimageAlbum_AlbumMode', 0, FILTER_SANITIZE_NUMBER_INT);
+        // redirect to relevant album
+        if ($albumId > 0) {
+            $viewArgs = array('id' => $albumId, 'ot' => 'album');
+            $url = ModUtil::url($this->name, 'user', 'display', $viewArgs);
+            return $url;
+        }
         $picturerepository = MUImage_Util_Model::getPictureRepository();
         if ($args['commandName'] == 'create') {
             $picture = $picturerepository->selectById($this->idValues['id']);

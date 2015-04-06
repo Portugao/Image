@@ -308,6 +308,11 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         $selectionArgs = array('ot' => $objectType, 'id' => $idValues);
     
         $entity = ModUtil::apiFunc($this->name, 'selection', 'getEntity', $selectionArgs);
+        if ($entity['album'] != NULL) {
+            $album = $entity->getAlbum();
+            $albumId = $album['id'];
+        }
+
         $this->throwNotFoundUnless($entity != null, $this->__('No such item.'));
     
         $entity->initWorkflow();
@@ -362,8 +367,8 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
                     // redirect to the list of pictures
                     $redirectUrl = ModUtil::url($this->name, 'admin', 'view', array('ot' => 'picture', 'lct' => $legacyControllerType));
                 } else {
-                    // redirect to the list of pictures
-                    $redirectUrl = ModUtil::url($this->name, 'picture', 'view', array('lct' => $legacyControllerType));
+                    // redirect to the relevant album
+                    $redirectUrl = ModUtil::url($this->name, 'user', 'display', array('ot' => 'album', 'id' => $albumId));
                 }
                 return $this->redirect($redirectUrl);
             }

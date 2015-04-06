@@ -102,12 +102,12 @@
             <div class="z-formrow">
                 {formlabel for='muimageAlbum_AlbumItemList' __text='Album'}
                 {formdropdownlist selectedValue=$savedAlbum group='mainalbum' id='muimageAlbum_AlbumItemList' cssClass='chzn-select'}
-                <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="1">
+                <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="{$savedAlbum}">
             </div>
         </fieldset>  
     {else}
         <input id="muimageAlbum_AlbumItemList" type="hidden" value="{$albumid}" name="muimageAlbum_AlbumItemList">
-        <input id="muimageAlbum_AlbumMode" type="hidden" value="1" name="muimageAlbum_AlbumMode">
+        <input id="muimageAlbum_AlbumMode" type="hidden" value="{$savedAlbum}" name="muimageAlbum_AlbumMode">
     {/if}
 
     {* include display hooks *}
