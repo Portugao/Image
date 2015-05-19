@@ -69,11 +69,13 @@
                         	{gt text='Here you can set the maximum file size for pictures.' assign='toolTip'}
                             {formlabel for='fileSize' __text='File size' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='fileSize' group='config' maxLength=255 __title='Enter the file size. Only digits are allowed.'}
+                                <div class="z-informationmsg z-formnote">{gt text="In kilobytes. 102400 means 100 KB."}</div>
                         </div>
                         <div class="z-formrow">
                             {gt text='Here you can set the maximum file size for zip upload.' assign='toolTip'}
                             {formlabel for='zipSize' __text='Zip size' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formintinput id='zipSize' group='config' maxLength=255 __title='Enter the file size. Only digits are allowed.'}
+                                <div class="z-informationmsg z-formnote">{gt text="In kilobytes. 102400 means 100 KB."}</div>
                         </div>
                         <div class="z-formrow">
                         	{gt text='Here you can set the minimum width for pictures.' assign='toolTip'}
@@ -96,9 +98,10 @@
                                 {formdropdownlist id='layout' group='config' __title='Choose the layout'}
                         </div>
                         <div class="z-formrow">
-                            {gt text='Here you can set a group for common access to albums. Admin and user group are not selectable. Create another group like editors to be able to work on albums together. Every member of this group can edit albums created by a group member.' assign='toolTip'}
+                            {gt text='Here you can set a group for common access to albums. Admin and user group are not selectable. Create another group like editors to be able to work on albums together. Every member of this group can edit albums created by a group member. If not set, every user that is in the admin group has access to each album.' assign='toolTip'}
                             {formlabel for='groupForCommonAlbums' __text='Group for common albums' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formdropdownlist id='groupForCommonAlbums' group='config' __title='Choose the group for common albums'}
+                                <div class="z-informationmsg z-formnote">{gt text="If a group is set, all users of this group have access to the albums, that created a group member. If not set, all admins have access to each album."}</div>
                         </div>
                         <div class="z-formrow">
                             {gt text='If set to true, pictures get modified to maximum width and height for pictures set in the settings. The aspect ratio of pictures will get received' assign='toolTip'}   

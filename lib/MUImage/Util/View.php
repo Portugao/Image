@@ -50,7 +50,7 @@ class MUImage_Util_View extends MUImage_Util_Base_View
         $template .= $templateExtension;
 
         if (ModUtil::getVar($this->name, 'layout') == 'bootstrap') {
-            $template = '/bootstrap/' . $template;
+            $template = 'bootstrap/' . $template;
         }
 
         return $template;
@@ -590,6 +590,12 @@ class MUImage_Util_View extends MUImage_Util_Base_View
                     if ($uidGroup > 2) {
                         return true;
                     }
+                }
+            }
+        } else {
+            foreach ($uidGroups as $uidGroup) {
+                if ($uidGroup == 2) {
+                    return true;
                 }
             }
         }
