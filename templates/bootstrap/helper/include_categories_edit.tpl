@@ -18,7 +18,7 @@
             {formlabel for="category_`$registryId`" text=$categorySelectorLabel}
                 {formcategoryselector id="category_`$registryId`" category=$registryCid
                                       dataField='categories' group=$groupName registryId=$registryId doctrine2=true
-                                      selectionMode=$selectionMode}
+                                      selectionMode=$selectionMode ccClass='form-control'}
         </div>
     {/foreach}
     {/formvolatile}

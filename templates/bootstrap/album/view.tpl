@@ -210,20 +210,27 @@
 {/if}
 
 {if $lct eq 'user'}
-    <div class="container">
+    <div class="container-fluid album-bootstrap-view">
     <ul class="row">
 	{if isset($items)}
 	    {foreach item='album' from=$items}
 		{if $album.parent eq NULL}
 		    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
 		    {if $accessThisAlbum eq 1}
-		    <li class="col-lg-3 col-md-2 col-sm-3 col-xs-4">
+		    <li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+		    <div class="thumbnail">
 			{muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
-			<a title="{$album.title}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id="`$album.id`"}">			    
-			 <span class="muimage_view_album_image" style="background: url({$albumpicture.imageUploadFullPathURL}) no-repeat center center; background-size: cover">	
-			</span> 
-			{*<img class="img-responsive" src="{$albumpicture.imageUploadFullPathURL}" />*}
-			</a>
+
+			<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.description}">
+        		<img src="{thumb image=$albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'}" alt="">
+    		</a>
+    			<div class="caption">
+    				<a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}">
+    					{$album.title|safetext}
+    				</a> 
+    				<p><a href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}" class="btn btn-success btn-xs" role="button">{gt text='Edit'}</a></p>				
+    			</div>			
+			</div>
 		    </li>
 		{/if}
 		{if $accessThisAlbum eq 2}
@@ -260,6 +267,22 @@
 	{/foreach} 
     </div>
 
-{include file='user/footer.tpl'}
+{include file='bootstrap/user/footer.tpl'}
 {/if}
+<script type="text/javascript" charset="utf-8">
+/* <![CDATA[ */
 
+    var MU = jQuery.noConflict();
+	MU(document).ready(function(MU) {	
+    {{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}}
+        MU(function() {
+            MU( "#sortable" ).sortable();
+        });
+    {{/if}}
+    
+    	MU(function () {
+			MU('[data-toggle="tooltip"]').tooltip()
+		})
+		});
+    /* ]]> */
+</script>

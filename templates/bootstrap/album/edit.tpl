@@ -3,7 +3,7 @@
 {if isset($smarty.get.lct) && $smarty.get.lct eq 'admin'}
     {assign var='lct' value='admin'}
 {/if}
-{include file="`$lct`/header.tpl"}
+{include file="bootstrap/`$lct`/header.tpl"}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
 {pageaddvar name='javascript' value='jquery'}
@@ -29,33 +29,33 @@
                <legend>{gt text='Content'}</legend>
                <div class="z-formrow">
                    {formlabel for='title' __text='Title' mandatorysym='1'}
-                   {formtextinput group='album' id='title' mandatory=true readOnly=false __title='Enter the title of the album' textMode='singleline' maxLength=255 cssClass='required validate-unique'}
+                   {formtextinput group='album' id='title' mandatory=true readOnly=false __title='Enter the title of the album' textMode='singleline' maxLength=255 cssClass='required validate-unique form-control'}
                    {muimageValidationError id='title' class='required'}
                    {muimageValidationError id='title' class='validate-unique'}
                </div>
                <div class="z-formrow">
                     {formlabel for='description' __text='Description'}
-                    {formtextinput group='album' id='description' mandatory=false __title='Enter the description of the album' textMode='multiline' rows='6' cols='50' cssClass=''}
+                    {formtextinput group='album' id='description' mandatory=false __title='Enter the description of the album' textMode='multiline' rows='6' cols='50' cssClass='form-control'}
                 </div>
 
                 <div id="MUImage_Albumaccess" class="z-formrow">
                     {formlabel for='albumAccess' __text='Album access' mandatorysym='1' cssClass='accessSelect'}
-                    {formdropdownlist group='album' id='albumAccess' mandatory=true __title='Choose the album access' selectionMode='single'}
+                    {formdropdownlist group='album' id='albumAccess' mandatory=true __title='Choose the album access' selectionMode='single' cssClass='form-control'}
                 </div>
 
                 <div id="MUImage_Myfriends" class="z-formrow" style="display: none">
                     {formlabel for='myFriends' __text='My friends' cssClass=''}
-                    {formtextinput group='album' id='myFriends' mandatory=false readOnly=false __title='Enter your friends (comma seperated)!' textMode='singleline' maxLength=255 cssClass='' }
+                    {formtextinput group='album' id='myFriends' mandatory=false readOnly=false __title='Enter your friends (comma seperated)!' textMode='singleline' maxLength=255 cssClass='form-control' }
                 </div>
                                 
                 <div id="MUImage_Password" class="z-formrow" style="display: none">
                     {formlabel for='passwordAccess' __text='Password access' cssClass=''}
-                    {formtextinput group='album' id='passwordAccess' mandatory=false readOnly=false __title='Enter the password access of the album' textMode='password' maxLength=255 cssClass='' }
+                    {formtextinput group='album' id='passwordAccess' mandatory=false readOnly=false __title='Enter the password access of the album' textMode='password' maxLength=255 cssClass='form-control' }
                 </div>
                 {if $inAdminGroup eq true}
                 <div class="z-formrow">
                     {formlabel for='notInFrontend' __text='Not in frontend' cssClass=''}
-                    {formcheckbox group='album' id='notInFrontend' readOnly=false __title='not in frontend ?' cssClass='' }
+                    {formcheckbox group='album' id='notInFrontend' readOnly=false __title='not in frontend ?' cssClass='form-control' }
                 </div>
                 {/if}
                 </fieldset>
@@ -76,7 +76,7 @@
 <legend>{gt text='Main album'}</legend>
 <div class="z-formrow">
 {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
-{formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select'}
+{formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select form-control'}
 <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
 </div>
 </fieldset>
@@ -109,19 +109,19 @@
 </fieldset>
 {/if} *}
 {* include possible submit actions *}
-        <div class="z-buttons z-formbuttons">
+        <div class="">
         {foreach item='action' from=$actions}
             {assign var='actionIdCapital' value=$action.id|@ucfirst}
             {gt text=$action.title assign='actionTitle'}
             {*gt text=$action.description assign='actionDescription'*}{* TODO: formbutton could support title attributes *}
             {if $action.id eq 'delete'}
                 {gt text='Really delete this album?' assign='deleteConfirmMsg'}
-                {formbutton id="btn`$actionIdCapital`" commandName=$action.id text=$actionTitle class=$action.buttonClass confirmMessage=$deleteConfirmMsg}
+                {formbutton id="btn`$actionIdCapital`" commandName=$action.id text=$actionTitle class="btn btn-danger" confirmMessage=$deleteConfirmMsg}</i>
             {else}
-                {formbutton id="btn`$actionIdCapital`" commandName=$action.id text=$actionTitle class=$action.buttonClass}
+                {formbutton id="btn`$actionIdCapital`" commandName=$action.id text=$actionTitle class="btn btn-primary"}
             {/if}
         {/foreach}
-        {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
+        {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='btn btn-warning'}
         </div>
 {/muimageFormFrame}
 {/form}

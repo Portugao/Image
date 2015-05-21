@@ -14,3 +14,9 @@
     {/capture}
     {pageaddvar name='header' value=$pageStyles}
 {/if}
+{modgetvar module='MUImage' name='layout' assign='layout'}
+{if $layout eq 'bootstrap'}
+	<script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+	<script src="modules/MUImage/Vendor/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"></script>
+{/if}		
+

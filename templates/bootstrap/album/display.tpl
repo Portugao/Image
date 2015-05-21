@@ -4,9 +4,8 @@
     {assign var='lct' value='admin'}
 {/if}
 {include file="bootstrap/`$lct`/header.tpl"}
-{pageaddvar name='javascript' value='jquery'}
-{pageaddvar name='javascript' value='jquery-ui'}
-<div class="muimage-album muimage-display">
+
+<div class="muimage-album muimage-display container">
     {gt text='Album' assign='templateTitle'}
     {assign var='templateTitle' value=$album.title|default:$templateTitle}
     {pagesetvar name='title' value=$templateTitle|@html_entity_decode}
@@ -20,38 +19,36 @@
         <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}{icon id="itemActions`$album.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
         </h2>
     {/if}
-    <div class="z-frontendcontainer">
+    <div class="row">
 	{if $lct eq 'user'}
 	<div id="album_header">
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
 		{$album.description}<br /><br />
 	    {/if}
 	    {include file='helper/include_categories_display.tpl' obj=$album}
-	    {if $album.createdUserId eq $coredata.user.uid}
-		{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
-		    {if count($album._actions) gt 0}
-			{strip}
-			    {foreach item='option' from=$album._actions}
-				{if $option.icon ne 'display'}
-				    <a href="{$option.url.type|muimageActionUrl:$option.url.func:$option.url.arguments}" title="{$option.linkTitle|safetext}" class="z-icon-es-{$option.icon}">
-					{$option.linkText|safetext}
-				    </a>&nbsp;
-				{/if}
-			    {/foreach}
-			{/strip}
-			{if $otherPictures eq true}    
-			    <a title="{gt text='Load up a Picture'}" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" />{gt text='Add'}</a>
-			    <a title="{gt text='Load up few Pictures'}" href="{modurl modname='MUImage' type='user' func='multiUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/edit_add.png" /><img src="images/icons/extrasmall/edit_add.png" />{gt text='Multi-Add'}</a>
-				<a title="{gt text='Load up a zip file with Pictures'}" href="{modurl modname='MUImage' type='user' func='zipUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><img src="images/icons/extrasmall/folder_new.png" />{gt text='Zip-Add'}</a>
-			{/if}
-			&nbsp;|&nbsp;
-		    {/if} 
+	    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
+	    {if $album.createdUserId eq $coredata.user.uid || $groupMember eq 1}
+			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
+			<div style="z-index: 5000;" class="btn-group">
+  				<a class="btn btn-default" href="#"><i class="fa fa-user fa-fw"></i>{gt text='Actions for this album'}</a>
+  				<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+    			<span class="fa fa-caret-down"></span></a>
+  				<ul class="dropdown-menu">
+  					<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}"><i class="fa fa-pencil fa-fw"></i> {gt text='Edit'}</a></li>
+  					<li><a href="{modurl modname='MUImage' type='user' func='delete' ot='album' id=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-trash-o fa-fw"></i> {gt text='Delete'}</a></li>
+  					{if $otherPictures eq true}
+    					<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-upload fa-fw"></i> {gt text='Add'}</a></li>  				
+    					<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-upload fa-fw"></i> {gt text='Multi-Add'}</a></li>
+    					<li><a href="{modurl modname='MUImage' type='user' func='zipUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-file-archive-o fa-fw"></i> {gt text='Zip-Add'}</a></li>
+  					{/if}
+  				</ul>
+			</div>
 		{/checkpermissionblock}
 	    {/if}  
 	    {if $modulevars.slideshow1 || $modulevars.slideshow2}
 		<form class="form-inline" style="display:inline" action="{modurl modname='MUImage' type='user' func='template' id=$album.id}" method="post">
 		    <label>{gt text="View as:"}</label>
-		    <select id="template" name="template">
+		    <select id="template" class="form-control" name="template">
 			<option value="1"{if $template eq 1} selected{/if}>Normal</option>
 			{if $modulevars.slideshow1}
 			    <option value="2"{if $template eq 2} selected{/if}>Slideshow</option>
@@ -60,17 +57,24 @@
 			    <option value="3">Slideshow2</option>
 			{/if}
 		    </select>
-		    <input type='submit' value='{gt text="Change view"}' />
+		    <button type="submit" class="btn btn-default">{gt text="Change view"}</button>
 		</form>
 	    {/if}
 
 	</div>
-	<div id="MUImage_body">
-
-	    <div id="basic_accordion">
-		<h3 class="z-acc-header">{gt text='Pictures'}</h3>
-		<div id="muimage_pictures" class="z-acc-content">
-		    <div id="muimage_pictures_content">
+	<div id="MUImage_body" class="col-xs-12">
+	
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="überschriftEins">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseEins" aria-expanded="true" aria-controls="collapseEins">
+          {gt text='Pictures'}
+        </a>
+      </h4>
+    </div>
+    <div id="collapseEins" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="überschriftEins">
+      <div id="muimage-pictures-content" class="collapse panel-body in">
 		    {if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
 		    {if $template eq 1}
 		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
@@ -78,8 +82,8 @@
             {/if}
 		    {include file='bootstrap/picture/include_displayItemListMany.tpl' items=$album.picture}
 		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId}
-            <br style="clear: both; "/><input type="submit" value='{gt text="Save positions"}' />
-            </form>
+            	<br style="clear: both; "/> <button type="submit" class="btn btn-default">{gt text="Save positions"}</button>
+     	        </form>
             {/if}
 		    {/if}
 		    {if $template eq 2}
@@ -87,12 +91,21 @@
 		    {/if}
 		    {else}
 		    {gt text='No pictures'}
-		    {/if}
-		    </div>
-		</div>
+		    {/if}      </div>
+    </div>
+  </div>
+  {if isset($album.children) && count($album.children) > 0}  
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="überschriftZwei">
+      <h4 class="panel-title">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseZwei" aria-expanded="false" aria-controls"collapseZwei">
+          {gt text='SubAlbums'}
+        </a>
+      </h4>
+    </div>
+    <div id="collapseZwei" class="panel-collapse collapse" role="tabpanel" aria-labelledby="überschriftZwei">
+      <div class="panel-body">
 		{if isset($album.children) && count($album.children) > 0}    
-		<h3 class="z-acc-header">{gt text='SubAlbums'}</h3> 
-		<div id="muimage_albums" class="z-acc-content">
 		    {foreach item='childAlbum' from=$album.children}
 		    {muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}
 		    {if $accessThisAlbum eq 1}
@@ -152,20 +165,25 @@
 		</div>
 		{/if}
 		    {/foreach}
-		</div>
 		{/if}
 	    </div>
-	    <div style="clear: both"></div>
+     </div>
+    </div>
+  </div>
+</div>
+{/if}
 
-	    <div id="muimage-user-album-hooks">
-		{* include display hooks *}
-		{notifydisplayhooks eventname='muimage.ui_hooks.albums.display_view' id=$album.id urlobject=$currentUrlObject assign='hooks'}
-		{foreach key='hookname' item='hook' from=$hooks}
-		    {$hook}
-		{/foreach}
-	    </div>
-	</div>
-	{/if}
+<div style="clear: both"></div>
+
+<div id="muimage-user-album-hooks">
+	{* include display hooks *}
+	{notifydisplayhooks eventname='muimage.ui_hooks.albums.display_view' id=$album.id urlobject=$currentUrlObject assign='hooks'}
+	{foreach key='hookname' item='hook' from=$hooks}
+		   {$hook}
+	{/foreach}
+</div>
+</div>
+{/if}
 	{if $lct eq 'admin'}
 	    <div id=''>
             <div class="muimageRightBox">
@@ -213,17 +231,4 @@
 	{/if}
     </div>
 </div>
-{include file="`$lct`/footer.tpl"}
-<script type="text/javascript" charset="utf-8">
-/* <![CDATA[ */
-
-var accordion = new Zikula.UI.Accordion('basic_accordion');
-
-        document.observe('dom:loaded', function() {
-            {{assign var='itemid' value=$album.id}}
-            muimageInitToggle('album', 'showTitle', '{{$itemid}}');
-            muimageInitToggle('album', 'showDescription', '{{$itemid}}');
-        });
-
-/* ]]> */
-</script>
+{include file="bootstrap/`$lct`/footer.tpl"}

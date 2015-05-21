@@ -1,10 +1,30 @@
 /*****css for bootstrap layout**********/
+ul {
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+}
 
-      ul {         
-          padding:0 0 0 0;
-          margin:0 0 0 0;
-      }
-      ul li {     
-          list-style:none !important;
-          margin-bottom:25px;           
-      }
+ul li {
+	list-style: none !important;
+}
+
+.navbar-nav li {
+	margin: 0;
+}
+
+#MUImage_body {
+	margin: 15px 0 0 0;
+}
+
+.album-bootstrap-view {
+	margin: 25px 0 0 0;
+}
+
+.caption a {
+	font-size: 0.85em;
+}
+
+#sortable .ui-state-default {
+	background: none;
+	border: none;
+}
