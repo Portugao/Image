@@ -28,3 +28,12 @@ ul li {
 	background: none;
 	border: none;
 }
+
+#muimage-user-bootstrap-body {
+	padding: 20px 0;
+}
+
+.muimage-picture-invocations {
+	font-size: 0.85em;	
+}
+}
