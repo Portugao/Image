@@ -21,24 +21,41 @@
 {pageaddvar name='jsgettext' value='module_muimage_js:MUImage'}
 
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
-<div class="container">
-<div class="row">
 	<h2>{modgetinfo info='displayname'}{if $templateTitle}: {$templateTitle}{/if}</h2>
-	{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
-	<a href="{modurl modname='MUImage' type='admin' func='main'}" class="btn btn-warning btn-sm" role="button"><i class="fa fa-wrench"></i>
-	 {gt text='Backend'}</a>
-	{/checkpermissionblock}
-	<a href="{modurl modname='MUImage' type='user' func='main'}" class="btn btn-primary btn-sm" role="button">{gt text='Albums'}</a>
-	{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
-	<a href="{modurl modname='MUImage' type='user' func='edit' ot='album'}" class="btn btn-success btn-sm" role="button">{gt text='Create Album'}</a>
-	{/checkpermissionblock}
-	{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
-		{if $func eq 'display'}
-			<a href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent=$album.id returnTo='userDisplayAlbum'}" class="btn btn-success btn-sm" role="button">{gt text='Create SubAlbum'}</a>
-		{/if}
-	{/checkpermissionblock}
-</div>
-</div>
+	<nav class="navbar navbar-default">
+  	<div class="container-fluid">
+    <!-- Titel und Schalter werden für eine bessere mobile Ansicht zusammengefasst -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Navigation ein-/ausblenden</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+            <a class="navbar-brand" href="{$homepage}">
+        		<img heightalt="Titel" src="modules/MUImage/images/muimage.png">
+      		</a>
+    </div>
+
+    <!-- Alle Navigationslinks, Formulare und anderer Inhalt werden hier zusammengefasst und können dann ein- und ausgeblendet werden -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
+        <li class=""><a href="{modurl modname='MUImage' type='admin' func='main'}">{gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
+      {/checkpermissionblock}
+        <li class="active"><a href="{modurl modname='MUImage' type='user' func='main'}">{gt text='Albums'}</a></li>
+      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
+        <li class=""><a href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
+      {/checkpermissionblock}
+      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
+      	{if $func eq 'display'}
+        	<li class=""><a href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create SubAlbum'}</a></li>
+      	{/if}
+      {/checkpermissionblock}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
 {/if}
 
 {insert name='getstatusmsg'}
