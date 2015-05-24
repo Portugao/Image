@@ -14,11 +14,11 @@
             {gt text='Categories' assign='categorySelectorLabel'}
             {assign var='selectionMode' value='multiple'}
         {/if}
-        <div class="z-formrow">
+        <div class="form-group">
             {formlabel for="category_`$registryId`" text=$categorySelectorLabel}
                 {formcategoryselector id="category_`$registryId`" category=$registryCid
                                       dataField='categories' group=$groupName registryId=$registryId doctrine2=true
-                                      selectionMode=$selectionMode ccClass='form-control'}
+                                      selectionMode=$selectionMode cssClass='form-control'}
         </div>
     {/foreach}
     {/formvolatile}

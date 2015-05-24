@@ -3,7 +3,7 @@
 {if isset($items) && $items ne null}
 	<ul id="sortable" class="row">
 		{foreach name='relLoop' item='item' from=$items}
-			<li class="ui-state-default col-xs-6 col-sm-3 col-md-3 col-lg-2">
+			<li class="ui-state-default col-xs-6 col-sm-4 col-md-3 col-lg-2">
 				<div class="thumbnail">
 					{muimageCheckGroupMember createdUserId=$item.createdUserId assign='groupMember'}
 					{if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
@@ -11,19 +11,23 @@
 					{else}
 						{gt text='' assign='cursor'}
 					{/if}
-					<a data-placement="top" data-toggle="tooltip" href="{$item.imageUploadFullPath}" title="{$item.description}" data-gallery>
+					<a data-placement="top" data-toggle="tooltip" href="{$item.imageUploadFullPath}" title="{$item.title}{if $item.description ne ''} - {$item.description}{/if}" data-gallery>
         				<img src="{thumb image=$item.imageUploadFullPath width=200 height=125 mode='outset' extension='jpg'}" alt="">
     				</a>
     				<div class="caption {$cursor}">
-    					<a href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}">
+    					{* <p><a href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}">
     						{$item.title|safetext}
-    					</a> 
-    					<p><a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}" class="btn btn-success btn-xs" role="button">{gt text='Edit'}</a></p>	
+    					</a></p> *}
+    					{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
+    						<p><a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}" class="btn btn-success btn-xs" role="button">{gt text='Edit'}</a></p>
+    					{/checkpermissionblock}	
     					<input name="pictures[]" type="hidden" value={$item.id} />
 						{modgetvar module='MUImage' name='countImageView' assign='imageView'}
-						{if $imageView eq 1}
-							{gt text='Invocations'}: {$item.imageView}
-						{/if}			
+						<p class="muimage-picture-invocations">
+							{if $imageView eq 1}
+								{gt text='Invocations'}: {$item.imageView}
+							{/if}	
+						</p>		
     				</div>
     			</div>
     		</li>

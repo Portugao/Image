@@ -27,54 +27,54 @@
            {formsetinitialfocus inputId='title'}
                <fieldset>
                <legend>{gt text='Content'}</legend>
-               <div class="z-formrow">
+               <div class="form-group">
                    {formlabel for='title' __text='Title' mandatorysym='1'}
                    {formtextinput group='album' id='title' mandatory=true readOnly=false __title='Enter the title of the album' textMode='singleline' maxLength=255 cssClass='required validate-unique form-control'}
                    {muimageValidationError id='title' class='required'}
                    {muimageValidationError id='title' class='validate-unique'}
                </div>
-               <div class="z-formrow">
+               <div class="form-group">
                     {formlabel for='description' __text='Description'}
                     {formtextinput group='album' id='description' mandatory=false __title='Enter the description of the album' textMode='multiline' rows='6' cols='50' cssClass='form-control'}
                 </div>
 
-                <div id="MUImage_Albumaccess" class="z-formrow">
+                <div id="MUImage_Albumaccess" class="form-group">
                     {formlabel for='albumAccess' __text='Album access' mandatorysym='1' cssClass='accessSelect'}
                     {formdropdownlist group='album' id='albumAccess' mandatory=true __title='Choose the album access' selectionMode='single' cssClass='form-control'}
                 </div>
 
-                <div id="MUImage_Myfriends" class="z-formrow" style="display: none">
+                <div id="MUImage_Myfriends" class="form-group" style="display: none">
                     {formlabel for='myFriends' __text='My friends' cssClass=''}
                     {formtextinput group='album' id='myFriends' mandatory=false readOnly=false __title='Enter your friends (comma seperated)!' textMode='singleline' maxLength=255 cssClass='form-control' }
                 </div>
                                 
-                <div id="MUImage_Password" class="z-formrow" style="display: none">
+                <div id="MUImage_Password" class="form-group" style="display: none">
                     {formlabel for='passwordAccess' __text='Password access' cssClass=''}
                     {formtextinput group='album' id='passwordAccess' mandatory=false readOnly=false __title='Enter the password access of the album' textMode='password' maxLength=255 cssClass='form-control' }
                 </div>
                 {if $inAdminGroup eq true}
-                <div class="z-formrow">
+                <div class="checkbox">
                     {formlabel for='notInFrontend' __text='Not in frontend' cssClass=''}
-                    {formcheckbox group='album' id='notInFrontend' readOnly=false __title='not in frontend ?' cssClass='form-control' }
+                    {formcheckbox group='album' id='notInFrontend' readOnly=false __title='not in frontend ?' cssClass='' }
                 </div>
                 {/if}
                 </fieldset>
-                {include file='helper/include_categories_edit.tpl' obj=$album groupName='albumObj'}
+                {include file='bootstrap/helper/include_categories_edit.tpl' obj=$album groupName='albumObj'}
                 {if $mode eq 'create'}
                     <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList[]" value="{$savedParent}">
                     <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="1">
                 {else}
                 {if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
                  {if $inAdminGroup eq true}
-                <p class="z-informationmsg">{gt text='Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!'}</p>
-                <p class="z-informationmsg">{gt text='So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!'}</p>
+                <p class="alert alert-info" role="alert">{gt text='Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!'}</p>
+                <p class="alert alert-info" role="alert">{gt text='So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!'}</p>
             {/if}
             {if $inAdminGroup eq false}
-                <p class="z-informationmsg">{gt text='Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!'}</p>
+                <p class="alert alert-info" role="alert">{gt text='Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!'}</p>
             {/if}
       <fieldset>
 <legend>{gt text='Main album'}</legend>
-<div class="z-formrow">
+<div class="form-group>
 {formlabel for='muimageAlbum_ParentItemList' __text='Album'}
 {formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select form-control'}
 <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">

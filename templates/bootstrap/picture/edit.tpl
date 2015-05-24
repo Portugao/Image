@@ -3,7 +3,7 @@
 {if isset($smarty.get.lct) && $smarty.get.lct eq 'admin'}
     {assign var='lct' value='admin'}
 {/if}
-{include file="`$lct`/header.tpl"}
+{include file="bootstrap/`$lct`/header.tpl"}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
 {pageaddvar name='javascript' value='jquery'}
@@ -29,34 +29,33 @@
 
     <fieldset>
         <legend>{gt text='Content'}</legend>
-        <div class="z-formrow">
+        <div class="form-group">
             {formlabel for='title' __text='Title'}
-            {formtextinput group='picture' id='title' mandatory=false readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass=''}
+            {formtextinput group='picture' id='title' mandatory=false readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass='form-control'}
         </div>
-        <div class="z-formrow">
+        <div class="form-group">
             {formlabel for='description' __text='Description'}
-            {formtextinput group='picture' id='description' mandatory=false __title='Enter the description of the picture' textMode='multiline' rows='6' cols='50' cssClass=''}
+            {formtextinput group='picture' id='description' mandatory=false __title='Enter the description of the picture' textMode='multiline' rows='6' cols='50' cssClass='form-control'}
         </div>
-        <div class="z-formrow">
+        <div class="checkbox">
             {formlabel for='showTitle' __text='Show title'}
             {formcheckbox group='picture' id='showTitle' readOnly=false __title='show title ?' cssClass=''}
         </div>
-        <div class="z-formrow">
+        <div class="checkbox">
             {formlabel for='showDescription' __text='Show description'}
             {formcheckbox group='picture' id='showDescription' readOnly=false __title='show description ?' cssClass=''}
         </div>
-        <div class="z-formrow">
+        <div class="form-group">
             {assign var='mandatorySym' value='1'}
             {if $mode ne 'create'}
                 {assign var='mandatorySym' value='0'}
             {/if}
             {formlabel for='imageUpload' __text='Image upload' mandatorysym=$mandatorySym}<br />{* break required for Google Chrome *}
-{if $mode eq 'create'}
-            {formuploadinput group='picture' id='imageUpload' mandatory=true readOnly=false cssClass='required'}
-{else}
-            {formuploadinput group='picture' id='imageUpload' mandatory=false readOnly=false cssClass=''}
-{/if}
-
+			{if $mode eq 'create'}
+            	{formuploadinput group='picture' id='imageUpload' mandatory=true readOnly=false cssClass='required'}
+			{else}
+            	{formuploadinput group='picture' id='imageUpload' mandatory=false readOnly=false cssClass=''}
+			{/if}
             <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
             <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
             <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
@@ -68,7 +67,7 @@
             {/if}
             {if $mode ne 'create'}
                 {if $picture.imageUpload ne ''}
-                    <span class="z-formnote">
+                    <span class="form-group">
                         {gt text='Current file'}:
                         <a href="{$picture.imageUploadFullPathUrl}" title="{$formattedEntityTitle|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
                         {if $picture.imageUploadMeta.isImage}
@@ -82,16 +81,16 @@
             {/if}
             {muimageValidationError id='imageUpload' class='required'}
         </div>
-        <div class="z-formrow" style="display: none;">
+        <div class="form-group" style="display: none;">
             {formlabel for='imageView' __text='Image view' mandatorysym='1'}
-            {formintinput group='picture' id='imageView' mandatory=true __title='Enter the image view of the picture' maxLength=11 cssClass='required validate-digits'}
+            {formintinput group='picture' id='imageView' mandatory=true __title='Enter the image view of the picture' maxLength=11 cssClass='required validate-digits form-group'}
             {muimageValidationError id='imageView' class='required'}
             {muimageValidationError id='imageView' class='validate-digits'}
         </div>
         
-        <div class="z-formrow">
+        <div class="form-group">
             {formlabel for='albumImage' __text='Album image' cssClass=''}
-            {formcheckbox group='picture' id='albumImage' readOnly=false __title='album image ?' cssClass='' }
+            {formcheckbox group='picture' id='albumImage' readOnly=false __title='album image ?' cssClass='form-control' }
         </div>
     </fieldset>
 
@@ -99,9 +98,9 @@
         {* {include file='user/album/include_selectEditOne.tpl' relItem=$picture aliasName='album' idPrefix='muimageAlbum_Album'} *}
         <fieldset>
         <legend>{gt text='Album'}</legend>
-            <div class="z-formrow">
+            <div class="form-group">
                 {formlabel for='muimageAlbum_AlbumItemList' __text='Album'}
-                {formdropdownlist selectedValue=$savedAlbum group='mainalbum' id='muimageAlbum_AlbumItemList' cssClass='chzn-select'}
+                {formdropdownlist selectedValue=$savedAlbum group='mainalbum' id='muimageAlbum_AlbumItemList' cssClass='chzn-select form-control'}
                 <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="1">
             </div>
         </fieldset>  

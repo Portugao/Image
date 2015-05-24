@@ -220,14 +220,22 @@
 		    <li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
 		    <div class="thumbnail">
 			{muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
+			{if $albumpicture}
 
-			<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.description}">
+			<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title}{if $album.description ne ''} - {$album.description}{/if}">
         		<img src="{thumb image=$albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'}" alt="">
     		</a>
+    		{else}
+    		<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title}{if $album.description ne ''} - {$album.description}{/if}">	
+    			<img src="modules/MUImage/images/placeholder.png" width="300" height="200" />
+    		</a>
+    		{/if}    		
+    		
     			<div class="caption">
-    				<a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}">
+    			{* <a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}">
     					{$album.title|safetext}
-    				</a> 
+    				</a> *}
+    				
     				<p><a href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}" class="btn btn-success btn-xs" role="button">{gt text='Edit'}</a></p>				
     			</div>			
 			</div>

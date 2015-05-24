@@ -5,7 +5,7 @@
 {/if}
 {include file="bootstrap/`$lct`/header.tpl"}
 
-<div class="muimage-album muimage-display container">
+<div class="container">
     {gt text='Album' assign='templateTitle'}
     {assign var='templateTitle' value=$album.title|default:$templateTitle}
     {pagesetvar name='title' value=$templateTitle|@html_entity_decode}
@@ -21,29 +21,29 @@
     {/if}
     <div class="row">
 	{if $lct eq 'user'}
-	<div id="album_header">
+	<div id="">
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
 		{$album.description}<br /><br />
 	    {/if}
-	    {include file='helper/include_categories_display.tpl' obj=$album}
+	    {include file='bootstrap/helper/include_categories_display.tpl' obj=$album}
 	    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
 	    {if $album.createdUserId eq $coredata.user.uid || $groupMember eq 1}
 			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
-			<div style="z-index: 5000;" class="btn-group">
-  				<a class="btn btn-default" href="#"><i class="fa fa-user fa-fw"></i>{gt text='Actions for this album'}</a>
-  				<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-    			<span class="fa fa-caret-down"></span></a>
-  				<ul class="dropdown-menu">
-  					<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}"><i class="fa fa-pencil fa-fw"></i> {gt text='Edit'}</a></li>
-  					<li><a href="{modurl modname='MUImage' type='user' func='delete' ot='album' id=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-trash-o fa-fw"></i> {gt text='Delete'}</a></li>
-  					{if $otherPictures eq true}
-    					<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-upload fa-fw"></i> {gt text='Add'}</a></li>  				
-    					<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-upload fa-fw"></i> {gt text='Multi-Add'}</a></li>
-    					<li><a href="{modurl modname='MUImage' type='user' func='zipUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-file-archive-o fa-fw"></i> {gt text='Zip-Add'}</a></li>
-  					{/if}
-  				</ul>
-			</div>
-		{/checkpermissionblock}
+				<div style="z-index: 5000;" class="btn-group">
+  					<a class="btn btn-default" href="#"><i class="fa fa-user fa-fw"></i>{gt text='Actions for this album'}</a>
+  					<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+    				<span class="fa fa-caret-down"></span></a>
+  					<ul class="dropdown-menu">
+  						<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}"><i class="fa fa-pencil fa-fw"></i> {gt text='Edit'}</a></li>
+  						<li><a href="{modurl modname='MUImage' type='user' func='delete' ot='album' id=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-trash-o fa-fw"></i> {gt text='Delete'}</a></li>
+  						{if $otherPictures eq true}
+    						<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-upload fa-fw"></i> {gt text='Add'}</a></li>  				
+    						<li><a href="{modurl modname='MUImage' type='user' func='multiUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-upload fa-fw"></i> {gt text='Multi-Add'}</a></li>
+    						<li><a href="{modurl modname='MUImage' type='user' func='zipUpload' ot='picture' album=$album.id returnTo='userDisplayAlbum'}"><i class="fa fa-file-archive-o fa-fw"></i> {gt text='Zip-Add'}</a></li>
+  						{/if}
+  					</ul>
+				</div>
+			{/checkpermissionblock}
 	    {/if}  
 	    {if $modulevars.slideshow1 || $modulevars.slideshow2}
 		<form class="form-inline" style="display:inline" action="{modurl modname='MUImage' type='user' func='template' id=$album.id}" method="post">
@@ -62,7 +62,7 @@
 	    {/if}
 
 	</div>
-	<div id="MUImage_body" class="col-xs-12">
+	<div id="muimage-user-bootstrap-body" class="col-xs-12">
 	
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
