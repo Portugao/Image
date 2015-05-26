@@ -6,7 +6,7 @@
 			<li class="ui-state-default col-xs-6 col-sm-4 col-md-3 col-lg-2">
 				<div class="thumbnail">
 					{muimageCheckGroupMember createdUserId=$item.createdUserId assign='groupMember'}
-					{if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
+					{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId || $groupMember eq 1}
 						{gt text='movecursor' assign='cursor'}
 					{else}
 						{gt text='' assign='cursor'}
@@ -15,11 +15,15 @@
         				<img src="{thumb image=$item.imageUploadFullPath width=200 height=125 mode='outset' extension='jpg'}" alt="">
     				</a>
     				<div class="caption {$cursor}">
-    					{* <p><a href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}">
-    						{$item.title|safetext}
-    					</a></p> *}
+    					<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}">
+    						<i class="fa fa-camera-retro fa-lg"></i>
+    					</a>
     					{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
-    						<p><a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}" class="btn btn-success btn-xs" role="button">{gt text='Edit'}</a></p>
+    						{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId || $groupMember eq 1}
+    							<a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}">
+    						   		<i class="fa fa-pencil-square-o"></i>
+    							</a>
+    						{/if}
     					{/checkpermissionblock}	
     					<input name="pictures[]" type="hidden" value={$item.id} />
 						{modgetvar module='MUImage' name='countImageView' assign='imageView'}
@@ -40,7 +44,7 @@
 
     var MU = jQuery.noConflict();
 	MU(document).ready(function(MU) {	
-    {{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId}}
+    {{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId || $groupMember eq 1}}
         MU(function() {
             MU( "#sortable" ).sortable();
         });

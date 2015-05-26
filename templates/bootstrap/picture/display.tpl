@@ -3,7 +3,7 @@
 {if isset($smarty.get.lct) && $smarty.get.lct eq 'admin'}
     {assign var='lct' value='admin'}
 {/if}
-{include file="`$lct`/header.tpl"}
+{include file="bootstrap/`$lct`/header.tpl"}
 <div class="muimage-picture muimage-display">
     {gt text='Picture' assign='templateTitle'}
     {assign var='templateTitle' value=$picture->getTitleFromDisplayPattern()|default:$templateTitle}
@@ -136,7 +136,7 @@
         {/if}
     {/if}
 </div>
-{include file="`$lct`/footer.tpl"}
+{include file="bootstrap/`$lct`/footer.tpl"}
 
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
     <script type="text/javascript">

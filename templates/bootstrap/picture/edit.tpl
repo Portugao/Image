@@ -56,11 +56,11 @@
 			{else}
             	{formuploadinput group='picture' id='imageUpload' mandatory=false readOnly=false cssClass=''}
 			{/if}
-            <div class="z-formnote">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
-            <div class="z-formnote">{gt text='Allowed file size:'} {$fileSize} </div>
-            <div class="z-formnote">{gt text='Required width:'} {$minWidth} </div>
-            <div class="z-formnote">{gt text='Maximum width:'} {$maxWidth} </div>
-            <div class="z-formnote">{gt text='Maximum height:'} {$maxHeight} </div>
+            <div class="alert alert-info">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
+            <div class="alert alert-info">{gt text='Allowed file size:'} {$fileSize} </div>
+            <div class="alert alert-info">{gt text='Required width:'} {$minWidth} </div>
+            <div class="alert alert-info">{gt text='Maximum width:'} {$maxWidth} </div>
+            <div class="alert alert-info">{gt text='Maximum height:'} {$maxHeight} </div>
             {modgetvar module='MUImage' name='shrinkPictures' assign='shrinkPictures'}
             {if $shrinkPictures eq 1 && $mode eq 'create'}
                 <div class="z-formnote z-informationmsg">{gt text='Pictures with too big width or height will be shrinked.'}</div>
@@ -88,9 +88,9 @@
             {muimageValidationError id='imageView' class='validate-digits'}
         </div>
         
-        <div class="form-group">
+        <div class="checkbox">
             {formlabel for='albumImage' __text='Album image' cssClass=''}
-            {formcheckbox group='picture' id='albumImage' readOnly=false __title='album image ?' cssClass='form-control' }
+            {formcheckbox group='picture' id='albumImage' readOnly=false __title='album image ?' cssClass='' }
         </div>
     </fieldset>
 
@@ -101,12 +101,12 @@
             <div class="form-group">
                 {formlabel for='muimageAlbum_AlbumItemList' __text='Album'}
                 {formdropdownlist selectedValue=$savedAlbum group='mainalbum' id='muimageAlbum_AlbumItemList' cssClass='chzn-select form-control'}
-                <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="1">
+                <input type="hidden" id="muimageAlbum_AlbumMode" name="muimageAlbum_AlbumMode" value="{$savedAlbum}">
             </div>
         </fieldset>  
     {else}
         <input id="muimageAlbum_AlbumItemList" type="hidden" value="{$albumid}" name="muimageAlbum_AlbumItemList">
-        <input id="muimageAlbum_AlbumMode" type="hidden" value="1" name="muimageAlbum_AlbumMode">
+        <input id="muimageAlbum_AlbumMode" type="hidden" value="{$savedAlbum}" name="muimageAlbum_AlbumMode">
     {/if}
 
     {* include display hooks *}

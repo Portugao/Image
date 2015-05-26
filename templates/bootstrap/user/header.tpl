@@ -23,7 +23,7 @@
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
 	<h2>{modgetinfo info='displayname'}{if $templateTitle}: {$templateTitle}{/if}</h2>
 	<nav class="navbar navbar-default">
-  	<div class="container-fluid">
+  	<div class="container">
     <!-- Titel und Schalter werden für eine bessere mobile Ansicht zusammengefasst -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -33,7 +33,7 @@
         <span class="icon-bar"></span>
       </button>
             <a class="navbar-brand" href="{$homepage}">
-        		<img heightalt="Titel" src="modules/MUImage/images/muimage.png">
+        		<img alt="{gt text='Logo MUImage'}" src="modules/MUImage/images/muimage.png">
       		</a>
     </div>
 
@@ -41,15 +41,15 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
       {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
-        <li class=""><a href="{modurl modname='MUImage' type='admin' func='main'}">{gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
+        <li><a class="fa fa-wrench fa-lg" href="{modurl modname='MUImage' type='admin' func='main'}">{gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
       {/checkpermissionblock}
-        <li class="active"><a href="{modurl modname='MUImage' type='user' func='main'}">{gt text='Albums'}</a></li>
+        <li><a class="fa fa-folder fa-lg" href="{modurl modname='MUImage' type='user' func='main'}">{gt text='Albums'}</a></li>
       {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
-        <li class=""><a href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
+        <li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
       {/checkpermissionblock}
       {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
       	{if $func eq 'display'}
-        	<li class=""><a href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create SubAlbum'}</a></li>
+        	<li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create SubAlbum'}</a></li>
       	{/if}
       {/checkpermissionblock}
       </ul>
