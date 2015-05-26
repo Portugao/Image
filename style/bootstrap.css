@@ -16,8 +16,18 @@ ul li {
 	margin: 15px 0 0 0;
 }
 
+/*****************ALBUMS****************/
+
 .album-bootstrap-view {
 	margin: 25px 0 0 0;
+}
+
+#action-for-albums {
+	margin: 10px 0;
+}
+
+#select-view-album {
+	margin: 10px 0;
 }
 
 .caption a {
