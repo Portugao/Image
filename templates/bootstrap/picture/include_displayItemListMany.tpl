@@ -7,9 +7,9 @@
 				<div class="thumbnail">
 					{muimageCheckGroupMember createdUserId=$item.createdUserId assign='groupMember'}
 					{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId || $groupMember eq 1}
-						{gt text='movecursor' assign='cursor'}
+						{assign var='cursor' value='movecursor'}
 					{else}
-						{gt text='' assign='cursor'}
+						{assign var='cursor' value=''}
 					{/if}
 					<a data-placement="top" data-toggle="tooltip" href="{$item.imageUploadFullPath}" title="{$item.title}{if $item.description ne ''} - {$item.description}{/if}" data-gallery>
         				<img src="{thumb image=$item.imageUploadFullPath width=200 height=125 mode='outset' extension='jpg'}" alt="">
@@ -20,7 +20,7 @@
     					</a>
     					{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
     						{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId || $groupMember eq 1}
-    							<a href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}">
+    							<a title="{gt text='Edit'}" href="{modurl modname='MUImage' type='user' func='edit' ot='picture' id=$item.id}">
     						   		<i class="fa fa-pencil-square-o"></i>
     							</a>
     						{/if}
