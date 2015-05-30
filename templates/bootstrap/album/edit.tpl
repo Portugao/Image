@@ -11,18 +11,18 @@
 {pageaddvar name='javascript' value='modules/MUImage/javascript/chosen/chosen.jquery.js'}
 {pageaddvar name='stylesheet' value='modules/MUImage/javascript/chosen/chosen.css'}
 {if $mode eq 'edit'}
-{gt text='Edit album' assign='templateTitle'}
+	{gt text='Edit album' assign='templateTitle'}
 {elseif $mode eq 'create'}
-{gt text='Create album' assign='templateTitle'}
+	{gt text='Create album' assign='templateTitle'}
 {else}
-{gt text='Edit album' assign='templateTitle'}
+	{gt text='Edit album' assign='templateTitle'}
 {/if}
 <div class="muimage-album muimage-edit">
 {pagesetvar name='title' value=$templateTitle}
 <div class="z-frontendcontainer">
 <h2>{$templateTitle}</h2>
     {form cssClass='z-form'}
-{* add validation summary and a <div> element for styling the form *}
+	{* add validation summary and a <div> element for styling the form *}
        {muimageFormFrame}
            {formsetinitialfocus inputId='title'}
                <fieldset>
@@ -55,7 +55,6 @@
                 {if $inAdminGroup eq true}
                 <div class="checkbox">
                 	<label>
-
                     {formcheckbox group='album' id='notInFrontend' readOnly=false __title='not in frontend ?' cssClass='' }
                 	{gt text='not in Frontend ?'}
                 	</label>
@@ -75,17 +74,17 @@
             {if $inAdminGroup eq false}
                 <p class="alert alert-info" role="alert">{gt text='Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!'}</p>
             {/if}
-      <fieldset>
-<legend>{gt text='Main album'}</legend>
-<div class="form-group>
-{formlabel for='muimageAlbum_ParentItemList' __text='Album'}
-{formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select form-control'}
-<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
-</div>
-</fieldset>
-{if $mainAlbumMode eq D}
-<p class="alert alert-warning">{gt text='Attention! This album is a sub album and you have no quotas to make it to main album! You may select another album as main album.'}</p>
-{/if}
+      	<fieldset>
+		<legend>{gt text='Main album'}</legend>
+		<div class="form-group>
+			{formlabel for='muimageAlbum_ParentItemList' __text='Album'}
+			{formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select form-control'}
+			<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
+		</div>
+	</fieldset>
+	{if $mainAlbumMode eq D}
+		<p class="alert alert-warning">{gt text='Attention! This album is a sub album and you have no quotas to make it to main album! You may select another album as main album.'}</p>
+	{/if}
 {else}
 {if $mainAlbumMode eq 4}
 <p class="alert alert-warning">{gt text='Attention! This album is on first level and you have no quotas to change!'}</p>
@@ -97,9 +96,9 @@
 *} {/if}
 {* include display hooks *}
 {if $mode eq 'create'}
-{notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=null}
+	{notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=null}
 {else}
-{notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=$album.id}
+	{notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=$album.id}
 {/if}
 {* include return control *}
 {* {if $mode eq 'create'}
@@ -112,7 +111,7 @@
 </fieldset>
 {/if} *}
 {* include possible submit actions *}
-        <div class="">
+        <div class="form-group">
         {foreach item='action' from=$actions}
             {assign var='actionIdCapital' value=$action.id|@ucfirst}
             {gt text=$action.title assign='actionTitle'}
@@ -129,7 +128,7 @@
 {/muimageFormFrame}
 {/form}
 {if $mode ne 'create'}
-{include file='helper/include_standardfields_edit.tpl' obj=$album}
+	{include file='helper/include_standardfields_edit.tpl' obj=$album}
 {/if}
 </div>
 </div>
