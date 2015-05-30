@@ -38,12 +38,16 @@
             {formtextinput group='picture' id='description' mandatory=false __title='Enter the description of the picture' textMode='multiline' rows='6' cols='50' cssClass='form-control'}
         </div>
         <div class="checkbox">
-            {formlabel for='showTitle' __text='Show title'}
+        <label>
             {formcheckbox group='picture' id='showTitle' readOnly=false __title='show title ?' cssClass=''}
+        	{gt text='Show title'}
+        </label>
         </div>
         <div class="checkbox">
-            {formlabel for='showDescription' __text='Show description'}
+        <label>
             {formcheckbox group='picture' id='showDescription' readOnly=false __title='show description ?' cssClass=''}
+        	{gt text='Show description'}
+        </label>
         </div>
         <div class="form-group">
             {assign var='mandatorySym' value='1'}
@@ -86,11 +90,12 @@
             {formintinput group='picture' id='imageView' mandatory=true __title='Enter the image view of the picture' maxLength=11 cssClass='required validate-digits form-group'}
             {muimageValidationError id='imageView' class='required'}
             {muimageValidationError id='imageView' class='validate-digits'}
-        </div>
-        
+        </div>   
         <div class="checkbox">
-            {formlabel for='albumImage' __text='Album image' cssClass=''}
+        <label>
             {formcheckbox group='picture' id='albumImage' readOnly=false __title='album image ?' cssClass='' }
+        	{gt text='Album image'}
+        </label>
         </div>
     </fieldset>
 
@@ -128,24 +133,24 @@
     {/if} *}
 
     {* include possible submit actions *}
-    <div class="z-buttons z-formbuttons">
+    <div class="form-group">
     {foreach item='action' from=$actions}
         {assign var='actionIdCapital' value=$action.id|@ucfirst}
         {gt text=$action.title assign='actionTitle'}
         {*gt text=$action.description assign='actionDescription'*}{* TODO: formbutton could support title attributes *}
         {if $action.id eq 'delete'}
             {gt text='Really delete this picture?' assign='deleteConfirmMsg'}
-            {formbutton id="btn`$actionIdCapital`" commandName=$action.id text=$actionTitle class=$action.buttonClass confirmMessage=$deleteConfirmMsg}
+            {formbutton id="btn`$actionIdCapital`" commandName=$action.id text=$actionTitle class="btn btn-danger" confirmMessage=$deleteConfirmMsg}
         {else}
-            {formbutton id="btn`$actionIdCapital`" commandName=$action.id text=$actionTitle class=$action.buttonClass}
+            {formbutton id="btn`$actionIdCapital`" commandName=$action.id text=$actionTitle class="btn btn-primary"}
         {/if}
     {/foreach}
-    {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
+    {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='btn btn-warning'}
     </div>
   {/muimageFormFrame}
 {/form}
     {if $mode ne 'create'}
-        {include file='helper/include_standardfields_edit.tpl' obj=$picture}
+        {include file='bootstrap/helper/include_standardfields_edit.tpl' obj=$picture}
    {/if}
 </div>
 </div>
