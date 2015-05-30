@@ -54,8 +54,11 @@
                 </div>
                 {if $inAdminGroup eq true}
                 <div class="checkbox">
-                    {formlabel for='notInFrontend' __text='Not in frontend' cssClass=''}
+                	<label>
+
                     {formcheckbox group='album' id='notInFrontend' readOnly=false __title='not in frontend ?' cssClass='' }
+                	{gt text='not in Frontend ?'}
+                	</label>
                 </div>
                 {/if}
                 </fieldset>

@@ -211,8 +211,8 @@
 
 {if $lct eq 'user'}
     <div class="container-fluid album-bootstrap-view">
-    <ul class="row">
 	{if isset($items)}
+	    <ul class="row">
 	    {foreach item='album' from=$items}
 		{if $album.parent eq NULL}
 		    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
@@ -229,39 +229,52 @@
     		<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title}{if $album.description ne ''} - {$album.description}{/if}">	
     			<img src="modules/MUImage/images/placeholder.png" width="300" height="200" />
     		</a>
-    		{/if}    		
-    		
-    			<div class="caption">
-    			{* <a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}">
-    					{$album.title|safetext}
-    				</a> *}
-    				
-    				<p><a href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}" class="btn btn-success btn-xs" role="button">{gt text='Edit'}</a></p>				
+    		{/if}    		 		
+    			<div class="caption">	
+    			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
+    			{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
+    				{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}		
+    					<a title="{gt text='Edit}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}">
+    						<i class="fa fa-pencil-square-o fa-2x"></i>
+    					</a>
+    				{/if}
+    			{/checkpermissionblock}	
+    			<div style="min-height: 30px; max-height: 30px; overflow: auto;">		
+				{if isset($album.children) && $album.children ne null && count($album.children) > 0}			    
+			    	{gt text='SubAlbums'}: {include file='album/include_displayItemListMany.tpl' items=$album.children}    
+				{else}
+					{gt text='No SubAlbums'}
+				{/if}
+				</div>
+				<p>
+				{gt text='Pictures'}: {$album.picture|@count}
+            	</p>			
     			</div>			
 			</div>
 		    </li>
 		{/if}
+
+		{/if}
+	    {/foreach}
+	    {foreach item='album' from=$items}
+	    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
 		{if $accessThisAlbum eq 2}
-		<div class="muimage_view_album_container">
-		    <div class="muimage_view_album_title">
-			    {$album.title|truncate:30}
-			</div>
-			<div class="muimage_album_description">
-			</div>
-		    <div class="muimage_album_container_form">
+		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+		<div class="thumbnail">
+		<span style="width: 300px; heigt: 200px; background: url(modules/MUImage/images/placeholder.png) no-repeat center center; background-size: cover;">
 		        {usergetvar name='uname' uid=$album.createdUserId assign='username'}
 		        {gt text='This album is saved with a password by'}: {$username}<br /><br />
 		        {gt text=$album.id assign='albumid'}
-                {include file='album/enterPassword.tpl' id=$albumid}
-		    </div>
-		</div>
-		{/if}
-		{/if}
+                {include file='bootstrap/album/enterPassword.tpl' id=$albumid}		
+		</span>
+   		</div>
+   		</li>
+		{/if}	    
 	    {/foreach}
+	    </ul>
 	{else}
 	    {gt text='No SubAlbums'}
 	{/if}
-	</ul>
 	</div>
 	<div style="clear: both">&nbsp;</div>
 
