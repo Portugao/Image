@@ -63,7 +63,7 @@
             <div class="alert alert-info">{gt text='Maximum height:'} {$maxHeight} </div>
             {modgetvar module='MUImage' name='shrinkPictures' assign='shrinkPictures'}
             {if $shrinkPictures eq 1 && $mode eq 'create'}
-                <div class="z-formnote z-informationmsg">{gt text='Pictures with too big width or height will be shrinked.'}</div>
+                <div class="alert alert-info">{gt text='Pictures with too big width or height will be shrinked.'}</div>
             {/if}
             {if $mode ne 'create'}
                 {if $picture.imageUpload ne ''}
