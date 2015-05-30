@@ -93,7 +93,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
         $maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
 
-        if (ModUtil::getVar('MUImage', 'shrinkPictures') == 1) {
+        if (ModUtil::getVar('MUImage', 'shrinkPictures') == 1 && ($maxHeight > 0 && $maxHeight != '' && $maxHeight > 0 && $maxHeight != '')) {
             $imagine = new Imagine();
             $image = $imagine->open($basePath . $fileName);
             $size = $image->getSize();
