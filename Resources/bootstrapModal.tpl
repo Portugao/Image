@@ -1,3 +1,5 @@
+{if $modvars.MUImage.layout eq 'bootstrap'}
+{if $func eq 'display' && $module eq 'MUImage'}
 <!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
 <div id="blueimp-gallery" class="blueimp-gallery">
     <!-- The container for the modal slides -->
@@ -32,3 +34,5 @@
         </div>
     </div>
 </div>
+{/if}
+{/if}
