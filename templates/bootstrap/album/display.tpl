@@ -109,7 +109,7 @@
 		    {/if}      </div>
     </div>
   </div>
-  {if isset($album.children) && count($album.children) > 0}  
+  {if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'panel'}  
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="überschriftZwei">
       <h4 class="panel-title">
@@ -157,7 +157,6 @@
 			</div>
 		    </li>
 			{/if}
-
 		    {/foreach}
 		    {foreach item='childAlbum' from=$album.children}
 		    	{muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}
@@ -182,7 +181,15 @@
   </div>
 </div>
 {/if}
-
+{if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links'}
+	{gt text='SubAlbums'}: 
+		{foreach item='childAlbum' from=$album.children}
+				{muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}
+				{if $accessThisAlbum eq 1}
+					<a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}">{$childAlbum.title}</a>&nbsp;
+				{/if}
+		{/foreach} 
+{/if}
 <div style="clear: both"></div>
 
 <div id="muimage-user-album-hooks">
