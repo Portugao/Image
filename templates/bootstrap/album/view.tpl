@@ -241,7 +241,7 @@
     			{/checkpermissionblock}	
     			<div style="min-height: 30px; max-height: 30px; overflow: auto;">		
 				{if isset($album.children) && $album.children ne null && count($album.children) > 0}			    
-			    	{gt text='SubAlbums'}: {include file='album/include_displayItemListMany.tpl' items=$album.children}    
+			    	{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=$album.children}    
 				{else}
 					{gt text='No SubAlbums'}
 				{/if}
