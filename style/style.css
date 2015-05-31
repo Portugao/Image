@@ -497,6 +497,24 @@ width: 98%; */
 	height: 80px;
 }
 
+/*******BREADCRUMBS**************/
+
+ol.breadcrumb-normal {
+	padding: 0 !important;
+	float: left;
+}
+
+ol.breadcrumb-normal li {
+	list-style: none;
+	display: inline-block;
+}
+
+ol.breadcrumb-normal > li + li::before {
+	content: ">>";
+	font-size: 0.8em;
+	padding: 0 5px;
+}
+
 /*-----------JQUERY--------------*/
 #basic_accordion h3 {
 	float: left;
@@ -526,8 +544,6 @@ width: 98%; */
 #MUImage_user_template {
 	float: right;
 }
-
-
 
 /**********SORTABLE*********************/
 

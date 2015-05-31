@@ -19,7 +19,8 @@
     {else}
 		<div id="album_breadcrump">
 			{if $coredata.MUImage.breadcrumbInFrontend eq true}
-		    	{muimageBreadcrumb albumId=$album.id}
+		    	{muimageBreadcrumb albumId=$album.id assign='breadcrumb'}
+		    	{$breadcrumb|@html_entity_decode}
 			{/if}
 		</div>
         <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}{icon id="itemActions`$album.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}

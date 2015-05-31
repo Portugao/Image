@@ -18,23 +18,51 @@
  */
 function smarty_function_muimageBreadcrumb($params, $view)
 {
+    $dom = ZLanguage::getModuleDomain('MUImage');
+
     $albumId = $params['albumId'];
     $repository = MUImage_Util_Model::getAlbumRepository();
     $album = $repository->selectById($albumId);
-    
-    if (is_object($album) && $album['parent_id'] != NULL) {
-        $parentAlbum = $album->getParent();
-        $params['out'] .= '>> ' . $parentAlbum['title'] . $params['out'];
-        $params['albumId'] = $album['parent_id'];
-        smarty_function_muimageBreadcrumb($params, $view);
-        
+    if (!isset($params['out'])) {
+        $out = '';
     } else {
-        $out = 'Album Overview' . $params['out'];
+        $out = html_entity_decode($params['out']);
+    }
+    if (!isset($params['loop'])) {
+        $loop = 0;
+    } else {
+        $loop = $params['loop'];
+    }
+    if ($loop == 0) {
+        $thisAlbum = $album;
+    } else {
+        $thisAlbum = $params['thisAlbum'];
     }
 
-    if (array_key_exists('assign', $params)) {
-        $view->assign($params['assign'], $out);
-        return;
+    if ($album) {
+        $albumParent = $album->getParent();
+        if ($albumParent) {
+            $url = ModUtil::url('MUImage', 'user', 'display', array('ot' => 'album', 'id' => $albumParent['id']));
+            $out = '<li><a href="' . $url . '">' . $albumParent['title'] . '</a></li>' . $out;
+
+            $params['albumId'] = $albumParent['id'];
+            $params['out'] = $out;
+            $params['loop'] = $loop + 1;
+            $params['thisAlbum'] = $thisAlbum;
+            smarty_function_muimageBreadcrumb($params, $view);
+        } else {
+            $url = ModUtil::url('MUImage', 'user', 'main');
+            if (ModUtil::getVar('MUImage', 'layout') == 'bootstrap') {
+                $out = '<ol class="breadcrumb">' . '<li><a href="' . $url . '">' . __('Albums', $dom) . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol>';
+            } else {
+                $out = '<ol class="breadcrumb-normal">' . '<li><a href="' . $url . '">' . __('Albums', $dom) . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol><br style="clear: both;" />';
+
+            }
+            if (array_key_exists('assign', $params)) {
+                $view->assign($params['assign'], $out);
+                return;
+            }
+            return $out;
+        }
     }
-    return $out;
 }

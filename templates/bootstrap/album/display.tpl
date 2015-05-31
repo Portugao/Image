@@ -18,6 +18,12 @@
             </h3>
         </div>
     {else}
+    	<div id="album_breadcrump">
+			{if $coredata.MUImage.breadcrumbInFrontend eq true}
+		    	{muimageBreadcrumb albumId=$album.id assign='breadcrumb'}
+		    	{$breadcrumb|@html_entity_decode}		    	
+			{/if}
+		</div>
         <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}{icon id="itemActions`$album.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
         </h2>
     {/if}
@@ -141,8 +147,10 @@
     			</a>
     		{/if}
     		{/checkpermissionblock}
-    		<p>
-				{gt text='SubAlbums'}: {include file='album/include_displayItemListMany.tpl' items=$childAlbum.children}<br /> 
+    		<p style="min-height: 30px; max-height: 30px; overflow: auto;">
+				{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=$childAlbum.children} 
+			</p>
+			<p>
 				{gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}
 			</p>				
     		</div>			
