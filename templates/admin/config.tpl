@@ -116,6 +116,7 @@
                         <div class="z-formrow">
                             {formlabel for='kindOfShowSubAlbums' __text='Kind of show sub albums' cssClass=''}
                                 {formdropdownlist id='kindOfShowSubAlbums' group='config' __title='Choose the kind of show sub albums'}
+                                <div class="z-informationmsg z-formnote">{gt text="If set to links, sub albums with password access will not be shown in the display template."}</div>  
                         </div>
                        {* <div class="z-formrow">
                         	{gt text='Here you can enable ordering of albums in the frontend.' assign='toolTip'}
