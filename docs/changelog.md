@@ -97,10 +97,24 @@ Changes in 1.3.0
 
 # closed #124 all pictures with state initial now
 
+# closed #125, #126 check for exif library now
+
+# closed #127 breadcrumbs for display of albums in frontend
+
+# closed #128 correct redirect now
+
+# closed #129 children albums ordered by alphabet
+
+# closed #135 Possible to set access for admins to all albums
+
+# closed #136 flexible view of subalbums in display template
+
+# closed #137 translation problem fixed
+
 some more fixes:
 
 # increment of picture view only if the viewer is not the creator
-# translation in chosen select menue in the the picture edit form
+# translation in chosen select menue in the picture edit form
 
 
 Changes in 1.2.0
