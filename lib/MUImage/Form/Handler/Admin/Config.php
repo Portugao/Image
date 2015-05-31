@@ -50,6 +50,11 @@ class MUImage_Form_Handler_Admin_Config extends MUImage_Form_Handler_Admin_Base_
                 $modVars['groupForCommonAlbumsItems'][] = array('value' => $group['gid'], 'text' => $group['name']);
             }
         }
+        
+        // initialise list entries for the 'kind of show sub albums' setting       
+        $modVars['kindOfShowSubAlbumsItems'] = array(array('value' => 'panel', 'text' => 'Panel'),
+                array('value' => 'links', 'text' => 'Links')
+        );
 
 
         // assign all module vars

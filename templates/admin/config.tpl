@@ -113,6 +113,10 @@
                             {formlabel for='breadcrumbInFrontend' __text='Breadcrumbs in Frontend?' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='breadcrumbInFrontend' group='config' maxLength=255 __title='Enable breadcrumps.'}
    				        </div>
+                        <div class="z-formrow">
+                            {formlabel for='kindOfShowSubAlbums' __text='Kind of show sub albums' cssClass=''}
+                                {formdropdownlist id='kindOfShowSubAlbums' group='config' __title='Choose the kind of show sub albums'}
+                        </div>
                        {* <div class="z-formrow">
                         	{gt text='Here you can enable ordering of albums in the frontend.' assign='toolTip'}
                             {formlabel for='orderAlbums' __text='Order albums?' cssClass='muimage-form-tooltips' title=$toolTip}

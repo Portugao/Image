@@ -63,6 +63,7 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('groupForCommonAlbums',  'notset' );
         $this->setVar('shrinkPictures', false);
         $this->setVar('breadcrumbInFrontend', false);
+        $this->setVar('kindOfShowSubAlbums', 'panel');
         $this->setVar('orderAlbums', false);
         $this->setVar('ending', 'html');
         $this->setVar('userDeletePictures', false);
@@ -142,6 +143,7 @@ class MUImage_Installer extends MUImage_Base_Installer
                 $this->setVar('groupForCommonAlbums',  'notset' );
                 $this->setVar('fileNameForTitle', false);
                 $this->setVar('breadcrumbInFrontend', false);
+                $this->setVar('kindOfShowSubAlbums', 'panel');
                 $this->setVar('orderAlbums', false);
                  
                 // update the database schema
