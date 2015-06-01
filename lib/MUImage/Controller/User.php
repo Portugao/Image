@@ -172,14 +172,15 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 		if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
 			$objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
 		}
-		// create new Form reference
-		$view = FormUtil::newForm($this->name, $this);
-
-		// build form handler class name
-		$handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_ZipUpload';
-
-		// execute form using supplied template and page event handler
-		return $view->execute($objectType . '/zipUpload.tpl', new $handlerClass());
+        $permLevel = ACCESS_ADD;
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel), LogUtil::getErrorMsgPermission());
+        
+        // redirect to entity controller
+        
+        System::queryStringSetVar('lct', 'user');
+        $this->request->query->set('lct', 'user');
+        
+        return ModUtil::func($this->name, $objectType, 'zipUpload', array('lct' => 'user'));
 	}
 
 	/**
@@ -198,14 +199,15 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 		if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
 			$objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
 		}
-		// create new Form reference
-		$view = FormUtil::newForm($this->name, $this);
-
-		// build form handler class name
-		$handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_MultiUpload';
-
-		// execute form using supplied template and page event handler
-		return $view->execute($objectType . '/multiUpload.tpl', new $handlerClass());
+        $permLevel = ACCESS_ADD;
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel), LogUtil::getErrorMsgPermission());
+        
+        // redirect to entity controller
+        
+        System::queryStringSetVar('lct', 'user');
+        $this->request->query->set('lct', 'user');
+        
+        return ModUtil::func($this->name, $objectType, 'multiUpload', array('lct' => 'user'));
 	}
 
 	/**
@@ -224,14 +226,15 @@ class MUImage_Controller_User extends MUImage_Controller_Base_User
 		if (!in_array($objectType, MUImage_Util_Controller::getObjectTypes('controllerAction', $utilArgs))) {
 			$objectType = MUImage_Util_Controller::getDefaultObjectType('controllerAction', $utilArgs);
 		}
-		// create new Form reference
-		$view = FormUtil::newForm($this->name, $this);
-
-		// build form handler class name
-		$handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_EditMulti';
-
-		// execute form using supplied template and page event handler
-		return $view->execute($objectType . '/editMulti.tpl', new $handlerClass());
+		$permLevel = ACCESS_EDIT;
+		$this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel), LogUtil::getErrorMsgPermission());
+		 
+        // redirect to entity controller
+        
+        System::queryStringSetVar('lct', 'user');
+        $this->request->query->set('lct', 'user');
+        
+        return ModUtil::func($this->name, $objectType, 'editMulti', array('lct' => 'user'));
 
 	}
 

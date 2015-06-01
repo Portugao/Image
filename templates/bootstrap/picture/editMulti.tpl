@@ -1,5 +1,5 @@
 {* purpose of this template: build the Form to edit an instance of picture *}
-{include file='user/header.tpl'}
+{include file='bootstrap/user/header.tpl'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_editFunctions.js'}
 {pageaddvar name='javascript' value='modules/MUImage/javascript/MUImage_validation.js'}
 
@@ -21,23 +21,23 @@
 
     <fieldset>
         <legend>{gt text='Content'}</legend>
-        <div class="z-formrow">
+        <div class="form-group">
             {formlabel for='title' __text='Title'}
-            {formtextinput group='picture' id='title' mandatory=false readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass=''}
+            {formtextinput group='picture' id='title' mandatory=false readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass='form-control'}
         </div>
-        <div class="z-formrow">
+        <div class="form-group">
             {formlabel for='description' __text='Description'}
-            {formtextinput group='picture' id='description' mandatory=false __title='Enter the description of the picture' textMode='multiline' rows='6' cols='50' cssClass=''}
+            {formtextinput group='picture' id='description' mandatory=false __title='Enter the description of the picture' textMode='multiline' rows='6' cols='50' cssClass='form-control'}
         </div>
       {*  <div class="z-formrow">
             {formlabel for='showTitle' __text='Show title'}
             {formcheckbox group='picture' id='showTitle' readOnly=false __title='show title ?' cssClass=''}
         </div>
-        <div class="z-formrow">
+        <div class="form-group">
             {formlabel for='showDescription' __text='Show description'}
             {formcheckbox group='picture' id='showDescription' readOnly=false __title='show description ?' cssClass=''}
         </div> *}
-        <div class="z-formrow">
+        <div class="form-group">
             {assign var='mandatorySym' value='1'}
             {if $mode ne 'create'}
                 {assign var='mandatorySym' value='0'}
@@ -59,7 +59,7 @@
                 <div class="z-formnote z-informationmsg">{gt text='Pictures with too big width or height will be shrinked.'}</div>
             {/if}
             {if $mode ne 'create'}
-                    <span class="z-formnote">
+                    <span class="form-group">
                         {gt text='Current file'}:
                         <a href="{$picture.imageUploadFullPathUrl}" title="{$formattedEntityTitle|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
                         {if $picture.imageUploadMeta.isImage}
@@ -112,19 +112,15 @@
         </fieldset>
     {/if} *}
     {* include possible submit actions *}
-    <div class="z-buttons z-formbuttons">
+    <div class="form-control">
     {if $mode eq 'edit'}
         {if $previouspicture eq 1}  
-        {formbutton id='btnPrevious' commandName='previous' __text='Previous picture' class='z-bt-previous'}
+        {formbutton id='btnPrevious' commandName='previous' __text='Previous picture' class='btn btn-default'}
         {/if}
         {if $nextpicture eq 1}
-        {formbutton id='btnNext' commandName='next' __text='Next picture' class='z-bt-next'}
+        {formbutton id='btnNext' commandName='next' __text='Next picture' class='btn btn-default'}
         {/if}
-        {formbutton id='btnFinish' commandName='finish' __text='Finish editing' class='z-bt-save'}
-     {* {if !$inlineUsage}
-        {gt text='Really delete this picture? If you a delete a picture' assign='deleteConfirmMsg'}
-        {formbutton id='btnDelete' commandName='delete' __text='Delete picture' class='z-bt-delete z-btred' confirmMessage=$deleteConfirmMsg}
-      {/if} *}
+        {formbutton id='btnFinish' commandName='finish' __text='Finish editing' class='btn btn-primary'}
     {elseif $mode eq 'create'}
         {if $previouspicture eq 1}        
         {formbutton id='btnPrevious' commandName='previous' __text='Previous picture' class='z-bt-previous'}
@@ -133,7 +129,7 @@
     {else}
         {formbutton id='btnFinish' commandName='finish' __text='OK' class='z-bt-ok'}
     {/if}
-        {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
+        {formbutton id='btnCancel' commandName='cancel' __text='Cancel' class='btn btn-warning'}
 
     </div>
   {/muimageFormFrame}

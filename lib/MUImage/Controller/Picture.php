@@ -411,10 +411,14 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         $view = FormUtil::newForm($this->name, $this);
     
         // build form handler class name
-        $handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_zipUpload';
+        $handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_ZipUpload';
     
+        // determine the output template
+        $viewHelper = new MUImage_Util_View($this->serviceManager);
+        $template = $viewHelper->getViewTemplate($this->view, $objectType, 'zipUpload', array());
+        
         // execute form using supplied template and page event handler
-        return $view->execute($objectType . '/zipUpload.tpl', new $handlerClass());
+        return $view->execute($template, new $handlerClass());
     }
     
     /**
@@ -439,8 +443,12 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         // build form handler class name
         $handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_MultiUpload';
     
+        // determine the output template
+        $viewHelper = new MUImage_Util_View($this->serviceManager);
+        $template = $viewHelper->getViewTemplate($this->view, $objectType, 'multiUpload', array());
+        
         // execute form using supplied template and page event handler
-        return $view->execute($objectType . '/multiUpload.tpl', new $handlerClass());
+        return $view->execute($template, new $handlerClass());
     }
     
     /**
@@ -465,8 +473,12 @@ class MUImage_Controller_Picture extends MUImage_Controller_Base_Picture
         // build form handler class name
         $handlerClass = 'MUImage_Form_Handler_' . ucfirst($objectType) . '_EditMulti';
     
+        // determine the output template
+        $viewHelper = new MUImage_Util_View($this->serviceManager);
+        $template = $viewHelper->getViewTemplate($this->view, $objectType, 'editMulti', array());
+        
         // execute form using supplied template and page event handler
-        return $view->execute($objectType . '/editMulti.tpl', new $handlerClass());
+        return $view->execute($template, new $handlerClass());
     
     }
     
