@@ -14,8 +14,8 @@
 </div>
 <div id="links">
 {foreach name='relLoop' item='item' from=$items}
-    {if $item.imageUpload ne '' && isset($item.imageUploadFullPathURL)}
-        <a title="{$item.title}" href="{$item.imageUploadFullPathURL}" /></a>
+    {if $item.imageUpload ne '' && isset($item.imageUploadMeta.filename)}
+        <a title="{$item.title}" href="userdata/MUImage/pictures/imageupload/{$item.imageUploadMeta.filename}_pre.jpg" /></a>
     {/if}    
 {/foreach}
 </div>

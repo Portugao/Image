@@ -11,7 +11,7 @@
 					{else}
 						{assign var='cursor' value=''}
 					{/if}
-					<a data-placement="top" data-toggle="tooltip" href="{$item.imageUploadFullPath}" title="{$item.title}{if $item.description ne ''} - {$item.description}{/if}" data-gallery>
+					<a data-placement="top" data-toggle="tooltip" href="userdata/MUImage/pictures/imageupload/{$item.imageUploadMeta.filename}_full.jpg" title="{$item.title}{if $item.description ne ''} - {$item.description}{/if}" data-gallery>
         				<img src="{thumb image=$item.imageUploadFullPath width=200 height=125 mode='outset' extension='jpg'}" alt="">
     				</a>
     				<div class="caption {$cursor}">

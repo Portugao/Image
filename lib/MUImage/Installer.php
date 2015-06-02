@@ -68,6 +68,13 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('ending', 'html');
         $this->setVar('userDeletePictures', false);
         $this->setVar('fileNameForTitle', false);
+        $this->setVar('createSeveralPictureSizes', false);
+        $this->setVar('widthFirst', 400);
+        $this->setVar('heightFirst', 400);
+        $this->setVar('widthSecond', 600);
+        $this->setVar('heightSecond', 600);
+        $this->setVar('widthThird', 800);
+        $this->setVar('heightThird', 800);
         $this->setVar('slideshow1', false);
         $this->setVar('slide1Interval', 4000);
         $this->setVar('slide1Speed', 1000);
@@ -145,6 +152,13 @@ class MUImage_Installer extends MUImage_Base_Installer
                 $this->setVar('breadcrumbInFrontend', false);
                 $this->setVar('kindOfShowSubAlbums', 'panel');
                 $this->setVar('orderAlbums', false);
+                $this->setVar('createSeveralPictureSizes', false);
+                $this->setVar('widthFirst', 400);
+                $this->setVar('heightFirst', 400);
+                $this->setVar('widthSecond', 600);
+                $this->setVar('heightSecond', 600);
+                $this->setVar('widthThird', 800);
+                $this->setVar('heightThird', 800);
                  
                 // update the database schema
                 try {

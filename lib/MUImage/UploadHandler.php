@@ -16,6 +16,7 @@
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
+use Imagine\Image\ManipulatorInterface;
 
 /**
  * Upload handler implementation class.
@@ -75,6 +76,9 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $fileNameParts[count($fileNameParts) - 1] = $extension;
         $fileName = implode('.', $fileNameParts);
 
+        // we get the extension for later use
+        $thisExtension = $extension;
+
         $serviceManager = ServiceUtil::getManager();
         $controllerHelper = new MUImage_Util_Controller($serviceManager);
 
@@ -123,6 +127,37 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
                 $image->resize(new Box($newWidth, $newHeight));
                 //$image->crop(new Point(0, 0), new Box($newWidth, $newHeight));
                 $image->save($basePath . $fileName);
+            }
+        } else {
+
+            // retrieve the final file name
+
+            $fileNameParts = explode('.', $fileName);
+            $fileNamePartsWithoutExtension = array_slice($fileNameParts, 0, count($fileNameParts) - 1);
+            $fileNameWithoutExtension = implode('.', $fileNamePartsWithoutExtension);
+            
+            $imagine = new Imagine();
+
+            // we create the thumnail
+            $widthFirst = ModUtil::getVar('MUImage', 'widthFirst');
+            $heightFirst = ModUtil::getVar('MUImage', 'heightFirst');
+            if ($widthFirst > 0 && $heightFirst > 0) {
+                $nameForThumb = $fileNameWithoutExtension . '_tmb.jpg';
+                $imagine->open($basePath . $fileName)->thumbnail(new Box($widthFirst, $heightFirst), 'inset')->save($basePath . $nameForThumb);
+            }
+            // we create the preview
+            $widthSecond = ModUtil::getVar('MUImage', 'widthSecond');
+            $heightSecond = ModUtil::getVar('MUImage', 'heightSecond');
+            if ($widthSecond > 0 && $heightSecond > 0) {
+                $nameForThumb = $fileNameWithoutExtension . '_pre.jpg';
+                $imagine->open($basePath . $fileName)->thumbnail(new Box($widthSecond, $heightSecond), 'inset')->save($basePath . $nameForThumb);
+            }
+            // we create the full image
+            $widthThird = ModUtil::getVar('MUImage', 'widthThird');
+            $heightThird = ModUtil::getVar('MUImage', 'heightThird');
+            if ($widthThird > 0 && $heightThird > 0) {
+                $nameForThumb = $fileNameWithoutExtension . '_full.jpg';
+                $imagine->open($basePath . $fileName)->thumbnail(new Box($widthThird, $heightThird), 'inset')->save($basePath . $nameForThumb);
             }
         }
 
@@ -239,6 +274,61 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         }
 
         return $result;
+    }
+    
+    /**
+     * Read meta data from a certain file.
+     *
+     * @param string $fileName  Name of file to be processed.
+     * @param string $filePath  Path to file to be processed.
+     *
+     * @return array collected meta data
+     */
+    public function readMetaDataForFile($fileName, $filePath)
+    {
+        $meta = array();
+        if (empty($fileName)) {
+            return $meta;
+        }
+    
+        $extensionarr = explode('.', $fileName);
+        $meta = array();
+        $meta['extension'] = strtolower($extensionarr[count($extensionarr) - 1]);
+        $meta['size'] = filesize($filePath);
+        $meta['isImage'] = (in_array($meta['extension'], $this->imageFileTypes) ? true : false);
+    
+        if (!$meta['isImage']) {
+            return $meta;
+        }
+    
+        if ($meta['extension'] == 'swf') {
+            $meta['isImage'] = false;
+        }
+    
+        $imgInfo = getimagesize($filePath);
+        if (!is_array($imgInfo)) {
+            return $meta;
+        }
+    
+        $meta['width'] = $imgInfo[0];
+        $meta['height'] = $imgInfo[1];
+    
+        if ($imgInfo[1] < $imgInfo[0]) {
+            $meta['format'] = 'landscape';
+        } elseif ($imgInfo[1] > $imgInfo[0]) {
+            $meta['format'] = 'portrait';
+        } else {
+            $meta['format'] = 'square';
+        }
+        
+        if (ModUtil::getVar('MUImage', 'createSeveralPictureSizes')) {
+            $fileNameParts = explode('.', $fileName);
+            $fileNamePartsWithoutExtension = array_slice($fileNameParts, 0, count($fileNameParts) - 1);
+            $fileNameWithoutExtension = implode('.', $fileNamePartsWithoutExtension);
+            $meta['filename'] = $fileNameWithoutExtension;
+        }
+    
+        return $meta;
     }
 
     /**

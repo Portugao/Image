@@ -104,11 +104,6 @@
                                 <div class="z-informationmsg z-formnote">{gt text="If a group is set, all users of this group have access to the albums, that created a group member. If not set, all admins have access to each album."}</div>
                         </div>
                         <div class="z-formrow">
-                            {gt text='If set to true, pictures get modified to maximum width and height for pictures set in the settings. The aspect ratio of pictures will get received' assign='toolTip'}   
-                            {formlabel for='shrinkPictures' __text='Shrink pictures' cssClass='muimage-form-tooltips' title=$toolTip}
-                                {formcheckbox id='shrinkPictures' group='config'}
-                        </div>
-                        <div class="z-formrow">
                         	{gt text='Here you can enable breadcrumbs in the display template for albums.' assign='toolTip'}
                             {formlabel for='breadcrumbInFrontend' __text='Breadcrumbs in Frontend?' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='breadcrumbInFrontend' group='config' maxLength=255 __title='Enable breadcrumps.'}
@@ -134,12 +129,61 @@
                             {formlabel for='userDeletePictures' __text='User delete pictures' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='userDeletePictures' group='config'}
                         </div>
+                    </fieldset>
+                {/formtabbedpanel}
+                {gt text='Upload Handler' assign='tabTitle'}
+                {formtabbedpanel title=$tabTitle}
+                	<fieldset>
+                        <legend>{$tabTitle}</legend>
+                    
+                        <p class="z-confirmationmsg">{gt text='Here you can manage all settings for uploads.'}</p>
+                    
+                        <div class="z-formrow">
+                            {gt text='If this option is set to true, 3 sizes of pictures will be created near the original picture.' assign='toolTip'}
+                            {formlabel for='createSeveralPictureSizes' __text='Create several picture sizes?' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formcheckbox id='createSeveralPictureSizes' group='config'}
+                        </div>
+                        <div class="z-formrow">
+                        	{gt text='Here you can set the width for the thumbnail.' assign='toolTip'}
+                            {formlabel for='widthFirst' __text='Width for the thumbnail' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formintinput id='widthFirst' group='config' maxLength=255 __title='Enter the width. Only digits are allowed.'}
+                        </div>
+                        <div class="z-formrow">
+                        	{gt text='Here you can set the height for the thumbnail.' assign='toolTip'}
+                            {formlabel for='heightFirst' __text='Height for the thumbnail' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formintinput id='heightFirst' group='config' maxLength=255 __title='Enter the height. Only digits are allowed.'}
+                        </div>
+                        <div class="z-formrow">
+                        	{gt text='Here you can set the width for the preview.' assign='toolTip'}
+                            {formlabel for='widthSecond' __text='Width for the preview' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formintinput id='widthSecond' group='config' maxLength=255 __title='Enter the width. Only digits are allowed.'}
+                        </div>
+                        <div class="z-formrow">
+                        	{gt text='Here you can set the height for the preview.' assign='toolTip'}
+                            {formlabel for='heightSecond' __text='Height for the preview' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formintinput id='heightSecond' group='config' maxLength=255 __title='Enter the height. Only digits are allowed.'}
+                        </div>
+                        <div class="z-formrow">
+                        	{gt text='Here you can set the width for the full image.' assign='toolTip'}
+                            {formlabel for='widthThird' __text='Width for the full image' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formintinput id='widthThird' group='config' maxLength=255 __title='Enter the width. Only digits are allowed.'}
+                        </div>
+                        <div class="z-formrow">
+                        	{gt text='Here you can set the height for the full image.' assign='toolTip'}
+                            {formlabel for='heightThird' __text='Height for the full image' cssClass='muimage-form-tooltips ' title=$toolTip}
+                                {formintinput id='heightThird' group='config' maxLength=255 __title='Enter the height. Only digits are allowed.'}
+                        </div>
+                        <div class="z-formrow">
+                            {gt text='If set to true, pictures get modified to maximum width and height for pictures set in the settings. The aspect ratio of pictures will get received' assign='toolTip'}   
+                            {formlabel for='shrinkPictures' __text='Shrink pictures' cssClass='muimage-form-tooltips' title=$toolTip}
+                                {formcheckbox id='shrinkPictures' group='config'}
+                        </div>
                         <div class="z-formrow">
                             {gt text='If this option is set to true, for multi upload and zip upload we get the file name for a title. It is not possible to edit the title directly after upload.' assign='toolTip'}
                             {formlabel for='fileNameForTitle' __text='File name for title' cssClass='muimage-form-tooltips ' title=$toolTip}
                                 {formcheckbox id='fileNameForTitle' group='config'}
                         </div>
-                    </fieldset>
+                	</fieldset>
                 {/formtabbedpanel}
                 {gt text='Slideshows' assign='tabTitle'}
                 {formtabbedpanel title=$tabTitle}
