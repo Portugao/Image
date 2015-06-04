@@ -90,11 +90,15 @@ muimage.finder.handleCancel = function ()
 
 function getPasteSnippet(mode, itemId)
 {
-    var objectType, itemUrl, itemTitle, itemDescription, pasteMode;
+    var objectType, createPictureSizes, itemUrl, itemTitle, itemDescription, pasteMode;
 
     objectType = $F('ObjectType');
+    createPictureSizes = $F('createPictureSizes');
     if (objectType === 'picture') {
-    	var itemPath, selectedWidth;
+    	var itemPath, tmbPath, prePath, fullPath;
+    }
+    if (createPictureSizes === false) {
+    	var selectedWidth;
     }
     itemUrl = $F('url' + itemId);
     itemTitle = $F('title' + itemId);
@@ -102,6 +106,9 @@ function getPasteSnippet(mode, itemId)
     if (objectType === 'picture') {
     itemPath = $F('path' + itemId);
     selectedWidth = $F('mUImageWidth');
+    tmbPath = $F('pathtmb' + itemId);
+    prePath = $F('pathpre' + itemId);
+    fullPath = $F('pathfull' + itemId);
     }
 
     pasteMode = $F('mUImagePasteAs');
@@ -109,6 +116,23 @@ function getPasteSnippet(mode, itemId)
     if (pasteMode === '3') {
     	return '<img title="' + itemTitle + '" src="' + itemPath + '" width="' + selectedWidth + '" height="auto" />';
     }
+    
+    if (pasteMode === '4') {
+    	return '<img class="img-responsive" title="' + itemTitle + '" src="' + tmbPath + '" />';
+    }
+    
+    if (pasteMode === '5') {
+    	return '<img class="img-responsive" title="' + itemTitle + '" src="' + prePath + '" />';
+    }
+    
+    if (pasteMode === '6') {
+    	return '<a href="' + fullPath + '" rel="imageviewer[picture]"><img class="img-responsive" title="' + itemTitle + '" src="' + tmbPath + '" /></a>';
+    }
+    
+    if (pasteMode === '7') {
+    	return '<a href="' + fullPath + '"rel="imageviewer[picture]"><img class="img-responsive" title="' + itemTitle + '" src="' + prePath + '" /></a>';
+    }
+    
 
     if (pasteMode === '2' || pasteMode !== '1') {
         return itemId;
