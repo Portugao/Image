@@ -127,6 +127,7 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $albumid = $this->request->getGet()->filter('album', 0, FILTER_SANITIZE_NUMBER_INT);
+        $dom = ZLanguage::getModuleDomain('MUImage');
          
         if ($args['commandName'] == 'submit') {
 
@@ -174,7 +175,7 @@ class MUImage_Form_Handler_Picture_Base_MultiUpload extends MUImage_Form_Handler
                         if ($fileNameForTitle == true) {
                             $entity->setTitle($this->__($fileNameParts[count($fileNameParts) - 2]));
                         } else { // set a default title
-                            $entity->setTitle($this->__('Please enter title...'));
+                            $entity->setTitle($this->__('Please enter title...'), $dom);
                         }
                         
                         // set the correct data for imageupload

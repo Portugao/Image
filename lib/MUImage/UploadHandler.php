@@ -52,6 +52,8 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
      */
     public function performFileUpload($objectType, $fileData, $fieldName)
     {
+        $request = new Zikula_Request_Http();
+        $func = $request->query->filter('func', 'edit', FILTER_SANITIZE_STRING);
         $dom = ZLanguage::getModuleDomain('MUImage');
 
         $result = array('fileName' => '',
@@ -97,7 +99,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
         $maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
         $maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
 
-        if (ModUtil::getVar('MUImage', 'shrinkPictures') == 1 && ($maxHeight > 0 && $maxHeight != '' && $maxHeight > 0 && $maxHeight != '')) {
+        if (ModUtil::getVar('MUImage', 'shrinkPictures') == 1 && ModUtil::getVar('MUImage', 'createSeveralPictureSizes') === false && ($maxHeight > 0 && $maxHeight != '' && $maxHeight > 0 && $maxHeight != '')) {
             $imagine = new Imagine();
             $image = $imagine->open($basePath . $fileName);
             $size = $image->getSize();
@@ -128,10 +130,11 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
                 //$image->crop(new Point(0, 0), new Box($newWidth, $newHeight));
                 $image->save($basePath . $fileName);
             }
-        } else {
+        }
+        
+        if (ModUtil::getVar('MUImage', 'createSeveralPictureSizes') === true && $func != 'zipUpload') {
 
             // retrieve the final file name
-
             $fileNameParts = explode('.', $fileName);
             $fileNamePartsWithoutExtension = array_slice($fileNameParts, 0, count($fileNameParts) - 1);
             $fileNameWithoutExtension = implode('.', $fileNamePartsWithoutExtension);
@@ -321,7 +324,7 @@ class MUImage_UploadHandler extends MUImage_Base_UploadHandler
             $meta['format'] = 'square';
         }
         
-        if (ModUtil::getVar('MUImage', 'createSeveralPictureSizes')) {
+        if (ModUtil::getVar('MUImage', 'createSeveralPictureSizes') === true) {
             $fileNameParts = explode('.', $fileName);
             $fileNamePartsWithoutExtension = array_slice($fileNameParts, 0, count($fileNameParts) - 1);
             $fileNameWithoutExtension = implode('.', $fileNamePartsWithoutExtension);
