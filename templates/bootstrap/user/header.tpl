@@ -44,12 +44,13 @@
         <li><a class="fa fa-wrench fa-lg" href="{modurl modname='MUImage' type='admin' func='main'}">{gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
       {/checkpermissionblock}
         <li><a class="fa fa-folder fa-lg" href="{modurl modname='MUImage' type='user' func='main'}">{gt text='Albums'}</a></li>
-      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
+      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
         <li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
       {/checkpermissionblock}
-      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
+      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
       	{if $func eq 'display'}
-        	<li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create SubAlbum'}</a></li>
+      	{formutil_getpassedvalue name="id" assign="albumid"}
+        	<li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent=$albumid returnTo='userDisplayAlbum'}">{gt text='Create SubAlbum'}</a></li>
       	{/if}
       {/checkpermissionblock}
       </ul>

@@ -64,7 +64,7 @@
                 {include file='bootstrap/helper/include_categories_edit.tpl' obj=$album groupName='albumObj'}
                 {if $mode eq 'create'}
                     <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList[]" value="{$savedParent}">
-                    <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="1">
+                    <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="{$savedParent}">
                 {else}
                 {if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
                  {if $inAdminGroup eq true}
