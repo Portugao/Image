@@ -57,9 +57,9 @@
         </div></noscript>
         </dd> 
         <dt>{gt text='Image upload'}</dt> *}
-        <dd>  <a href="{$picture.imageUploadFullPathURL}" title="{$picture->getTitleFromDisplayPattern()|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
+        <dd>  <a href="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_full.jpg" title="{$picture->getTitleFromDisplayPattern()|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
           {if $picture.imageUploadMeta.isImage}
-              {thumb image=$picture.imageUploadFullPath objectid="picture-`$picture.id`" preset=$pictureThumbPresetImageUpload tag=true img_alt=$picture->getTitleFromDisplayPattern()}
+              <img class="img-responsive" src="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_pre.jpg" />
           {else}
               {gt text='Download'} ({$picture.imageUploadMeta.size|muimageGetFileSize:$picture.imageUploadFullPath:false:false})
           {/if}
@@ -101,7 +101,7 @@
     </dl>
     {include file='helper/include_standardfields_display.tpl' obj=$picture}
      <div class="z-panels" id="panel">
-    <h2 class="z-panel-header z-panel-indicator z-pointer z-panel-active">{gt text='Meta Datas'}</h2>
+    <h2 class="z-panel-header z-panel-indicator z-pointer z-panel-active">{gt text='Meta Datas'} {if $modvars.MUImage.createSeveralPictureSizes eq true}{gt text='Original'}{/if}</h2>
     {if $picture.imageUploadMeta.extension eq 'jpg' || $picture.imageUploadMeta.extension eq 'TIFF'}
     <div class="z-panel-content z-panel-active" style="overflow: visible;">
     {$picture.imageUploadFullPath|muimageImageMeta}
