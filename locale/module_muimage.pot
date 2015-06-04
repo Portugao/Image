@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-30 21:40+0000\n"
+"POT-Creation-Date: 2015-06-04 15:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,9 +59,7 @@ msgid "Pseudo-state for content which has been deleted from the database."
 msgstr ""
 
 #: workflows/function.none_permissioncheck.php:69
-#: Resources/templates/picture/view.tpl:215
-#: Resources/templates/album/view.tpl:177 templates/picture/view.tpl:215
-#: templates/bootstrap/picture/view.tpl:215
+#: templates/picture/view.tpl:215 templates/bootstrap/picture/view.tpl:215
 #: templates/bootstrap/album/view.tpl:177
 #: templates/bootstrap/album/enterPassword.tpl:8 templates/album/view.tpl:177
 #: templates/album/enterPassword.tpl:5
@@ -92,13 +90,12 @@ msgstr ""
 #: lib/MUImage/Entity/Base/Album.php:1257
 #: lib/MUImage/Entity/Base/Album.php:1258 lib/MUImage/Entity/Album.php:77
 #: lib/MUImage/Entity/Album.php:78 lib/MUImage/Entity/Album.php:126
-#: lib/MUImage/Entity/Album.php:127 Resources/templates/picture/view.tpl:213
-#: Resources/templates/album/view.tpl:175 templates/picture/view.tpl:213
+#: lib/MUImage/Entity/Album.php:127 templates/picture/view.tpl:213
 #: templates/picture/delete.tpl:12 templates/picture/delete.tpl:28
 #: templates/bootstrap/picture/view.tpl:213
 #: templates/bootstrap/picture/delete.tpl:12
 #: templates/bootstrap/picture/delete.tpl:28
-#: templates/bootstrap/album/display.tpl:41
+#: templates/bootstrap/album/display.tpl:47
 #: templates/bootstrap/album/view.tpl:175
 #: templates/bootstrap/album/delete.tpl:12
 #: templates/bootstrap/album/delete.tpl:28 templates/album/view.tpl:175
@@ -107,9 +104,7 @@ msgid "Delete"
 msgstr ""
 
 #: workflows/function.none_permissioncheck.php:74
-#: Resources/templates/picture/view.tpl:213
-#: Resources/templates/album/view.tpl:175 templates/picture/view.tpl:213
-#: templates/bootstrap/picture/view.tpl:213
+#: templates/picture/view.tpl:213 templates/bootstrap/picture/view.tpl:213
 #: templates/bootstrap/album/view.tpl:175 templates/album/view.tpl:175
 msgid "Delete content permanently."
 msgstr ""
@@ -117,6 +112,24 @@ msgstr ""
 #: templates/plugins/function.muimageTemplateHeaders.php:31
 #, php-format
 msgid "%1$s: missing parameter '%2$s'"
+msgstr ""
+
+#: templates/plugins/function.muimageBreadcrumb.php:56
+#: templates/plugins/function.muimageBreadcrumb.php:58
+#: templates/plugins/function.muimageSelectorObjectTypes.php:29
+#: templates/plugins/function.muimageObjectTypeSelector.php:30
+#: lib/MUImage/NewsletterPlugin/ItemList.php:70
+#: lib/MUImage/Api/Base/User.php:42 lib/MUImage/Api/Base/Admin.php:42
+#: lib/MUImage/Api/User.php:40 lib/MUImage/Api/Admin.php:36
+#: templates/external/picture/find.tpl:25
+#: templates/picture/view_quickNav.tpl:15 templates/search/options.tpl:5
+#: templates/bootstrap/external/picture/find.tpl:25
+#: templates/bootstrap/picture/view_quickNav.tpl:15
+#: templates/bootstrap/user/header.tpl:46
+#: templates/bootstrap/search/options.tpl:5
+#: templates/bootstrap/album/view_quickNav.tpl:39
+#: templates/album/view_quickNav.tpl:39 templates/block/itemlist_modify.tpl:5
+msgid "Albums"
 msgstr ""
 
 #: templates/plugins/function.muimageSelectorTemplates.php:29
@@ -221,40 +234,19 @@ msgstr ""
 msgid "This value is already assigned, but must be unique. Please change it."
 msgstr ""
 
-#: templates/plugins/function.muimageSelectorObjectTypes.php:29
-#: templates/plugins/function.muimageObjectTypeSelector.php:30
-#: lib/MUImage/NewsletterPlugin/ItemList.php:70
-#: lib/MUImage/Api/Base/User.php:42 lib/MUImage/Api/Base/Admin.php:42
-#: lib/MUImage/Api/User.php:40 lib/MUImage/Api/Admin.php:36
-#: Resources/templates/external/picture/find.tpl:25
-#: templates/external/picture/find.tpl:25
-#: templates/picture/view_quickNav.tpl:15 templates/search/options.tpl:5
-#: templates/bootstrap/external/picture/find.tpl:25
-#: templates/bootstrap/picture/view_quickNav.tpl:15
-#: templates/bootstrap/user/header.tpl:46
-#: templates/bootstrap/search/options.tpl:5
-#: templates/bootstrap/album/view_quickNav.tpl:39
-#: templates/album/view_quickNav.tpl:39 templates/block/itemlist_modify.tpl:5
-msgid "Albums"
-msgstr ""
-
 #: templates/plugins/function.muimageSelectorObjectTypes.php:30
 #: templates/plugins/function.muimageObjectTypeSelector.php:31
 #: lib/MUImage/NewsletterPlugin/ItemList.php:71
 #: lib/MUImage/Api/Base/User.php:48 lib/MUImage/Api/Base/Admin.php:48
-#: lib/MUImage/Api/Admin.php:41 Resources/templates/external/album/find.tpl:25
-#: Resources/templates/album/display.tpl:74
-#: Resources/templates/album/display.tpl:138
-#: Resources/templates/album/display.tpl:175
-#: Resources/templates/album/view.tpl:258 templates/external/album/find.tpl:25
+#: lib/MUImage/Api/Admin.php:41 templates/external/album/find.tpl:25
 #: templates/search/options.tpl:9
 #: templates/bootstrap/external/album/find.tpl:25
 #: templates/bootstrap/search/options.tpl:9
-#: templates/bootstrap/album/display.tpl:78
-#: templates/bootstrap/album/display.tpl:146
-#: templates/bootstrap/album/display.tpl:192
-#: templates/bootstrap/album/view.tpl:247 templates/album/display.tpl:74
-#: templates/album/display.tpl:138 templates/album/display.tpl:175
+#: templates/bootstrap/album/display.tpl:84
+#: templates/bootstrap/album/display.tpl:154
+#: templates/bootstrap/album/display.tpl:207
+#: templates/bootstrap/album/view.tpl:247 templates/album/display.tpl:75
+#: templates/album/display.tpl:139 templates/album/display.tpl:185
 #: templates/album/view.tpl:258 templates/block/itemlist_modify.tpl:6
 #: templates/block/oneitem_modify.tpl:6
 msgid "Pictures"
@@ -352,7 +344,7 @@ msgstr ""
 msgid "Not set"
 msgstr ""
 
-#: lib/MUImage/Form/Handler/Admin/Config.php:85
+#: lib/MUImage/Form/Handler/Admin/Config.php:90
 msgid "Sorry! Your enter for the ending is invalid!"
 msgstr ""
 
@@ -376,23 +368,23 @@ msgstr ""
 #: lib/MUImage/Form/Handler/Picture/Base/HookUpload.php:235
 #: lib/MUImage/Form/Handler/Picture/Base/Edit.php:195
 #: lib/MUImage/Form/Handler/Picture/Base/Edit.php:202
-#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:247
-#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:267
+#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:248
+#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:304
 msgid "Done! Picture updated."
 msgstr ""
 
 #: lib/MUImage/Form/Handler/Picture/Base/EditMulti.php:299
 #: lib/MUImage/Form/Handler/Picture/Base/HookUpload.php:238
 #: lib/MUImage/Form/Handler/Picture/Base/Edit.php:199
-#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:250
-#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:270
+#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:251
+#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:307
 msgid "Done! Picture deleted."
 msgstr ""
 
 #: lib/MUImage/Form/Handler/Picture/Base/EditMulti.php:324
 #: lib/MUImage/Form/Handler/Picture/Base/Edit.php:228
-#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:275
-#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:295
+#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:276
+#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:332
 #: lib/MUImage/Form/Handler/Album/Base/Edit.php:218
 #: lib/MUImage/Controller/Base/Picture.php:617
 #: lib/MUImage/Controller/Base/Album.php:617
@@ -403,8 +395,8 @@ msgid ""
 msgstr ""
 
 #: lib/MUImage/Form/Handler/Picture/Base/HookUpload.php:171
-#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:177
-#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:198
+#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:178
+#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:235
 msgid "Please enter title..."
 msgstr ""
 
@@ -412,8 +404,8 @@ msgstr ""
 msgid "Done! Image uploaded."
 msgstr ""
 
-#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:244
-#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:264
+#: lib/MUImage/Form/Handler/Picture/Base/MultiUpload.php:245
+#: lib/MUImage/Form/Handler/Picture/Base/ZipUpload.php:301
 msgid "Done! Picture uploaded."
 msgstr ""
 
@@ -453,8 +445,7 @@ msgid "Owner"
 msgstr ""
 
 #: lib/MUImage/Form/Handler/Album/Edit.php:49
-#: Resources/templates/album/edit.tpl:76 templates/bootstrap/album/edit.tpl:78
-#: templates/album/edit.tpl:76
+#: templates/bootstrap/album/edit.tpl:78 templates/album/edit.tpl:76
 msgid "Main album"
 msgstr ""
 
@@ -514,13 +505,8 @@ msgid "No results found!"
 msgstr ""
 
 #: lib/MUImage/Form/Plugin/Base/RelationSelectorAutoComplete.php:146
-#: Resources/templates/external/picture/find.tpl:125
-#: Resources/templates/external/album/find.tpl:136
-#: Resources/templates/picture/edit.tpl:144
-#: Resources/templates/picture/editMulti.tpl:138
-#: Resources/templates/album/edit.tpl:124
-#: templates/external/picture/find.tpl:125
-#: templates/external/album/find.tpl:136 templates/admin/config.tpl:163
+#: templates/external/picture/find.tpl:135
+#: templates/external/album/find.tpl:136 templates/admin/config.tpl:212
 #: templates/picture/multiUpload.tpl:32 templates/picture/edit.tpl:144
 #: templates/picture/delete.tpl:30 templates/picture/zipUpload.tpl:30
 #: templates/picture/editMulti.tpl:138
@@ -530,8 +516,8 @@ msgstr ""
 #: templates/bootstrap/picture/multiUpload.tpl:32
 #: templates/bootstrap/picture/edit.tpl:148
 #: templates/bootstrap/picture/delete.tpl:30
-#: templates/bootstrap/picture/zipUpload.tpl:29
-#: templates/bootstrap/picture/editMulti.tpl:136
+#: templates/bootstrap/picture/zipUpload.tpl:30
+#: templates/bootstrap/picture/editMulti.tpl:132
 #: templates/bootstrap/album/edit.tpl:126
 #: templates/bootstrap/album/delete.tpl:30 templates/album/edit.tpl:124
 #: templates/album/delete.tpl:30
@@ -574,9 +560,8 @@ msgstr ""
 
 #: lib/MUImage/ContentType/Base/ItemList.php:409
 #: lib/MUImage/Util/Base/ListEntries.php:200
-#: lib/MUImage/Util/ListEntries.php:28
-#: Resources/templates/external/album/find.tpl:39
-#: templates/external/album/find.tpl:39 templates/external/album/select.tpl:15
+#: lib/MUImage/Util/ListEntries.php:28 templates/external/album/find.tpl:39
+#: templates/external/album/select.tpl:15
 #: templates/picture/view_quickNav.tpl:13
 #: templates/bootstrap/external/album/find.tpl:39
 #: templates/bootstrap/external/album/select.tpl:15
@@ -598,8 +583,8 @@ msgid "Display MUImage items."
 msgstr ""
 
 #: lib/MUImage/Base/Installer.php:38 lib/MUImage/Base/Installer.php:151
-#: lib/MUImage/Installer.php:38 lib/MUImage/Installer.php:152
-#: lib/MUImage/Installer.php:241
+#: lib/MUImage/Installer.php:38 lib/MUImage/Installer.php:168
+#: lib/MUImage/Installer.php:257
 msgid "Doctrine Exception: "
 msgstr ""
 
@@ -615,7 +600,7 @@ msgid ""
 "order to reveal the error details."
 msgstr ""
 
-#: lib/MUImage/Base/Installer.php:83 lib/MUImage/Installer.php:89
+#: lib/MUImage/Base/Installer.php:83 lib/MUImage/Installer.php:97
 #, php-format
 msgid "Error! Could not create a category registry for the %s entity."
 msgstr ""
@@ -637,15 +622,15 @@ msgstr ""
 msgid "The upload directories at [%s] can be removed manually."
 msgstr ""
 
-#: lib/MUImage/Base/UploadHandler.php:97 lib/MUImage/UploadHandler.php:90
+#: lib/MUImage/Base/UploadHandler.php:97 lib/MUImage/UploadHandler.php:96
 msgid "Error! Could not move your file to the destination folder."
 msgstr ""
 
-#: lib/MUImage/Base/UploadHandler.php:127 lib/MUImage/UploadHandler.php:155
+#: lib/MUImage/Base/UploadHandler.php:127 lib/MUImage/UploadHandler.php:193
 msgid "Error! No file found."
 msgstr ""
 
-#: lib/MUImage/Base/UploadHandler.php:139 lib/MUImage/UploadHandler.php:202
+#: lib/MUImage/Base/UploadHandler.php:139 lib/MUImage/UploadHandler.php:240
 msgid ""
 "Error! This file type is not allowed. Please choose another file format."
 msgstr ""
@@ -660,7 +645,7 @@ msgstr ""
 msgid "Error! Your file is too big. Please keep it smaller than %s megabytes."
 msgstr ""
 
-#: lib/MUImage/Base/UploadHandler.php:163 lib/MUImage/UploadHandler.php:213
+#: lib/MUImage/Base/UploadHandler.php:163 lib/MUImage/UploadHandler.php:251
 msgid "Error! This file type seems not to be a valid image."
 msgstr ""
 
@@ -759,39 +744,39 @@ msgid ""
 "This plugin shows a list of albums and other items of the MUImage module."
 msgstr ""
 
-#: lib/MUImage/Installer.php:154 lib/MUImage/Installer.php:243
+#: lib/MUImage/Installer.php:170 lib/MUImage/Installer.php:259
 #, php-format
 msgid "An error was encountered while dropping the tables for the %s module."
 msgstr ""
 
-#: lib/MUImage/Installer.php:234
+#: lib/MUImage/Installer.php:250
 #, php-format
 msgid ""
 "An error was encountered while removing stored object workflows for the %s "
 "module."
 msgstr ""
 
-#: lib/MUImage/UploadHandler.php:176 lib/MUImage/UploadHandler.php:178
+#: lib/MUImage/UploadHandler.php:214 lib/MUImage/UploadHandler.php:216
 #, php-format
 msgid ""
 "Error! Your file %s is too big. Please keep it smaller than %s kilobytes."
 msgstr ""
 
-#: lib/MUImage/UploadHandler.php:186 lib/MUImage/UploadHandler.php:188
+#: lib/MUImage/UploadHandler.php:224 lib/MUImage/UploadHandler.php:226
 #, php-format
 msgid ""
 "Error! Your file %s is too big. Please keep it smaller than %s megabytes."
 msgstr ""
 
-#: lib/MUImage/UploadHandler.php:220
+#: lib/MUImage/UploadHandler.php:258
 msgid "Sorry! Your picture does not have the required width."
 msgstr ""
 
-#: lib/MUImage/UploadHandler.php:227
+#: lib/MUImage/UploadHandler.php:265
 msgid "Sorry! Your picture is wider than allowed."
 msgstr ""
 
-#: lib/MUImage/UploadHandler.php:234
+#: lib/MUImage/UploadHandler.php:272
 msgid "Sorry! Your picture is higher than allowed."
 msgstr ""
 
@@ -924,9 +909,7 @@ msgstr ""
 msgid " bytes"
 msgstr ""
 
-#: lib/MUImage/Util/Image.php:96
-#: Resources/templates/external/picture/find.tpl:53
-#: templates/external/picture/find.tpl:53
+#: lib/MUImage/Util/Image.php:96 templates/external/picture/find.tpl:59
 #: templates/contenttype/itemlist_edit.tpl:21
 #: templates/contenttype/oneitem_edit.tpl:27
 #: templates/bootstrap/external/picture/find.tpl:53
@@ -934,9 +917,7 @@ msgstr ""
 msgid "Height"
 msgstr ""
 
-#: lib/MUImage/Util/Image.php:99
-#: Resources/templates/external/picture/find.tpl:48
-#: templates/external/picture/find.tpl:48
+#: lib/MUImage/Util/Image.php:99 templates/external/picture/find.tpl:54
 #: templates/contenttype/itemlist_edit.tpl:16
 #: templates/contenttype/oneitem_edit.tpl:23
 #: templates/bootstrap/external/picture/find.tpl:48
@@ -1027,15 +1008,7 @@ msgstr ""
 #: lib/MUImage/Util/Image.php:167
 #: lib/MUImage/Entity/Repository/Base/Picture.php:182
 #: lib/MUImage/Entity/Repository/Base/Album.php:182
-#: lib/MUImage/Entity/Repository/Album.php:53
-#: Resources/templates/picture/display.tpl:34
-#: Resources/templates/picture/display.tpl:37
-#: Resources/templates/picture/display.tpl:49
-#: Resources/templates/picture/display.tpl:52
-#: Resources/templates/picture/view.tpl:119
-#: Resources/templates/picture/view.tpl:122
-#: Resources/templates/picture/view.tpl:134
-#: Resources/templates/picture/view.tpl:137 templates/picture/display.tpl:34
+#: lib/MUImage/Entity/Repository/Album.php:53 templates/picture/display.tpl:34
 #: templates/picture/display.tpl:37 templates/picture/display.tpl:49
 #: templates/picture/display.tpl:52 templates/picture/view.tpl:119
 #: templates/picture/view.tpl:122 templates/picture/view.tpl:134
@@ -1053,15 +1026,7 @@ msgstr ""
 #: lib/MUImage/Util/Image.php:169
 #: lib/MUImage/Entity/Repository/Base/Picture.php:183
 #: lib/MUImage/Entity/Repository/Base/Album.php:183
-#: lib/MUImage/Entity/Repository/Album.php:54
-#: Resources/templates/picture/display.tpl:33
-#: Resources/templates/picture/display.tpl:36
-#: Resources/templates/picture/display.tpl:48
-#: Resources/templates/picture/display.tpl:51
-#: Resources/templates/picture/view.tpl:118
-#: Resources/templates/picture/view.tpl:121
-#: Resources/templates/picture/view.tpl:133
-#: Resources/templates/picture/view.tpl:136 templates/picture/display.tpl:33
+#: lib/MUImage/Entity/Repository/Album.php:54 templates/picture/display.tpl:33
 #: templates/picture/display.tpl:36 templates/picture/display.tpl:48
 #: templates/picture/display.tpl:51 templates/picture/view.tpl:118
 #: templates/picture/view.tpl:121 templates/picture/view.tpl:133
@@ -1143,9 +1108,7 @@ msgstr ""
 #: lib/MUImage/Entity/Base/Picture.php:1185
 #: lib/MUImage/Entity/Base/Album.php:1154
 #: lib/MUImage/Entity/Base/Album.php:1233 lib/MUImage/Entity/Album.php:53
-#: lib/MUImage/Entity/Album.php:107 Resources/templates/picture/display.tpl:13
-#: Resources/templates/picture/include_displayItemListMany.tpl:16
-#: Resources/templates/album/display.tpl:15 templates/picture/display.tpl:13
+#: lib/MUImage/Entity/Album.php:107 templates/picture/display.tpl:13
 #: templates/picture/include_displayItemListMany.tpl:16
 #: templates/bootstrap/picture/display.tpl:13
 #: templates/bootstrap/picture/include_displayItemListMany.tpl:18
@@ -1200,8 +1163,8 @@ msgstr ""
 #: lib/MUImage/Entity/Base/Album.php:1244 lib/MUImage/Entity/Album.php:112
 #: lib/MUImage/Entity/Album.php:113
 #: templates/bootstrap/picture/include_displayItemListMany.tpl:23
-#: templates/bootstrap/album/display.tpl:40
-#: templates/bootstrap/album/display.tpl:139
+#: templates/bootstrap/album/display.tpl:46
+#: templates/bootstrap/album/display.tpl:145
 #: templates/bootstrap/album/view.tpl:234
 msgid "Edit"
 msgstr ""
@@ -1223,18 +1186,13 @@ msgstr ""
 #: lib/MUImage/Entity/Base/Album.php:1208
 #: lib/MUImage/Entity/Base/Album.php:1209
 #: lib/MUImage/Entity/Base/Album.php:1287
-#: lib/MUImage/Entity/Base/Album.php:1288
-#: Resources/templates/picture/view.tpl:21
-#: Resources/templates/picture/edit.tpl:17
-#: Resources/templates/picture/editMulti.tpl:9
-#: Resources/templates/picture/editMulti.tpl:134
-#: Resources/templates/album/display.tpl:184 templates/picture/view.tpl:21
+#: lib/MUImage/Entity/Base/Album.php:1288 templates/picture/view.tpl:21
 #: templates/picture/edit.tpl:17 templates/picture/editMulti.tpl:9
 #: templates/picture/editMulti.tpl:134 templates/bootstrap/picture/view.tpl:21
 #: templates/bootstrap/picture/edit.tpl:17
 #: templates/bootstrap/picture/editMulti.tpl:9
-#: templates/bootstrap/picture/editMulti.tpl:132
-#: templates/bootstrap/album/display.tpl:201 templates/album/display.tpl:184
+#: templates/bootstrap/picture/editMulti.tpl:128
+#: templates/bootstrap/album/display.tpl:216 templates/album/display.tpl:194
 msgid "Create picture"
 msgstr ""
 
@@ -1242,11 +1200,9 @@ msgstr ""
 #: lib/MUImage/Entity/Base/Album.php:1223
 #: lib/MUImage/Entity/Base/Album.php:1301
 #: lib/MUImage/Entity/Base/Album.php:1302
-#: Resources/templates/album/display.tpl:200
-#: Resources/templates/album/view.tpl:22 Resources/templates/album/edit.tpl:16
-#: templates/bootstrap/album/display.tpl:217
+#: templates/bootstrap/album/display.tpl:232
 #: templates/bootstrap/album/view.tpl:22 templates/bootstrap/album/edit.tpl:16
-#: templates/album/display.tpl:200 templates/album/view.tpl:22
+#: templates/album/display.tpl:210 templates/album/view.tpl:22
 #: templates/album/edit.tpl:16
 msgid "Create album"
 msgstr ""
@@ -1294,14 +1250,13 @@ msgstr ""
 
 #: lib/MUImage/Api/Base/User.php:43 lib/MUImage/Api/Base/Admin.php:43
 #: lib/MUImage/Api/User.php:41 lib/MUImage/Api/Admin.php:37
-#: Resources/templates/album/view.tpl:9 templates/bootstrap/album/view.tpl:9
-#: templates/album/view.tpl:9
+#: templates/bootstrap/album/view.tpl:9 templates/album/view.tpl:9
 msgid "Album list"
 msgstr ""
 
 #: lib/MUImage/Api/Base/User.php:49 lib/MUImage/Api/Base/Admin.php:49
-#: lib/MUImage/Api/Admin.php:42 Resources/templates/picture/view.tpl:8
-#: templates/picture/view.tpl:8 templates/bootstrap/picture/view.tpl:8
+#: lib/MUImage/Api/Admin.php:42 templates/picture/view.tpl:8
+#: templates/bootstrap/picture/view.tpl:8
 msgid "Picture list"
 msgstr ""
 
@@ -1425,11 +1380,11 @@ msgstr ""
 msgid "Error: invalid input."
 msgstr ""
 
-#: lib/MUImage/Controller/User.php:267
+#: lib/MUImage/Controller/User.php:270
 msgid "You have no permissions to delete this album!"
 msgstr ""
 
-#: lib/MUImage/Controller/User.php:285
+#: lib/MUImage/Controller/User.php:288
 msgid "You have no permissions to delete this picture!"
 msgstr ""
 
@@ -1443,1208 +1398,6 @@ msgstr ""
 
 #: lib/MUImage/Controller/Ajax.php:84
 msgid "Item"
-msgstr ""
-
-#: Resources/templates/external/picture/display.tpl:25
-#: Resources/templates/picture/display.tpl:64
-#: Resources/templates/picture/view.tpl:149
-#: Resources/templates/picture/edit.tpl:77
-#: Resources/templates/picture/editMulti.tpl:68
-#: templates/external/picture/display.tpl:25
-#: templates/external/picture/info.tpl:8 templates/picture/display.tpl:64
-#: templates/picture/view.tpl:149 templates/picture/edit.tpl:77
-#: templates/picture/editMulti.tpl:68
-#: templates/contenttype/itemlist_Picture_Thumbs_display.tpl:9
-#: templates/contenttype/oneitem_Picture_display.tpl:8
-#: templates/contenttype/oneitem_Picture_display_description.tpl:9
-#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:11
-#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:22
-#: templates/contenttype/oneitem_Picture_displaycontent.tpl:7
-#: templates/bootstrap/external/picture/display.tpl:25
-#: templates/bootstrap/external/picture/info.tpl:8
-#: templates/bootstrap/picture/display.tpl:64
-#: templates/bootstrap/picture/view.tpl:149
-#: templates/bootstrap/picture/edit.tpl:80
-#: templates/bootstrap/picture/editMulti.tpl:68
-msgid "Download"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:5
-#: Resources/templates/external/picture/find.tpl:36
-#: Resources/templates/external/album/find.tpl:25
-#: templates/external/picture/find.tpl:5
-#: templates/external/picture/find.tpl:36 templates/external/album/find.tpl:25
-#: templates/bootstrap/external/picture/find.tpl:5
-#: templates/bootstrap/external/picture/find.tpl:36
-#: templates/bootstrap/external/album/find.tpl:25
-msgid "Search and select picture"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:24
-#: Resources/templates/external/album/find.tpl:24
-#: templates/external/picture/find.tpl:24 templates/external/album/find.tpl:24
-#: templates/bootstrap/external/picture/find.tpl:24
-#: templates/bootstrap/external/album/find.tpl:24
-msgid "Switch to"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:25
-#: Resources/templates/external/album/find.tpl:5
-#: Resources/templates/external/album/find.tpl:36
-#: templates/external/picture/find.tpl:25 templates/external/album/find.tpl:5
-#: templates/external/album/find.tpl:36
-#: templates/bootstrap/external/picture/find.tpl:25
-#: templates/bootstrap/external/album/find.tpl:5
-#: templates/bootstrap/external/album/find.tpl:36
-msgid "Search and select album"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:39
-#: Resources/templates/external/album/find.tpl:64
-#: templates/external/picture/find.tpl:39 templates/external/album/find.tpl:64
-#: templates/bootstrap/external/picture/find.tpl:39
-#: templates/bootstrap/external/album/find.tpl:64
-msgid "Paste as"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:41
-#: templates/external/picture/find.tpl:41
-#: templates/bootstrap/external/picture/find.tpl:41
-msgid "Link to the picture"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:42
-#: templates/external/picture/find.tpl:42
-#: templates/bootstrap/external/picture/find.tpl:42
-msgid "ID of picture"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:43
-#: templates/external/picture/find.tpl:43
-#: templates/bootstrap/external/picture/find.tpl:43
-msgid "Thumbnail of picture"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:58
-#: Resources/templates/picture/display.tpl:8
-#: templates/external/picture/find.tpl:58
-#: templates/external/picture/select.tpl:14 templates/picture/display.tpl:8
-#: templates/contenttype/oneitem_edit.tpl:14
-#: templates/bootstrap/external/picture/find.tpl:58
-#: templates/bootstrap/external/picture/select.tpl:14
-#: templates/bootstrap/picture/display.tpl:8
-#: templates/bootstrap/album/view.csv.tpl:5 templates/album/view.csv.tpl:5
-msgid "Picture"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:73
-#: Resources/templates/external/album/find.tpl:85
-#: templates/external/picture/find.tpl:73
-#: templates/external/picture/select.tpl:19
-#: templates/external/album/find.tpl:85 templates/external/album/select.tpl:44
-#: templates/contenttype/itemlist_Album_display_description.tpl:11
-#: templates/contenttype/itemlist_Picture_display_description.tpl:11
-#: templates/bootstrap/external/picture/find.tpl:73
-#: templates/bootstrap/external/picture/select.tpl:19
-#: templates/bootstrap/external/album/find.tpl:85
-#: templates/bootstrap/external/album/select.tpl:44
-msgid "No entries found."
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:80
-#: Resources/templates/external/album/find.tpl:92
-#: templates/external/picture/find.tpl:80
-#: templates/external/picture/select.tpl:25
-#: templates/external/album/find.tpl:92 templates/external/album/select.tpl:50
-#: templates/picture/view_quickNav.tpl:39
-#: templates/bootstrap/external/picture/find.tpl:80
-#: templates/bootstrap/external/picture/select.tpl:25
-#: templates/bootstrap/external/album/find.tpl:92
-#: templates/bootstrap/external/album/select.tpl:50
-#: templates/bootstrap/picture/view_quickNav.tpl:39
-#: templates/bootstrap/album/view_quickNav.tpl:72
-#: templates/album/view_quickNav.tpl:72
-msgid "Sort by"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:82
-#: Resources/templates/external/album/find.tpl:94
-#: templates/external/picture/find.tpl:82
-#: templates/external/picture/select.tpl:27
-#: templates/external/album/find.tpl:94 templates/external/album/select.tpl:52
-#: templates/picture/view_quickNav.tpl:42
-#: templates/contenttype/oneitem_edit.tpl:19
-#: templates/bootstrap/external/picture/find.tpl:82
-#: templates/bootstrap/external/picture/select.tpl:27
-#: templates/bootstrap/external/album/find.tpl:94
-#: templates/bootstrap/external/album/select.tpl:52
-#: templates/bootstrap/picture/view_quickNav.tpl:42
-#: templates/bootstrap/album/view_quickNav.tpl:75
-#: templates/album/view_quickNav.tpl:75 templates/block/oneitem_modify.tpl:11
-msgid "Id"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:83
-#: Resources/templates/external/album/find.tpl:95
-#: templates/external/picture/find.tpl:83
-#: templates/external/picture/select.tpl:28
-#: templates/external/album/find.tpl:95 templates/external/album/select.tpl:53
-#: templates/picture/view_quickNav.tpl:26
-#: templates/picture/view_quickNav.tpl:43 templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:83
-#: templates/bootstrap/external/picture/select.tpl:28
-#: templates/bootstrap/external/album/find.tpl:95
-#: templates/bootstrap/external/album/select.tpl:53
-#: templates/bootstrap/picture/view_quickNav.tpl:26
-#: templates/bootstrap/picture/view_quickNav.tpl:43
-#: templates/bootstrap/picture/view.csv.tpl:3
-#: templates/bootstrap/album/view_quickNav.tpl:50
-#: templates/bootstrap/album/view_quickNav.tpl:76
-#: templates/bootstrap/album/view.csv.tpl:3
-#: templates/album/view_quickNav.tpl:50 templates/album/view_quickNav.tpl:76
-#: templates/album/view.csv.tpl:3
-msgid "Workflow state"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:84
-#: Resources/templates/external/album/find.tpl:96
-#: Resources/templates/picture/view.tpl:70
-#: Resources/templates/picture/edit.tpl:33
-#: Resources/templates/picture/editMulti.tpl:25
-#: Resources/templates/album/view.tpl:70 Resources/templates/album/edit.tpl:31
-#: templates/external/picture/find.tpl:84
-#: templates/external/picture/select.tpl:29
-#: templates/external/album/find.tpl:96 templates/external/album/select.tpl:54
-#: templates/picture/view_quickNav.tpl:44 templates/picture/view.tpl:70
-#: templates/picture/edit.tpl:33 templates/picture/editMulti.tpl:25
-#: templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:84
-#: templates/bootstrap/external/picture/select.tpl:29
-#: templates/bootstrap/external/album/find.tpl:96
-#: templates/bootstrap/external/album/select.tpl:54
-#: templates/bootstrap/picture/view_quickNav.tpl:44
-#: templates/bootstrap/picture/view.tpl:70
-#: templates/bootstrap/picture/edit.tpl:33
-#: templates/bootstrap/picture/editMulti.tpl:25
-#: templates/bootstrap/picture/view.csv.tpl:3
-#: templates/bootstrap/album/view_quickNav.tpl:77
-#: templates/bootstrap/album/view.tpl:70 templates/bootstrap/album/edit.tpl:31
-#: templates/bootstrap/album/view.csv.tpl:3
-#: templates/album/view_quickNav.tpl:77 templates/album/view.tpl:70
-#: templates/album/edit.tpl:31 templates/album/view.csv.tpl:3
-msgid "Title"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:85
-#: Resources/templates/external/album/find.tpl:97
-#: Resources/templates/picture/display.tpl:26
-#: Resources/templates/picture/view.tpl:73
-#: Resources/templates/picture/edit.tpl:37
-#: Resources/templates/picture/editMulti.tpl:29
-#: Resources/templates/album/display.tpl:209
-#: Resources/templates/album/view.tpl:73 Resources/templates/album/edit.tpl:37
-#: templates/external/picture/find.tpl:85
-#: templates/external/picture/select.tpl:30
-#: templates/external/album/find.tpl:97 templates/external/album/select.tpl:55
-#: templates/picture/display.tpl:26 templates/picture/view_quickNav.tpl:45
-#: templates/picture/view.tpl:73 templates/picture/edit.tpl:37
-#: templates/picture/editMulti.tpl:29 templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:85
-#: templates/bootstrap/external/picture/select.tpl:30
-#: templates/bootstrap/external/album/find.tpl:97
-#: templates/bootstrap/external/album/select.tpl:55
-#: templates/bootstrap/picture/display.tpl:26
-#: templates/bootstrap/picture/view_quickNav.tpl:45
-#: templates/bootstrap/picture/view.tpl:73
-#: templates/bootstrap/picture/edit.tpl:37
-#: templates/bootstrap/picture/editMulti.tpl:29
-#: templates/bootstrap/picture/view.csv.tpl:3
-#: templates/bootstrap/album/display.tpl:226
-#: templates/bootstrap/album/view_quickNav.tpl:78
-#: templates/bootstrap/album/view.tpl:73 templates/bootstrap/album/edit.tpl:37
-#: templates/bootstrap/album/view.csv.tpl:3 templates/album/display.tpl:209
-#: templates/album/view_quickNav.tpl:78 templates/album/view.tpl:73
-#: templates/album/edit.tpl:37 templates/album/view.csv.tpl:3
-msgid "Description"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:86
-#: Resources/templates/picture/view.tpl:76
-#: Resources/templates/picture/edit.tpl:41
-#: Resources/templates/picture/editMulti.tpl:33
-#: templates/external/picture/find.tpl:86
-#: templates/external/picture/select.tpl:31 templates/admin/config.tpl:40
-#: templates/picture/view_quickNav.tpl:46
-#: templates/picture/view_quickNav.tpl:77 templates/picture/view.tpl:76
-#: templates/picture/edit.tpl:41 templates/picture/editMulti.tpl:33
-#: templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:86
-#: templates/bootstrap/external/picture/select.tpl:31
-#: templates/bootstrap/admin/config.tpl:38
-#: templates/bootstrap/picture/view_quickNav.tpl:46
-#: templates/bootstrap/picture/view_quickNav.tpl:77
-#: templates/bootstrap/picture/view.tpl:76
-#: templates/bootstrap/picture/edit.tpl:43
-#: templates/bootstrap/picture/editMulti.tpl:33
-#: templates/bootstrap/picture/view.csv.tpl:3
-msgid "Show title"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:87
-#: Resources/templates/picture/display.tpl:44
-#: Resources/templates/picture/view.tpl:79
-#: Resources/templates/picture/edit.tpl:45
-#: Resources/templates/picture/editMulti.tpl:37
-#: templates/external/picture/find.tpl:87
-#: templates/external/picture/select.tpl:32 templates/admin/config.tpl:45
-#: templates/picture/display.tpl:44 templates/picture/view_quickNav.tpl:47
-#: templates/picture/view_quickNav.tpl:86 templates/picture/view.tpl:79
-#: templates/picture/edit.tpl:45 templates/picture/editMulti.tpl:37
-#: templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:87
-#: templates/bootstrap/external/picture/select.tpl:32
-#: templates/bootstrap/admin/config.tpl:43
-#: templates/bootstrap/picture/display.tpl:44
-#: templates/bootstrap/picture/view_quickNav.tpl:47
-#: templates/bootstrap/picture/view_quickNav.tpl:86
-#: templates/bootstrap/picture/view.tpl:79
-#: templates/bootstrap/picture/edit.tpl:49
-#: templates/bootstrap/picture/editMulti.tpl:37
-#: templates/bootstrap/picture/view.csv.tpl:3
-msgid "Show description"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:88
-#: Resources/templates/picture/display.tpl:59
-#: Resources/templates/picture/view.tpl:82
-#: Resources/templates/picture/edit.tpl:53
-#: Resources/templates/picture/editMulti.tpl:45
-#: templates/external/picture/find.tpl:88
-#: templates/external/picture/select.tpl:33 templates/picture/display.tpl:59
-#: templates/picture/view_quickNav.tpl:48 templates/picture/multiUpload.tpl:19
-#: templates/picture/view.tpl:82 templates/picture/edit.tpl:53
-#: templates/picture/editMulti.tpl:45 templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:88
-#: templates/bootstrap/external/picture/select.tpl:33
-#: templates/bootstrap/picture/display.tpl:59
-#: templates/bootstrap/picture/view_quickNav.tpl:48
-#: templates/bootstrap/picture/multiUpload.tpl:19
-#: templates/bootstrap/picture/view.tpl:82
-#: templates/bootstrap/picture/edit.tpl:57
-#: templates/bootstrap/picture/editMulti.tpl:45
-#: templates/bootstrap/picture/view.csv.tpl:3
-msgid "Image upload"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:89
-#: Resources/templates/picture/view.tpl:85
-#: Resources/templates/picture/edit.tpl:86
-#: Resources/templates/picture/editMulti.tpl:76
-#: templates/external/picture/find.tpl:89
-#: templates/external/picture/select.tpl:34
-#: templates/picture/view_quickNav.tpl:49 templates/picture/view.tpl:85
-#: templates/picture/edit.tpl:86 templates/picture/editMulti.tpl:76
-#: templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:89
-#: templates/bootstrap/external/picture/select.tpl:34
-#: templates/bootstrap/picture/view_quickNav.tpl:49
-#: templates/bootstrap/picture/view.tpl:85
-#: templates/bootstrap/picture/edit.tpl:89
-#: templates/bootstrap/picture/editMulti.tpl:76
-#: templates/bootstrap/picture/view.csv.tpl:3
-msgid "Image view"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:90
-#: Resources/templates/picture/view.tpl:88
-#: Resources/templates/picture/edit.tpl:93
-#: templates/external/picture/find.tpl:90
-#: templates/external/picture/select.tpl:35
-#: templates/picture/view_quickNav.tpl:50
-#: templates/picture/view_quickNav.tpl:95 templates/picture/view.tpl:88
-#: templates/picture/edit.tpl:93 templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:90
-#: templates/bootstrap/external/picture/select.tpl:35
-#: templates/bootstrap/picture/view_quickNav.tpl:50
-#: templates/bootstrap/picture/view_quickNav.tpl:95
-#: templates/bootstrap/picture/view.tpl:88
-#: templates/bootstrap/picture/edit.tpl:97
-#: templates/bootstrap/picture/view.csv.tpl:3
-msgid "Album image"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:91
-#: Resources/templates/picture/display.tpl:75
-#: Resources/templates/picture/view.tpl:91
-#: templates/external/picture/find.tpl:91
-#: templates/external/picture/select.tpl:36 templates/picture/display.tpl:75
-#: templates/picture/view_quickNav.tpl:51 templates/picture/view.tpl:91
-#: templates/picture/view.csv.tpl:3
-#: templates/bootstrap/external/picture/find.tpl:91
-#: templates/bootstrap/external/picture/select.tpl:36
-#: templates/bootstrap/picture/display.tpl:75
-#: templates/bootstrap/picture/view_quickNav.tpl:51
-#: templates/bootstrap/picture/view.tpl:91
-#: templates/bootstrap/picture/view.csv.tpl:3
-msgid "Pos"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:92
-#: Resources/templates/external/album/find.tpl:103
-#: templates/external/picture/find.tpl:92
-#: templates/external/picture/select.tpl:37
-#: templates/external/album/find.tpl:103
-#: templates/external/album/select.tpl:61
-#: templates/picture/view_quickNav.tpl:52
-#: templates/bootstrap/external/picture/find.tpl:92
-#: templates/bootstrap/external/picture/select.tpl:37
-#: templates/bootstrap/external/album/find.tpl:103
-#: templates/bootstrap/external/album/select.tpl:61
-#: templates/bootstrap/picture/view_quickNav.tpl:52
-#: templates/bootstrap/album/view_quickNav.tpl:84
-#: templates/album/view_quickNav.tpl:84
-msgid "Creation date"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:93
-#: Resources/templates/external/album/find.tpl:104
-#: templates/external/picture/find.tpl:93
-#: templates/external/picture/select.tpl:38
-#: templates/external/album/find.tpl:104
-#: templates/external/album/select.tpl:62
-#: templates/picture/view_quickNav.tpl:53
-#: templates/bootstrap/external/picture/find.tpl:93
-#: templates/bootstrap/external/picture/select.tpl:38
-#: templates/bootstrap/external/album/find.tpl:104
-#: templates/bootstrap/external/album/select.tpl:62
-#: templates/bootstrap/picture/view_quickNav.tpl:53
-#: templates/bootstrap/album/view_quickNav.tpl:85
-#: templates/album/view_quickNav.tpl:85
-msgid "Creator"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:94
-#: Resources/templates/external/album/find.tpl:105
-#: templates/external/picture/find.tpl:94
-#: templates/external/picture/select.tpl:39
-#: templates/external/album/find.tpl:105
-#: templates/external/album/select.tpl:63
-#: templates/picture/view_quickNav.tpl:54
-#: templates/bootstrap/external/picture/find.tpl:94
-#: templates/bootstrap/external/picture/select.tpl:39
-#: templates/bootstrap/external/album/find.tpl:105
-#: templates/bootstrap/external/album/select.tpl:63
-#: templates/bootstrap/picture/view_quickNav.tpl:54
-#: templates/bootstrap/album/view_quickNav.tpl:86
-#: templates/album/view_quickNav.tpl:86
-msgid "Update date"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:97
-#: Resources/templates/external/album/find.tpl:108
-#: templates/external/picture/find.tpl:97
-#: templates/external/picture/select.tpl:42
-#: templates/external/album/find.tpl:108
-#: templates/external/album/select.tpl:66
-#: templates/picture/view_quickNav.tpl:57
-#: templates/bootstrap/external/picture/find.tpl:97
-#: templates/bootstrap/external/picture/select.tpl:42
-#: templates/bootstrap/external/album/find.tpl:108
-#: templates/bootstrap/external/album/select.tpl:66
-#: templates/bootstrap/picture/view_quickNav.tpl:57
-#: templates/bootstrap/album/view_quickNav.tpl:89
-#: templates/album/view_quickNav.tpl:89
-msgid "ascending"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:98
-#: Resources/templates/external/album/find.tpl:109
-#: templates/external/picture/find.tpl:98
-#: templates/external/picture/select.tpl:43
-#: templates/external/album/find.tpl:109
-#: templates/external/album/select.tpl:67
-#: templates/picture/view_quickNav.tpl:58
-#: templates/bootstrap/external/picture/find.tpl:98
-#: templates/bootstrap/external/picture/select.tpl:43
-#: templates/bootstrap/external/album/find.tpl:109
-#: templates/bootstrap/external/album/select.tpl:67
-#: templates/bootstrap/picture/view_quickNav.tpl:58
-#: templates/bootstrap/album/view_quickNav.tpl:90
-#: templates/album/view_quickNav.tpl:90
-msgid "descending"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:103
-#: Resources/templates/external/album/find.tpl:114
-#: templates/external/picture/find.tpl:103
-#: templates/external/album/find.tpl:114
-#: templates/picture/view_quickNav.tpl:65
-#: templates/bootstrap/external/picture/find.tpl:103
-#: templates/bootstrap/external/album/find.tpl:114
-#: templates/bootstrap/picture/view_quickNav.tpl:65
-#: templates/bootstrap/album/view_quickNav.tpl:97
-#: templates/album/view_quickNav.tpl:97
-msgid "Page size"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:116
-#: Resources/templates/external/album/find.tpl:127
-#: templates/external/picture/find.tpl:116
-#: templates/external/picture/select.tpl:48
-#: templates/external/album/find.tpl:127
-#: templates/external/album/select.tpl:72
-#: templates/bootstrap/external/picture/find.tpl:116
-#: templates/bootstrap/external/picture/select.tpl:48
-#: templates/bootstrap/external/album/find.tpl:127
-#: templates/bootstrap/external/album/select.tpl:72
-msgid "Search for"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:118
-#: Resources/templates/external/album/find.tpl:129
-#: templates/external/picture/find.tpl:118
-#: templates/external/picture/select.tpl:50
-#: templates/external/album/find.tpl:129
-#: templates/external/album/select.tpl:74
-#: templates/bootstrap/external/picture/find.tpl:118
-#: templates/bootstrap/external/picture/select.tpl:50
-#: templates/bootstrap/external/album/find.tpl:129
-#: templates/bootstrap/external/album/select.tpl:74
-msgid "Filter"
-msgstr ""
-
-#: Resources/templates/external/picture/find.tpl:124
-#: Resources/templates/external/album/find.tpl:135
-#: templates/external/picture/find.tpl:124
-#: templates/external/album/find.tpl:135
-#: templates/bootstrap/external/picture/find.tpl:124
-#: templates/bootstrap/external/album/find.tpl:135
-msgid "Change selection"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:44
-#: templates/external/album/find.tpl:44 templates/external/album/select.tpl:20
-#: templates/helper/include_categories_edit.tpl:11
-#: templates/bootstrap/external/album/find.tpl:44
-#: templates/bootstrap/external/album/select.tpl:20
-#: templates/bootstrap/helper/include_categories_edit.tpl:11
-#: templates/bootstrap/album/view_quickNav.tpl:21
-#: templates/album/view_quickNav.tpl:21 templates/block/itemlist_modify.tpl:26
-msgid "Category"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:49
-#: Resources/templates/helper/include_categories_display.tpl:3
-#: templates/external/album/find.tpl:49 templates/external/album/select.tpl:25
-#: templates/helper/include_categories_edit.tpl:3
-#: templates/helper/include_categories_edit.tpl:8
-#: templates/helper/include_categories_edit.tpl:14
-#: templates/helper/include_categories_display.tpl:3
-#: templates/bootstrap/external/album/find.tpl:49
-#: templates/bootstrap/external/album/select.tpl:25
-#: templates/bootstrap/helper/include_categories_edit.tpl:3
-#: templates/bootstrap/helper/include_categories_edit.tpl:8
-#: templates/bootstrap/helper/include_categories_edit.tpl:14
-#: templates/bootstrap/helper/include_categories_display.tpl:4
-#: templates/bootstrap/helper/include_categories_display.tpl:7
-#: templates/bootstrap/album/view_quickNav.tpl:26
-#: templates/bootstrap/album/view.rss.tpl:45
-#: templates/album/view_quickNav.tpl:26 templates/album/view.rss.tpl:45
-#: templates/block/itemlist_modify.tpl:31
-msgid "Categories"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:57
-#: templates/external/album/find.tpl:57
-#: templates/bootstrap/external/album/find.tpl:57
-#: templates/block/itemlist_modify.tpl:39
-msgid "This is an optional filter."
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:66
-#: templates/external/album/find.tpl:66
-#: templates/bootstrap/external/album/find.tpl:66
-msgid "Link to the album"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:67
-#: templates/external/album/find.tpl:67
-#: templates/bootstrap/external/album/find.tpl:67
-msgid "ID of album"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:73
-#: Resources/templates/picture/display.tpl:77
-#: Resources/templates/picture/view.tpl:94
-#: Resources/templates/picture/edit.tpl:101
-#: Resources/templates/picture/edit.tpl:103
-#: Resources/templates/album/display.tpl:10
-#: Resources/templates/album/display.tpl:190
-#: Resources/templates/album/edit.tpl:78 templates/external/album/find.tpl:73
-#: templates/external/album/select.tpl:39 templates/picture/display.tpl:77
-#: templates/picture/view.tpl:94 templates/picture/edit.tpl:101
-#: templates/picture/edit.tpl:103 templates/picture/view.csv.tpl:4
-#: templates/contenttype/itemlist_edit.tpl:10
-#: templates/contenttype/oneitem_edit.tpl:9
-#: templates/bootstrap/external/album/find.tpl:73
-#: templates/bootstrap/external/album/select.tpl:39
-#: templates/bootstrap/picture/display.tpl:77
-#: templates/bootstrap/picture/view.tpl:94
-#: templates/bootstrap/picture/edit.tpl:105
-#: templates/bootstrap/picture/edit.tpl:107
-#: templates/bootstrap/picture/view.csv.tpl:4
-#: templates/bootstrap/album/display.tpl:10
-#: templates/bootstrap/album/display.tpl:207
-#: templates/bootstrap/album/edit.tpl:80
-#: templates/bootstrap/album/include_selectEditOne.tpl:9
-#: templates/bootstrap/album/include_selectEditOne.tpl:14
-#: templates/album/display.tpl:10 templates/album/display.tpl:190
-#: templates/album/edit.tpl:78 templates/album/include_selectEditOne.tpl:9
-#: templates/album/include_selectEditOne.tpl:14
-#: templates/block/itemlist_modify.tpl:12
-msgid "Album"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:98
-#: Resources/templates/album/view.tpl:76 templates/external/album/find.tpl:98
-#: templates/external/album/select.tpl:56
-#: templates/bootstrap/external/album/find.tpl:98
-#: templates/bootstrap/external/album/select.tpl:56
-#: templates/bootstrap/album/view_quickNav.tpl:79
-#: templates/bootstrap/album/view.tpl:76
-#: templates/bootstrap/album/view.csv.tpl:3
-#: templates/album/view_quickNav.tpl:79 templates/album/view.tpl:76
-#: templates/album/view.csv.tpl:3
-msgid "Parent_id"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:99
-#: Resources/templates/album/view.tpl:79 Resources/templates/album/edit.tpl:42
-#: templates/external/album/find.tpl:99 templates/external/album/select.tpl:57
-#: templates/bootstrap/external/album/find.tpl:99
-#: templates/bootstrap/external/album/select.tpl:57
-#: templates/bootstrap/album/view_quickNav.tpl:59
-#: templates/bootstrap/album/view_quickNav.tpl:80
-#: templates/bootstrap/album/view.tpl:79 templates/bootstrap/album/edit.tpl:42
-#: templates/bootstrap/album/view.csv.tpl:3
-#: templates/album/view_quickNav.tpl:59 templates/album/view_quickNav.tpl:80
-#: templates/album/view.tpl:79 templates/album/edit.tpl:42
-#: templates/album/view.csv.tpl:3
-msgid "Album access"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:100
-#: Resources/templates/album/view.tpl:82 Resources/templates/album/edit.tpl:52
-#: templates/external/album/find.tpl:100
-#: templates/external/album/select.tpl:58
-#: templates/bootstrap/external/album/find.tpl:100
-#: templates/bootstrap/external/album/select.tpl:58
-#: templates/bootstrap/album/view_quickNav.tpl:81
-#: templates/bootstrap/album/view.tpl:82 templates/bootstrap/album/edit.tpl:52
-#: templates/bootstrap/album/view.csv.tpl:3
-#: templates/album/view_quickNav.tpl:81 templates/album/view.tpl:82
-#: templates/album/edit.tpl:52 templates/album/view.csv.tpl:3
-msgid "Password access"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:101
-#: Resources/templates/album/edit.tpl:47 templates/external/album/find.tpl:101
-#: templates/external/album/select.tpl:59
-#: templates/bootstrap/external/album/find.tpl:101
-#: templates/bootstrap/external/album/select.tpl:59
-#: templates/bootstrap/album/view_quickNav.tpl:82
-#: templates/bootstrap/album/edit.tpl:47
-#: templates/bootstrap/album/view.csv.tpl:3
-#: templates/album/view_quickNav.tpl:82 templates/album/edit.tpl:47
-#: templates/album/view.csv.tpl:3
-msgid "My friends"
-msgstr ""
-
-#: Resources/templates/external/album/find.tpl:102
-#: Resources/templates/album/view.tpl:85 Resources/templates/album/edit.tpl:57
-#: templates/external/album/find.tpl:102
-#: templates/external/album/select.tpl:60
-#: templates/bootstrap/external/album/find.tpl:102
-#: templates/bootstrap/external/album/select.tpl:60
-#: templates/bootstrap/album/view_quickNav.tpl:83
-#: templates/bootstrap/album/view_quickNav.tpl:109
-#: templates/bootstrap/album/view.tpl:85
-#: templates/bootstrap/album/view.csv.tpl:3
-#: templates/album/view_quickNav.tpl:83 templates/album/view_quickNav.tpl:109
-#: templates/album/view.tpl:85 templates/album/edit.tpl:57
-#: templates/album/view.csv.tpl:3
-msgid "Not in frontend"
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:14
-#: Resources/templates/picture/display.tpl:18
-#: Resources/templates/picture/view.tpl:96
-#: Resources/templates/picture/view.tpl:180
-#: Resources/templates/album/display.tpl:16
-#: Resources/templates/album/display.tpl:25
-#: Resources/templates/album/view.tpl:90
-#: Resources/templates/album/view.tpl:142 templates/picture/display.tpl:14
-#: templates/picture/display.tpl:18 templates/picture/view.tpl:96
-#: templates/picture/view.tpl:180 templates/bootstrap/picture/display.tpl:14
-#: templates/bootstrap/picture/display.tpl:18
-#: templates/bootstrap/picture/view.tpl:96
-#: templates/bootstrap/picture/view.tpl:180
-#: templates/bootstrap/album/display.tpl:17
-#: templates/bootstrap/album/display.tpl:21
-#: templates/bootstrap/album/view.tpl:90
-#: templates/bootstrap/album/view.tpl:142 templates/album/display.tpl:16
-#: templates/album/display.tpl:25 templates/album/view.tpl:90
-#: templates/album/view.tpl:142
-msgid "Actions"
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:33
-#: Resources/templates/picture/display.tpl:36
-#: Resources/templates/picture/display.tpl:48
-#: Resources/templates/picture/display.tpl:51
-#: Resources/templates/picture/view.tpl:118
-#: Resources/templates/picture/view.tpl:121
-#: Resources/templates/picture/view.tpl:133
-#: Resources/templates/picture/view.tpl:136 templates/picture/display.tpl:33
-#: templates/picture/display.tpl:36 templates/picture/display.tpl:48
-#: templates/picture/display.tpl:51 templates/picture/view.tpl:118
-#: templates/picture/view.tpl:121 templates/picture/view.tpl:133
-#: templates/picture/view.tpl:136 templates/bootstrap/picture/display.tpl:33
-#: templates/bootstrap/picture/display.tpl:36
-#: templates/bootstrap/picture/display.tpl:48
-#: templates/bootstrap/picture/display.tpl:51
-#: templates/bootstrap/picture/view.tpl:118
-#: templates/bootstrap/picture/view.tpl:121
-#: templates/bootstrap/picture/view.tpl:133
-#: templates/bootstrap/picture/view.tpl:136
-msgid "This setting is enabled. Click here to disable it."
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:34
-#: Resources/templates/picture/display.tpl:37
-#: Resources/templates/picture/display.tpl:49
-#: Resources/templates/picture/display.tpl:52
-#: Resources/templates/picture/view.tpl:119
-#: Resources/templates/picture/view.tpl:122
-#: Resources/templates/picture/view.tpl:134
-#: Resources/templates/picture/view.tpl:137 templates/picture/display.tpl:34
-#: templates/picture/display.tpl:37 templates/picture/display.tpl:49
-#: templates/picture/display.tpl:52 templates/picture/view.tpl:119
-#: templates/picture/view.tpl:122 templates/picture/view.tpl:134
-#: templates/picture/view.tpl:137 templates/bootstrap/picture/display.tpl:34
-#: templates/bootstrap/picture/display.tpl:37
-#: templates/bootstrap/picture/display.tpl:49
-#: templates/bootstrap/picture/display.tpl:52
-#: templates/bootstrap/picture/view.tpl:119
-#: templates/bootstrap/picture/view.tpl:122
-#: templates/bootstrap/picture/view.tpl:134
-#: templates/bootstrap/picture/view.tpl:137
-msgid "This setting is disabled. Click here to enable it."
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:70
-#: Resources/templates/picture/include_displayItemListMany.tpl:56
-#: templates/picture/display.tpl:70
-#: templates/picture/include_displayItemListMany.tpl:56
-#: templates/bootstrap/picture/display.tpl:70
-#: templates/bootstrap/picture/include_displayItemListMany.tpl:32
-msgid "Invocations"
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:86
-#: Resources/templates/picture/include_displayItemListMany.tpl:23
-#: Resources/templates/picture/view.tpl:167
-#: Resources/templates/album/view.tpl:129 templates/picture/display.tpl:86
-#: templates/picture/include_displayItemListMany.tpl:23
-#: templates/picture/view.tpl:167
-#: templates/picture/include_displayItemListOne.tpl:21
-#: templates/picture/include_admindisplayItemListMany.tpl:10
-#: templates/bootstrap/picture/display.tpl:85
-#: templates/bootstrap/picture/view.tpl:167
-#: templates/bootstrap/picture/include_displayItemListOne.tpl:21
-#: templates/bootstrap/picture/include_admindisplayItemListMany.tpl:10
-#: templates/bootstrap/album/view.tpl:129
-#: templates/bootstrap/album/include_displayItemListOne.tpl:21
-#: templates/album/view.tpl:129
-#: templates/album/include_displayItemListOne.tpl:21
-msgid "Open quick view window"
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:86
-#: Resources/templates/picture/include_displayItemListMany.tpl:24
-#: Resources/templates/picture/view.tpl:167
-#: Resources/templates/album/view.tpl:129 templates/picture/display.tpl:86
-#: templates/picture/include_displayItemListMany.tpl:24
-#: templates/picture/view.tpl:167
-#: templates/picture/include_displayItemListOne.tpl:21
-#: templates/picture/include_admindisplayItemListMany.tpl:11
-#: templates/bootstrap/picture/display.tpl:85
-#: templates/bootstrap/picture/view.tpl:167
-#: templates/bootstrap/picture/include_displayItemListOne.tpl:21
-#: templates/bootstrap/picture/include_admindisplayItemListMany.tpl:11
-#: templates/bootstrap/album/view.tpl:129
-#: templates/bootstrap/album/include_displayItemListOne.tpl:21
-#: templates/album/view.tpl:129
-#: templates/album/include_displayItemListOne.tpl:21
-msgid "Quick view"
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:97
-#: Resources/templates/picture/view.tpl:175
-#: Resources/templates/album/view.tpl:137 templates/picture/display.tpl:97
-#: templates/picture/view.tpl:175 templates/bootstrap/picture/display.tpl:96
-#: templates/bootstrap/picture/view.tpl:175
-#: templates/bootstrap/album/view.tpl:137 templates/album/view.tpl:137
-msgid "Not set."
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:104
-#: templates/picture/display.tpl:104
-#: templates/bootstrap/picture/display.tpl:103
-msgid "Meta Datas"
-msgstr ""
-
-#: Resources/templates/picture/display.tpl:111
-#: templates/picture/display.tpl:111
-#: templates/bootstrap/picture/display.tpl:110
-msgid "Not supported for this picture"
-msgstr ""
-
-#: Resources/templates/picture/include_displayItemListMany.tpl:20
-#: templates/picture/include_displayItemListMany.tpl:20
-msgid "No title"
-msgstr ""
-
-#: Resources/templates/picture/include_displayItemListMany.tpl:48
-#: templates/picture/include_displayItemListMany.tpl:48
-msgid "No valid file"
-msgstr ""
-
-#: Resources/templates/picture/include_displayItemListMany.tpl:58
-#: templates/picture/include_displayItemListMany.tpl:58
-msgid "Rotate picture to left"
-msgstr ""
-
-#: Resources/templates/picture/include_displayItemListMany.tpl:59
-#: templates/picture/include_displayItemListMany.tpl:59
-msgid "Rotate picture to right"
-msgstr ""
-
-#: Resources/templates/picture/view.tpl:31
-#: Resources/templates/album/view.tpl:32 templates/picture/view.tpl:31
-#: templates/bootstrap/picture/view.tpl:31
-#: templates/bootstrap/album/view.tpl:32 templates/album/view.tpl:32
-msgid "Back to paginated view"
-msgstr ""
-
-#: Resources/templates/picture/view.tpl:35
-#: Resources/templates/album/view.tpl:36 templates/picture/view.tpl:35
-#: templates/bootstrap/picture/view.tpl:35
-#: templates/bootstrap/album/view.tpl:36 templates/album/view.tpl:36
-msgid "Show all entries"
-msgstr ""
-
-#: Resources/templates/picture/view.tpl:109
-#: Resources/templates/album/view.tpl:103 templates/picture/view.tpl:109
-#: templates/bootstrap/picture/view.tpl:109
-#: templates/bootstrap/album/view.tpl:103 templates/album/view.tpl:103
-msgid "View detail page"
-msgstr ""
-
-#: Resources/templates/picture/view.tpl:197 templates/picture/view.tpl:197
-#: templates/bootstrap/picture/view.tpl:197
-#: templates/mailz/itemlist_Picture_text.tpl:7
-#: templates/mailz/itemlist_Picture_html.tpl:11
-msgid "No pictures found."
-msgstr ""
-
-#: Resources/templates/picture/view.tpl:210 templates/picture/view.tpl:210
-#: templates/bootstrap/picture/view.tpl:210
-msgid "With selected pictures"
-msgstr ""
-
-#: Resources/templates/picture/view.tpl:212
-#: Resources/templates/album/view.tpl:174 templates/picture/view.tpl:212
-#: templates/bootstrap/picture/view.tpl:212
-#: templates/bootstrap/album/view.tpl:174 templates/album/view.tpl:174
-msgid "Choose action"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:15
-#: Resources/templates/picture/edit.tpl:19
-#: Resources/templates/picture/editMulti.tpl:7
-#: Resources/templates/picture/editMulti.tpl:11 templates/picture/edit.tpl:15
-#: templates/picture/edit.tpl:19 templates/picture/editMulti.tpl:7
-#: templates/picture/editMulti.tpl:11 templates/bootstrap/picture/edit.tpl:15
-#: templates/bootstrap/picture/edit.tpl:19
-#: templates/bootstrap/picture/editMulti.tpl:7
-#: templates/bootstrap/picture/editMulti.tpl:11
-msgid "Edit picture"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:31
-#: Resources/templates/picture/editMulti.tpl:23
-#: Resources/templates/album/edit.tpl:29 templates/picture/multiUpload.tpl:16
-#: templates/picture/edit.tpl:31 templates/picture/zipUpload.tpl:17
-#: templates/picture/editMulti.tpl:23
-#: templates/bootstrap/picture/multiUpload.tpl:16
-#: templates/bootstrap/picture/edit.tpl:31
-#: templates/bootstrap/picture/zipUpload.tpl:17
-#: templates/bootstrap/picture/editMulti.tpl:23
-#: templates/bootstrap/album/edit.tpl:29 templates/album/edit.tpl:29
-msgid "Content"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:34
-#: Resources/templates/picture/editMulti.tpl:26 templates/picture/edit.tpl:34
-#: templates/picture/editMulti.tpl:26 templates/bootstrap/picture/edit.tpl:34
-#: templates/bootstrap/picture/editMulti.tpl:26
-msgid "Enter the title of the picture"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:38
-#: Resources/templates/picture/editMulti.tpl:30 templates/picture/edit.tpl:38
-#: templates/picture/editMulti.tpl:30 templates/bootstrap/picture/edit.tpl:38
-#: templates/bootstrap/picture/editMulti.tpl:30
-msgid "Enter the description of the picture"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:42
-#: Resources/templates/picture/editMulti.tpl:34 templates/picture/edit.tpl:42
-#: templates/picture/editMulti.tpl:34 templates/bootstrap/picture/edit.tpl:42
-#: templates/bootstrap/picture/editMulti.tpl:34
-msgid "show title ?"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:46
-#: Resources/templates/picture/editMulti.tpl:38 templates/picture/edit.tpl:46
-#: templates/picture/editMulti.tpl:38 templates/bootstrap/picture/edit.tpl:48
-#: templates/bootstrap/picture/editMulti.tpl:38
-msgid "show description ?"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:60
-#: Resources/templates/picture/editMulti.tpl:52
-#: templates/picture/multiUpload.tpl:21 templates/picture/edit.tpl:60
-#: templates/picture/editMulti.tpl:52
-#: templates/bootstrap/picture/multiUpload.tpl:21
-#: templates/bootstrap/picture/edit.tpl:63
-#: templates/bootstrap/picture/editMulti.tpl:52
-msgid "Allowed file extensions:"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:61
-#: Resources/templates/picture/editMulti.tpl:53
-#: templates/picture/multiUpload.tpl:22 templates/picture/edit.tpl:61
-#: templates/picture/zipUpload.tpl:22 templates/picture/editMulti.tpl:53
-#: templates/bootstrap/picture/multiUpload.tpl:22
-#: templates/bootstrap/picture/edit.tpl:64
-#: templates/bootstrap/picture/zipUpload.tpl:22
-#: templates/bootstrap/picture/editMulti.tpl:53
-msgid "Allowed file size:"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:62
-#: Resources/templates/picture/editMulti.tpl:54
-#: templates/picture/multiUpload.tpl:23 templates/picture/edit.tpl:62
-#: templates/picture/editMulti.tpl:54
-#: templates/bootstrap/picture/multiUpload.tpl:23
-#: templates/bootstrap/picture/edit.tpl:65
-#: templates/bootstrap/picture/editMulti.tpl:54
-msgid "Required width:"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:63
-#: Resources/templates/picture/editMulti.tpl:55
-#: templates/picture/multiUpload.tpl:24 templates/picture/edit.tpl:63
-#: templates/picture/editMulti.tpl:55
-#: templates/bootstrap/picture/multiUpload.tpl:24
-#: templates/bootstrap/picture/edit.tpl:66
-#: templates/bootstrap/picture/editMulti.tpl:55
-msgid "Maximum width:"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:64
-#: Resources/templates/picture/editMulti.tpl:56
-#: templates/picture/multiUpload.tpl:25 templates/picture/edit.tpl:64
-#: templates/picture/editMulti.tpl:56
-#: templates/bootstrap/picture/multiUpload.tpl:25
-#: templates/bootstrap/picture/edit.tpl:67
-#: templates/bootstrap/picture/editMulti.tpl:56
-msgid "Maximum height:"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:67
-#: Resources/templates/picture/editMulti.tpl:59 templates/picture/edit.tpl:67
-#: templates/picture/editMulti.tpl:59 templates/bootstrap/picture/edit.tpl:70
-#: templates/bootstrap/picture/editMulti.tpl:59
-msgid "Pictures with too big width or height will be shrinked."
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:72
-#: Resources/templates/picture/editMulti.tpl:63 templates/picture/edit.tpl:72
-#: templates/picture/editMulti.tpl:63 templates/bootstrap/picture/edit.tpl:75
-#: templates/bootstrap/picture/editMulti.tpl:63
-msgid "Current file"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:87
-#: Resources/templates/picture/editMulti.tpl:77 templates/picture/edit.tpl:87
-#: templates/picture/editMulti.tpl:77 templates/bootstrap/picture/edit.tpl:90
-#: templates/bootstrap/picture/editMulti.tpl:77
-msgid "Enter the image view of the picture"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:94 templates/picture/edit.tpl:94
-#: templates/bootstrap/picture/edit.tpl:96
-msgid "album image ?"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:123
-#: Resources/templates/picture/editMulti.tpl:109
-#: Resources/templates/album/edit.tpl:104 templates/picture/edit.tpl:123
-#: templates/picture/editMulti.tpl:109
-#: templates/bootstrap/picture/edit.tpl:127
-#: templates/bootstrap/picture/editMulti.tpl:107
-#: templates/bootstrap/album/edit.tpl:106 templates/album/edit.tpl:104
-msgid "Return control"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:125
-#: Resources/templates/picture/editMulti.tpl:111
-#: Resources/templates/album/edit.tpl:106 templates/picture/edit.tpl:125
-#: templates/picture/editMulti.tpl:111
-#: templates/bootstrap/picture/edit.tpl:129
-#: templates/bootstrap/picture/editMulti.tpl:109
-#: templates/bootstrap/album/edit.tpl:108 templates/album/edit.tpl:106
-msgid "Create another item after save"
-msgstr ""
-
-#: Resources/templates/picture/edit.tpl:138 templates/picture/edit.tpl:138
-#: templates/bootstrap/picture/edit.tpl:142
-msgid "Really delete this picture?"
-msgstr ""
-
-#: Resources/templates/picture/editMulti.tpl:97
-#: templates/picture/editMulti.tpl:97
-#: templates/bootstrap/picture/editMulti.tpl:95
-msgid "Hooks"
-msgstr ""
-
-#: Resources/templates/picture/editMulti.tpl:120
-#: Resources/templates/picture/editMulti.tpl:132
-#: templates/picture/editMulti.tpl:120 templates/picture/editMulti.tpl:132
-#: templates/bootstrap/picture/editMulti.tpl:118
-#: templates/bootstrap/picture/editMulti.tpl:130
-msgid "Previous picture"
-msgstr ""
-
-#: Resources/templates/picture/editMulti.tpl:123
-#: templates/picture/editMulti.tpl:123
-#: templates/bootstrap/picture/editMulti.tpl:121
-msgid "Next picture"
-msgstr ""
-
-#: Resources/templates/picture/editMulti.tpl:125
-#: templates/picture/editMulti.tpl:125
-#: templates/bootstrap/picture/editMulti.tpl:123
-msgid "Finish editing"
-msgstr ""
-
-#: Resources/templates/picture/editMulti.tpl:127
-#: templates/picture/editMulti.tpl:127
-#: templates/bootstrap/picture/editMulti.tpl:125
-msgid "Really delete this picture? If you a delete a picture"
-msgstr ""
-
-#: Resources/templates/picture/editMulti.tpl:128
-#: templates/picture/delete.tpl:8 templates/picture/editMulti.tpl:128
-#: templates/bootstrap/picture/delete.tpl:8
-#: templates/bootstrap/picture/editMulti.tpl:126
-msgid "Delete picture"
-msgstr ""
-
-#: Resources/templates/picture/editMulti.tpl:136
-#: templates/picture/view_quickNav.tpl:103 templates/picture/editMulti.tpl:136
-#: templates/bootstrap/picture/view_quickNav.tpl:103
-#: templates/bootstrap/picture/editMulti.tpl:134
-#: templates/bootstrap/album/view_quickNav.tpl:117
-#: templates/album/view_quickNav.tpl:117
-msgid "OK"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:49 templates/album/display.tpl:49
-msgid "Load up a Picture"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:49
-#: templates/bootstrap/album/display.tpl:43 templates/album/display.tpl:49
-msgid "Add"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:50 templates/album/display.tpl:50
-msgid "Load up few Pictures"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:50
-#: templates/bootstrap/album/display.tpl:44 templates/album/display.tpl:50
-msgid "Multi-Add"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:51 templates/album/display.tpl:51
-msgid "Load up a zip file with Pictures"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:51
-#: templates/bootstrap/album/display.tpl:45 templates/album/display.tpl:51
-msgid "Zip-Add"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:59
-#: templates/bootstrap/album/display.tpl:55 templates/album/display.tpl:59
-msgid "View as:"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:66
-#: templates/bootstrap/album/display.tpl:65 templates/album/display.tpl:66
-msgid "Change view"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:84
-#: templates/bootstrap/album/display.tpl:94 templates/album/display.tpl:84
-msgid "Save positions"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:92
-#: templates/bootstrap/album/display.tpl:102 templates/album/display.tpl:92
-msgid "No pictures"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:97
-#: Resources/templates/album/display.tpl:137
-#: Resources/templates/album/display.tpl:211
-#: Resources/templates/album/view.tpl:256
-#: templates/bootstrap/album/display.tpl:111
-#: templates/bootstrap/album/display.tpl:145
-#: templates/bootstrap/album/view.tpl:241 templates/album/display.tpl:97
-#: templates/album/display.tpl:137 templates/album/display.tpl:211
-#: templates/album/view.tpl:256
-msgid "SubAlbums"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:130
-#: Resources/templates/album/view.tpl:109
-#: Resources/templates/album/view.tpl:245
-#: templates/bootstrap/album/view.tpl:109 templates/album/display.tpl:130
-#: templates/album/view.tpl:109 templates/album/view.tpl:245
-msgid "No description"
-msgstr ""
-
-#: Resources/templates/album/display.tpl:151
-#: Resources/templates/album/view.tpl:271
-#: templates/bootstrap/album/display.tpl:161
-#: templates/bootstrap/album/view.tpl:263 templates/album/display.tpl:151
-#: templates/album/view.tpl:271
-msgid "This album is saved with a password by"
-msgstr ""
-
-#: Resources/templates/album/view.tpl:88 templates/bootstrap/album/view.tpl:88
-#: templates/bootstrap/album/view.csv.tpl:4 templates/album/view.tpl:88
-#: templates/album/view.csv.tpl:4
-msgid "Parent"
-msgstr ""
-
-#: Resources/templates/album/view.tpl:159
-#: templates/bootstrap/album/view.tpl:159 templates/album/view.tpl:159
-#: templates/mailz/itemlist_Album_text.tpl:7
-#: templates/mailz/itemlist_Album_html.tpl:11
-msgid "No albums found."
-msgstr ""
-
-#: Resources/templates/album/view.tpl:172
-#: templates/bootstrap/album/view.tpl:172 templates/album/view.tpl:172
-msgid "With selected albums"
-msgstr ""
-
-#: Resources/templates/album/view.tpl:280
-#: templates/bootstrap/album/view.tpl:243
-#: templates/bootstrap/album/view.tpl:273 templates/album/view.tpl:280
-msgid "No SubAlbums"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:14 Resources/templates/album/edit.tpl:18
-#: templates/bootstrap/album/edit.tpl:14 templates/bootstrap/album/edit.tpl:18
-#: templates/album/edit.tpl:14 templates/album/edit.tpl:18
-msgid "Edit album"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:32 templates/bootstrap/album/edit.tpl:32
-#: templates/album/edit.tpl:32
-msgid "Enter the title of the album"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:38 templates/bootstrap/album/edit.tpl:38
-#: templates/album/edit.tpl:38
-msgid "Enter the description of the album"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:43 templates/bootstrap/album/edit.tpl:43
-#: templates/album/edit.tpl:43
-msgid "Choose the album access"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:48 templates/bootstrap/album/edit.tpl:48
-#: templates/album/edit.tpl:48
-msgid "Enter your friends (comma seperated)!"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:53 templates/bootstrap/album/edit.tpl:53
-#: templates/album/edit.tpl:53
-msgid "Enter the password access of the album"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:58 templates/bootstrap/album/edit.tpl:58
-#: templates/album/edit.tpl:58
-msgid "not in frontend ?"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:69 templates/bootstrap/album/edit.tpl:71
-#: templates/album/edit.tpl:69
-msgid ""
-"Notice! Your are in admin group. So you get all albums to select. Be careful "
-"to make main or sub albums in view of logic!"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:70 templates/bootstrap/album/edit.tpl:72
-#: templates/album/edit.tpl:70
-msgid ""
-"So pleace avoid for example that an album becomes main album of an album, "
-"that is children album already. Otherwise you will produce big problems!"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:73 templates/bootstrap/album/edit.tpl:75
-#: templates/album/edit.tpl:73
-msgid ""
-"Notice! You get only albums to select you have created! Also you get only "
-"albums that are qualified under aspects of logic and your quotas!"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:84 templates/bootstrap/album/edit.tpl:86
-#: templates/album/edit.tpl:84
-msgid ""
-"Attention! This album is a sub album and you have no quotas to make it to "
-"main album! You may select another album as main album."
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:88 templates/bootstrap/album/edit.tpl:90
-#: templates/album/edit.tpl:88
-msgid ""
-"Attention! This album is on first level and you have no quotas to change!"
-msgstr ""
-
-#: Resources/templates/album/edit.tpl:118
-#: templates/bootstrap/album/edit.tpl:120 templates/album/edit.tpl:118
-msgid "Really delete this album?"
 msgstr ""
 
 #: templates/hook/edit.tpl:3
@@ -2735,9 +1488,546 @@ msgstr ""
 msgid "No object types found."
 msgstr ""
 
+#: templates/external/picture/display.tpl:25
+#: templates/external/picture/info.tpl:8 templates/picture/display.tpl:64
+#: templates/picture/view.tpl:149 templates/picture/edit.tpl:77
+#: templates/picture/editMulti.tpl:68
+#: templates/contenttype/itemlist_Picture_Thumbs_display.tpl:9
+#: templates/contenttype/oneitem_Picture_display.tpl:8
+#: templates/contenttype/oneitem_Picture_display_description.tpl:9
+#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:11
+#: templates/contenttype/itemlist_Picture_Slideshow_display.tpl:22
+#: templates/contenttype/oneitem_Picture_displaycontent.tpl:7
+#: templates/bootstrap/external/picture/display.tpl:25
+#: templates/bootstrap/external/picture/info.tpl:8
+#: templates/bootstrap/picture/display.tpl:64
+#: templates/bootstrap/picture/view.tpl:149
+#: templates/bootstrap/picture/edit.tpl:80
+#: templates/bootstrap/picture/editMulti.tpl:68
+msgid "Download"
+msgstr ""
+
+#: templates/external/picture/find.tpl:5
+#: templates/external/picture/find.tpl:36 templates/external/album/find.tpl:25
+#: templates/bootstrap/external/picture/find.tpl:5
+#: templates/bootstrap/external/picture/find.tpl:36
+#: templates/bootstrap/external/album/find.tpl:25
+msgid "Search and select picture"
+msgstr ""
+
+#: templates/external/picture/find.tpl:24 templates/external/album/find.tpl:24
+#: templates/bootstrap/external/picture/find.tpl:24
+#: templates/bootstrap/external/album/find.tpl:24
+msgid "Switch to"
+msgstr ""
+
+#: templates/external/picture/find.tpl:25 templates/external/album/find.tpl:5
+#: templates/external/album/find.tpl:36
+#: templates/bootstrap/external/picture/find.tpl:25
+#: templates/bootstrap/external/album/find.tpl:5
+#: templates/bootstrap/external/album/find.tpl:36
+msgid "Search and select album"
+msgstr ""
+
+#: templates/external/picture/find.tpl:39 templates/external/album/find.tpl:64
+#: templates/bootstrap/external/picture/find.tpl:39
+#: templates/bootstrap/external/album/find.tpl:64
+msgid "Paste as"
+msgstr ""
+
+#: templates/external/picture/find.tpl:41
+#: templates/bootstrap/external/picture/find.tpl:41
+msgid "Link to the picture"
+msgstr ""
+
+#: templates/external/picture/find.tpl:42
+#: templates/bootstrap/external/picture/find.tpl:42
+msgid "ID of picture"
+msgstr ""
+
+#: templates/external/picture/find.tpl:44
+#: templates/external/picture/find.tpl:46
+#: templates/bootstrap/external/picture/find.tpl:43
+msgid "Thumbnail of picture"
+msgstr ""
+
+#: templates/external/picture/find.tpl:47
+msgid "Preview of picture"
+msgstr ""
+
+#: templates/external/picture/find.tpl:48
+msgid "Thumbnail of picture with lightbox"
+msgstr ""
+
+#: templates/external/picture/find.tpl:49
+msgid "Preview of picture with lightbox"
+msgstr ""
+
+#: templates/external/picture/find.tpl:64
+#: templates/external/picture/select.tpl:14 templates/picture/display.tpl:8
+#: templates/contenttype/oneitem_edit.tpl:14
+#: templates/bootstrap/external/picture/find.tpl:58
+#: templates/bootstrap/external/picture/select.tpl:14
+#: templates/bootstrap/picture/display.tpl:8
+#: templates/bootstrap/album/view.csv.tpl:5 templates/album/view.csv.tpl:5
+msgid "Picture"
+msgstr ""
+
+#: templates/external/picture/find.tpl:83
+#: templates/external/picture/select.tpl:19
+#: templates/external/album/find.tpl:85 templates/external/album/select.tpl:44
+#: templates/contenttype/itemlist_Album_display_description.tpl:11
+#: templates/contenttype/itemlist_Picture_display_description.tpl:11
+#: templates/bootstrap/external/picture/find.tpl:73
+#: templates/bootstrap/external/picture/select.tpl:19
+#: templates/bootstrap/external/album/find.tpl:85
+#: templates/bootstrap/external/album/select.tpl:44
+msgid "No entries found."
+msgstr ""
+
+#: templates/external/picture/find.tpl:90
+#: templates/external/picture/select.tpl:25
+#: templates/external/album/find.tpl:92 templates/external/album/select.tpl:50
+#: templates/picture/view_quickNav.tpl:39
+#: templates/bootstrap/external/picture/find.tpl:80
+#: templates/bootstrap/external/picture/select.tpl:25
+#: templates/bootstrap/external/album/find.tpl:92
+#: templates/bootstrap/external/album/select.tpl:50
+#: templates/bootstrap/picture/view_quickNav.tpl:39
+#: templates/bootstrap/album/view_quickNav.tpl:72
+#: templates/album/view_quickNav.tpl:72
+msgid "Sort by"
+msgstr ""
+
+#: templates/external/picture/find.tpl:92
+#: templates/external/picture/select.tpl:27
+#: templates/external/album/find.tpl:94 templates/external/album/select.tpl:52
+#: templates/picture/view_quickNav.tpl:42
+#: templates/contenttype/oneitem_edit.tpl:19
+#: templates/bootstrap/external/picture/find.tpl:82
+#: templates/bootstrap/external/picture/select.tpl:27
+#: templates/bootstrap/external/album/find.tpl:94
+#: templates/bootstrap/external/album/select.tpl:52
+#: templates/bootstrap/picture/view_quickNav.tpl:42
+#: templates/bootstrap/album/view_quickNav.tpl:75
+#: templates/album/view_quickNav.tpl:75 templates/block/oneitem_modify.tpl:11
+msgid "Id"
+msgstr ""
+
+#: templates/external/picture/find.tpl:93
+#: templates/external/picture/select.tpl:28
+#: templates/external/album/find.tpl:95 templates/external/album/select.tpl:53
+#: templates/picture/view_quickNav.tpl:26
+#: templates/picture/view_quickNav.tpl:43 templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:83
+#: templates/bootstrap/external/picture/select.tpl:28
+#: templates/bootstrap/external/album/find.tpl:95
+#: templates/bootstrap/external/album/select.tpl:53
+#: templates/bootstrap/picture/view_quickNav.tpl:26
+#: templates/bootstrap/picture/view_quickNav.tpl:43
+#: templates/bootstrap/picture/view.csv.tpl:3
+#: templates/bootstrap/album/view_quickNav.tpl:50
+#: templates/bootstrap/album/view_quickNav.tpl:76
+#: templates/bootstrap/album/view.csv.tpl:3
+#: templates/album/view_quickNav.tpl:50 templates/album/view_quickNav.tpl:76
+#: templates/album/view.csv.tpl:3
+msgid "Workflow state"
+msgstr ""
+
+#: templates/external/picture/find.tpl:94
+#: templates/external/picture/select.tpl:29
+#: templates/external/album/find.tpl:96 templates/external/album/select.tpl:54
+#: templates/picture/view_quickNav.tpl:44 templates/picture/view.tpl:70
+#: templates/picture/edit.tpl:33 templates/picture/editMulti.tpl:25
+#: templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:84
+#: templates/bootstrap/external/picture/select.tpl:29
+#: templates/bootstrap/external/album/find.tpl:96
+#: templates/bootstrap/external/album/select.tpl:54
+#: templates/bootstrap/picture/view_quickNav.tpl:44
+#: templates/bootstrap/picture/view.tpl:70
+#: templates/bootstrap/picture/edit.tpl:33
+#: templates/bootstrap/picture/editMulti.tpl:25
+#: templates/bootstrap/picture/view.csv.tpl:3
+#: templates/bootstrap/album/view_quickNav.tpl:77
+#: templates/bootstrap/album/view.tpl:70 templates/bootstrap/album/edit.tpl:31
+#: templates/bootstrap/album/view.csv.tpl:3
+#: templates/album/view_quickNav.tpl:77 templates/album/view.tpl:70
+#: templates/album/edit.tpl:31 templates/album/view.csv.tpl:3
+msgid "Title"
+msgstr ""
+
+#: templates/external/picture/find.tpl:95
+#: templates/external/picture/select.tpl:30
+#: templates/external/album/find.tpl:97 templates/external/album/select.tpl:55
+#: templates/picture/display.tpl:26 templates/picture/view_quickNav.tpl:45
+#: templates/picture/view.tpl:73 templates/picture/edit.tpl:37
+#: templates/picture/editMulti.tpl:29 templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:85
+#: templates/bootstrap/external/picture/select.tpl:30
+#: templates/bootstrap/external/album/find.tpl:97
+#: templates/bootstrap/external/album/select.tpl:55
+#: templates/bootstrap/picture/display.tpl:26
+#: templates/bootstrap/picture/view_quickNav.tpl:45
+#: templates/bootstrap/picture/view.tpl:73
+#: templates/bootstrap/picture/edit.tpl:37
+#: templates/bootstrap/picture/editMulti.tpl:29
+#: templates/bootstrap/picture/view.csv.tpl:3
+#: templates/bootstrap/album/display.tpl:241
+#: templates/bootstrap/album/view_quickNav.tpl:78
+#: templates/bootstrap/album/view.tpl:73 templates/bootstrap/album/edit.tpl:37
+#: templates/bootstrap/album/view.csv.tpl:3 templates/album/display.tpl:219
+#: templates/album/view_quickNav.tpl:78 templates/album/view.tpl:73
+#: templates/album/edit.tpl:37 templates/album/view.csv.tpl:3
+msgid "Description"
+msgstr ""
+
+#: templates/external/picture/find.tpl:96
+#: templates/external/picture/select.tpl:31 templates/admin/config.tpl:40
+#: templates/picture/view_quickNav.tpl:46
+#: templates/picture/view_quickNav.tpl:77 templates/picture/view.tpl:76
+#: templates/picture/edit.tpl:41 templates/picture/editMulti.tpl:33
+#: templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:86
+#: templates/bootstrap/external/picture/select.tpl:31
+#: templates/bootstrap/admin/config.tpl:38
+#: templates/bootstrap/picture/view_quickNav.tpl:46
+#: templates/bootstrap/picture/view_quickNav.tpl:77
+#: templates/bootstrap/picture/view.tpl:76
+#: templates/bootstrap/picture/edit.tpl:43
+#: templates/bootstrap/picture/editMulti.tpl:33
+#: templates/bootstrap/picture/view.csv.tpl:3
+msgid "Show title"
+msgstr ""
+
+#: templates/external/picture/find.tpl:97
+#: templates/external/picture/select.tpl:32 templates/admin/config.tpl:45
+#: templates/picture/display.tpl:44 templates/picture/view_quickNav.tpl:47
+#: templates/picture/view_quickNav.tpl:86 templates/picture/view.tpl:79
+#: templates/picture/edit.tpl:45 templates/picture/editMulti.tpl:37
+#: templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:87
+#: templates/bootstrap/external/picture/select.tpl:32
+#: templates/bootstrap/admin/config.tpl:43
+#: templates/bootstrap/picture/display.tpl:44
+#: templates/bootstrap/picture/view_quickNav.tpl:47
+#: templates/bootstrap/picture/view_quickNav.tpl:86
+#: templates/bootstrap/picture/view.tpl:79
+#: templates/bootstrap/picture/edit.tpl:49
+#: templates/bootstrap/picture/editMulti.tpl:37
+#: templates/bootstrap/picture/view.csv.tpl:3
+msgid "Show description"
+msgstr ""
+
+#: templates/external/picture/find.tpl:98
+#: templates/external/picture/select.tpl:33 templates/picture/display.tpl:59
+#: templates/picture/view_quickNav.tpl:48 templates/picture/multiUpload.tpl:19
+#: templates/picture/view.tpl:82 templates/picture/edit.tpl:53
+#: templates/picture/editMulti.tpl:45 templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:88
+#: templates/bootstrap/external/picture/select.tpl:33
+#: templates/bootstrap/picture/display.tpl:59
+#: templates/bootstrap/picture/view_quickNav.tpl:48
+#: templates/bootstrap/picture/multiUpload.tpl:19
+#: templates/bootstrap/picture/view.tpl:82
+#: templates/bootstrap/picture/edit.tpl:57
+#: templates/bootstrap/picture/editMulti.tpl:45
+#: templates/bootstrap/picture/view.csv.tpl:3
+msgid "Image upload"
+msgstr ""
+
+#: templates/external/picture/find.tpl:99
+#: templates/external/picture/select.tpl:34
+#: templates/picture/view_quickNav.tpl:49 templates/picture/view.tpl:85
+#: templates/picture/edit.tpl:86 templates/picture/editMulti.tpl:76
+#: templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:89
+#: templates/bootstrap/external/picture/select.tpl:34
+#: templates/bootstrap/picture/view_quickNav.tpl:49
+#: templates/bootstrap/picture/view.tpl:85
+#: templates/bootstrap/picture/edit.tpl:89
+#: templates/bootstrap/picture/editMulti.tpl:76
+#: templates/bootstrap/picture/view.csv.tpl:3
+msgid "Image view"
+msgstr ""
+
+#: templates/external/picture/find.tpl:100
+#: templates/external/picture/select.tpl:35
+#: templates/picture/view_quickNav.tpl:50
+#: templates/picture/view_quickNav.tpl:95 templates/picture/view.tpl:88
+#: templates/picture/edit.tpl:93 templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:90
+#: templates/bootstrap/external/picture/select.tpl:35
+#: templates/bootstrap/picture/view_quickNav.tpl:50
+#: templates/bootstrap/picture/view_quickNav.tpl:95
+#: templates/bootstrap/picture/view.tpl:88
+#: templates/bootstrap/picture/edit.tpl:97
+#: templates/bootstrap/picture/view.csv.tpl:3
+msgid "Album image"
+msgstr ""
+
+#: templates/external/picture/find.tpl:101
+#: templates/external/picture/select.tpl:36 templates/picture/display.tpl:75
+#: templates/picture/view_quickNav.tpl:51 templates/picture/view.tpl:91
+#: templates/picture/view.csv.tpl:3
+#: templates/bootstrap/external/picture/find.tpl:91
+#: templates/bootstrap/external/picture/select.tpl:36
+#: templates/bootstrap/picture/display.tpl:75
+#: templates/bootstrap/picture/view_quickNav.tpl:51
+#: templates/bootstrap/picture/view.tpl:91
+#: templates/bootstrap/picture/view.csv.tpl:3
+msgid "Pos"
+msgstr ""
+
+#: templates/external/picture/find.tpl:102
+#: templates/external/picture/select.tpl:37
+#: templates/external/album/find.tpl:103
+#: templates/external/album/select.tpl:61
+#: templates/picture/view_quickNav.tpl:52
+#: templates/bootstrap/external/picture/find.tpl:92
+#: templates/bootstrap/external/picture/select.tpl:37
+#: templates/bootstrap/external/album/find.tpl:103
+#: templates/bootstrap/external/album/select.tpl:61
+#: templates/bootstrap/picture/view_quickNav.tpl:52
+#: templates/bootstrap/album/view_quickNav.tpl:84
+#: templates/album/view_quickNav.tpl:84
+msgid "Creation date"
+msgstr ""
+
+#: templates/external/picture/find.tpl:103
+#: templates/external/picture/select.tpl:38
+#: templates/external/album/find.tpl:104
+#: templates/external/album/select.tpl:62
+#: templates/picture/view_quickNav.tpl:53
+#: templates/bootstrap/external/picture/find.tpl:93
+#: templates/bootstrap/external/picture/select.tpl:38
+#: templates/bootstrap/external/album/find.tpl:104
+#: templates/bootstrap/external/album/select.tpl:62
+#: templates/bootstrap/picture/view_quickNav.tpl:53
+#: templates/bootstrap/album/view_quickNav.tpl:85
+#: templates/album/view_quickNav.tpl:85
+msgid "Creator"
+msgstr ""
+
+#: templates/external/picture/find.tpl:104
+#: templates/external/picture/select.tpl:39
+#: templates/external/album/find.tpl:105
+#: templates/external/album/select.tpl:63
+#: templates/picture/view_quickNav.tpl:54
+#: templates/bootstrap/external/picture/find.tpl:94
+#: templates/bootstrap/external/picture/select.tpl:39
+#: templates/bootstrap/external/album/find.tpl:105
+#: templates/bootstrap/external/album/select.tpl:63
+#: templates/bootstrap/picture/view_quickNav.tpl:54
+#: templates/bootstrap/album/view_quickNav.tpl:86
+#: templates/album/view_quickNav.tpl:86
+msgid "Update date"
+msgstr ""
+
+#: templates/external/picture/find.tpl:107
+#: templates/external/picture/select.tpl:42
+#: templates/external/album/find.tpl:108
+#: templates/external/album/select.tpl:66
+#: templates/picture/view_quickNav.tpl:57
+#: templates/bootstrap/external/picture/find.tpl:97
+#: templates/bootstrap/external/picture/select.tpl:42
+#: templates/bootstrap/external/album/find.tpl:108
+#: templates/bootstrap/external/album/select.tpl:66
+#: templates/bootstrap/picture/view_quickNav.tpl:57
+#: templates/bootstrap/album/view_quickNav.tpl:89
+#: templates/album/view_quickNav.tpl:89
+msgid "ascending"
+msgstr ""
+
+#: templates/external/picture/find.tpl:108
+#: templates/external/picture/select.tpl:43
+#: templates/external/album/find.tpl:109
+#: templates/external/album/select.tpl:67
+#: templates/picture/view_quickNav.tpl:58
+#: templates/bootstrap/external/picture/find.tpl:98
+#: templates/bootstrap/external/picture/select.tpl:43
+#: templates/bootstrap/external/album/find.tpl:109
+#: templates/bootstrap/external/album/select.tpl:67
+#: templates/bootstrap/picture/view_quickNav.tpl:58
+#: templates/bootstrap/album/view_quickNav.tpl:90
+#: templates/album/view_quickNav.tpl:90
+msgid "descending"
+msgstr ""
+
+#: templates/external/picture/find.tpl:113
+#: templates/external/album/find.tpl:114
+#: templates/picture/view_quickNav.tpl:65
+#: templates/bootstrap/external/picture/find.tpl:103
+#: templates/bootstrap/external/album/find.tpl:114
+#: templates/bootstrap/picture/view_quickNav.tpl:65
+#: templates/bootstrap/album/view_quickNav.tpl:97
+#: templates/album/view_quickNav.tpl:97
+msgid "Page size"
+msgstr ""
+
+#: templates/external/picture/find.tpl:126
+#: templates/external/picture/select.tpl:48
+#: templates/external/album/find.tpl:127
+#: templates/external/album/select.tpl:72
+#: templates/bootstrap/external/picture/find.tpl:116
+#: templates/bootstrap/external/picture/select.tpl:48
+#: templates/bootstrap/external/album/find.tpl:127
+#: templates/bootstrap/external/album/select.tpl:72
+msgid "Search for"
+msgstr ""
+
+#: templates/external/picture/find.tpl:128
+#: templates/external/picture/select.tpl:50
+#: templates/external/album/find.tpl:129
+#: templates/external/album/select.tpl:74
+#: templates/bootstrap/external/picture/find.tpl:118
+#: templates/bootstrap/external/picture/select.tpl:50
+#: templates/bootstrap/external/album/find.tpl:129
+#: templates/bootstrap/external/album/select.tpl:74
+msgid "Filter"
+msgstr ""
+
+#: templates/external/picture/find.tpl:134
+#: templates/external/album/find.tpl:135
+#: templates/bootstrap/external/picture/find.tpl:124
+#: templates/bootstrap/external/album/find.tpl:135
+msgid "Change selection"
+msgstr ""
+
 #: templates/external/picture/select.tpl:4
 #: templates/bootstrap/external/picture/select.tpl:4
 msgid "Picture information"
+msgstr ""
+
+#: templates/external/album/find.tpl:44 templates/external/album/select.tpl:20
+#: templates/helper/include_categories_edit.tpl:11
+#: templates/bootstrap/external/album/find.tpl:44
+#: templates/bootstrap/external/album/select.tpl:20
+#: templates/bootstrap/helper/include_categories_edit.tpl:11
+#: templates/bootstrap/album/view_quickNav.tpl:21
+#: templates/album/view_quickNav.tpl:21 templates/block/itemlist_modify.tpl:26
+msgid "Category"
+msgstr ""
+
+#: templates/external/album/find.tpl:49 templates/external/album/select.tpl:25
+#: templates/helper/include_categories_edit.tpl:3
+#: templates/helper/include_categories_edit.tpl:8
+#: templates/helper/include_categories_edit.tpl:14
+#: templates/helper/include_categories_display.tpl:3
+#: templates/bootstrap/external/album/find.tpl:49
+#: templates/bootstrap/external/album/select.tpl:25
+#: templates/bootstrap/helper/include_categories_edit.tpl:3
+#: templates/bootstrap/helper/include_categories_edit.tpl:8
+#: templates/bootstrap/helper/include_categories_edit.tpl:14
+#: templates/bootstrap/helper/include_categories_display.tpl:4
+#: templates/bootstrap/helper/include_categories_display.tpl:7
+#: templates/bootstrap/album/view_quickNav.tpl:26
+#: templates/bootstrap/album/view.rss.tpl:45
+#: templates/album/view_quickNav.tpl:26 templates/album/view.rss.tpl:45
+#: templates/block/itemlist_modify.tpl:31
+msgid "Categories"
+msgstr ""
+
+#: templates/external/album/find.tpl:57
+#: templates/bootstrap/external/album/find.tpl:57
+#: templates/block/itemlist_modify.tpl:39
+msgid "This is an optional filter."
+msgstr ""
+
+#: templates/external/album/find.tpl:66
+#: templates/bootstrap/external/album/find.tpl:66
+msgid "Link to the album"
+msgstr ""
+
+#: templates/external/album/find.tpl:67
+#: templates/bootstrap/external/album/find.tpl:67
+msgid "ID of album"
+msgstr ""
+
+#: templates/external/album/find.tpl:73 templates/external/album/select.tpl:39
+#: templates/picture/display.tpl:77 templates/picture/view.tpl:94
+#: templates/picture/edit.tpl:101 templates/picture/edit.tpl:103
+#: templates/picture/view.csv.tpl:4 templates/contenttype/itemlist_edit.tpl:10
+#: templates/contenttype/oneitem_edit.tpl:9
+#: templates/bootstrap/external/album/find.tpl:73
+#: templates/bootstrap/external/album/select.tpl:39
+#: templates/bootstrap/picture/display.tpl:77
+#: templates/bootstrap/picture/view.tpl:94
+#: templates/bootstrap/picture/edit.tpl:105
+#: templates/bootstrap/picture/edit.tpl:107
+#: templates/bootstrap/picture/view.csv.tpl:4
+#: templates/bootstrap/album/display.tpl:10
+#: templates/bootstrap/album/display.tpl:222
+#: templates/bootstrap/album/edit.tpl:80
+#: templates/bootstrap/album/include_selectEditOne.tpl:9
+#: templates/bootstrap/album/include_selectEditOne.tpl:14
+#: templates/album/display.tpl:10 templates/album/display.tpl:200
+#: templates/album/edit.tpl:78 templates/album/include_selectEditOne.tpl:9
+#: templates/album/include_selectEditOne.tpl:14
+#: templates/block/itemlist_modify.tpl:12
+msgid "Album"
+msgstr ""
+
+#: templates/external/album/find.tpl:98 templates/external/album/select.tpl:56
+#: templates/bootstrap/external/album/find.tpl:98
+#: templates/bootstrap/external/album/select.tpl:56
+#: templates/bootstrap/album/view_quickNav.tpl:79
+#: templates/bootstrap/album/view.tpl:76
+#: templates/bootstrap/album/view.csv.tpl:3
+#: templates/album/view_quickNav.tpl:79 templates/album/view.tpl:76
+#: templates/album/view.csv.tpl:3
+msgid "Parent_id"
+msgstr ""
+
+#: templates/external/album/find.tpl:99 templates/external/album/select.tpl:57
+#: templates/bootstrap/external/album/find.tpl:99
+#: templates/bootstrap/external/album/select.tpl:57
+#: templates/bootstrap/album/view_quickNav.tpl:59
+#: templates/bootstrap/album/view_quickNav.tpl:80
+#: templates/bootstrap/album/view.tpl:79 templates/bootstrap/album/edit.tpl:42
+#: templates/bootstrap/album/view.csv.tpl:3
+#: templates/album/view_quickNav.tpl:59 templates/album/view_quickNav.tpl:80
+#: templates/album/view.tpl:79 templates/album/edit.tpl:42
+#: templates/album/view.csv.tpl:3
+msgid "Album access"
+msgstr ""
+
+#: templates/external/album/find.tpl:100
+#: templates/external/album/select.tpl:58
+#: templates/bootstrap/external/album/find.tpl:100
+#: templates/bootstrap/external/album/select.tpl:58
+#: templates/bootstrap/album/view_quickNav.tpl:81
+#: templates/bootstrap/album/view.tpl:82 templates/bootstrap/album/edit.tpl:52
+#: templates/bootstrap/album/view.csv.tpl:3
+#: templates/album/view_quickNav.tpl:81 templates/album/view.tpl:82
+#: templates/album/edit.tpl:52 templates/album/view.csv.tpl:3
+msgid "Password access"
+msgstr ""
+
+#: templates/external/album/find.tpl:101
+#: templates/external/album/select.tpl:59
+#: templates/bootstrap/external/album/find.tpl:101
+#: templates/bootstrap/external/album/select.tpl:59
+#: templates/bootstrap/album/view_quickNav.tpl:82
+#: templates/bootstrap/album/edit.tpl:47
+#: templates/bootstrap/album/view.csv.tpl:3
+#: templates/album/view_quickNav.tpl:82 templates/album/edit.tpl:47
+#: templates/album/view.csv.tpl:3
+msgid "My friends"
+msgstr ""
+
+#: templates/external/album/find.tpl:102
+#: templates/external/album/select.tpl:60
+#: templates/bootstrap/external/album/find.tpl:102
+#: templates/bootstrap/external/album/select.tpl:60
+#: templates/bootstrap/album/view_quickNav.tpl:83
+#: templates/bootstrap/album/view_quickNav.tpl:109
+#: templates/bootstrap/album/view.tpl:85
+#: templates/bootstrap/album/view.csv.tpl:3
+#: templates/album/view_quickNav.tpl:83 templates/album/view_quickNav.tpl:109
+#: templates/album/view.tpl:85 templates/album/edit.tpl:57
+#: templates/album/view.csv.tpl:3
+msgid "Not in frontend"
 msgstr ""
 
 #: templates/external/album/select.tpl:4
@@ -2941,25 +2231,29 @@ msgid ""
 msgstr ""
 
 #: templates/admin/config.tpl:107
-msgid ""
-"If set to true, pictures get modified to maximum width and height for "
-"pictures set in the settings. The aspect ratio of pictures will get received"
-msgstr ""
-
-#: templates/admin/config.tpl:108 templates/bootstrap/admin/config.tpl:90
-msgid "Shrink pictures"
-msgstr ""
-
-#: templates/admin/config.tpl:112
 msgid "Here you can enable breadcrumbs in the display template for albums."
 msgstr ""
 
-#: templates/admin/config.tpl:113
+#: templates/admin/config.tpl:108
 msgid "Breadcrumbs in Frontend?"
 msgstr ""
 
-#: templates/admin/config.tpl:114
+#: templates/admin/config.tpl:109
 msgid "Enable breadcrumps."
+msgstr ""
+
+#: templates/admin/config.tpl:112
+msgid "Kind of show sub albums"
+msgstr ""
+
+#: templates/admin/config.tpl:113
+msgid "Choose the kind of show sub albums"
+msgstr ""
+
+#: templates/admin/config.tpl:114
+msgid ""
+"If set to links, sub albums with password access will not be shown in the "
+"display template."
 msgstr ""
 
 #: templates/admin/config.tpl:117
@@ -3000,43 +2294,230 @@ msgstr ""
 msgid "User delete pictures"
 msgstr ""
 
-#: templates/admin/config.tpl:133 templates/bootstrap/admin/config.tpl:103
+#: templates/admin/config.tpl:134
+msgid "Upload Handler"
+msgstr ""
+
+#: templates/admin/config.tpl:139
+msgid "Here you can manage all settings for uploads."
+msgstr ""
+
+#: templates/admin/config.tpl:142
+msgid ""
+"If this option is set to true, 3 sizes of pictures will be created near the "
+"original picture."
+msgstr ""
+
+#: templates/admin/config.tpl:143
+msgid "Create several picture sizes?"
+msgstr ""
+
+#: templates/admin/config.tpl:147
+msgid "Here you can set the width for the thumbnail."
+msgstr ""
+
+#: templates/admin/config.tpl:148
+msgid "Width for the thumbnail"
+msgstr ""
+
+#: templates/admin/config.tpl:149 templates/admin/config.tpl:159
+#: templates/admin/config.tpl:169
+msgid "Enter the width. Only digits are allowed."
+msgstr ""
+
+#: templates/admin/config.tpl:152
+msgid "Here you can set the height for the thumbnail."
+msgstr ""
+
+#: templates/admin/config.tpl:153
+msgid "Height for the thumbnail"
+msgstr ""
+
+#: templates/admin/config.tpl:154 templates/admin/config.tpl:164
+#: templates/admin/config.tpl:174
+msgid "Enter the height. Only digits are allowed."
+msgstr ""
+
+#: templates/admin/config.tpl:157
+msgid "Here you can set the width for the preview."
+msgstr ""
+
+#: templates/admin/config.tpl:158
+msgid "Width for the preview"
+msgstr ""
+
+#: templates/admin/config.tpl:162
+msgid "Here you can set the height for the preview."
+msgstr ""
+
+#: templates/admin/config.tpl:163
+msgid "Height for the preview"
+msgstr ""
+
+#: templates/admin/config.tpl:167
+msgid "Here you can set the width for the full image."
+msgstr ""
+
+#: templates/admin/config.tpl:168
+msgid "Width for the full image"
+msgstr ""
+
+#: templates/admin/config.tpl:172
+msgid "Here you can set the height for the full image."
+msgstr ""
+
+#: templates/admin/config.tpl:173
+msgid "Height for the full image"
+msgstr ""
+
+#: templates/admin/config.tpl:177
+msgid ""
+"If set to true, pictures get modified to maximum width and height for "
+"pictures set in the settings. The aspect ratio of pictures will get received"
+msgstr ""
+
+#: templates/admin/config.tpl:178 templates/bootstrap/admin/config.tpl:90
+msgid "Shrink pictures"
+msgstr ""
+
+#: templates/admin/config.tpl:182 templates/bootstrap/admin/config.tpl:103
 msgid ""
 "If this option is set to true, for multi upload and zip upload we get the "
 "file name for a title. It is not possible to edit the title directly after "
 "upload."
 msgstr ""
 
-#: templates/admin/config.tpl:134 templates/bootstrap/admin/config.tpl:104
+#: templates/admin/config.tpl:183 templates/bootstrap/admin/config.tpl:104
 msgid "File name for title"
 msgstr ""
 
-#: templates/admin/config.tpl:139 templates/bootstrap/admin/config.tpl:109
+#: templates/admin/config.tpl:188 templates/bootstrap/admin/config.tpl:109
 msgid "Slideshows"
 msgstr ""
 
-#: templates/admin/config.tpl:146 templates/bootstrap/admin/config.tpl:116
+#: templates/admin/config.tpl:195 templates/bootstrap/admin/config.tpl:116
 msgid "1. slideshow"
 msgstr ""
 
-#: templates/admin/config.tpl:150 templates/bootstrap/admin/config.tpl:120
+#: templates/admin/config.tpl:199 templates/bootstrap/admin/config.tpl:120
 msgid "Interval for 1. slideshow"
 msgstr ""
 
-#: templates/admin/config.tpl:151 templates/bootstrap/admin/config.tpl:121
+#: templates/admin/config.tpl:200 templates/bootstrap/admin/config.tpl:121
 msgid "Enter the slide1 interval. Only digits are allowed."
 msgstr ""
 
-#: templates/admin/config.tpl:154 templates/bootstrap/admin/config.tpl:124
+#: templates/admin/config.tpl:203 templates/bootstrap/admin/config.tpl:124
 msgid "Speed for 1. slideshow"
 msgstr ""
 
-#: templates/admin/config.tpl:155 templates/bootstrap/admin/config.tpl:125
+#: templates/admin/config.tpl:204 templates/bootstrap/admin/config.tpl:125
 msgid "Enter the slide1 speed. Only digits are allowed."
 msgstr ""
 
-#: templates/admin/config.tpl:162 templates/bootstrap/admin/config.tpl:132
+#: templates/admin/config.tpl:211 templates/bootstrap/admin/config.tpl:132
 msgid "Update configuration"
+msgstr ""
+
+#: templates/picture/display.tpl:14 templates/picture/display.tpl:18
+#: templates/picture/view.tpl:96 templates/picture/view.tpl:180
+#: templates/bootstrap/picture/display.tpl:14
+#: templates/bootstrap/picture/display.tpl:18
+#: templates/bootstrap/picture/view.tpl:96
+#: templates/bootstrap/picture/view.tpl:180
+#: templates/bootstrap/album/display.tpl:17
+#: templates/bootstrap/album/display.tpl:27
+#: templates/bootstrap/album/view.tpl:90
+#: templates/bootstrap/album/view.tpl:142 templates/album/display.tpl:16
+#: templates/album/display.tpl:26 templates/album/view.tpl:90
+#: templates/album/view.tpl:142
+msgid "Actions"
+msgstr ""
+
+#: templates/picture/display.tpl:33 templates/picture/display.tpl:36
+#: templates/picture/display.tpl:48 templates/picture/display.tpl:51
+#: templates/picture/view.tpl:118 templates/picture/view.tpl:121
+#: templates/picture/view.tpl:133 templates/picture/view.tpl:136
+#: templates/bootstrap/picture/display.tpl:33
+#: templates/bootstrap/picture/display.tpl:36
+#: templates/bootstrap/picture/display.tpl:48
+#: templates/bootstrap/picture/display.tpl:51
+#: templates/bootstrap/picture/view.tpl:118
+#: templates/bootstrap/picture/view.tpl:121
+#: templates/bootstrap/picture/view.tpl:133
+#: templates/bootstrap/picture/view.tpl:136
+msgid "This setting is enabled. Click here to disable it."
+msgstr ""
+
+#: templates/picture/display.tpl:34 templates/picture/display.tpl:37
+#: templates/picture/display.tpl:49 templates/picture/display.tpl:52
+#: templates/picture/view.tpl:119 templates/picture/view.tpl:122
+#: templates/picture/view.tpl:134 templates/picture/view.tpl:137
+#: templates/bootstrap/picture/display.tpl:34
+#: templates/bootstrap/picture/display.tpl:37
+#: templates/bootstrap/picture/display.tpl:49
+#: templates/bootstrap/picture/display.tpl:52
+#: templates/bootstrap/picture/view.tpl:119
+#: templates/bootstrap/picture/view.tpl:122
+#: templates/bootstrap/picture/view.tpl:134
+#: templates/bootstrap/picture/view.tpl:137
+msgid "This setting is disabled. Click here to enable it."
+msgstr ""
+
+#: templates/picture/display.tpl:70
+#: templates/picture/include_displayItemListMany.tpl:56
+#: templates/bootstrap/picture/display.tpl:70
+#: templates/bootstrap/picture/include_displayItemListMany.tpl:32
+msgid "Invocations"
+msgstr ""
+
+#: templates/picture/display.tpl:86
+#: templates/picture/include_displayItemListMany.tpl:23
+#: templates/picture/view.tpl:167
+#: templates/picture/include_displayItemListOne.tpl:21
+#: templates/picture/include_admindisplayItemListMany.tpl:10
+#: templates/bootstrap/picture/display.tpl:85
+#: templates/bootstrap/picture/view.tpl:167
+#: templates/bootstrap/picture/include_displayItemListOne.tpl:21
+#: templates/bootstrap/picture/include_admindisplayItemListMany.tpl:10
+#: templates/bootstrap/album/view.tpl:129
+#: templates/bootstrap/album/include_displayItemListOne.tpl:21
+#: templates/album/view.tpl:129
+#: templates/album/include_displayItemListOne.tpl:21
+msgid "Open quick view window"
+msgstr ""
+
+#: templates/picture/display.tpl:86
+#: templates/picture/include_displayItemListMany.tpl:24
+#: templates/picture/view.tpl:167
+#: templates/picture/include_displayItemListOne.tpl:21
+#: templates/picture/include_admindisplayItemListMany.tpl:11
+#: templates/bootstrap/picture/display.tpl:85
+#: templates/bootstrap/picture/view.tpl:167
+#: templates/bootstrap/picture/include_displayItemListOne.tpl:21
+#: templates/bootstrap/picture/include_admindisplayItemListMany.tpl:11
+#: templates/bootstrap/album/view.tpl:129
+#: templates/bootstrap/album/include_displayItemListOne.tpl:21
+#: templates/album/view.tpl:129
+#: templates/album/include_displayItemListOne.tpl:21
+msgid "Quick view"
+msgstr ""
+
+#: templates/picture/display.tpl:97 templates/picture/view.tpl:175
+#: templates/bootstrap/picture/display.tpl:96
+#: templates/bootstrap/picture/view.tpl:175
+#: templates/bootstrap/album/view.tpl:137 templates/album/view.tpl:137
+msgid "Not set."
+msgstr ""
+
+#: templates/picture/display.tpl:104
+#: templates/bootstrap/picture/display.tpl:103
+msgid "Meta Datas"
+msgstr ""
+
+#: templates/picture/display.tpl:111
+#: templates/bootstrap/picture/display.tpl:110
+msgid "Not supported for this picture"
 msgstr ""
 
 #: templates/picture/view_quickNav.tpl:6
@@ -3053,8 +2534,32 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+#: templates/picture/view_quickNav.tpl:103 templates/picture/editMulti.tpl:136
+#: templates/bootstrap/picture/view_quickNav.tpl:103
+#: templates/bootstrap/picture/editMulti.tpl:130
+#: templates/bootstrap/album/view_quickNav.tpl:117
+#: templates/album/view_quickNav.tpl:117
+msgid "OK"
+msgstr ""
+
 #: templates/picture/main.tpl:7 templates/bootstrap/picture/main.tpl:7
 msgid "Welcome to the picture section of the M u image application."
+msgstr ""
+
+#: templates/picture/include_displayItemListMany.tpl:20
+msgid "No title"
+msgstr ""
+
+#: templates/picture/include_displayItemListMany.tpl:48
+msgid "No valid file"
+msgstr ""
+
+#: templates/picture/include_displayItemListMany.tpl:58
+msgid "Rotate picture to left"
+msgstr ""
+
+#: templates/picture/include_displayItemListMany.tpl:59
+msgid "Rotate picture to right"
 msgstr ""
 
 #: templates/picture/multiUpload.tpl:7
@@ -3062,9 +2567,90 @@ msgstr ""
 msgid "Multi upload"
 msgstr ""
 
+#: templates/picture/multiUpload.tpl:16 templates/picture/edit.tpl:31
+#: templates/picture/zipUpload.tpl:17 templates/picture/editMulti.tpl:23
+#: templates/bootstrap/picture/multiUpload.tpl:16
+#: templates/bootstrap/picture/edit.tpl:31
+#: templates/bootstrap/picture/zipUpload.tpl:17
+#: templates/bootstrap/picture/editMulti.tpl:23
+#: templates/bootstrap/album/edit.tpl:29 templates/album/edit.tpl:29
+msgid "Content"
+msgstr ""
+
+#: templates/picture/multiUpload.tpl:21 templates/picture/edit.tpl:60
+#: templates/picture/editMulti.tpl:52
+#: templates/bootstrap/picture/multiUpload.tpl:21
+#: templates/bootstrap/picture/edit.tpl:63
+#: templates/bootstrap/picture/editMulti.tpl:52
+msgid "Allowed file extensions:"
+msgstr ""
+
+#: templates/picture/multiUpload.tpl:22 templates/picture/edit.tpl:61
+#: templates/picture/zipUpload.tpl:22 templates/picture/editMulti.tpl:53
+#: templates/bootstrap/picture/multiUpload.tpl:22
+#: templates/bootstrap/picture/edit.tpl:64
+#: templates/bootstrap/picture/zipUpload.tpl:22
+#: templates/bootstrap/picture/editMulti.tpl:53
+msgid "Allowed file size:"
+msgstr ""
+
+#: templates/picture/multiUpload.tpl:23 templates/picture/edit.tpl:62
+#: templates/picture/editMulti.tpl:54
+#: templates/bootstrap/picture/multiUpload.tpl:23
+#: templates/bootstrap/picture/edit.tpl:65
+#: templates/bootstrap/picture/editMulti.tpl:54
+msgid "Required width:"
+msgstr ""
+
+#: templates/picture/multiUpload.tpl:24 templates/picture/edit.tpl:63
+#: templates/picture/editMulti.tpl:55
+#: templates/bootstrap/picture/multiUpload.tpl:24
+#: templates/bootstrap/picture/edit.tpl:66
+#: templates/bootstrap/picture/editMulti.tpl:55
+msgid "Maximum width:"
+msgstr ""
+
+#: templates/picture/multiUpload.tpl:25 templates/picture/edit.tpl:64
+#: templates/picture/editMulti.tpl:56
+#: templates/bootstrap/picture/multiUpload.tpl:25
+#: templates/bootstrap/picture/edit.tpl:67
+#: templates/bootstrap/picture/editMulti.tpl:56
+msgid "Maximum height:"
+msgstr ""
+
 #: templates/picture/multiUpload.tpl:31
 #: templates/bootstrap/picture/multiUpload.tpl:31
 msgid "Create pictures"
+msgstr ""
+
+#: templates/picture/view.tpl:31 templates/bootstrap/picture/view.tpl:31
+#: templates/bootstrap/album/view.tpl:32 templates/album/view.tpl:32
+msgid "Back to paginated view"
+msgstr ""
+
+#: templates/picture/view.tpl:35 templates/bootstrap/picture/view.tpl:35
+#: templates/bootstrap/album/view.tpl:36 templates/album/view.tpl:36
+msgid "Show all entries"
+msgstr ""
+
+#: templates/picture/view.tpl:109 templates/bootstrap/picture/view.tpl:109
+#: templates/bootstrap/album/view.tpl:103 templates/album/view.tpl:103
+msgid "View detail page"
+msgstr ""
+
+#: templates/picture/view.tpl:197 templates/bootstrap/picture/view.tpl:197
+#: templates/mailz/itemlist_Picture_text.tpl:7
+#: templates/mailz/itemlist_Picture_html.tpl:11
+msgid "No pictures found."
+msgstr ""
+
+#: templates/picture/view.tpl:210 templates/bootstrap/picture/view.tpl:210
+msgid "With selected pictures"
+msgstr ""
+
+#: templates/picture/view.tpl:212 templates/bootstrap/picture/view.tpl:212
+#: templates/bootstrap/album/view.tpl:174 templates/album/view.tpl:174
+msgid "Choose action"
 msgstr ""
 
 #: templates/picture/view.atom.tpl:8 templates/picture/view.rss.tpl:15
@@ -3077,6 +2663,84 @@ msgstr ""
 #: templates/bootstrap/picture/view.atom.tpl:9
 #: templates/bootstrap/picture/view.rss.tpl:16
 msgid "A direct feed showing the list of pictures"
+msgstr ""
+
+#: templates/picture/edit.tpl:15 templates/picture/edit.tpl:19
+#: templates/picture/editMulti.tpl:7 templates/picture/editMulti.tpl:11
+#: templates/bootstrap/picture/edit.tpl:15
+#: templates/bootstrap/picture/edit.tpl:19
+#: templates/bootstrap/picture/editMulti.tpl:7
+#: templates/bootstrap/picture/editMulti.tpl:11
+msgid "Edit picture"
+msgstr ""
+
+#: templates/picture/edit.tpl:34 templates/picture/editMulti.tpl:26
+#: templates/bootstrap/picture/edit.tpl:34
+#: templates/bootstrap/picture/editMulti.tpl:26
+msgid "Enter the title of the picture"
+msgstr ""
+
+#: templates/picture/edit.tpl:38 templates/picture/editMulti.tpl:30
+#: templates/bootstrap/picture/edit.tpl:38
+#: templates/bootstrap/picture/editMulti.tpl:30
+msgid "Enter the description of the picture"
+msgstr ""
+
+#: templates/picture/edit.tpl:42 templates/picture/editMulti.tpl:34
+#: templates/bootstrap/picture/edit.tpl:42
+#: templates/bootstrap/picture/editMulti.tpl:34
+msgid "show title ?"
+msgstr ""
+
+#: templates/picture/edit.tpl:46 templates/picture/editMulti.tpl:38
+#: templates/bootstrap/picture/edit.tpl:48
+#: templates/bootstrap/picture/editMulti.tpl:38
+msgid "show description ?"
+msgstr ""
+
+#: templates/picture/edit.tpl:67 templates/picture/editMulti.tpl:59
+#: templates/bootstrap/picture/edit.tpl:70
+#: templates/bootstrap/picture/editMulti.tpl:59
+msgid "Pictures with too big width or height will be shrinked."
+msgstr ""
+
+#: templates/picture/edit.tpl:72 templates/picture/editMulti.tpl:63
+#: templates/bootstrap/picture/edit.tpl:75
+#: templates/bootstrap/picture/editMulti.tpl:63
+msgid "Current file"
+msgstr ""
+
+#: templates/picture/edit.tpl:87 templates/picture/editMulti.tpl:77
+#: templates/bootstrap/picture/edit.tpl:90
+#: templates/bootstrap/picture/editMulti.tpl:77
+msgid "Enter the image view of the picture"
+msgstr ""
+
+#: templates/picture/edit.tpl:94 templates/bootstrap/picture/edit.tpl:96
+msgid "album image ?"
+msgstr ""
+
+#: templates/picture/edit.tpl:123 templates/picture/editMulti.tpl:109
+#: templates/bootstrap/picture/edit.tpl:127
+#: templates/bootstrap/picture/editMulti.tpl:107
+#: templates/bootstrap/album/edit.tpl:106 templates/album/edit.tpl:104
+msgid "Return control"
+msgstr ""
+
+#: templates/picture/edit.tpl:125 templates/picture/editMulti.tpl:111
+#: templates/bootstrap/picture/edit.tpl:129
+#: templates/bootstrap/picture/editMulti.tpl:109
+#: templates/bootstrap/album/edit.tpl:108 templates/album/edit.tpl:106
+msgid "Create another item after save"
+msgstr ""
+
+#: templates/picture/edit.tpl:138 templates/bootstrap/picture/edit.tpl:142
+msgid "Really delete this picture?"
+msgstr ""
+
+#: templates/picture/delete.tpl:8 templates/picture/editMulti.tpl:128
+#: templates/bootstrap/picture/delete.tpl:8
+msgid "Delete picture"
 msgstr ""
 
 #: templates/picture/delete.tpl:19 templates/bootstrap/picture/delete.tpl:19
@@ -3100,15 +2764,40 @@ msgid "Allowed file extensions"
 msgstr ""
 
 #: templates/picture/zipUpload.tpl:25
-#: templates/bootstrap/picture/zipUpload.tpl:24
+#: templates/bootstrap/picture/zipUpload.tpl:25
 msgid ""
 "Here you can upload a zip file. Please have attention the archive does only "
 "contain image files."
 msgstr ""
 
 #: templates/picture/zipUpload.tpl:29
-#: templates/bootstrap/picture/zipUpload.tpl:28
+#: templates/bootstrap/picture/zipUpload.tpl:29
 msgid "Upload zip file"
+msgstr ""
+
+#: templates/picture/editMulti.tpl:97
+#: templates/bootstrap/picture/editMulti.tpl:95
+msgid "Hooks"
+msgstr ""
+
+#: templates/picture/editMulti.tpl:120 templates/picture/editMulti.tpl:132
+#: templates/bootstrap/picture/editMulti.tpl:118
+#: templates/bootstrap/picture/editMulti.tpl:126
+msgid "Previous picture"
+msgstr ""
+
+#: templates/picture/editMulti.tpl:123
+#: templates/bootstrap/picture/editMulti.tpl:121
+msgid "Next picture"
+msgstr ""
+
+#: templates/picture/editMulti.tpl:125
+#: templates/bootstrap/picture/editMulti.tpl:123
+msgid "Finish editing"
+msgstr ""
+
+#: templates/picture/editMulti.tpl:127
+msgid "Really delete this picture? If you a delete a picture"
 msgstr ""
 
 #: templates/contenttype/item_edit.tpl:5
@@ -3266,12 +2955,81 @@ msgstr ""
 msgid "Logo MUImage"
 msgstr ""
 
-#: templates/bootstrap/album/display.tpl:36
+#: templates/bootstrap/album/display.tpl:42
 msgid "Actions for this album"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:49 templates/album/display.tpl:50
+msgid "Add"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:50 templates/album/display.tpl:51
+msgid "Multi-Add"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:51 templates/album/display.tpl:52
+msgid "Zip-Add"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:61 templates/album/display.tpl:60
+msgid "View as:"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:71 templates/album/display.tpl:67
+msgid "Change view"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:100 templates/album/display.tpl:85
+msgid "Save positions"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:108 templates/album/display.tpl:93
+msgid "No pictures"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:117
+#: templates/bootstrap/album/display.tpl:151
+#: templates/bootstrap/album/display.tpl:185
+#: templates/bootstrap/album/view.tpl:241 templates/album/display.tpl:98
+#: templates/album/display.tpl:138 templates/album/display.tpl:163
+#: templates/album/display.tpl:221 templates/album/view.tpl:256
+msgid "SubAlbums"
+msgstr ""
+
+#: templates/bootstrap/album/display.tpl:168
+#: templates/bootstrap/album/view.tpl:263 templates/album/display.tpl:152
+#: templates/album/view.tpl:271
+msgid "This album is saved with a password by"
 msgstr ""
 
 #: templates/bootstrap/album/main.tpl:7 templates/album/main.tpl:7
 msgid "Welcome to the album section of the M u image application."
+msgstr ""
+
+#: templates/bootstrap/album/view.tpl:88
+#: templates/bootstrap/album/view.csv.tpl:4 templates/album/view.tpl:88
+#: templates/album/view.csv.tpl:4
+msgid "Parent"
+msgstr ""
+
+#: templates/bootstrap/album/view.tpl:109 templates/album/display.tpl:131
+#: templates/album/view.tpl:109 templates/album/view.tpl:245
+msgid "No description"
+msgstr ""
+
+#: templates/bootstrap/album/view.tpl:159 templates/album/view.tpl:159
+#: templates/mailz/itemlist_Album_text.tpl:7
+#: templates/mailz/itemlist_Album_html.tpl:11
+msgid "No albums found."
+msgstr ""
+
+#: templates/bootstrap/album/view.tpl:172 templates/album/view.tpl:172
+msgid "With selected albums"
+msgstr ""
+
+#: templates/bootstrap/album/view.tpl:243
+#: templates/bootstrap/album/view.tpl:273 templates/album/view.tpl:280
+msgid "No SubAlbums"
 msgstr ""
 
 #: templates/bootstrap/album/view.atom.tpl:8
@@ -3286,8 +3044,70 @@ msgstr ""
 msgid "A direct feed showing the list of albums"
 msgstr ""
 
+#: templates/bootstrap/album/edit.tpl:14 templates/bootstrap/album/edit.tpl:18
+#: templates/album/edit.tpl:14 templates/album/edit.tpl:18
+msgid "Edit album"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:32 templates/album/edit.tpl:32
+msgid "Enter the title of the album"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:38 templates/album/edit.tpl:38
+msgid "Enter the description of the album"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:43 templates/album/edit.tpl:43
+msgid "Choose the album access"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:48 templates/album/edit.tpl:48
+msgid "Enter your friends (comma seperated)!"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:53 templates/album/edit.tpl:53
+msgid "Enter the password access of the album"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:58 templates/album/edit.tpl:58
+msgid "not in frontend ?"
+msgstr ""
+
 #: templates/bootstrap/album/edit.tpl:59
 msgid "not in Frontend ?"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:71 templates/album/edit.tpl:69
+msgid ""
+"Notice! Your are in admin group. So you get all albums to select. Be careful "
+"to make main or sub albums in view of logic!"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:72 templates/album/edit.tpl:70
+msgid ""
+"So pleace avoid for example that an album becomes main album of an album, "
+"that is children album already. Otherwise you will produce big problems!"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:75 templates/album/edit.tpl:73
+msgid ""
+"Notice! You get only albums to select you have created! Also you get only "
+"albums that are qualified under aspects of logic and your quotas!"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:86 templates/album/edit.tpl:84
+msgid ""
+"Attention! This album is a sub album and you have no quotas to make it to "
+"main album! You may select another album as main album."
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:90 templates/album/edit.tpl:88
+msgid ""
+"Attention! This album is on first level and you have no quotas to change!"
+msgstr ""
+
+#: templates/bootstrap/album/edit.tpl:120 templates/album/edit.tpl:118
+msgid "Really delete this album?"
 msgstr ""
 
 #: templates/bootstrap/album/delete.tpl:8 templates/album/delete.tpl:8
@@ -3317,6 +3137,18 @@ msgstr ""
 
 #: templates/bootstrap/album/view.csv.tpl:5 templates/album/view.csv.tpl:5
 msgid "Children"
+msgstr ""
+
+#: templates/album/display.tpl:50
+msgid "Load up a Picture"
+msgstr ""
+
+#: templates/album/display.tpl:51
+msgid "Load up few Pictures"
+msgstr ""
+
+#: templates/album/display.tpl:52
+msgid "Load up a zip file with Pictures"
 msgstr ""
 
 #: templates/block/itemlist_modify.tpl:8
