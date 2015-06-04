@@ -40,10 +40,16 @@
                     <select id="mUImagePasteAs" name="pasteas">
                         <option value="1">{gt text='Link to the picture'}</option>
                         <option value="2">{gt text='ID of picture'}</option>
-                        <option value="3">{gt text='Thumbnail of picture'}</option>
+                        {if $modvars.MUImage.createSeveralPictureSizes eq false}
+                        	<option value="3">{gt text='Thumbnail of picture'}</option>
+                        {else}
+                        	<option value="4">{gt text='Thumbnail of picture'}</option>
+                        	<option value="5">{gt text='Preview of picture'}</option>
+                        	<option value="6">{gt text='Thumbnail of picture with lightbox'}</option>
+                        	<option value="7">{gt text='Preview of picture with lightbox'}</option>
+                        {/if}
                     </select>
             </div>
-
             <div class="z-formrow">
                 <label for="mUImageWidth">{gt text='Width'}:</label>
                     <input type="text" id="mUImageWidth" name="mUImageWidth" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
@@ -68,6 +74,10 @@
                                 <input type="hidden" id="path{$picture.id}" value="{$picture.imageUploadFullPathURL}" />
                                 <input type="hidden" id="width{$picture.id}" value="{$picture.imageUploadMeta.width}" />
                                 <input type="hidden" id="height{$picture.id}" value="{$picture.imageUploadMeta.height}" />
+                                <input type="hidden" id="pathtmb{$picture.id}" value="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_tmb.jpg" />
+                                <input type="hidden" id="pathpre{$picture.id}" value="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_pre.jpg" />
+                                <input type="hidden" id="pathfull{$picture.id}" value="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_full.jpg" />
+                                <input type="hidden" id="createPictureSizes" value="{$modvars.MUImage.createSeveralPictureSizes}" />
                             </li>
                         {foreachelse}
                             <li>{gt text='No entries found.'}</li>
