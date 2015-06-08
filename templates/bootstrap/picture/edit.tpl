@@ -73,7 +73,7 @@
                 {if $picture.imageUpload ne ''}
                     <span class="form-group">
                         {gt text='Current file'}:
-                        <a href="{$picture.imageUploadFullPathUrl}" title="{$formattedEntityTitle|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
+                        <a href="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_pre.jpg" title="{$formattedEntityTitle|replace:"\"":""}"{if $picture.imageUploadMeta.isImage} rel="imageviewer[picture]"{/if}>
                         {if $picture.imageUploadMeta.isImage}
                             {thumb image=$picture.imageUploadFullPath objectid="picture-`$picture.id`" preset=$pictureThumbPresetImageUpload tag=true img_alt=$formattedEntityTitle}
                         {else}

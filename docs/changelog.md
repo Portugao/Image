@@ -7,6 +7,8 @@ Changes in 1.3.0
 
 # closed #22 Scribite 5.0 plugins are available
 
+# closed #29 we have dropdown list now
+
 # closed #32 user defined security schemata, it's possible give set all, users, freinds, password
 
 # closed #45 refactored with MOST
@@ -81,6 +83,8 @@ Changes in 1.3.0
 
 # closed #114 CKeditor does not block the editor anymore
 
+# closed #115 now we have a zip upload method
+
 # closed #117 possible now to take file name as picture name
 
 # closed #118 password not in backend anymore
@@ -93,9 +97,7 @@ Changes in 1.3.0
 
 # closed #122 new pot file and german translation completed
 
-# closed #123 all pictures get state 'approved' in multi and zip upload
-
-# closed #124 all pictures with state initial now
+# closed #124 all pictures get state 'approved' in multi and zip upload
 
 # closed #125, #126 check for exif library now
 
@@ -110,6 +112,8 @@ Changes in 1.3.0
 # closed #136 flexible view of subalbums in display template
 
 # closed #137 translation problem fixed
+
+# closed #141 we have a new upload feature, that creates 3 additional picture sizes
 
 some more fixes:
 
