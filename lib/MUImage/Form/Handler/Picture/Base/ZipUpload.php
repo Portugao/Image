@@ -269,7 +269,7 @@ class MUImage_Form_Handler_Picture_Base_ZipUpload extends MUImage_Form_Handler_C
                 $id = $pictures[0];
                 $url = ModUtil::url($this->name, 'picture', 'editMulti', array('ot' => 'picture', 'id' => $id, 'album' => $albumid));
             } else {
-                $url = ModUtil::url($this->name, 'picture', 'multiUpload', array('ot' => 'picture', 'album' => $albumid));
+                $url = ModUtil::url($this->name, 'picture', 'zipUpload', array('ot' => 'picture', 'album' => $albumid));
             }
             return System::redirect($url);
 
