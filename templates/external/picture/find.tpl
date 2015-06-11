@@ -66,7 +66,7 @@
                         <ul>
                         {foreach item='picture' from=$items}
                             <li>
-                                <a href="#" onclick="muimage.finder.selectItem({$picture.id})" onkeypress="muimage.finder.selectItem({$picture.id})">{$picture->getTitleFromDisplayPattern()}</a>
+                                <a href="#" onclick="muimage.finder.selectItem({$picture.id})" onkeypress="muimage.finder.selectItem({$picture.id})">{thumb image=$picture.imageUploadFullPath width=100 height=100 img_alt=$picture->getTitleFromDisplayPattern() tag=true mode='inset' extension='jpg'}</a>
                                 <input type="hidden" id="url{$picture.id}" value="{modurl modname='MUImage' type='user' func='display' ot='picture'  id=$picture.id fqurl=true}" />
                                 <input type="hidden" id="title{$picture.id}" value="{$picture->getTitleFromDisplayPattern()|replace:"\"":""}" />
                                 <input type="hidden" id="desc{$picture.id}" value="{capture assign='description'}{if $picture.description ne ''}{$picture.description}{/if}
