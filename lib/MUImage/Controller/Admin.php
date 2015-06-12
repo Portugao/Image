@@ -332,4 +332,19 @@ class MUImage_Controller_Admin extends MUImage_Controller_Base_Admin
 		// Execute form using supplied template and page event handler
 		return $view->execute('admin/import.tpl', new MUImage_Form_Handler_Admin_Base_Import());
 	}
+	
+	/**
+	 * This method takes care of the generating several picture sizes
+	 */
+	public function sizes()
+	{
+	    $this->throwForbiddenUnless(SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN));
+	    
+	    // Create new Form reference
+	    $view = FormUtil::newForm($this->name, $this);
+	    
+	    // Execute form using supplied template and page event handler
+	    return $view->execute('admin/createSeveralSizes.tpl', new MUImage_Form_Handler_Admin_Base_Sizes());
+	     
+	}
 }

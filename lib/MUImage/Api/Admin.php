@@ -27,24 +27,31 @@ class MUImage_Api_Admin extends MUImage_Api_Base_Admin
 
         if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_READ)) {
             $links[] = array('url'   => ModUtil::url($this->name, 'user', 'main'),
-                'text'  => $this->__('Frontend'),
-                'title' => $this->__('Switch to user area.'),
-                'class' => 'z-icon-es-home');
+                    'text'  => $this->__('Frontend'),
+                    'title' => $this->__('Switch to user area.'),
+                    'class' => 'z-icon-es-home');
         }
         if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             $links[] = array('url'   => ModUtil::url($this->name, 'admin', 'view', array('ot' => 'album')),
-                'text'  => $this->__('Albums'),
-                'title' => $this->__('Album list'));
+                    'text'  => $this->__('Albums'),
+                    'title' => $this->__('Album list'));
         }
         if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             $links[] = array('url'   => ModUtil::url($this->name, 'admin', 'view', array('ot' => 'picture')),
-                'text'  => $this->__('Pictures'),
-                'title' => $this->__('Picture list'));
+                    'text'  => $this->__('Pictures'),
+                    'title' => $this->__('Picture list'));
+        }
+        if (ModUtil::getVar($this->name, 'createSeveralPictureSizes') === true) {
+            if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
+                $links[] = array('url'   => ModUtil::url($this->name, 'admin', 'sizes'),
+                        'text'  => $this->__('Generate sizes'),
+                        'title' => $this->__('Generate several sizes for old uploads'));
+            }
         }
         if (SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             $links[] = array('url'   => ModUtil::url($this->name, 'admin', 'config'),
-                'text'  => $this->__('Configuration'),
-                'title' => $this->__('Manage settings for this application'));
+                    'text'  => $this->__('Configuration'),
+                    'title' => $this->__('Manage settings for this application'));
         }
         return $links;
     }

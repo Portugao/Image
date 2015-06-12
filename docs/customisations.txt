@@ -62,7 +62,7 @@ implemented classes
 *lib/MUImage/Entity/Repository/Album.php
 
 *lib/MUImage/Form/Handler/Admin/Config.php
-*lib/MUImage/Form/Handler/Admin/Base/Import.php
+*lib/MUImage/Form/Handler/Admin/Base/Sizes.php
 *lib/MUImage/Form/Handler/Admin/Picture/Edit.php
 *lib/MUImage/Form/Handler/User/Edit.php
 *lib/MUImage/Form/Handler/User/Base/EditMulti.php
@@ -87,9 +87,7 @@ added files
 *lib/MUImage/Controller/Base/External.php
 *lib/MUImage/Controller/External.php
 
-*templates/admin/album.tpl
-*templates/admin/import.tpl
-
+*templates/admin/createSeveralSizes.tpl
 
 *templates/block/oneitem.tpl
 *templates/block/oneitem_modifiy.tpl
