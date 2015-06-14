@@ -6,7 +6,7 @@
 {include file="bootstrap/`$lct`/header.tpl"}
 
 <div class="container">
-	<div class="row">
+	{*<div class="row"> *}
     	{gt text='Album' assign='templateTitle'}
     	{assign var='templateTitle' value=$album.title|default:$templateTitle}
     	{pagesetvar name='title' value=$templateTitle|@html_entity_decode}
@@ -27,8 +27,8 @@
         <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}{icon id="itemActions`$album.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
         </h2>
     {/if}
-    </div>
-    <div class="row">
+   {* </div>
+    <div class="row"> *}
 	{if $lct eq 'user'}
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
 		{$album.description}<br /><br />
@@ -120,7 +120,7 @@
       </h4>
     </div>
     <div id="collapseZwei" class="panel-collapse collapse" role="tabpanel" aria-labelledby="überschriftZwei">
-      <div class="panel-body">
+      <div class="collapse panel-body in">
 		{if isset($album.children) && count($album.children) > 0}
 			<ul>    
 		    {foreach item='childAlbum' from=$album.children}
@@ -178,7 +178,7 @@
 	    </div>
      </div>
     </div>
-  </div>
+  {*</div> *}
 </div>
 {/if}
 {if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links'}
