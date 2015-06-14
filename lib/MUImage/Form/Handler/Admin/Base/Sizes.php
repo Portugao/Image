@@ -114,6 +114,8 @@ class MUImage_Form_Handler_Admin_Base_Sizes extends Zikula_Form_AbstractHandler
             $serviceManager = ServiceUtil::getManager();
             $controllerHelper = new MUImage_Util_Controller($serviceManager);
             
+            $entityManager = $serviceManager->getService('doctrine.entitymanager');
+            
             // get base path for picture
             $objectType = 'picture';
             $fieldName = 'imageUpload';
@@ -147,6 +149,14 @@ class MUImage_Form_Handler_Admin_Base_Sizes extends Zikula_Form_AbstractHandler
                     $nameForThumb = $fileNameWithoutExtension . '_full.jpg';
                     $imagine->open($basePath . $picture['imageUpload'])->thumbnail(new Box($widthThird, $heightThird), 'inset')->save($basePath . $nameForThumb);
                 }
+                
+                $pictureObject = $pictureRepository->selectById($picture['id']);
+                $meta = $pictureObject->getImageUploadMeta;
+                $meta['filename'] = $fileNameWithoutExtension;
+                
+                $pictureObject->setImageUploadMeta($meta);
+                $entityManager->flush();
+                
             }
 
             LogUtil::registerStatus($this->__('Done! Several sizes for old uploads created.'));
