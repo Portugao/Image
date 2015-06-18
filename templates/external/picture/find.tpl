@@ -74,9 +74,9 @@
                                 <input type="hidden" id="path{$picture.id}" value="{$picture.imageUploadFullPathURL}" />
                                 <input type="hidden" id="width{$picture.id}" value="{$picture.imageUploadMeta.width}" />
                                 <input type="hidden" id="height{$picture.id}" value="{$picture.imageUploadMeta.height}" />
-                                <input type="hidden" id="pathtmb{$picture.id}" value="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_tmb.jpg" />
-                                <input type="hidden" id="pathpre{$picture.id}" value="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_pre.jpg" />
-                                <input type="hidden" id="pathfull{$picture.id}" value="userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_full.jpg" />
+                                <input type="hidden" id="pathtmb{$picture.id}" value="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_tmb.jpg" />
+                                <input type="hidden" id="pathpre{$picture.id}" value="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_pre.jpg" />
+                                <input type="hidden" id="pathfull{$picture.id}" value="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_full.jpg" />
                                 <input type="hidden" id="createPictureSizes" value="{$modvars.MUImage.createSeveralPictureSizes}" />
                             </li>
                         {foreachelse}

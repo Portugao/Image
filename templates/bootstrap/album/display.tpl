@@ -5,7 +5,7 @@
 {/if}
 {include file="bootstrap/`$lct`/header.tpl"}
 
-<div class="container">
+<div class="col-md-12">
 	{*<div class="row"> *}
     	{gt text='Album' assign='templateTitle'}
     	{assign var='templateTitle' value=$album.title|default:$templateTitle}
@@ -37,7 +37,7 @@
 	    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
 	    {if $album.createdUserId eq $coredata.user.uid || $groupMember eq 1}
 			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
-				<div id="action-for-albums" class="col-md-3">
+				<div id="action-for-albums" class="col-md-5">
 				<div style="z-index: 5000;" class="btn-group">
   					<a class="btn btn-default" href="#"><i class="fa fa-user fa-fw"></i>{gt text='Actions for this album'}</a>
   					<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
@@ -56,7 +56,7 @@
 			{/checkpermissionblock}
 	    {/if}  
 	    {if $modulevars.slideshow1 || $modulevars.slideshow2}
-	    <div id="select-view-album" class="col-md-9">
+	    <div id="select-view-album" class="col-md-7">
 		<form class="form-inline" style="display:inline" action="{modurl modname='MUImage' type='user' func='template' id=$album.id}" method="post">
 		    <label>{gt text="View as:"}</label>
 		    <select id="template" class="form-control" name="template">
@@ -74,7 +74,7 @@
 	    {/if}
 
 
-	<div id="muimage-user-bootstrap-body" class="col-xs-12">
+	<div id="muimage-user-bootstrap-body" class="col-md-12">
 	
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
