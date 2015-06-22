@@ -50,10 +50,14 @@
                         {/if}
                     </select>
             </div>
+            {if $modvars.MUImage.createSeveralPictureSizes eq false}
             <div class="z-formrow">
                 <label for="mUImageWidth">{gt text='Width'}:</label>
                     <input type="text" id="mUImageWidth" name="mUImageWidth" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
             </div>
+            {else}
+            	<input id="mUImageWidth" name="mUImageWidth" type="hidden" value="" />
+            {/if}
             
            {* <div class="z-formrow">
                 <label for="mUImageHeight">{gt text='Height'}:</label>
