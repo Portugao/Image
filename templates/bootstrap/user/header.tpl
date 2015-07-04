@@ -12,7 +12,7 @@
 {else}
 	{if $layout eq 'bootstrap'}
 	{pageaddvar name='stylesheet' value='modules/MUImage/style/bootstrap.css'}
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	{* <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"> not needed normally because bootstrap should be included within the theme *}
 	<link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
 	<link rel="stylesheet" href="modules/MUImage/Vendor/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">	
 	{/if}		
@@ -22,41 +22,44 @@
 
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
 	<h2>{modgetinfo info='displayname'}{if $templateTitle}: {$templateTitle}{/if}</h2>
-	<nav class="navbar navbar-default">
-  	<div class="container">
-    <!-- Titel und Schalter werden für eine bessere mobile Ansicht zusammengefasst -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Navigation ein-/ausblenden</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-            <a class="navbar-brand" href="{$homepage}">
-        		<img alt="{gt text='Logo MUImage'}" src="modules/MUImage/images/muimage.png">
-      		</a>
-    </div>
+	<div id="muimage-bootstrap-navbar-default">
+		<nav class="navbar navbar-default">
+  			<div class="container">
+    		<!-- Titel und Schalter werden für eine bessere mobile Ansicht zusammengefasst -->
+    		<div class="navbar-header">
+      			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        			<span class="sr-only">Navigation ein-/ausblenden</span>
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+      			</button>
+           	 	<a class="navbar-brand" href="{$homepage}">
+        			<img alt="{gt text='Logo MUImage'}" src="modules/MUImage/images/muimage.png">
+      			</a>
+   			 </div>
 
-    <!-- Alle Navigationslinks, Formulare und anderer Inhalt werden hier zusammengefasst und können dann ein- und ausgeblendet werden -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
-        <li><a class="fa fa-wrench fa-lg" href="{modurl modname='MUImage' type='admin' func='main'}">{gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
-      {/checkpermissionblock}
-        <li><a class="fa fa-folder fa-lg" href="{modurl modname='MUImage' type='user' func='main'}">{gt text='Albums'}</a></li>
-      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
-        <li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
-      {/checkpermissionblock}
-      {checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
-      	{if $func eq 'display'}
-      	{formutil_getpassedvalue name="id" assign="albumid"}
-        	<li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent=$albumid returnTo='userDisplayAlbum'}">{gt text='Create SubAlbum'}</a></li>
-      	{/if}
-      {/checkpermissionblock}
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+    		<!-- Alle Navigationslinks, Formulare und anderer Inhalt werden hier zusammengefasst und können dann ein- und ausgeblendet werden -->
+    		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      			<ul class="nav navbar-nav">
+      				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
+        				<li>
+        				<a class="fa fa-wrench fa-lg" href="{modurl modname='MUImage' type='admin' func='main'}">{gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
+      				{/checkpermissionblock}
+       			 	<li><a class="fa fa-folder fa-lg" href="{modurl modname='MUImage' type='user' func='main'}">{gt text='Albums'}</a></li>
+      				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
+        				<li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
+      				{/checkpermissionblock}
+      				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
+      				{if $func eq 'display'}
+      					{formutil_getpassedvalue name="id" assign="albumid"}
+        				<li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent=$albumid returnTo='userDisplayAlbum'}">{gt text='Create SubAlbum'}</a></li>
+      				{/if}
+      				{/checkpermissionblock}
+      			</ul>
+    		</div><!-- /.navbar-collapse -->
+  		</div><!-- /.container-fluid -->
+	</nav>
+	</div>
 {/if}
 
 {insert name='getstatusmsg'}
