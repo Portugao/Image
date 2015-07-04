@@ -22,7 +22,7 @@
 </head>
 <body>
     <p>{gt text='Switch to'}:
-    <a href="{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName}" title="{gt text='Search and select picture'}">{gt text='Pictures'}</a>
+    <a href="{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=0}" title="{gt text='Search and select picture'}">{gt text='Pictures'}</a>
     </p>
     <form action="{$ourEntry|default:'index.php'}" id="mUImageSelectorForm" method="get" class="z-form">
     <div>
@@ -68,6 +68,7 @@
                     </select>
             </div>
             <br />
+            <input id="mUImageWidth" name="mUImageWidth" type="hidden" value="" />
 
             <div class="z-formrow">
                 <label for="mUImageObjectId">{gt text='Album'}:</label>

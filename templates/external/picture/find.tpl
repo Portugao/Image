@@ -50,7 +50,7 @@
                         {/if}
                     </select>
             </div>
-            {if $modvars.MUImage.createSeveralPictureSizes eq false}
+            {if $modvars.MUImage.createSeveralPictureSizes eq 0}
             <div class="z-formrow">
                 <label for="mUImageWidth">{gt text='Width'}:</label>
                     <input type="text" id="mUImageWidth" name="mUImageWidth" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
@@ -63,7 +63,22 @@
                 <label for="mUImageHeight">{gt text='Height'}:</label>
                     <input type="text" id="mUImageHeight" name="mUImageHeight" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
             </div> *}
+            
+            {if $albums}
+            	<div class="z-formrow">
+            		<label for="mUImageSelect">{gt text='Select album'}:</label>
+            		<select>
+            			{if $album == 0}<option>{gt text='No album selected'}</option>{/if}
+            			{foreach item='singleAlbum' from=$albums}
+            				<option {if $album != 0 && $album == $singleAlbum.id} selected=selected{/if} onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$singleAlbum.id}';">
+            					{$singleAlbum.title}
+            				</option>
+            			{/foreach}
+            		</select>
+            	</div>
+            {/if}
 
+			{if $items != null}
             <div class="z-formrow">
                 <label for="mUImageObjectId">{gt text='Picture'}:</label>
                     <div id="muimageItemContainer">
@@ -89,6 +104,7 @@
                         </ul>
                     </div>
             </div>
+            {/if}
 
             <div class="z-formrow">
                 <label for="mUImageSort">{gt text='Sort by'}:</label>
@@ -131,10 +147,11 @@
                     <input type="text" id="mUImageSearchTerm" name="searchterm" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
                     <input type="button" id="mUImageSearchGo" name="gosearch" value="{gt text='Filter'}" style="width: 80px" />
             </div>
-            
+            {if $items ne null}
             <div style="margin-left: 6em">
                 {pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='pos' template='pagercss.tpl' maxpages='10'}
             </div>
+            {/if}
             <input type="submit" id="mUImageSubmit" name="submitButton" value="{gt text='Change selection'}" />
             <input type="button" id="mUImageCancel" name="cancelButton" value="{gt text='Cancel'}" />
             <br />
