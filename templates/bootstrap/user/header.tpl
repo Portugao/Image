@@ -24,7 +24,7 @@
 	<h2>{modgetinfo info='displayname'}{if $templateTitle}: {$templateTitle}{/if}</h2>
 	<div id="muimage-bootstrap-navbar-default">
 		<nav class="navbar navbar-default">
-  			<div class="container">
+  			<div class="container-fluid">
     		<!-- Titel und Schalter werden für eine bessere mobile Ansicht zusammengefasst -->
     		<div class="navbar-header">
       			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
