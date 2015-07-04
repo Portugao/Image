@@ -113,7 +113,13 @@ Changes in 1.3.0
 
 # closed #137 translation problem fixed
 
-# closed #141 we have a new upload feature, that creates 3 additional picture sizes
+# closed #141, #143 we have a new upload feature, that creates 3 additional picture sizes
+
+# closed #144 editing of all albums possible for admins
+
+# closed #145 own div container for bootstrap nav container
+
+# closed #146 selection of albums in the picture find template 
 
 some more fixes:
 
