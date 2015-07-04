@@ -101,7 +101,7 @@
                             {gt text='Here you can set a group for common access to albums. Admin and user group are not selectable. Create another group like editors to be able to work on albums together. Every member of this group can edit albums created by a group member. If not set, every user that is in the admin group has access to each album.' assign='toolTip'}
                             {formlabel for='groupForCommonAlbums' __text='Group for common albums' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formdropdownlist id='groupForCommonAlbums' group='config' __title='Choose the group for common albums'}
-                                <div class="z-informationmsg z-formnote">{gt text="If a group is set, all users of this group have access to the albums, that created a group member. If not set, all admins have access to each album."}</div>
+                                <div class="z-informationmsg z-formnote">{gt text="If a group is set, all users of this group have access to the albums, that created a group member. Admins have access to each album if set or not."}</div>
                         </div>
                         <div class="z-formrow">
                         	{gt text='Here you can enable breadcrumbs in the display template for albums.' assign='toolTip'}

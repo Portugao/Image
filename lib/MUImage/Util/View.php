@@ -586,6 +586,9 @@ class MUImage_Util_View extends MUImage_Util_Base_View
 
         if ($commonGroup != 'notset') {
             foreach ($uidGroups as $uidGroup) {
+                if ($uidGroup == 2) {
+                    return true;
+                }
                 if (in_array($uidGroup, $createdUserIdGroups)) {
                     if ($uidGroup > 2) {
                         return true;
