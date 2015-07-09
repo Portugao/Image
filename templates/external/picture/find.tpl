@@ -38,8 +38,6 @@
             <div class="z-formrow">
                 <label for="mUImagePasteAs">{gt text='Paste as'}:</label>
                     <select id="mUImagePasteAs" name="pasteas">
-                        <option value="1">{gt text='Link to the picture'}</option>
-                        <option value="2">{gt text='ID of picture'}</option>
                         {if $modvars.MUImage.createSeveralPictureSizes eq false}
                         	<option value="3">{gt text='Thumbnail of picture'}</option>
                         {else}
@@ -48,6 +46,8 @@
                         	<option value="6">{gt text='Thumbnail of picture with lightbox'}</option>
                         	<option value="7">{gt text='Preview of picture with lightbox'}</option>
                         {/if}
+                        <option value="1">{gt text='Link to the picture'}</option>
+                        <option value="2">{gt text='ID of picture'}</option>                        
                     </select>
             </div>
             {if $modvars.MUImage.createSeveralPictureSizes eq 0}
