@@ -36,7 +36,7 @@ class MUImage_Controller_External extends MUImage_Controller_Base_External
         $getData = $this->request->query;
         $controllerHelper = new MUImage_Util_Controller($this->serviceManager);
 
-        $objectType = $getData->filter('objectType', 'album', FILTER_SANITIZE_STRING);
+        $objectType = $getData->filter('objectType', 'picture', FILTER_SANITIZE_STRING);
         $utilArgs = array('controller' => 'external', 'action' => 'finder');
         if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $utilArgs))) {
             $objectType = $controllerHelper->getDefaultObjectType('controllerType', $utilArgs);
