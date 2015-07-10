@@ -90,28 +90,32 @@ muimage.finder.handleCancel = function ()
 
 function getPasteSnippet(mode, itemId)
 {
-    var objectType, createPictureSizes, itemUrl, itemTitle, itemDescription, pasteMode;
+    var objectType, itemUrl, itemTitle, itemDescription, pasteMode;
 
     objectType = $F('ObjectType');
-    createPictureSizes = $F('createPictureSizes');
+
     if (objectType === 'picture') {
-    	var itemPath, tmbPath, prePath, fullPath;
+    	var itemPath, tmbPath, prePath, fullPath, createPictureSizes;
     }
-    if (createPictureSizes === false) {
-    	var selectedWidth;
-    }
+
     itemUrl = $F('url' + itemId);
     itemTitle = $F('title' + itemId);
     itemDescription = $F('desc' + itemId);
     if (objectType === 'picture') {
     itemPath = $F('path' + itemId);
-    selectedWidth = $F('mUImageWidth');
+
     tmbPath = $F('pathtmb' + itemId);
     prePath = $F('pathpre' + itemId);
     fullPath = $F('pathfull' + itemId);
+    createPictureSizes = $F('createPictureSizes');
+    if (createPictureSizes === false) {
+    	var selectedWidth;
+        selectedWidth = $F('mUImageWidth');
+    }
     }
 
     pasteMode = $F('mUImagePasteAs');
+    
     
     if (pasteMode === '3') {
     	return '<img title="' + itemTitle + '" src="' + itemPath + '" width="' + selectedWidth + '" height="auto" />';
@@ -133,7 +137,6 @@ function getPasteSnippet(mode, itemId)
     	return '<a href="' + fullPath + '"rel="imageviewer[picture]"><img class="img-responsive" title="' + itemTitle + '" src="' + prePath + '" /></a>';
     }
     
-
     if (pasteMode === '2' || pasteMode !== '1') {
         return itemId;
     }
@@ -142,10 +145,10 @@ function getPasteSnippet(mode, itemId)
     if (mode === 'url') {
         // plugin mode
         return itemUrl;
+    } else {
+        // editor mode
+        return '<a href="' + itemUrl + '" title="' + itemDescription + '">' + itemTitle + '</a>';
     }
-
-    // editor mode
-    return '<a href="' + itemUrl + '" title="' + itemDescription + '">' + itemTitle + '</a>';
 }
 
 
