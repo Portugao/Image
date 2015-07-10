@@ -64,7 +64,6 @@
                 <label for="mUImagePasteAs">{gt text='Paste as'}:</label>
                     <select id="mUImagePasteAs" name="pasteas">
                         <option value="1">{gt text='Link to the album'}</option>
-                        <option value="2">{gt text='ID of album'}</option>
                     </select>
             </div>
             <br />
