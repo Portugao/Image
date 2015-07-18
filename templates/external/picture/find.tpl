@@ -35,6 +35,34 @@
         <fieldset>
             <legend>{gt text='Search and select picture'}</legend>
 
+            {if $albums}
+            	<div class="z-formrow">
+            	    <label for="mUImageSelect">{gt text='Select album'}:</label>
+                    <select>
+            	        {if $album == 0}<option>{gt text='No album selected'}</option>{/if}
+            	            {foreach item='singleAlbum' from=$albums}
+            		        <option {if $album != 0 && $album == $singleAlbum.id} selected=selected{/if} onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$singleAlbum.id}';">
+            			    {$singleAlbum.title}
+            			</option>
+            		    {/foreach}
+            	    </select>
+            	</div>
+            {/if}
+            
+            {if $modvars.MUImage.createSeveralPictureSizes eq 0}
+                <div class="z-formrow">
+                    <label for="mUImageWidth">{gt text='Width'}:</label>
+                        <input type="text" id="mUImageWidth" name="mUImageWidth" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
+                </div>
+            {else}
+            	<input id="mUImageWidth" name="mUImageWidth" type="hidden" value="" />
+            {/if}
+            
+           {* <div class="z-formrow">
+                <label for="mUImageHeight">{gt text='Height'}:</label>
+                    <input type="text" id="mUImageHeight" name="mUImageHeight" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
+            </div> *}
+            
             <div class="z-formrow">
                 <label for="mUImagePasteAs">{gt text='Paste as'}:</label>
                     <select id="mUImagePasteAs" name="pasteas">
@@ -49,35 +77,8 @@
                         <option value="1">{gt text='Link to the picture'}</option>
                     </select>
             </div>
-            {if $modvars.MUImage.createSeveralPictureSizes eq 0}
-            <div class="z-formrow">
-                <label for="mUImageWidth">{gt text='Width'}:</label>
-                    <input type="text" id="mUImageWidth" name="mUImageWidth" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
-            </div>
-            {else}
-            	<input id="mUImageWidth" name="mUImageWidth" type="hidden" value="" />
-            {/if}
-            
-           {* <div class="z-formrow">
-                <label for="mUImageHeight">{gt text='Height'}:</label>
-                    <input type="text" id="mUImageHeight" name="mUImageHeight" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
-            </div> *}
-            
-            {if $albums}
-            	<div class="z-formrow">
-            		<label for="mUImageSelect">{gt text='Select album'}:</label>
-            		<select>
-            			{if $album == 0}<option>{gt text='No album selected'}</option>{/if}
-            			{foreach item='singleAlbum' from=$albums}
-            				<option {if $album != 0 && $album == $singleAlbum.id} selected=selected{/if} onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$singleAlbum.id}';">
-            					{$singleAlbum.title}
-            				</option>
-            			{/foreach}
-            		</select>
-            	</div>
-            {/if}
 
-			{if $items != null}
+	    {if $items != null}
             <div class="z-formrow">
                 <label for="mUImageObjectId">{gt text='Picture'}:</label>
                     <div id="muimageItemContainer">
