@@ -142,11 +142,11 @@
                     </select>
             </div>
 
-            <div class="z-formrow">
+            {* <div class="z-formrow">
                 <label for="mUImageSearchTerm">{gt text='Search for'}:</label>
                     <input type="text" id="mUImageSearchTerm" name="searchterm" style="width: 150px" class="z-floatleft" style="margin-right: 10px" />
                     <input type="button" id="mUImageSearchGo" name="gosearch" value="{gt text='Filter'}" style="width: 80px" />
-            </div>
+            </div> *}
             {if $items ne null}
             <div style="margin-left: 6em">
                 {pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='pos' template='pagercss.tpl' maxpages='10'}

@@ -107,12 +107,12 @@
                         	{gt text='Here you can enable categories.' assign='toolTip'}
                             {formlabel for='supportCategories' __text='Support categories?' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='supportCategories' group='config' maxLength=255 __title='Enable categories.'}
-   			</div>
+   						</div>
                         <div class="z-formrow">
                         	{gt text='Here you can enable breadcrumbs in the display template for albums.' assign='toolTip'}
                             {formlabel for='breadcrumbInFrontend' __text='Breadcrumbs in Frontend?' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='breadcrumbInFrontend' group='config' maxLength=255 __title='Enable breadcrumbs.'}
-   			</div>
+   						</div>
                         <div class="z-formrow">
                             {formlabel for='kindOfShowSubAlbums' __text='Kind of show sub albums' cssClass=''}
                                 {formdropdownlist id='kindOfShowSubAlbums' group='config' __title='Choose the kind of show sub albums'}
