@@ -32,7 +32,9 @@
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
 			{$album.description}<br /><br />
 	    {/if}
-	    {include file='helper/include_categories_display.tpl' obj=$album}
+	    {if $modvars.MUImage.supportCategories eq true}
+	    	{include file='helper/include_categories_display.tpl' obj=$album}
+	    {/if}
 	    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
 	    {if $album.createdUserId eq $coredata.user.uid || $groupMember eq 1}
 		{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
