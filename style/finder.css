@@ -1,5 +1,6 @@
 body {
-    background-color: #ddd;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
     margin: 10px;
     text-align: left;
 }
@@ -21,6 +22,11 @@ body {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+#muimageItemContainer li {
+	float: left;
+	padding: 5px;
 }
 
 #muimageItemContainer a {
