@@ -106,7 +106,7 @@
             </div>
             {/if}
 
-            <div class="z-formrow">
+            {* <div class="z-formrow">
                 <label for="mUImageSort">{gt text='Sort by'}:</label>
                     <select id="mUImageSort" name="sort" style="width: 150px" class="z-floatleft" style="margin-right: 10px">
                     <option value="id"{if $sort eq 'id'} selected="selected"{/if}>{gt text='Id'}</option>
@@ -127,7 +127,7 @@
                         <option value="asc"{if $sortdir eq 'asc'} selected="selected"{/if}>{gt text='ascending'}</option>
                         <option value="desc"{if $sortdir eq 'desc'} selected="selected"{/if}>{gt text='descending'}</option>
                     </select>
-            </div>
+            </div> *}
 
             <div class="z-formrow">
                 <label for="mUImagePageSize">{gt text='Page size'}:</label>
