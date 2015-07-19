@@ -22,6 +22,8 @@
 
 {if !isset($smarty.get.theme) || $smarty.get.theme ne 'Printer'}
 	<h2>{modgetinfo info='displayname'}{if $templateTitle}: {$templateTitle}{/if}</h2>
+	{userloggedin assign="loggedin"}
+	{if $loggedin eq true}
 	<div id="muimage-bootstrap-navbar-default">
 		<nav class="navbar navbar-default">
   			<div class="container-fluid">
@@ -60,6 +62,7 @@
   		</div><!-- /.container-fluid -->
 	</nav>
 	</div>
+    {/if}
 {/if}
 
 {insert name='getstatusmsg'}
