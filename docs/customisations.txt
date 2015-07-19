@@ -97,6 +97,10 @@ added files
 *templates/plugins/block.muimageform.php
 
 *templates/plugins/function.muimageBreadcrumb.php
+*templates/plugins/function.muimageCheckAlbumAccess.php
+*templates/plugins/function.muimageCheckGroupMember.php
+*templates/plugins/function.muimageGiveImageOfAlbum.php
+*templates/plugins/function.muimageGiveImagesOfAlbum.php
 *templates/plugins/function.muimageSelectorAlbums.php
 *templates/plugins/function.muimageSelectorPictures.php
 

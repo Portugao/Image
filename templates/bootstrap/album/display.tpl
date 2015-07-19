@@ -147,9 +147,11 @@
     			</a>
     		{/if}
     		{/checkpermissionblock}
-    		<p style="min-height: 30px; max-height: 30px; overflow: auto;">
+    		{if is_array($childAlbum.children)}
+    		<p style="min-height: 30px; max-height: 30px;">
 				{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=$childAlbum.children} 
 			</p>
+			{/if}
 			<p>
 				{gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}
 			</p>				
