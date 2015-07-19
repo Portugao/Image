@@ -12,7 +12,7 @@ function getPopupAttributes()
     var pWidth, pHeight;
 
     pWidth = screen.width * 0.75;
-    pHeight = screen.height * 0.66;
+    pHeight = screen.height * 0.8;
 
     return 'width=' + pWidth + ',height=' + pHeight + ',scrollbars,resizable';
 }
@@ -40,8 +40,8 @@ function MUImageFinderCKEditor(editor, muimageURL)
     currentMUImageEditor = editor;
 
     editor.popup(
-        Zikula.Config.baseURL + Zikula.Config.entrypoint + '?module=MUImage&type=external&func=finder&editor=ckeditor',
-        /*width*/ '80%', /*height*/ '70%',
+        Zikula.Config.baseURL + Zikula.Config.entrypoint + '?module=MUImage&type=external&func=finder&objectType=picture&editor=ckeditor&album=1',
+        /*width*/ '80%', /*height*/ '90%',
         'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'
     );
 }
