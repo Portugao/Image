@@ -5,7 +5,7 @@ CUSTOMISATIONS
 
 To change in the model
 
-We have to change field $myFriends to string TODO
+We have to provide modvar supportCategories in modulestudio
 
 MUImage - Manual additions and amendments
 
