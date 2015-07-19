@@ -35,9 +35,6 @@
         			<span class="icon-bar"></span>
         			<span class="icon-bar"></span>
       			</button>
-           	 	<a class="navbar-brand" href="{$homepage}">
-        			<img alt="{gt text='Logo MUImage'}" src="modules/MUImage/images/muimage.png">
-      			</a>
    			 </div>
 
     		<!-- Alle Navigationslinks, Formulare und anderer Inhalt werden hier zusammengefasst und können dann ein- und ausgeblendet werden -->
