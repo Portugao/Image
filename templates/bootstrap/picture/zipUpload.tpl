@@ -17,7 +17,7 @@
         <legend>{gt text='Content'}</legend>
         <div class="form-group has-error">
         {formlabel for="zipUpload" __text='Zip upload' mandatorysym=1}<br />{* break required for Google Chrome *}
-        {formuploadinput group='picture' id="zipUpload" mandatory=true readOnly=false cssClass='required'}
+        {formuploadinput group='picture' id="zipUpload" mandatory=true readOnly=false cssClass='required'}<br />
         <div class="alert alert-info">{gt text='Allowed file extensions'}: zip</div>
         <div class="alert alert-info">{gt text='Allowed file size:'} {$zipSize} </div>
         </div>

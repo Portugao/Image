@@ -14,7 +14,8 @@
 	{pageaddvar name='stylesheet' value='modules/MUImage/style/bootstrap.css'}
 	{* <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"> not needed normally because bootstrap should be included within the theme *}
 	<link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
-	<link rel="stylesheet" href="modules/MUImage/Vendor/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">	
+	<link rel="stylesheet" href="modules/MUImage/Vendor/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
+	<link rel="stylesheet" href="modules/MUImage/Vendor/GammaGallery/css/style.css">		
 	{/if}		
 {/if}
 {* initialise additional gettext domain for translations within javascript *}
@@ -41,16 +42,16 @@
     		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       			<ul class="nav navbar-nav">
       				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
-        				<li><a class="fa fa-wrench" href="{modurl modname='MUImage' type='admin' func='main'}"> {gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
+        				<li><a href="{modurl modname='MUImage' type='admin' func='main'}"><i class="fa fa-wrench fa-fw"></i> {gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
       				{/checkpermissionblock}
-       			 	<li><a class="fa fa-folder" href="{modurl modname='MUImage' type='user' func='main'}"> {gt text='Albums'}</a></li>
+       			 	<li><a href="{modurl modname='MUImage' type='user' func='main'}"><i class="fa fa-folder fa-fw"></i> {gt text='Albums'}</a></li>
       				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
-        				<li><a class="fa fa-pencil-square-o" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
+        				<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='album'}"><i class="fa fa-pencil-square-o fa-fw"></i> {gt text='Create Album'}</a></li>
       				{/checkpermissionblock}
       				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
       				{if $func eq 'display' && $modvars.MUImage.supportSubAlbums eq true}
       					{formutil_getpassedvalue name="id" assign="albumid"}
-        				<li><a class="fa fa-pencil-square-o" href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent=$albumid returnTo='userDisplayAlbum'}">{gt text='Create SubAlbum'}</a></li>
+        				<li><a href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent=$albumid returnTo='userDisplayAlbum'}"><i class="fa fa-pencil fa-fw"></i> {gt text='Create SubAlbum'}</a></li>
       				{/if}
       				{/checkpermissionblock}
       			</ul>
