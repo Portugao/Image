@@ -87,13 +87,16 @@ class MUImage_Installer extends MUImage_Base_Installer
         include_once 'modules/MUImage/lib/MUImage/Api/Base/Category.php';
         include_once 'modules/MUImage/lib/MUImage/Api/Category.php';
         $categoryApi = new MUImage_Api_Category($this->serviceManager);
-        $categoryGlobal = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
+        $categoryModules = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules');
+        
+        CategoryUtil::createCategory($categoryModules, 'MUImage'); 
+        $categoryMUImage = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/MUImage');
 
         $registryData = array();
         $registryData['modname'] = $this->name;
         $registryData['table'] = 'Album';
         $registryData['property'] = $categoryApi->getPrimaryProperty(array('ot' => 'Album'));
-        $registryData['category_id'] = $categoryGlobal['id'];
+        $registryData['category_id'] = $categoryMUImage['id'];
         $registryData['id'] = false;
         if (!DBUtil::insertObject($registryData, 'categories_registry')) {
             LogUtil::registerError($this->__f('Error! Could not create a category registry for the %s entity.', array('album')));
