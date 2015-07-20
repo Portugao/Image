@@ -109,6 +109,12 @@
                                 {formcheckbox id='supportCategories' group='config' maxLength=255 __title='Enable categories.'}
    						</div>
                         <div class="z-formrow">
+                        	{gt text='Here you can enable subalbums.' assign='toolTip'}
+                            {formlabel for='supportSubAlbums' __text='Support subalbums?' cssClass='muimage-form-tooltips' title=$toolTip}
+                                {formcheckbox id='supportSubAlbums' group='config' maxLength=255 __title='Enable subalbums.'}
+                                <div class="z-informationmsg z-formnote">{gt text="It has only effect in the frontend for the bootstrap layout."}</div>
+   						</div>
+                        <div class="z-formrow">
                         	{gt text='Here you can enable breadcrumbs in the display template for albums.' assign='toolTip'}
                             {formlabel for='breadcrumbInFrontend' __text='Breadcrumbs in Frontend?' cssClass='muimage-form-tooltips' title=$toolTip}
                                 {formcheckbox id='breadcrumbInFrontend' group='config' maxLength=255 __title='Enable breadcrumbs.'}

@@ -111,7 +111,7 @@
 		    {/if}      </div>
     </div>
   </div>
-  {if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'panel'}  
+  {if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'panel' && $modvars.MUImage.supportSubAlbums eq true}  
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="überschriftZwei">
       <h4 class="panel-title">
@@ -185,7 +185,7 @@
   {*</div> *}
 </div>
 {/if}
-{if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links'}
+{if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links' && $modvars.MUImage.supportSubAlbums eq true}
 	{gt text='SubAlbums'}: 
 		{foreach item='childAlbum' from=$album.children}
 				{muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}

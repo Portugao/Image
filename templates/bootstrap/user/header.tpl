@@ -41,17 +41,16 @@
     		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       			<ul class="nav navbar-nav">
       				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADMIN'}
-        				<li>
-        				<a class="fa fa-wrench fa-lg" href="{modurl modname='MUImage' type='admin' func='main'}">{gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
+        				<li><a class="fa fa-wrench" href="{modurl modname='MUImage' type='admin' func='main'}"> {gt text='Backend'}<span class="sr-only">(aktuell)</span></a></li>
       				{/checkpermissionblock}
-       			 	<li><a class="fa fa-folder fa-lg" href="{modurl modname='MUImage' type='user' func='main'}">{gt text='Albums'}</a></li>
+       			 	<li><a class="fa fa-folder" href="{modurl modname='MUImage' type='user' func='main'}"> {gt text='Albums'}</a></li>
       				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
-        				<li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
+        				<li><a class="fa fa-pencil-square-o" href="{modurl modname='MUImage' type='user' func='edit' ot='album'}">{gt text='Create Album'}</a></li>
       				{/checkpermissionblock}
       				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD'}
-      				{if $func eq 'display'}
+      				{if $func eq 'display' && $modvars.MUImage.supportSubAlbums eq true}
       					{formutil_getpassedvalue name="id" assign="albumid"}
-        				<li><a class="fa fa-pencil-square-o fa-lg" href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent=$albumid returnTo='userDisplayAlbum'}">{gt text='Create SubAlbum'}</a></li>
+        				<li><a class="fa fa-pencil-square-o" href="{modurl modname='MUImage' type='user' func='edit' ot='album' parent=$albumid returnTo='userDisplayAlbum'}">{gt text='Create SubAlbum'}</a></li>
       				{/if}
       				{/checkpermissionblock}
       			</ul>
