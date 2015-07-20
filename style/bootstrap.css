@@ -46,3 +46,11 @@ ul li {
 .muimage-picture-invocations {
 	font-size: 0.85em;	
 }
+
+/***************PICTURES**********************/
+
+.form-group .alert {
+	padding: 5px;
+	margin-bottom: 5px;
+	font-size: 0.9em;
+}

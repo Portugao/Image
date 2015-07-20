@@ -30,8 +30,8 @@
     <fieldset>
         <legend>{gt text='Content'}</legend>
         <div class="form-group">
-            {formlabel for='title' __text='Title'}
-            {formtextinput group='picture' id='title' mandatory=false readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass='form-control'}
+            {formlabel for='title' mandatorysym='1' __text='Title'}
+            {formtextinput group='picture' id='title' mandatory=true readOnly=false __title='Enter the title of the picture' textMode='singleline' maxLength=255 cssClass='form-control required'}
         </div>
         <div class="form-group">
             {formlabel for='description' __text='Description'}
@@ -59,7 +59,7 @@
             	{formuploadinput group='picture' id='imageUpload' mandatory=true readOnly=false cssClass='required'}
 			{else}
             	{formuploadinput group='picture' id='imageUpload' mandatory=false readOnly=false cssClass=''}
-			{/if}
+			{/if}<br />
             <div class="alert alert-info">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
             <div class="alert alert-info">{gt text='Allowed file size:'} {$fileSize} </div>
             <div class="alert alert-info">{gt text='Required width:'} {$minWidth} </div>

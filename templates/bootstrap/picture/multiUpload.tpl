@@ -17,7 +17,7 @@
         {section name='fields' start=1 loop=$allowedFields}
         <div class="form-group">
         {formlabel for="imageUpload`$smarty.section.fields.index`" __text='Image upload' mandatorysym=0}<br />{* break required for Google Chrome *}
-        {formuploadinput group='picture' id="imageUpload`$smarty.section.fields.index`" mandatory=false readOnly=false cssClass=''}
+        {formuploadinput group='picture' id="imageUpload`$smarty.section.fields.index`" mandatory=false readOnly=false cssClass=''}<br />
         <div class="alert alert-info">{gt text='Allowed file extensions:'} gif, jpeg, jpg, png</div>
         <div class="alert alert-info">{gt text='Allowed file size:'} {$fileSize} </div>
         <div class="alert alert-info">{gt text='Required width:'} {$minWidth} </div>
