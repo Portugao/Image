@@ -222,7 +222,7 @@
 			{muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
 			{if $albumpicture}
 
-			<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title}{if $album.description ne ''} - {$album.description}{/if}">
+			<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title|safetext}{if $album.description ne ''} - {$album.description|safehtml}{/if}">
         		<img src="{thumb image=$albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'}" alt="">
     		</a>
     		{else}
@@ -235,7 +235,7 @@
     			{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
     				{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}		
     					<a title="{gt text='Edit}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}">
-    						<i class="fa fa-pencil-square-o fa-2x"></i>
+    						<i class="fa fa-pencil-square-o fa-lg"></i>
     					</a>
     				{/if}
     			{/checkpermissionblock}	

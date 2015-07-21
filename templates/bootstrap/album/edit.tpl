@@ -55,8 +55,8 @@
                 {if $inAdminGroup eq true}
                 <div class="checkbox">
                 	<label>
-                    {formcheckbox group='album' id='notInFrontend' readOnly=false __title='not in frontend ?' cssClass='' }
-                	{gt text='not in Frontend ?'}
+                    {formcheckbox group='album' id='notInFrontend' readOnly=false __title='Not available for guests?' cssClass='' }
+                	{gt text='Not available for guests?'}
                 	</label>
                 </div>
                 {/if}
@@ -68,50 +68,42 @@
                     <input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList[]" value="{$savedParent}">
                     <input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="{$savedParent}">
                 {else}
-                {if $inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)}
-                 {if $inAdminGroup eq true}
-                <p class="alert alert-info" role="alert">{gt text='Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!'}</p>
-                <p class="alert alert-info" role="alert">{gt text='So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!'}</p>
-            {/if}
-            {if $inAdminGroup eq false}
-                <p class="alert alert-info" role="alert">{gt text='Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!'}</p>
-            {/if}
-      	<fieldset>
-		<legend>{gt text='Main album'}</legend>
-		<div class="form-group>
-			{formlabel for='muimageAlbum_ParentItemList' __text='Album'}
-			{formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select form-control'}
-			<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
-		</div>
-	</fieldset>
-	{if $mainAlbumMode eq D}
-		<p class="alert alert-warning">{gt text='Attention! This album is a sub album and you have no quotas to make it to main album! You may select another album as main album.'}</p>
+                {if ($inAdminGroup eq true || ($mainAlbumMode ne false && $mainAlbumMode ne 4)) && $modvars.MUImage.supportSubAlbums eq true}
+                	{if $inAdminGroup eq true}
+                		<p class="alert alert-info" role="alert">{gt text='Notice! Your are in admin group. So you get all albums to select. Be careful to make main or sub albums in view of logic!'}</p>
+                		<p class="alert alert-info" role="alert">{gt text='So pleace avoid for example that an album becomes main album of an album, that is children album already. Otherwise you will produce big problems!'}</p>
+            		{/if}
+            		{if $inAdminGroup eq false}
+                		<p class="alert alert-info" role="alert">{gt text='Notice! You get only albums to select you have created! Also you get only albums that are qualified under aspects of logic and your quotas!'}</p>
+            		{/if}
+      				{if $modvars.MUImage.supportSubAlbums eq true}
+      					<fieldset>
+						<legend>{gt text='Main album'}</legend>
+						<div class="form-group>
+						{formlabel for='muimageAlbum_ParentItemList' __text='Album'}
+						{formdropdownlist selectedValue=$savedParent group='mainalbum' id='muimageAlbum_ParentItemList' cssClass='chzn-select form-control'}
+						<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
+						</div>
+						</fieldset>
+					{/if}
+			{if $mainAlbumMode eq D && $modvars.MUImage.supportSubAlbums eq true}
+				<p class="alert alert-warning">{gt text='Attention! This album is a sub album and you have no quotas to make it to main album! You may select another album as main album.'}</p>
+			{/if}
+		{else}
+		{if $mainAlbumMode eq 4 && $modvars.MUImage.supportSubAlbums eq true}
+			<p class="alert alert-warning">{gt text='Attention! This album is on first level and you have no quotas to change!'}</p>
+		{/if}
+		<input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList[]" value="{$savedParent}">
+		<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
+		{/if}
 	{/if}
-{else}
-{if $mainAlbumMode eq 4}
-<p class="alert alert-warning">{gt text='Attention! This album is on first level and you have no quotas to change!'}</p>
-{/if}
-<input type="hidden" id="muimageAlbum_ParentItemList" name="muimageAlbum_ParentItemList[]" value="{$savedParent}">
-<input type="hidden" id="muimageAlbum_ParentMode" name="muimageAlbum_ParentMode" value="0">
-{/if}
-{* {include file='album/include_selectEditOne.tpl' relItem=$album aliasName='parent' idPrefix='muimageAlbum_Parent'}
-*} {/if}
-{* include display hooks *}
-{if $mode eq 'create'}
-	{notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=null}
-{else}
-	{notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=$album.id}
-{/if}
-{* include return control *}
-{* {if $mode eq 'create'}
-<fieldset>
-<legend>{gt text='Return control'}</legend>
-<div class="z-formrow">
-{formlabel for='repeatcreation' __text='Create another item after save'}
-{formcheckbox group='album' id='repeatcreation' readOnly=false}
-</div>
-</fieldset>
-{/if} *}
+	{* include display hooks *}
+	{if $mode eq 'create'}
+		{notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=null}
+	{else}
+		{notifydisplayhooks eventname='muimage.ui_hooks.albums.form_edit' id=$album.id}
+	{/if}
+
 {* include possible submit actions *}
         <div class="form-group">
         {foreach item='action' from=$actions}

@@ -6,7 +6,6 @@
 {include file="bootstrap/`$lct`/header.tpl"}
 
 <div class="col-md-12">
-	{*<div class="row"> *}
     	{gt text='Album' assign='templateTitle'}
     	{assign var='templateTitle' value=$album.title|default:$templateTitle}
     	{pagesetvar name='title' value=$templateTitle|@html_entity_decode}
@@ -27,8 +26,7 @@
         <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.albums.filter'}{icon id="itemActions`$album.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
         </h2>
     {/if}
-   {* </div>
-    <div class="row"> *}
+
 	{if $lct eq 'user'}
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
 		{$album.description}<br /><br />
@@ -77,92 +75,92 @@
 
 
 	<div id="muimage-user-bootstrap-body" class="col-md-12">
-	
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="überschriftEins">
-      <h4 class="panel-title">     
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseEins" aria-expanded="true" aria-controls="collapseEins">
-          {gt text='Pictures'}
-        </a>
-        <span class="caret"></span> 
-      </h4>
-    </div>
-    <div id="collapseEins" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="überschriftEins">
-      <div id="muimage-pictures-content" class="collapse panel-body in">
-		    {if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
-		    {if $template eq 1}
-		    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
-		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
-                <form method="post" action="{modurl modname='MUImage' type='picture' func='savePosition'}">
-            {/if}
-		    {include file='bootstrap/picture/include_displayItemListMany.tpl' items=$album.picture}
+	{userloggedin assign="loggedin"}
+	{if $loggedin eq true}
+		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  			<div class="panel panel-default">
+    			<div class="panel-heading" role="tab" id="überschriftEins">
+      			<h4 class="panel-title">     
+        			<a data-toggle="collapse" data-parent="#accordion" href="#collapseEins" aria-expanded="true" aria-controls="collapseEins">
+          				{gt text='Pictures'}
+        			</a>
+        			<span class="caret"></span> 
+      			</h4>
+    		</div>
+    		<div id="collapseEins" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="überschriftEins">
+      			<div id="muimage-pictures-content" class="collapse panel-body in">
+		    		{if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
+		    			{if $template eq 1}
+		    				{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
+		    				{if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
+                				<form method="post" action="{modurl modname='MUImage' type='picture' func='savePosition'}">
+            				{/if}
+		    				{include file='bootstrap/picture/include_displayItemListMany.tpl' items=$album.picture}
 		    
-		    {if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
-            	<br style="clear: both; "/> <button type="submit" class="btn btn-default">{gt text="Save positions"}</button>
-     	        </form>
-            {/if}
-		    {/if}
-		    {if $template eq 2}
-		    {include file='bootstrap/picture/slideshow.tpl' items=$album.picture}
-		    {/if}
-		    {else}
-		    {gt text='No pictures'}
-		    {/if}      </div>
-    </div>
-  </div>
-  {if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'panel' && $modvars.MUImage.supportSubAlbums eq true}  
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="überschriftZwei">
-      <h4 class="panel-title">
-        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseZwei" aria-expanded="false" aria-controls"collapseZwei">
-          {gt text='SubAlbums'}
-        </a>
-        <span class="caret"></span>
-      </h4>
-    </div>
-    <div id="collapseZwei" class="panel-collapse collapse" role="tabpanel" aria-labelledby="überschriftZwei">
-      <div class="collapse panel-body in">
-		{if isset($album.children) && count($album.children) > 0}
-			<ul>    
-		    {foreach item='childAlbum' from=$album.children}
-		    {muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}
-		    {if $accessThisAlbum eq 1}
-		    	<li class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-		    	<div class="thumbnail">
-				{muimageGiveImageOfAlbum albumid=$childAlbum.id assign='albumpicture'}
-				{if $albumpicture}
-					<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}" title="{$childAlbum.title}{if $album.description ne ''} - {$album.description}{/if}">
-        				<img src="{thumb image=$albumpicture.imageUploadFullPath width=200 height=125 mode='outset' extension='jpg'}" alt="">
-    				</a>
-    			{else}
-    				<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}" title="{$childAlbum.title}{if $album.description ne ''} - {$album.description}{/if}">	
-    				<img src="modules/MUImage/images/placeholder.png" width="200" height="125" />
-    			</a>
-    		{/if}    		 		
-    		<div class="caption">	
-    		{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
-    		{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
-    		{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}		
-    			<a title="{gt text='Edit}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$childAlbum.id}">
-    				<i class="fa fa-pencil-square-o fa-2x"></i>
-    			</a>
-    		{/if}
-    		{/checkpermissionblock}
-    		{if is_array($childAlbum.children)}
-    		<p style="min-height: 30px; max-height: 30px;">
-				{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=$childAlbum.children} 
-			</p>
-			{/if}
-			<p>
-				{gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}
-			</p>				
-    		</div>			
-			</div>
-		    </li>
-			{/if}
-		    {/foreach}
-		    {foreach item='childAlbum' from=$album.children}
+		    				{if $coredata.user.uid eq 2 || $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}
+            					<br style="clear: both; "/> <button type="submit" class="btn btn-default">{gt text="Save positions"}</button>
+     	        				</form>
+            				{/if}
+		    			{/if}
+		    			{if $template eq 2}
+		    				{include file='bootstrap/picture/slideshow.tpl' items=$album.picture}
+		    			{/if}
+		    		{else}
+		   				{gt text='No pictures'}
+		   			{/if}      
+				</div>
+    		</div>
+ 		</div>
+  		{if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'panel' && $modvars.MUImage.supportSubAlbums eq true}  
+  		<div class="panel panel-default">
+    		<div class="panel-heading" role="tab" id="überschriftZwei">
+      		<h4 class="panel-title">
+        	<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseZwei" aria-expanded="false" aria-controls"collapseZwei">
+          		{gt text='SubAlbums'}
+        	</a>
+        	<span class="caret"></span>
+      		</h4>
+    	</div>
+    	<div id="collapseZwei" class="panel-collapse collapse" role="tabpanel" aria-labelledby="überschriftZwei">
+      		<div class="collapse panel-body in">
+			{if isset($album.children) && count($album.children) > 0}
+				<ul>    
+		    		{foreach item='childAlbum' from=$album.children}
+		    			{muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}
+		    			{if $accessThisAlbum eq 1}
+		    				<li class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+		    					<div class="thumbnail">
+									{muimageGiveImageOfAlbum albumid=$childAlbum.id assign='albumpicture'}
+									{if $albumpicture}
+										<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}" title="{$childAlbum.title}{if $album.description ne ''} - {$album.description}{/if}">
+        									<img src="{thumb image=$albumpicture.imageUploadFullPath width=200 height=125 mode='outset' extension='jpg'}" alt="">
+    									</a>
+    								{else}
+    									<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}" title="{$childAlbum.title}{if $album.description ne ''} - {$album.description}{/if}">	
+    										<img src="modules/MUImage/images/placeholder.png" width="200" height="125" />
+    									</a>
+    								{/if}    		 		
+    								<div class="caption">	
+    									{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
+    										{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
+    										{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}		
+    											<a title="{gt text='Edit}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$childAlbum.id}">
+    												<i class="fa fa-pencil-square-o fa-2x"></i>
+    											</a>
+    										{/if}
+    									{/checkpermissionblock}
+    									{if is_array($childAlbum.children)}
+    										<p style="min-height: 30px; max-height: 30px;">
+											{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=$childAlbum.children} 
+											</p>
+										{/if}
+										<p>{gt text='Pictures'}: {$childAlbum.id|muimageCountAlbumPictures}</p>				
+    								</div>			
+								</div>
+		    				</li>
+						{/if}
+		    		{/foreach}
+		    	{foreach item='childAlbum' from=$album.children}
 		    	{muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}
 				{if $accessThisAlbum eq 2}
 					<li class="col-xs-6 col-sm-4 col-md-4 col-lg-2">
@@ -182,7 +180,6 @@
 	    </div>
      </div>
     </div>
-  {*</div> *}
 </div>
 {/if}
 {if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links' && $modvars.MUImage.supportSubAlbums eq true}
@@ -194,6 +191,9 @@
 				{/if}
 		{/foreach} 
 {/if}
+{else}
+	{include file='bootstrap/picture/include_displayItemListMany2.tpl' items=$album.picture}
+{/if}
 <div style="clear: both"></div>
 
 <div id="muimage-user-album-hooks">
@@ -202,7 +202,6 @@
 	{foreach key='hookname' item='hook' from=$hooks}
 		   {$hook}
 	{/foreach}
-</div>
 </div>
 {/if}
 	{if $lct eq 'admin'}
