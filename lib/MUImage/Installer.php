@@ -59,7 +59,7 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('minWidth', 400);
         $this->setVar('maxWidth', 0);
         $this->setVar('maxHeight', 0);
-        $this->setVar('layout',  'normal' );
+        $this->setVar('layout',  'bootstrap' );
         $this->setVar('groupForCommonAlbums',  'notset' );
         $this->setVar('shrinkPictures', false);
         $this->setVar('supportCategories', false);
