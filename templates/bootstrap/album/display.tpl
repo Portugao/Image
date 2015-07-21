@@ -75,8 +75,7 @@
 
 
 	<div id="muimage-user-bootstrap-body" class="col-md-12">
-	{userloggedin assign="loggedin"}
-	{if $loggedin eq true}
+
 		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   			<div class="panel panel-default">
     			<div class="panel-heading" role="tab" id="überschriftEins">
@@ -190,10 +189,8 @@
 					<a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}">{$childAlbum.title}</a>&nbsp;
 				{/if}
 		{/foreach} 
-{/if}
-{else}
-	{include file='bootstrap/picture/include_displayItemListMany2.tpl' items=$album.picture}
-{/if}
+ {/if}
+
 <div style="clear: both"></div>
 
 <div id="muimage-user-album-hooks">
