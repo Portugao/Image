@@ -229,8 +229,8 @@
    				<img src="modules/MUImage/images/placeholder.png" width="300" height="200" />
     		</a>
     		{/if}    		 		
-    			<div class="caption album-view-info" style="display: none;">
-    			<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}">
+    			<div class="caption album-view-info">
+    			<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}">
     				<i class="fa fa-eye fa-lg"></i>
     			</a>&nbsp;	
     			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
@@ -309,12 +309,26 @@
 		
 		MU(".thumbnail").hover(
 			function() {
-    			MU( this ).children("div.caption").fadeTo( 200, 0.7 );
+    			MU( this ).children("div.caption").animate({
+    			height: "80px",
+    			'padding-top' : 10,
+    			'padding-right' : 10,
+    			'padding-bottom' : 10,
+    			'padding-left' : 10,
+    			opacity: 0.8
+  			}, 500 );
   			}, 
   			function() {
-    			MU( this ).children("div.caption").fadeTo( 200, 0 );
+    			MU( this ).children("div.caption").animate({
+    			height: "0px",
+    			'padding-top' : 0,
+    			'padding-right' : 0,
+    			'padding-bottom' : 0,
+    			'padding-left' : 0,
+    			opacity: 0
+  			}, 500 );
   			}
-);
+	);
 	});		
 
     /* ]]> */
