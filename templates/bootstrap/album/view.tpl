@@ -218,19 +218,21 @@
 		    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
 		    {if $accessThisAlbum eq 1}
 		    <li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-		    <div class="thumbnail">
+		    <div class="thumbnail album-view-container">
 			{muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
 			{if $albumpicture}
-
 			<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title|safetext}{if $album.description ne ''} - {$album.description|safehtml}{/if}">
-        		<img src="{thumb image=$albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'}" alt="">
+       			<img src="{thumb image=$albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'}" alt="">
     		</a>
     		{else}
-    		<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title}{if $album.description ne ''} - {$album.description}{/if}">	
-    			<img src="modules/MUImage/images/placeholder.png" width="300" height="200" />
+    		<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title|safetext}{if $album.description ne ''} - {$album.description|safehtml}{/if}">
+   				<img src="modules/MUImage/images/placeholder.png" width="300" height="200" />
     		</a>
     		{/if}    		 		
-    			<div class="caption">	
+    			<div class="caption album-view-info" style="display: none;">
+    			<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}">
+    				<i class="fa fa-eye fa-lg"></i>
+    			</a>&nbsp;	
     			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
     			{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
     				{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}		
@@ -239,7 +241,7 @@
     					</a>
     				{/if}
     			{/checkpermissionblock}	
-    			<div style="min-height: 30px; max-height: 30px; overflow: auto;">		
+    			<div>		
 				{if isset($album.children) && $album.children ne null && count($album.children) > 0}			    
 			    	{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=$album.children}    
 				{else}
@@ -304,6 +306,16 @@
     	MU(function () {
 			MU('[data-toggle="tooltip"]').tooltip()
 		})
-		});
+		
+		MU(".thumbnail").hover(
+			function() {
+    			MU( this ).children("div.caption").fadeTo( 200, 0.7 );
+  			}, 
+  			function() {
+    			MU( this ).children("div.caption").fadeTo( 200, 0 );
+  			}
+);
+	});		
+
     /* ]]> */
 </script>

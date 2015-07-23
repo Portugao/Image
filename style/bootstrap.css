@@ -47,6 +47,26 @@ ul li {
 	font-size: 0.85em;	
 }
 
+.album-view-container {
+	position: relative;
+}
+
+.album-view-info {
+	height: 100px;
+	width: 100%;
+	position: absolute;
+	background: #dedede;
+	bottom: 0;;
+	left: 0;
+	padding: 10px;
+	font-size: 0.8em;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.075);
+}
+
+.contenthover-album-view-bg {
+	background: #ccc;
+}
+
 /***************PICTURES**********************/
 
 .form-group .alert, .muimage-form fieldset .alert {
