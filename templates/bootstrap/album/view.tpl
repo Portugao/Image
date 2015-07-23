@@ -310,23 +310,23 @@
 		MU(".thumbnail").hover(
 			function() {
     			MU( this ).children("div.caption").animate({
-    			height: "80px",
+    			height: "100px",
     			'padding-top' : 10,
     			'padding-right' : 10,
     			'padding-bottom' : 10,
     			'padding-left' : 10,
     			opacity: 0.8
-  			}, 500 );
+  			}, 1000 );
   			}, 
   			function() {
     			MU( this ).children("div.caption").animate({
     			height: "0px",
     			'padding-top' : 0,
-    			'padding-right' : 0,
+    			'padding-right' : 10,
     			'padding-bottom' : 0,
-    			'padding-left' : 0,
+    			'padding-left' : 10,
     			opacity: 0
-  			}, 500 );
+  			}, 1000 );
   			}
 	);
 	});		
