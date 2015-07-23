@@ -16,7 +16,7 @@
     				</a>
     				<div class="caption {$cursor}">
     					<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='display' ot='picture' id=$item.id}">
-    						<i class="fa fa-camera-retro fa-lg"></i>
+    						<i class="fa fa-eye fa-lg"></i>
     					</a>
     					{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
     						{if $coredata.user.uid eq 2 || $coredata.user.uid eq $item.createdUserId || $groupMember eq 1}

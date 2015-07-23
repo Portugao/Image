@@ -231,13 +231,13 @@
     		{/if}    		 		
     			<div class="caption album-view-info">
     			<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}">
-    				<i class="fa fa-eye fa-lg"></i>
+    				<i class="fa fa-eye fa-2x"></i>
     			</a>&nbsp;	
     			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
     			{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
     				{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}		
     					<a title="{gt text='Edit}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}">
-    						<i class="fa fa-pencil-square-o fa-lg"></i>
+    						<i class="fa fa-pencil-square-o fa-2x"></i>
     					</a>
     				{/if}
     			{/checkpermissionblock}	
@@ -310,10 +310,10 @@
 		MU(".thumbnail").hover(
 			function() {
     			MU( this ).children("div.caption").animate({
-    			height: "100px",
-    			'padding-top' : 10,
+    			height: "80%",
+    			'padding-top' : 3,
     			'padding-right' : 10,
-    			'padding-bottom' : 10,
+    			'padding-bottom' : 2,
     			'padding-left' : 10,
     			opacity: 0.8
   			}, 1000 );
