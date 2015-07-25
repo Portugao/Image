@@ -80,7 +80,7 @@
                                 <input type="hidden" id="title{$album.id}" value="{$album->getTitleFromDisplayPattern()|replace:"\"":""}" />
                                 <input type="hidden" id="desc{$album.id}" value="{capture assign='description'}{if $album.description ne ''}{$album.description}{/if}
                                 {/capture}{$description|strip_tags|replace:"\"":""}" />
-                            </li>
+            				</li>
                         {foreachelse}
                             <li>{gt text='No entries found.'}</li>
                         {/foreach}
