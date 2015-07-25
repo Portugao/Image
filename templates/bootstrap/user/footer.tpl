@@ -16,7 +16,23 @@
 {/if}
 {modgetvar module='MUImage' name='layout' assign='layout'}
 {if $layout eq 'bootstrap'}
-	<script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
-	<script src="modules/MUImage/Vendor/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"></script>
+	{userloggedin assign="loggedin"}
+	{if $loggedin eq true}
+		<script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+		<script src="modules/MUImage/Vendor/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"></script>
+	{else}
+		{pageaddvar name='stylesheet' value='modules/MUImage/Vendor/flexImages/jquery.flex-images.css'}
+		{pageaddvar name='javascript' value='modules/MUImage/Vendor/flexImages/jquery.flex-images.js'}	
+		<script>
+		 jQuery.noConflict();
+			 jQuery(document).ready(function(){
+ 
+				// (Hier jQuery-Code)
+ 
+					jQuery('.flex-images').flexImages({rowHeight: 200});
+ 
+			 });
+</script>
+	{/if}
 {/if}		
 

@@ -11,11 +11,11 @@
 	{pageaddvar name='stylesheet' value='modules/MUImage/style/bootstrap_boxsizing.css'}
 {else}
 	{if $layout eq 'bootstrap'}
-	{pageaddvar name='stylesheet' value='modules/MUImage/style/bootstrap.css'}
-	{* <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"> not needed normally because bootstrap should be included within the theme *}
-	<link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
-	<link rel="stylesheet" href="modules/MUImage/Vendor/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
-	<link rel="stylesheet" href="modules/MUImage/Vendor/GammaGallery/css/style.css">		
+		{pageaddvar name='stylesheet' value='modules/MUImage/style/bootstrap.css'}
+		{userloggedin assign="loggedin"}
+		{if $loggedin eq true}		
+			<link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
+			<link rel="stylesheet" href="modules/MUImage/Vendor/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">	
 	{/if}		
 {/if}
 {* initialise additional gettext domain for translations within javascript *}
