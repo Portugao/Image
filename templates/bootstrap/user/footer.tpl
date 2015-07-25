@@ -32,7 +32,7 @@
 					jQuery('.flex-images').flexImages({rowHeight: 200});
  
 			 });
-</script>
+        </script>
 	{/if}
 {/if}		
 
