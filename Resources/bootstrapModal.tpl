@@ -1,5 +1,6 @@
 {if $modvars.MUImage.layout eq 'bootstrap'}
-{if $func eq 'display' && $module eq 'MUImage'}
+{userloggedin assign="loggedin"}
+{if $func eq 'display' && $module eq 'MUImage' && $loggedin eq true}
 <!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
 <div id="blueimp-gallery" class="blueimp-gallery" data-use-bootstrap-modal="false">
     <!-- The container for the modal slides -->
