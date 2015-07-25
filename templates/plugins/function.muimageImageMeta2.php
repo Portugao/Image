@@ -14,7 +14,11 @@
 /**
  * The muimageImageMeta function displays a meta datas of an image.
  *
- * @param  string    $imageurl      The url to the image (including file name).
+ * Available parameters:
+ *   - assign:   If set, the results are assigned to the corresponding variable instead of printed out.
+ *
+ * @param  array            $params  All attributes passed to this function from the template.
+ * @param  Zikula_Form_View $view    Reference to the view object.
  *
  * @return string the meta datas.
  */
