@@ -4,7 +4,7 @@
     {assign var='lct' value='admin'}
 {/if}
 {include file="bootstrap/`$lct`/header.tpl"}
-
+<div class="row">
 <div class="col-md-12">
     	{gt text='Album' assign='templateTitle'}
     	{assign var='templateTitle' value=$album.title|default:$templateTitle}
@@ -259,5 +259,6 @@
 	    </div>
 	{/if}
     </div>
+</div>
 </div>
 {include file="bootstrap/`$lct`/footer.tpl"}
