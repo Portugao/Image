@@ -15,7 +15,8 @@
 		{userloggedin assign="loggedin"}
 		{if $loggedin eq true}		
 			<link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
-			<link rel="stylesheet" href="modules/MUImage/Vendor/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">	
+			<link rel="stylesheet" href="modules/MUImage/Vendor/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
+		{/if}	
 	{/if}		
 {/if}
 {* initialise additional gettext domain for translations within javascript *}
