@@ -64,7 +64,7 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('shrinkPictures', false);
         $this->setVar('supportCategories', false);
         $this->setVar('supportSubAlbums', false);
-        $this->setVar('breadcrumbInFrontend', false);
+        $this->setVar('breadcrumbInFrontend', true);
         $this->setVar('kindOfShowSubAlbums', 'panel');
         $this->setVar('orderAlbums', false);
         $this->setVar('ending', 'html');
