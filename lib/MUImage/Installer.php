@@ -69,7 +69,7 @@ class MUImage_Installer extends MUImage_Base_Installer
         $this->setVar('orderAlbums', false);
         $this->setVar('ending', 'html');
         $this->setVar('userDeletePictures', false);
-        $this->setVar('fileNameForTitle', false);
+        $this->setVar('fileNameForTitle', true);
         $this->setVar('createSeveralPictureSizes', true);
         $this->setVar('widthFirst', 400);
         $this->setVar('heightFirst', 400);
