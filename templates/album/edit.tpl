@@ -54,7 +54,7 @@
                 </div>
                 {if $inAdminGroup eq true}
                 <div class="z-formrow">
-                    {formlabel for='notInFrontend' __text='Not in frontend' cssClass=''}
+                    {formlabel for='notInFrontend' __text='Not available for guests?' cssClass=''}
                     {formcheckbox group='album' id='notInFrontend' readOnly=false __title='Not available for guests?' cssClass='' }
                 </div>
                 {/if}
