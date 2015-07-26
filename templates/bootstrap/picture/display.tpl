@@ -15,14 +15,16 @@
             </h3>
         </div>
     {else}
-        <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.pictures.filter'}{icon id="itemActions`$picture.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
+    {if $picture.title ne '' && $picture.showTitle eq true}
+        <h2>{$templateTitle|notifyfilters:'muimage.filter_hooks.pictures.filter'} {icon id="itemActions`$picture.id`Trigger" type='options' size='extrasmall' __alt='Actions' class='z-pointer z-hide'}
         </h2>
+    {/if}
     {/if}
 
     <dl>
        {* <dt>{gt text='Title'}</dt>
         <dd>{$picture.title}</dd> *}
-        {if $picture.description ne '' && $picture.showDescription}
+        {if $picture.description ne '' && $picture.showDescription eq true}
         <dt>{gt text='Description'}</dt>
         <dd>{$picture.description}</dd>
         {/if}
