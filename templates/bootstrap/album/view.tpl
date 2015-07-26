@@ -211,71 +211,71 @@
 
 {if $lct eq 'user'}
     <div class="container-fluid album-bootstrap-view">
-	{if isset($items)}
-	    <ul class="row">
-	    {foreach item='album' from=$items}
-		{if $album.parent eq NULL}
-		    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
-		    {if $accessThisAlbum eq 1}
-		    <li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-		    <div class="thumbnail album-view-container">
-			{muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
-			{if $albumpicture}
-			<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title|safetext}{if $album.description ne ''} - {$album.description|safehtml}{/if}">
-       			<img src="{thumb image=$albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'}" alt="">
-    		</a>
-    		{else}
-    		<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title|safetext}{if $album.description ne ''} - {$album.description|safehtml}{/if}">
-   				<img src="modules/MUImage/images/placeholder.png" width="300" height="200" />
-    		</a>
-    		{/if}    		 		
-    			<div class="caption album-view-info">
-    			<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}">
+	{if isset($items) && count($items) > 0}
+	<ul class="row">
+		{foreach item='album' from=$items}
+			{if $album.parent eq NULL}
+		    	{muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
+		    	{if $accessThisAlbum eq 1}
+		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+		    		<div class="thumbnail album-view-container">
+					{muimageGiveImageOfAlbum albumid=$album.id assign='albumpicture'}
+					{if $albumpicture}
+					<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title|safetext}{if $album.description ne ''} - {$album.description|safehtml}{/if}">
+       				<img src="{thumb image=$albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'}" alt="">
+    				</a>
+    				{else}
+    				<a data-placement="top" data-toggle="tooltip" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}" title="{$album.title|safetext}{if $album.description ne ''} - {$album.description|safehtml}{/if}">
+   					<img src="modules/MUImage/images/placeholder.png" width="300" height="200" />
+    				</a>
+    				{/if}    		 		
+    				<div class="caption album-view-info">
+    				<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$album.id}">
     				<i class="fa fa-eye fa-2x"></i>
-    			</a>&nbsp;	
-    			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
-    			{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
-    				{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}		
-    					<a title="{gt text='Edit}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}">
-    						<i class="fa fa-pencil-square-o fa-2x"></i>
-    					</a>
-    				{/if}
-    			{/checkpermissionblock}	
-    			<div>		
-				{if isset($album.children) && $album.children ne null && count($album.children) > 0}			    
-			    	{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=$album.children}    
-				{else}
-					{gt text='No SubAlbums'}
+    				</a>&nbsp;	
+    				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
+    					{muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
+    						{if $coredata.user.uid eq $album.createdUserId || $groupMember eq 1}		
+    							<a title="{gt text='Edit}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=$album.id}">
+    							<i class="fa fa-pencil-square-o fa-2x"></i>
+    							</a>
+    						{/if}
+    				{/checkpermissionblock}	
+    				<div>		
+					{if isset($album.children) && $album.children ne null && count($album.children) > 0}			    
+			    		{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=$album.children}    
+					{else}
+						{gt text='No SubAlbums'}
+					{/if}
+					</div>
+					<p>
+					{gt text='Pictures'}: {$album.picture|@count}
+           			</p>			
+    				</div>			
+					</div>
+		    		</li>
 				{/if}
-				</div>
-				<p>
-				{gt text='Pictures'}: {$album.picture|@count}
-            	</p>			
-    			</div>			
-			</div>
-		    </li>
-		{/if}
-
-		{/if}
+			{/if}
 	    {/foreach}
+	       
 	    {foreach item='album' from=$items}
-	    {muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
-		{if $accessThisAlbum eq 2}
-		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-		<div class="thumbnail">
-		<span style="width: 300px; heigt: 200px; background: url(modules/MUImage/images/placeholder.png) no-repeat center center; background-size: cover;">
-		        {usergetvar name='uname' uid=$album.createdUserId assign='username'}
-		        {gt text='This album is saved with a password by'}: {$username}<br /><br />
-		        {gt text=$album.id assign='albumid'}
-                {include file='bootstrap/album/enterPassword.tpl' id=$albumid}		
-		</span>
-   		</div>
-   		</li>
-		{/if}	    
+	    	{muimageCheckAlbumAccess albumid=$album.id assign='accessThisAlbum'}
+				{if $accessThisAlbum eq 2}
+					<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+						<div class="thumbnail">
+							<span style="width: 300px; heigt: 200px; background: url(modules/MUImage/images/placeholder.png) no-repeat center center; background-size: cover;">
+		        				{usergetvar name='uname' uid=$album.createdUserId assign='username'}
+		        				{gt text='This album is saved with a password by'}: {$username}<br /><br />
+		        				{gt text=$album.id assign='albumid'}
+                				{include file='bootstrap/album/enterPassword.tpl' id=$albumid}		
+							</span>
+   						</div>
+   					</li>
+				{/if}	    
 	    {/foreach}
-	    </ul>
+	</ul>
 	{else}
-	    {gt text='No SubAlbums'}
+	    {gt text='No albums'}
 	{/if}
 	</div>
 	<div style="clear: both">&nbsp;</div>
@@ -288,7 +288,7 @@
 	{foreach key='hookname' item='hook' from=$hooks}
 	    {$hook}
 	{/foreach} 
-    </div>
+
 
 {include file='bootstrap/user/footer.tpl'}
 {/if}
