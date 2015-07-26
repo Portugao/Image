@@ -93,17 +93,19 @@ class MUImage_Controller_External extends MUImage_Controller_Base_External
         if ($objectType == 'picture') {
             $albumRepository = MUImage_Util_Model::getAlbumRepository();
             $where = '';
-            $albums = $albumRepository->selectWhere($where);
+            $orderBy = 'id ASC';
+            $albums = $albumRepository->selectWhere($where, $orderBy);
             
             if ($album != 0) {
                 $where2 = 'tbl.album = \'' . DataUtil::formatForStore($album) . '\'';
                 list($entities, $objectCount) = $repository->selectWherePaginated($where2, $sortParam, $currentPage, $resultsPerPage);
 
-                foreach ($entities as $k => $entity) {
-                    $entity->initWorkflow();
-                }
             } else {
-                $entities = null;
+                $where3 = 'tbl.album = \'' . DataUtil::formatForStore($albums[0]['id']) . '\'';
+                list($entities, $objectCount) = $repository->selectWherePaginated($where3, $sortParam, $currentPage, $resultsPerPage);;
+            }
+            foreach ($entities as $k => $entity) {
+                $entity->initWorkflow();
             }
         }
 

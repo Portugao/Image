@@ -39,12 +39,30 @@
             	<div class="z-formrow">
             	    <label for="mUImageSelect">{gt text='Select album'}:</label>
                     <select>
-            	        {if $album == 0}<option>{gt text='No album selected'}</option>{/if}
-            	            {foreach item='singleAlbum' from=$albums}
-            		        <option {if $album != 0 && $album == $singleAlbum.id} selected=selected{/if} onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$singleAlbum.id}';">
-            			    {$singleAlbum.title}
-            			</option>
-            		    {/foreach}
+            	       {* {if $album == 0}
+            	            {foreach item='singleAlbum' from=$albums} 	            
+            		        	<option {if $album != 0 && $album == $singleAlbum.id} selected=selected{/if} onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$singleAlbum.id}';">
+            			    		{$singleAlbum.title}
+            					</option>
+            		    	{/foreach}
+            		    {/if} *}
+            		    {section name=singleAlbum loop=$albums}
+            		    	{if $album == 0}
+            		    		{if $smarty.section.singleAlbum.index == 0}
+            		    			<option selected=selected onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}'">
+            		    				{$albums[singleAlbum].title}
+            						</option>
+            		    		{else}
+             		        		<option onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}'">
+            			    			{$albums[singleAlbum].title}
+            						</option>           		    		
+            		    		{/if}
+            		    	{else}
+             		        	<option {if $albums[singleAlbum].id eq $album} selected=selected{/if} onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}'">
+            			    		{$albums[singleAlbum].title}
+            					</option>      		    	
+            		    	{/if}
+            		    {/section}
             	    </select>
             	</div>
             {/if}
@@ -81,11 +99,13 @@
 	    {if $items != null}
             <div class="z-formrow">
                 <label for="mUImageObjectId">{gt text='Picture'}:</label>
-                    <div id="muimageItemContainer">
+                    <div id="muimageItemContainer2">
                         <ul>
                         {foreach item='picture' from=$items}
                             <li>
-                                <a href="#" onclick="muimage.finder.selectItem({$picture.id})" onkeypress="muimage.finder.selectItem({$picture.id})">{thumb image=$picture.imageUploadFullPath width=100 height=100 img_alt=$picture->getTitleFromDisplayPattern() tag=true mode='inset' extension='jpg'}</a>
+                                <a title="{$picture.title}" href="#" onclick="muimage.finder.selectItem({$picture.id})" onkeypress="muimage.finder.selectItem({$picture.id})">
+                                {* {thumb image=$picture.imageUploadFullPath width=100 height=100 img_alt=$picture->getTitleFromDisplayPattern() tag=true mode='inset' extension='jpg'} *}
+                                <div style="border: 3px solid #343434; width: 120px; height: 80px; background: url(userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_tmb.jpg) no-repeat center center; background-size: cover;"></div></a>
                                 <input type="hidden" id="url{$picture.id}" value="{modurl modname='MUImage' type='user' func='display' ot='picture'  id=$picture.id fqurl=true}" />
                                 <input type="hidden" id="title{$picture.id}" value="{$picture->getTitleFromDisplayPattern()|replace:"\"":""}" />
                                 <input type="hidden" id="desc{$picture.id}" value="{capture assign='description'}{if $picture.description ne ''}{$picture.description}{/if}
