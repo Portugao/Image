@@ -22,7 +22,7 @@
     <dl>
        {* <dt>{gt text='Title'}</dt>
         <dd>{$picture.title}</dd> *}
-        {if $picture.description ne ''}
+        {if $picture.description ne '' && $picture.showDescription}
         <dt>{gt text='Description'}</dt>
         <dd>{$picture.description}</dd>
         {/if}

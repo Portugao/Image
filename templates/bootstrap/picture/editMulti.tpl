@@ -112,7 +112,7 @@
         </fieldset>
     {/if} *}
     {* include possible submit actions *}
-    <div class="form-control">
+    <div class="form-group">
     {if $mode eq 'edit'}
         {if $previouspicture eq 1}  
         {formbutton id='btnPrevious' commandName='previous' __text='Previous picture' class='btn btn-default'}
