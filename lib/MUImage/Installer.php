@@ -155,7 +155,7 @@ class MUImage_Installer extends MUImage_Base_Installer
                 $this->setVar('groupForCommonAlbums',  'notset' );
                 $this->setVar('fileNameForTitle', false);
                 $this->setVar('supportCategories', true);
-                $this->setVar('supportSubAlbums', false);
+                $this->setVar('supportSubAlbums', true);
                 $this->setVar('breadcrumbInFrontend', false);
                 $this->setVar('kindOfShowSubAlbums', 'panel');
                 $this->setVar('orderAlbums', false);
