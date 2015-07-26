@@ -193,6 +193,15 @@
 {/if}
 {else}
 	{include file='bootstrap/picture/include_displayItemListMany2.tpl' items=$album.picture}
+	{if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links' && $modvars.MUImage.supportSubAlbums eq true}
+	{gt text='SubAlbums'}: 
+		{foreach item='childAlbum' from=$album.children}
+				{muimageCheckAlbumAccess albumid=$childAlbum.id assign='accessThisAlbum'}
+				{if $accessThisAlbum eq 1}
+					<a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}">{$childAlbum.title}</a>&nbsp;
+				{/if}
+		{/foreach} 
+	{/if}
 {/if}
 <div style="clear: both"></div>
 
