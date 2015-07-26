@@ -5,7 +5,6 @@
 {/if}
 {include file="bootstrap/`$lct`/header.tpl"}
 
-<div class="col-md-12">
     	{gt text='Album' assign='templateTitle'}
     	{assign var='templateTitle' value=$album.title|default:$templateTitle}
     	{pagesetvar name='title' value=$templateTitle|@html_entity_decode}
@@ -28,6 +27,8 @@
     {/if}
 
 	{if $lct eq 'user'}
+	<div class="row">
+	<div class="col-md-12">
 	    {if isset($album.description) && $album.description ne null && count($album.description) > 0}
 		{$album.description}<br /><br />
 	    {/if}
@@ -201,7 +202,7 @@
 					<a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}">{$childAlbum.title}</a>&nbsp;
 				{/if}
 		{/foreach} 
-	{/if}
+{/if}
 {/if}
 <div style="clear: both"></div>
 
@@ -211,6 +212,8 @@
 	{foreach key='hookname' item='hook' from=$hooks}
 		   {$hook}
 	{/foreach}
+</div>
+</div>
 </div>
 {/if}
 	{if $lct eq 'admin'}
@@ -253,11 +256,12 @@
 	        <dt>{gt text='Description'}</dt>
 	        <dd>{$album.description}</dd>
 	    </dl>
-	    {include file='helper/include_categories_display.tpl' obj=$album}
+	    {if $modvars.MUImage.supportCategories eq true}
+	    	{include file='helper/include_categories_display.tpl' obj=$album}
+	    {/if}
 	    {include file='helper/include_standardfields_display.tpl' obj=$album}
 	    
 	    </div>
 	{/if}
     </div>
-</div>
 {include file="bootstrap/`$lct`/footer.tpl"}
