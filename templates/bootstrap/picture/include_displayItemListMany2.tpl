@@ -2,10 +2,10 @@
 
 {if isset($items) && $items ne null}
 	
-<div class="flex-images">
+<div id="photos">
 {foreach item='picture' from=$items}
 	{muimageImageMeta2 filePath=userdata/MUImage/pictures/imageupload/`$picture.imageUploadMeta.filename`_tmb.jpg assign='pictureMeta'}
-    <div class="item" data-w="{$pictureMeta.width}" data-h="{$pictureMeta.height}"><a href="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_full.jpg" title="{$picture.title}"  rel="imageviewer[item]"><img src="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_tmb.jpg"></a></div>
+	<a href="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_full.jpg" title="{$picture.title}"  rel="imageviewer[item]"><img src="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_tmb.jpg"></a>
 {/foreach}
 </div>
 {/if}
