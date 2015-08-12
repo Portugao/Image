@@ -36,8 +36,8 @@
 	    	{include file='bootstrap/helper/include_categories_display.tpl' obj=$album}
 	    {/if}
 	    {muimageCheckGroupMember createdUserId=$album.createdUserId assign='groupMember'}
-	    {if $album.createdUserId eq $coredata.user.uid || $groupMember eq 1}
-			{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_ADD' assign='authAdmin'}
+	    {checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
+	    {if $album.createdUserId eq $coredata.user.uid || $groupMember eq 1 || $authAdmin eq true}
 				<div id="action-for-albums" class="col-md-5">
 				<div style="z-index: 5000;" class="btn-group">
   					<a class="btn btn-default" href="#"><i class="fa fa-user fa-fw"></i>{gt text='Actions for this album'}</a>
@@ -54,7 +54,6 @@
   					</ul>
 				</div>
 				</div>
-			{/checkpermissionblock}
 	    {/if}  
 	    {if $modulevars.slideshow1 || $modulevars.slideshow2}
 	    <div id="select-view-album" class="col-md-7">
