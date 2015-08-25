@@ -55,11 +55,11 @@ muimage.finder = {};
 muimage.finder.onLoad = function (baseId, selectedId)
 {
     $$('div.categoryselector select').invoke('observe', 'change', muimage.finder.onParamChanged);
-    $('mUImageSort').observe('change', muimage.finder.onParamChanged);
-    $('mUImageSortDir').observe('change', muimage.finder.onParamChanged);
+    /*$('mUImageSort').observe('change', muimage.finder.onParamChanged);
+    $('mUImageSortDir').observe('change', muimage.finder.onParamChanged);*/
     $('mUImagePageSize').observe('change', muimage.finder.onParamChanged);
-    $('mUImageSearchGo').observe('click', muimage.finder.onParamChanged);
-    $('mUImageSearchGo').observe('keypress', muimage.finder.onParamChanged);
+    /*$('mUImageSearchGo').observe('click', muimage.finder.onParamChanged);
+    $('mUImageSearchGo').observe('keypress', muimage.finder.onParamChanged);*/
     $('mUImageSubmit').addClassName('z-hide');
     $('mUImageCancel').observe('click', muimage.finder.handleCancel);
 };
@@ -95,7 +95,7 @@ function getPasteSnippet(mode, itemId)
     objectType = $F('ObjectType');
 
     if (objectType === 'picture') {
-    	var itemPath, tmbPath, prePath, fullPath, createPictureSizes;
+    	var itemPath, tmbPath, prePath, fullPath, origPath, createPictureSizes;
     }
 
     itemUrl = $F('url' + itemId);
@@ -107,6 +107,7 @@ function getPasteSnippet(mode, itemId)
     tmbPath = $F('pathtmb' + itemId);
     prePath = $F('pathpre' + itemId);
     fullPath = $F('pathfull' + itemId);
+    origPath = $F('pathorig' + itemId);
     createPictureSizes = $F('createPictureSizes');
     if (createPictureSizes === false) {
     	var selectedWidth;
@@ -135,6 +136,10 @@ function getPasteSnippet(mode, itemId)
     
     if (pasteMode === '7') {
     	return '<a href="' + fullPath + '"rel="imageviewer[picture]"><img class="img-responsive" title="' + itemTitle + '" src="' + prePath + '" /></a>';
+    }
+    
+    if (pasteMode === '8') {
+    	return '<img class="img-responsive" title="' + itemTitle + '" src="' + origPath + '" />';
     }
     
     if (pasteMode === '2' || pasteMode !== '1') {

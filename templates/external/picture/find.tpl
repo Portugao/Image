@@ -91,6 +91,7 @@
                         	<option value="5">{gt text='Preview of picture'}</option>
                         	<option value="6">{gt text='Thumbnail of picture with lightbox'}</option>
                         	<option value="7">{gt text='Preview of picture with lightbox'}</option>
+                        	<option value="8">{gt text='Original picture'}</option>
                         {/if}
                         <option value="1">{gt text='Link to the picture'}</option>
                     </select>
@@ -116,6 +117,7 @@
                                 <input type="hidden" id="pathtmb{$picture.id}" value="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_tmb.jpg" />
                                 <input type="hidden" id="pathpre{$picture.id}" value="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_pre.jpg" />
                                 <input type="hidden" id="pathfull{$picture.id}" value="/userdata/MUImage/pictures/imageupload/{$picture.imageUploadMeta.filename}_full.jpg" />
+                                <input type="hidden" id="pathorig{$picture.id}" value="{$picture.imageUploadFullPathUrl}" />
                                 <input type="hidden" id="createPictureSizes" value="{$modvars.MUImage.createSeveralPictureSizes}" />
                             </li>
                         {foreachelse}
