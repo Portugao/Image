@@ -189,34 +189,12 @@
                 {if isset($album.picture) && $album.picture ne null}
                     {include file='picture/include_admindisplayItemListMany.tpl' items=$album.picture}
                 {/if}
-
-                {* {checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
-                {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
-                <p class="manageLink">
-                    {gt text='Create picture' assign='createTitle'}
-                        <a href="{modurl modname='MUImage' type='admin' func='edit' ot='picture' album="`$album.id`" returnTo='adminDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
-                            {$createTitle}
-                        </a>
-                     </p>
-                {/if} *}
                 <h3>{gt text='Album'}</h3>
 
                 {if isset($album.parent) && $album.parent ne null}
                     {include file='album/include_displayItemListOne.tpl' item=$album.parent}
                 {/if}
-
-                {* {if !isset($album.parent) || $album.parent eq null}
-                {checkpermission component='MUImage::' instance='.*' level='ACCESS_ADMIN' assign='authAdmin'}
-                {if $authAdmin || (isset($uid) && isset($album.createdUserId) && $album.createdUserId eq $uid)}
-                    <p class="manageLink">
-                    {gt text='Create album' assign='createTitle'}
-                    <a href="{modurl modname='MUImage' type='admin' func='edit' ot='album' children="`$album.id`" returnTo='adminDisplayAlbum'}" title="{$createTitle}" class="z-icon-es-add">
-                        {$createTitle}
-                    </a>
-                    </p>
-                {/if}
-           {/if}*}
-        </div>
+        	</div>
 	    <dl>
 	        <dt>{gt text='Description'}</dt>
 	        <dd>{$album.description}</dd>
