@@ -19,7 +19,7 @@ function MUImage(editor) {
         id       : 'MUImage',
         tooltip  : 'Insert MUImage object',
      // image    : _editor_url + 'plugins/MUImage/img/ed_MUImage.gif',
-        image    : '/images/icons/extrasmall/favorites.png',
+        image    : '/modules/MUImage/images/muimage.png',
         textMode : false,
         action   : function (editor) {
             var url = Zikula.Config.baseURL + 'index.php'/*Zikula.Config.entrypoint*/ + '?module=MUImage&type=external&func=finder&editor=xinha';
