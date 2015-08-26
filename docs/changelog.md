@@ -121,6 +121,20 @@ Changes in 1.3.0
 
 # closed #146 selection of albums in the picture find template 
 
+# closed #151 plugin does work like expected, is embedding thumbnail now
+
+# closed #152 embed ID of picture deleted, link moved to bottom now
+
+# closed #153 scribite plugin open window with picture view
+
+# closed #154 special tasks, discussed on zikula camp
+
+# closed #161 waste </div> tag deleted
+
+# closed #162 action menue visible for admins of MUImage now
+
+# closed #163 possible to embed original picture
+
 some more fixes:
 
 # increment of picture view only if the viewer is not the creator

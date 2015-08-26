@@ -3219,3 +3219,7 @@ msgstr ""
 #: templates/block/oneitem_modify.tpl:35
 msgid "Only the picture"
 msgstr ""
+
+
+msgid "Original picture"
+msgstr ""

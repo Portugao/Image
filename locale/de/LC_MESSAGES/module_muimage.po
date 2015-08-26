@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-27 13:53+0000\n"
-"PO-Revision-Date: 2015-07-27 15:54+0100\n"
+"POT-Creation-Date: 2015-08-26 17:02+0200\n"
+"PO-Revision-Date: 2015-08-26 17:02+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.9\n"
+"X-Generator: Poedit 1.8.4\n"
 
 #: workflows/function.none_permissioncheck.php:56
 msgid "None workflow (no approval)"
@@ -138,15 +138,13 @@ msgstr "Alben"
 
 #: templates/plugins/function.muimageSelectorTemplates.php:29
 #: templates/plugins/function.muimageTemplateSelector.php:30
-#: templates/block/itemlist_modify.tpl:62
-#: templates/block/oneitem_modify.tpl:36
+#: templates/block/itemlist_modify.tpl:62 templates/block/oneitem_modify.tpl:36
 msgid "Only item titles"
 msgstr "Nur Titel"
 
 #: templates/plugins/function.muimageSelectorTemplates.php:30
 #: templates/plugins/function.muimageTemplateSelector.php:31
-#: templates/block/itemlist_modify.tpl:63
-#: templates/block/oneitem_modify.tpl:37
+#: templates/block/itemlist_modify.tpl:63 templates/block/oneitem_modify.tpl:37
 msgid "With description"
 msgstr "Mit Beschreibung"
 
@@ -1572,8 +1570,8 @@ msgstr "Keine Objekttypen gefunden."
 msgid "Download"
 msgstr "Download"
 
-#: templates/external/picture/find.tpl:5
-#: templates/external/picture/find.tpl:36 templates/external/album/find.tpl:25
+#: templates/external/picture/find.tpl:5 templates/external/picture/find.tpl:36
+#: templates/external/album/find.tpl:25
 #: templates/bootstrap/external/picture/find.tpl:5
 #: templates/bootstrap/external/picture/find.tpl:36
 #: templates/bootstrap/external/album/find.tpl:25
@@ -1845,8 +1843,7 @@ msgstr "Position"
 
 #: templates/external/picture/find.tpl:142
 #: templates/external/picture/select.tpl:37
-#: templates/external/album/find.tpl:103
-#: templates/external/album/select.tpl:61
+#: templates/external/album/find.tpl:103 templates/external/album/select.tpl:61
 #: templates/picture/view_quickNav.tpl:52
 #: templates/bootstrap/external/picture/find.tpl:92
 #: templates/bootstrap/external/picture/select.tpl:37
@@ -1860,8 +1857,7 @@ msgstr "Erstelldatum"
 
 #: templates/external/picture/find.tpl:143
 #: templates/external/picture/select.tpl:38
-#: templates/external/album/find.tpl:104
-#: templates/external/album/select.tpl:62
+#: templates/external/album/find.tpl:104 templates/external/album/select.tpl:62
 #: templates/picture/view_quickNav.tpl:53
 #: templates/bootstrap/external/picture/find.tpl:93
 #: templates/bootstrap/external/picture/select.tpl:38
@@ -1875,8 +1871,7 @@ msgstr "Ersteller"
 
 #: templates/external/picture/find.tpl:144
 #: templates/external/picture/select.tpl:39
-#: templates/external/album/find.tpl:105
-#: templates/external/album/select.tpl:63
+#: templates/external/album/find.tpl:105 templates/external/album/select.tpl:63
 #: templates/picture/view_quickNav.tpl:54
 #: templates/bootstrap/external/picture/find.tpl:94
 #: templates/bootstrap/external/picture/select.tpl:39
@@ -1890,8 +1885,7 @@ msgstr "Aktualisierungsdatum"
 
 #: templates/external/picture/find.tpl:147
 #: templates/external/picture/select.tpl:42
-#: templates/external/album/find.tpl:108
-#: templates/external/album/select.tpl:66
+#: templates/external/album/find.tpl:108 templates/external/album/select.tpl:66
 #: templates/picture/view_quickNav.tpl:57
 #: templates/bootstrap/external/picture/find.tpl:97
 #: templates/bootstrap/external/picture/select.tpl:42
@@ -1905,8 +1899,7 @@ msgstr "Aufsteigend"
 
 #: templates/external/picture/find.tpl:148
 #: templates/external/picture/select.tpl:43
-#: templates/external/album/find.tpl:109
-#: templates/external/album/select.tpl:67
+#: templates/external/album/find.tpl:109 templates/external/album/select.tpl:67
 #: templates/picture/view_quickNav.tpl:58
 #: templates/bootstrap/external/picture/find.tpl:98
 #: templates/bootstrap/external/picture/select.tpl:43
@@ -1919,8 +1912,7 @@ msgid "descending"
 msgstr "Absteigend"
 
 #: templates/external/picture/find.tpl:153
-#: templates/external/album/find.tpl:114
-#: templates/picture/view_quickNav.tpl:65
+#: templates/external/album/find.tpl:114 templates/picture/view_quickNav.tpl:65
 #: templates/bootstrap/external/picture/find.tpl:103
 #: templates/bootstrap/external/album/find.tpl:114
 #: templates/bootstrap/picture/view_quickNav.tpl:65
@@ -1931,8 +1923,7 @@ msgstr "Seitengröße"
 
 #: templates/external/picture/find.tpl:166
 #: templates/external/picture/select.tpl:48
-#: templates/external/album/find.tpl:127
-#: templates/external/album/select.tpl:72
+#: templates/external/album/find.tpl:127 templates/external/album/select.tpl:72
 #: templates/bootstrap/external/picture/find.tpl:116
 #: templates/bootstrap/external/picture/select.tpl:48
 #: templates/bootstrap/external/album/find.tpl:127
@@ -1942,8 +1933,7 @@ msgstr "Suchen nach"
 
 #: templates/external/picture/find.tpl:168
 #: templates/external/picture/select.tpl:50
-#: templates/external/album/find.tpl:129
-#: templates/external/album/select.tpl:74
+#: templates/external/album/find.tpl:129 templates/external/album/select.tpl:74
 #: templates/bootstrap/external/picture/find.tpl:118
 #: templates/bootstrap/external/picture/select.tpl:50
 #: templates/bootstrap/external/album/find.tpl:129
@@ -2051,8 +2041,7 @@ msgstr "Parent_id"
 msgid "Album access"
 msgstr "Zugriff auf Album"
 
-#: templates/external/album/find.tpl:100
-#: templates/external/album/select.tpl:58
+#: templates/external/album/find.tpl:100 templates/external/album/select.tpl:58
 #: templates/bootstrap/external/album/find.tpl:100
 #: templates/bootstrap/external/album/select.tpl:58
 #: templates/bootstrap/album/view_quickNav.tpl:81
@@ -2063,8 +2052,7 @@ msgstr "Zugriff auf Album"
 msgid "Password access"
 msgstr "Passwortzugriff"
 
-#: templates/external/album/find.tpl:101
-#: templates/external/album/select.tpl:59
+#: templates/external/album/find.tpl:101 templates/external/album/select.tpl:59
 #: templates/bootstrap/external/album/find.tpl:101
 #: templates/bootstrap/external/album/select.tpl:59
 #: templates/bootstrap/album/view_quickNav.tpl:82
@@ -2075,8 +2063,7 @@ msgstr "Passwortzugriff"
 msgid "My friends"
 msgstr "Meine Freunde"
 
-#: templates/external/album/find.tpl:102
-#: templates/external/album/select.tpl:60
+#: templates/external/album/find.tpl:102 templates/external/album/select.tpl:60
 #: templates/bootstrap/external/album/find.tpl:102
 #: templates/bootstrap/external/album/select.tpl:60
 #: templates/bootstrap/album/view_quickNav.tpl:83
@@ -2554,10 +2541,9 @@ msgstr "Mehrere Bildgrößen erstellen"
 #: templates/bootstrap/picture/view.tpl:180
 #: templates/bootstrap/album/display.tpl:15
 #: templates/bootstrap/album/display.tpl:25
-#: templates/bootstrap/album/view.tpl:90
-#: templates/bootstrap/album/view.tpl:142 templates/album/display.tpl:16
-#: templates/album/display.tpl:26 templates/album/view.tpl:90
-#: templates/album/view.tpl:142
+#: templates/bootstrap/album/view.tpl:90 templates/bootstrap/album/view.tpl:142
+#: templates/album/display.tpl:16 templates/album/display.tpl:26
+#: templates/album/view.tpl:90 templates/album/view.tpl:142
 msgid "Actions"
 msgstr "Aktionen"
 
@@ -2973,8 +2959,7 @@ msgstr "Mehr lesen"
 
 #: templates/contenttype/itemlist_edit.tpl:43
 #: templates/contenttype/oneitem_edit.tpl:31
-#: templates/block/itemlist_modify.tpl:60
-#: templates/block/oneitem_modify.tpl:33
+#: templates/block/itemlist_modify.tpl:60 templates/block/oneitem_modify.tpl:33
 msgid "Template File"
 msgstr "Template Datei"
 
@@ -3321,6 +3306,9 @@ msgstr "Standard Blocktitel anzeigen"
 #: templates/block/oneitem_modify.tpl:35
 msgid "Only the picture"
 msgstr "Nur ein Bild"
+
+msgid "Original picture"
+msgstr "Originalbild"
 
 #~ msgid "not in frontend ?"
 #~ msgstr "Nicht im Frontend?"
