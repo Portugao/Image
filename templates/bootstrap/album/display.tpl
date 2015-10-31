@@ -84,8 +84,8 @@
           				{gt text='Pictures'}
         			</a>
         			<span class="caret"></span> 
-      			</h4>
-    			</div>
+      			    </h4>
+                </div>
     			<div id="collapseEins" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="überschriftEins">
       				<div id="muimage-pictures-content" class="collapse panel-body in">
 		    			{if isset($album.picture) && $album.picture ne null && count($album.picture) > 0}
@@ -110,6 +110,7 @@
 					</div>
     			</div>
  			</div>
+            </div>
   			{if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'panel' && $modvars.MUImage.supportSubAlbums eq true}  
   			<div class="panel panel-default">
     			<div class="panel-heading" role="tab" id="überschriftZwei">
@@ -119,7 +120,7 @@
         		</a>
         		<span class="caret"></span>
       			</h4>
-    		</div>
+                </div>
     		<div id="collapseZwei" class="panel-collapse collapse" role="tabpanel" aria-labelledby="überschriftZwei">
       			<div class="collapse panel-body in">
 				{if isset($album.children) && count($album.children) > 0}
@@ -180,7 +181,7 @@
      		</div>
     	</div>
 	</div>
-{/if}
+
 {if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links' && $modvars.MUImage.supportSubAlbums eq true}
 	{gt text='SubAlbums'}: 
 		{foreach item='childAlbum' from=$album.children}
@@ -190,7 +191,9 @@
 				{/if}
 		{/foreach} 
 {/if}
-{else}
+{/if}
+{/if}
+{if $lct eq 'admin'}
 	{include file='bootstrap/picture/include_displayItemListMany2.tpl' items=$album.picture}
 	{if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links' && $modvars.MUImage.supportSubAlbums eq true}
 	{gt text='SubAlbums'}: 
@@ -200,7 +203,7 @@
 					<a href="{modurl modname='MUImage' type='user' func='display' ot='album' id=$childAlbum.id}">{$childAlbum.title}</a>&nbsp;
 				{/if}
 		{/foreach} 
-{/if}
+    {/if}
 {/if}
  
 <div style="clear: both"></div>
@@ -215,21 +218,22 @@
 </div>
 	</div>
         </div>
-	{/if}
-	{if $lct eq 'admin'}
-	    <div id=''>
-            <div class="muimageRightBox">
-                <h3>{gt text='Pictures'}</h3>
+	
+{/if}
+{if $lct eq 'admin'}
+	<div>
+        <div class="muimageRightBox">
+            <h3>{gt text='Pictures'}</h3>
 
-                {if isset($album.picture) && $album.picture ne null}
-                    {include file='bootstrap/picture/include_admindisplayItemListMany.tpl' items=$album.picture}
-                {/if}
-                <h3>{gt text='Album'}</h3>
+            {if isset($album.picture) && $album.picture ne null}
+                {include file='bootstrap/picture/include_admindisplayItemListMany.tpl' items=$album.picture}
+            {/if}
+            <h3>{gt text='Album'}</h3>
 
-                {if isset($album.parent) && $album.parent ne null}
-                    {include file='bootstrap/album/include_displayItemListOne.tpl' item=$album.parent}
-                {/if}
-        	</div>
+            {if isset($album.parent) && $album.parent ne null}
+                {include file='bootstrap/album/include_displayItemListOne.tpl' item=$album.parent}
+            {/if}
+        </div>
 	    <dl>
 	        <dt>{gt text='Description'}</dt>
 	        <dd>{$album.description}</dd>
@@ -239,7 +243,7 @@
 	    {/if}
 	    {include file='helper/include_standardfields_display.tpl' obj=$album}
 	    
-	    </div>
-	{/if}
+	</div>
+{/if}
 
 {include file="bootstrap/`$lct`/footer.tpl"}
