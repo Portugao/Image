@@ -193,7 +193,7 @@
 {/if}
 {/if}
 {/if}
-{if $lct eq 'admin'}
+{if $loggedin eq false}
 	{include file='bootstrap/picture/include_displayItemListMany2.tpl' items=$album.picture}
 	{if isset($album.children) && count($album.children) > 0 && $modvars.MUImage.kindOfShowSubAlbums == 'links' && $modvars.MUImage.supportSubAlbums eq true}
 	{gt text='SubAlbums'}: 
