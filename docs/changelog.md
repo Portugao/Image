@@ -1,227 +1,229 @@
 CHANGELOG
----------
+
 
 Changes in 1.3.0
 
-# closed #5 Xinha plugin is implemented
+- closed #5 Xinha plugin is implemented
 
-# closed #22 Scribite 5.0 plugins are available
+- closed #22 Scribite 5.0 plugins are available
 
-# closed #29 we have dropdown list now
+- closed #29 we have dropdown list now
 
-# closed #32 user defined security schemata, it's possible give set all, users, freinds, password
+- closed #32 user defined security schemata, it's possible give set all, users, freinds, password
 
-# closed #45 refactored with MOST
+- closed #45 refactored with MOST
 
-# closed #58 possible to set album to not in frontend, only visible for creator and admins
+- closed #58 possible to set album to not in frontend, only visible for creator and admins
 
-# closed #66 flexible thumbnails independent of orientation
+- closed #66 flexible thumbnails independent of orientation
 
-# closed #67 selection of pictures by select field - shown id and title
+- closed #67 selection of pictures by select field - shown id and title
 
-# closed #73 all hook providers deleted - TODO later
+- closed #73 all hook providers deleted - TODO later
 
-# closed #74 shrinking of pictures implemented
+- closed #74 shrinking of pictures implemented
 
-# closed #75 possible to enable shrinking of pictures in settings
+- closed #75 possible to enable shrinking of pictures in settings
 
-# closed #76 all entries set to 'approved' - upgrade possible
+- closed #76 all entries set to 'approved' - upgrade possible
 
-# closed #77 entry into workflow table for each item - upgrade possible
+- closed #77 entry into workflow table for each item - upgrade possible
 
-# closed #78 cosmetic in album view
+- closed #78 cosmetic in album view
 
-# closed #79 cosmetic in album display
+- closed #79 cosmetic in album display
 
-# closed #80 upgrade possible
+- closed #80 upgrade possible
 
-# closed #82 import function deleted
+- closed #82 import function deleted
 
-# closed #83 creating albums possible
+- closed #83 creating albums possible
 
-# closed #84 creting pictures possible
+- closed #84 creting pictures possible
 
-# closed #85 multi upload of pictures possible
+- closed #85 multi upload of pictures possible
 
-# closed #86 picture invocations not shown if disabled in setting
+- closed #86 picture invocations not shown if disabled in setting
 
-# closed #87 controller are deleted except delete controller
+- closed #87 controller are deleted except delete controller
 
-# closed #88 controller permissions in frontend ruled
+- closed #88 controller permissions in frontend ruled
 
-# closed #89 album image implemented
+- closed #89 album image implemented
 
-# closed #90 pagesize setting work again
+- closed #90 pagesize setting work again
 
-# closed #92 fixed, main album get saved creating sub album
+- closed #92 fixed, main album get saved creating sub album
 
-# closed #94 plugins are working like expected
+- closed #94 plugins are working like expected
 
-# closed #95 deletion of several pictures seems to work
+- closed #95 deletion of several pictures seems to work
 
-# closed #96 in edit multi function we get the relevant informations about settings
+- closed #96 in edit multi function we get the relevant informations about settings
 
-# closed #97 it is possible to edit after multi upload
+- closed #97 it is possible to edit after multi upload
 
-# closed #98 state now approved
+- closed #98 state now approved
 
-# closed #101 no provider hook
+- closed #101 no provider hook
 
-# closed #103 form for password is working for sub albums now
+- closed #103 form for password is working for sub albums now
 
-# closed #104 fixed problems with field
+- closed #104 fixed problems with field
 
-# closed #105 file validation is working now
+- closed #105 file validation is working now
 
-# closed #106 picture access depends on album access now
+- closed #106 picture access depends on album access now
 
-# closed #107 one item block updated
+- closed #107 one item block updated
 
-# closed #108 display of album and pictures better now
+- closed #108 display of album and pictures better now
 
-# closed #109 redirect after deletion of picture is working like expected
+- closed #109 redirect after deletion of picture is working like expected
 
-# closed #114 CKeditor does not block the editor anymore
+- closed #114 CKeditor does not block the editor anymore
 
-# closed #115 now we have a zip upload method
+- closed #115 now we have a zip upload method
 
-# closed #117 possible now to take file name as picture name
+- closed #117 possible now to take file name as picture name
 
-# closed #118 password not in backend anymore
+- closed #118 password not in backend anymore
 
-# closed #119 we have an option to set a group for common access
+- closed #119 we have an option to set a group for common access
 
-# closed #120 album menu modified to more logic
+- closed #120 album menu modified to more logic
 
-# closed #121 logic in edit multi template improved
+- closed #121 logic in edit multi template improved
 
-# closed #122 new pot file and german translation completed
+- closed #122 new pot file and german translation completed
 
-# closed #124 all pictures get state 'approved' in multi and zip upload
+- closed #124 all pictures get state 'approved' in multi and zip upload
 
-# closed #125, #126 check for exif library now
+- closed #125, -126 check for exif library now
 
-# closed #127 breadcrumbs for display of albums in frontend
+- closed #127 breadcrumbs for display of albums in frontend
 
-# closed #128 correct redirect now
+- closed #128 correct redirect now
 
-# closed #129 children albums ordered by alphabet
+- closed #129 children albums ordered by alphabet
 
-# closed #135 Possible to set access for admins to all albums
+- closed #135 Possible to set access for admins to all albums
 
-# closed #136 flexible view of subalbums in display template
+- closed #136 flexible view of subalbums in display template
 
-# closed #137 translation problem fixed
+- closed #137 translation problem fixed
 
-# closed #141, #143 we have a new upload feature, that creates 3 additional picture sizes
+- closed #141, #143 we have a new upload feature, that creates 3 additional picture sizes
 
-# closed #144 editing of all albums possible for admins
+- closed #144 editing of all albums possible for admins
 
-# closed #145 own div container for bootstrap nav container
+- closed #145 own div container for bootstrap nav container
 
-# closed #146 selection of albums in the picture find template 
+- closed #146 selection of albums in the picture find template 
 
-# closed #151 plugin does work like expected, is embedding thumbnail now
+- closed #151 plugin does work like expected, is embedding thumbnail now
 
-# closed #152 embed ID of picture deleted, link moved to bottom now
+- closed #152 embed ID of picture deleted, link moved to bottom now
 
-# closed #153 scribite plugin open window with picture view
+- closed #153 scribite plugin open window with picture view
 
-# closed #154 special tasks, discussed on zikula camp
+- closed #154 special tasks, discussed on zikula camp
 
-# closed #161 waste </div> tag deleted
+- closed #161 waste </div> tag deleted
 
-# closed #162 action menue visible for admins of MUImage now
+- closed #162 action menue visible for admins of MUImage now
 
-# closed #163 possible to embed original picture
+- closed #163 possible to embed original picture
+
+- closed #164 coreect number of closing tags for div container
 
 some more fixes:
 
-# increment of picture view only if the viewer is not the creator
-# translation in chosen select menue in the picture edit form
+- increment of picture view only if the viewer is not the creator
+- translation in chosen select menue in the picture edit form
 
 
 Changes in 1.2.0
 
-# closed #23 now it is possible to set no ending in urls
+- closed #23 now it is possible to set no ending in urls
 
-# closed #27 we have no hook container if no hooks enabled
+- closed #27 we have no hook container if no hooks enabled
 
-# closed #43 better performance for albums with many subalbums
+- closed #43 better performance for albums with many subalbums
              for subalbums only the first picture will be oaded
              
-# closed #53 import of mediashare is possible with having a prefix in the tables
+- closed #53 import of mediashare is possible with having a prefix in the tables
              thanks to nmpetkov
              
-# closed #54 albums may have the same title, no error editing albums
+- closed #54 albums may have the same title, no error editing albums
 
-# closed #55 we can set a maximum width and maximum height for pictures
+- closed #55 we can set a maximum width and maximum height for pictures
 
-# closed #56 we have one slideshow impletended now
+- closed #56 we have one slideshow impletended now
 
-# closed #59 to set 0 for allowed albums and pictures we can set -1 now;
+- closed #59 to set 0 for allowed albums and pictures we can set -1 now;
              we have an information in the template
              
-# closed #60 changing album view is possible now with shorturls with no ending
+- closed #60 changing album view is possible now with shorturls with no ending
              without error message 
 
-# closed #61 titles with apostrophe are possible now
+- closed #61 titles with apostrophe are possible now
 
-# closed #62 gettext fix in album display
+- closed #62 gettext fix in album display
 
-# closed #63 cleaning of templates
+- closed #63 cleaning of templates
 
-# closed #65 missing type parameter in module calling fixed
+- closed #65 missing type parameter in module calling fixed
 
-# closed #68 line brek fixed
+- closed #68 line brek fixed
 
-# closed #71 readme updated
+- closed #71 readme updated
 
-# closed #72 layout with rectangular pictures fixed 
+- closed #72 layout with rectangular pictures fixed 
 
 Changes in 1.1.1
 
-# closed #44 now we can manage elements per page for albums in frontend
+- closed #44 now we can manage elements per page for albums in frontend
   and for albums and pictures in backend
   
-# closed #50 Editing of block 'itemlist' is possible now
+- closed #50 Editing of block 'itemlist' is possible now
 
-# closed #51 The readme was updated for better install informations
+- closed #51 The readme was updated for better install informations
   
-# now the editing and the functions of blocks are working as expected
+- now the editing and the functions of blocks are working as expected
   
 some missing translation done now
 some layout cosmetics with block itemlist done
 
 Changes in 1.1.0
   
-# closed #8 it is now possible to set a min width for pictures
+- closed #8 it is now possible to set a min width for pictures
 
-# closed #30 concrete datas of pictures and albums moved to the bottom of the edit template
+- closed #30 concrete datas of pictures and albums moved to the bottom of the edit template
   in backend and frontend
   
-# closed #31 now we can find links to upload pictures near the view of pictures in
+- closed #31 now we can find links to upload pictures near the view of pictures in
   a album display 
   
-# closed #34 there is an option in the backend configuration now to allow users to 
+- closed #34 there is an option in the backend configuration now to allow users to 
   delete their own pictures
   
-# fixed #39 import of albums with umlauts is possible now
+- fixed #39 import of albums with umlauts is possible now
 
-# closed #40 uninstall is possible now after import
+- closed #40 uninstall is possible now after import
 
-# closed #41 better feedback if album to support is not found
+- closed #41 better feedback if album to support is not found
 
-# closed # 42 better feedback if album to support already exists
+- closed # 42 better feedback if album to support already exists
 
-# closed #47 link to overview deleted in pictures detail view
+- closed #47 link to overview deleted in pictures detail view
 
-# fixed #49 layout problems in detail view of albums and pictures in frontend 
+- fixed #49 layout problems in detail view of albums and pictures in frontend 
   
   
 ------ some fixes ------
 
-# Deleting of an image coming from the display of an image,
+- Deleting of an image coming from the display of an image,
   gives error in frontend; now we return the redirect.
   
-# Guests contingent is now correct, 0 albums, 0 subalbums, 0 pictures
+- Guests contingent is now correct, 0 albums, 0 subalbums, 0 pictures
