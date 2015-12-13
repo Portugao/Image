@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-27 13:53+0000\n"
+"POT-Creation-Date: 2015-10-29 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -242,8 +242,8 @@ msgstr ""
 #: templates/search/options.tpl:9
 #: templates/bootstrap/external/album/find.tpl:25
 #: templates/bootstrap/search/options.tpl:9
-#: templates/bootstrap/album/display.tpl:86
-#: templates/bootstrap/album/display.tpl:158
+#: templates/bootstrap/album/display.tpl:84
+#: templates/bootstrap/album/display.tpl:156
 #: templates/bootstrap/album/display.tpl:222
 #: templates/bootstrap/album/view.tpl:249 templates/album/display.tpl:77
 #: templates/album/display.tpl:141 templates/album/display.tpl:187
@@ -509,7 +509,7 @@ msgid "No results found!"
 msgstr ""
 
 #: lib/MUImage/Form/Plugin/Base/RelationSelectorAutoComplete.php:146
-#: templates/external/picture/find.tpl:176
+#: templates/external/picture/find.tpl:178
 #: templates/external/album/find.tpl:136 templates/admin/config.tpl:223
 #: templates/admin/createSeveralSizes.tpl:16
 #: templates/picture/multiUpload.tpl:32 templates/picture/edit.tpl:144
@@ -1170,7 +1170,7 @@ msgstr ""
 #: lib/MUImage/Entity/Album.php:113
 #: templates/bootstrap/picture/include_displayItemListMany.tpl:23
 #: templates/bootstrap/album/display.tpl:47
-#: templates/bootstrap/album/display.tpl:148
+#: templates/bootstrap/album/display.tpl:146
 #: templates/bootstrap/album/view.tpl:236
 msgid "Edit"
 msgstr ""
@@ -1198,7 +1198,6 @@ msgstr ""
 #: templates/bootstrap/picture/edit.tpl:17
 #: templates/bootstrap/picture/editMulti.tpl:9
 #: templates/bootstrap/picture/editMulti.tpl:128
-#: templates/bootstrap/album/display.tpl:231 templates/album/display.tpl:196
 msgid "Create picture"
 msgstr ""
 
@@ -1206,10 +1205,8 @@ msgstr ""
 #: lib/MUImage/Entity/Base/Album.php:1223
 #: lib/MUImage/Entity/Base/Album.php:1301
 #: lib/MUImage/Entity/Base/Album.php:1302
-#: templates/bootstrap/album/display.tpl:247
 #: templates/bootstrap/album/view.tpl:22 templates/bootstrap/album/edit.tpl:16
-#: templates/album/display.tpl:212 templates/album/view.tpl:22
-#: templates/album/edit.tpl:16
+#: templates/album/view.tpl:22 templates/album/edit.tpl:16
 msgid "Create album"
 msgstr ""
 
@@ -1572,12 +1569,16 @@ msgstr ""
 msgid "Preview of picture with lightbox"
 msgstr ""
 
-#: templates/external/picture/find.tpl:95
+#: templates/external/picture/find.tpl:94
+msgid "Original picture"
+msgstr ""
+
+#: templates/external/picture/find.tpl:96
 #: templates/bootstrap/external/picture/find.tpl:41
 msgid "Link to the picture"
 msgstr ""
 
-#: templates/external/picture/find.tpl:101
+#: templates/external/picture/find.tpl:102
 #: templates/external/picture/select.tpl:14 templates/picture/display.tpl:8
 #: templates/contenttype/oneitem_edit.tpl:14
 #: templates/bootstrap/external/picture/find.tpl:58
@@ -1587,7 +1588,7 @@ msgstr ""
 msgid "Picture"
 msgstr ""
 
-#: templates/external/picture/find.tpl:122
+#: templates/external/picture/find.tpl:124
 #: templates/external/picture/select.tpl:19
 #: templates/external/album/find.tpl:85 templates/external/album/select.tpl:44
 #: templates/contenttype/itemlist_Album_display_description.tpl:11
@@ -1599,7 +1600,7 @@ msgstr ""
 msgid "No entries found."
 msgstr ""
 
-#: templates/external/picture/find.tpl:130
+#: templates/external/picture/find.tpl:132
 #: templates/external/picture/select.tpl:25
 #: templates/external/album/find.tpl:92 templates/external/album/select.tpl:50
 #: templates/picture/view_quickNav.tpl:39
@@ -1613,7 +1614,7 @@ msgstr ""
 msgid "Sort by"
 msgstr ""
 
-#: templates/external/picture/find.tpl:132
+#: templates/external/picture/find.tpl:134
 #: templates/external/picture/select.tpl:27
 #: templates/external/album/find.tpl:94 templates/external/album/select.tpl:52
 #: templates/picture/view_quickNav.tpl:42
@@ -1628,7 +1629,7 @@ msgstr ""
 msgid "Id"
 msgstr ""
 
-#: templates/external/picture/find.tpl:133
+#: templates/external/picture/find.tpl:135
 #: templates/external/picture/select.tpl:28
 #: templates/external/album/find.tpl:95 templates/external/album/select.tpl:53
 #: templates/picture/view_quickNav.tpl:26
@@ -1648,7 +1649,7 @@ msgstr ""
 msgid "Workflow state"
 msgstr ""
 
-#: templates/external/picture/find.tpl:134
+#: templates/external/picture/find.tpl:136
 #: templates/external/picture/select.tpl:29
 #: templates/external/album/find.tpl:96 templates/external/album/select.tpl:54
 #: templates/picture/view_quickNav.tpl:44 templates/picture/view.tpl:70
@@ -1671,7 +1672,7 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: templates/external/picture/find.tpl:135
+#: templates/external/picture/find.tpl:137
 #: templates/external/picture/select.tpl:30
 #: templates/external/album/find.tpl:97 templates/external/album/select.tpl:55
 #: templates/picture/display.tpl:26 templates/picture/view_quickNav.tpl:45
@@ -1687,16 +1688,16 @@ msgstr ""
 #: templates/bootstrap/picture/edit.tpl:37
 #: templates/bootstrap/picture/editMulti.tpl:29
 #: templates/bootstrap/picture/view.csv.tpl:3
-#: templates/bootstrap/album/display.tpl:256
+#: templates/bootstrap/album/display.tpl:234
 #: templates/bootstrap/album/view_quickNav.tpl:78
 #: templates/bootstrap/album/view.tpl:73 templates/bootstrap/album/edit.tpl:37
-#: templates/bootstrap/album/view.csv.tpl:3 templates/album/display.tpl:221
+#: templates/bootstrap/album/view.csv.tpl:3 templates/album/display.tpl:199
 #: templates/album/view_quickNav.tpl:78 templates/album/view.tpl:73
 #: templates/album/edit.tpl:37 templates/album/view.csv.tpl:3
 msgid "Description"
 msgstr ""
 
-#: templates/external/picture/find.tpl:136
+#: templates/external/picture/find.tpl:138
 #: templates/external/picture/select.tpl:31 templates/admin/config.tpl:40
 #: templates/picture/view_quickNav.tpl:46
 #: templates/picture/view_quickNav.tpl:77 templates/picture/view.tpl:76
@@ -1714,7 +1715,7 @@ msgstr ""
 msgid "Show title"
 msgstr ""
 
-#: templates/external/picture/find.tpl:137
+#: templates/external/picture/find.tpl:139
 #: templates/external/picture/select.tpl:32 templates/admin/config.tpl:45
 #: templates/picture/display.tpl:44 templates/picture/view_quickNav.tpl:47
 #: templates/picture/view_quickNav.tpl:86 templates/picture/view.tpl:79
@@ -1733,7 +1734,7 @@ msgstr ""
 msgid "Show description"
 msgstr ""
 
-#: templates/external/picture/find.tpl:138
+#: templates/external/picture/find.tpl:140
 #: templates/external/picture/select.tpl:33 templates/picture/display.tpl:59
 #: templates/picture/view_quickNav.tpl:48 templates/picture/multiUpload.tpl:19
 #: templates/picture/view.tpl:82 templates/picture/edit.tpl:53
@@ -1750,7 +1751,7 @@ msgstr ""
 msgid "Image upload"
 msgstr ""
 
-#: templates/external/picture/find.tpl:139
+#: templates/external/picture/find.tpl:141
 #: templates/external/picture/select.tpl:34
 #: templates/picture/view_quickNav.tpl:49 templates/picture/view.tpl:85
 #: templates/picture/edit.tpl:86 templates/picture/editMulti.tpl:76
@@ -1765,7 +1766,7 @@ msgstr ""
 msgid "Image view"
 msgstr ""
 
-#: templates/external/picture/find.tpl:140
+#: templates/external/picture/find.tpl:142
 #: templates/external/picture/select.tpl:35
 #: templates/picture/view_quickNav.tpl:50
 #: templates/picture/view_quickNav.tpl:95 templates/picture/view.tpl:88
@@ -1780,7 +1781,7 @@ msgstr ""
 msgid "Album image"
 msgstr ""
 
-#: templates/external/picture/find.tpl:141
+#: templates/external/picture/find.tpl:143
 #: templates/external/picture/select.tpl:36 templates/picture/display.tpl:75
 #: templates/picture/view_quickNav.tpl:51 templates/picture/view.tpl:91
 #: templates/picture/view.csv.tpl:3
@@ -1793,7 +1794,7 @@ msgstr ""
 msgid "Pos"
 msgstr ""
 
-#: templates/external/picture/find.tpl:142
+#: templates/external/picture/find.tpl:144
 #: templates/external/picture/select.tpl:37
 #: templates/external/album/find.tpl:103
 #: templates/external/album/select.tpl:61
@@ -1808,7 +1809,7 @@ msgstr ""
 msgid "Creation date"
 msgstr ""
 
-#: templates/external/picture/find.tpl:143
+#: templates/external/picture/find.tpl:145
 #: templates/external/picture/select.tpl:38
 #: templates/external/album/find.tpl:104
 #: templates/external/album/select.tpl:62
@@ -1823,7 +1824,7 @@ msgstr ""
 msgid "Creator"
 msgstr ""
 
-#: templates/external/picture/find.tpl:144
+#: templates/external/picture/find.tpl:146
 #: templates/external/picture/select.tpl:39
 #: templates/external/album/find.tpl:105
 #: templates/external/album/select.tpl:63
@@ -1838,7 +1839,7 @@ msgstr ""
 msgid "Update date"
 msgstr ""
 
-#: templates/external/picture/find.tpl:147
+#: templates/external/picture/find.tpl:149
 #: templates/external/picture/select.tpl:42
 #: templates/external/album/find.tpl:108
 #: templates/external/album/select.tpl:66
@@ -1853,7 +1854,7 @@ msgstr ""
 msgid "ascending"
 msgstr ""
 
-#: templates/external/picture/find.tpl:148
+#: templates/external/picture/find.tpl:150
 #: templates/external/picture/select.tpl:43
 #: templates/external/album/find.tpl:109
 #: templates/external/album/select.tpl:67
@@ -1868,7 +1869,7 @@ msgstr ""
 msgid "descending"
 msgstr ""
 
-#: templates/external/picture/find.tpl:153
+#: templates/external/picture/find.tpl:155
 #: templates/external/album/find.tpl:114
 #: templates/picture/view_quickNav.tpl:65
 #: templates/bootstrap/external/picture/find.tpl:103
@@ -1879,7 +1880,7 @@ msgstr ""
 msgid "Page size"
 msgstr ""
 
-#: templates/external/picture/find.tpl:166
+#: templates/external/picture/find.tpl:168
 #: templates/external/picture/select.tpl:48
 #: templates/external/album/find.tpl:127
 #: templates/external/album/select.tpl:72
@@ -1890,7 +1891,7 @@ msgstr ""
 msgid "Search for"
 msgstr ""
 
-#: templates/external/picture/find.tpl:168
+#: templates/external/picture/find.tpl:170
 #: templates/external/picture/select.tpl:50
 #: templates/external/album/find.tpl:129
 #: templates/external/album/select.tpl:74
@@ -1901,7 +1902,7 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: templates/external/picture/find.tpl:175
+#: templates/external/picture/find.tpl:177
 #: templates/external/album/find.tpl:135
 #: templates/bootstrap/external/picture/find.tpl:124
 #: templates/bootstrap/external/album/find.tpl:135
@@ -1966,11 +1967,11 @@ msgstr ""
 #: templates/bootstrap/picture/edit.tpl:107
 #: templates/bootstrap/picture/view.csv.tpl:4
 #: templates/bootstrap/album/display.tpl:8
-#: templates/bootstrap/album/display.tpl:237
+#: templates/bootstrap/album/display.tpl:227
 #: templates/bootstrap/album/edit.tpl:83
 #: templates/bootstrap/album/include_selectEditOne.tpl:9
 #: templates/bootstrap/album/include_selectEditOne.tpl:14
-#: templates/album/display.tpl:10 templates/album/display.tpl:202
+#: templates/album/display.tpl:10 templates/album/display.tpl:192
 #: templates/album/edit.tpl:80 templates/album/include_selectEditOne.tpl:9
 #: templates/album/include_selectEditOne.tpl:14
 #: templates/block/itemlist_modify.tpl:12
@@ -3022,33 +3023,33 @@ msgstr ""
 msgid "Zip-Add"
 msgstr ""
 
-#: templates/bootstrap/album/display.tpl:62 templates/album/display.tpl:62
+#: templates/bootstrap/album/display.tpl:61 templates/album/display.tpl:62
 msgid "View as:"
 msgstr ""
 
-#: templates/bootstrap/album/display.tpl:72 templates/album/display.tpl:69
+#: templates/bootstrap/album/display.tpl:71 templates/album/display.tpl:69
 msgid "Change view"
 msgstr ""
 
-#: templates/bootstrap/album/display.tpl:102 templates/album/display.tpl:87
+#: templates/bootstrap/album/display.tpl:100 templates/album/display.tpl:87
 msgid "Save positions"
 msgstr ""
 
-#: templates/bootstrap/album/display.tpl:110 templates/album/display.tpl:95
+#: templates/bootstrap/album/display.tpl:108 templates/album/display.tpl:95
 msgid "No pictures"
 msgstr ""
 
-#: templates/bootstrap/album/display.tpl:120
-#: templates/bootstrap/album/display.tpl:155
-#: templates/bootstrap/album/display.tpl:187
-#: templates/bootstrap/album/display.tpl:198
+#: templates/bootstrap/album/display.tpl:118
+#: templates/bootstrap/album/display.tpl:153
+#: templates/bootstrap/album/display.tpl:185
+#: templates/bootstrap/album/display.tpl:196
 #: templates/bootstrap/album/view.tpl:243 templates/album/display.tpl:100
 #: templates/album/display.tpl:140 templates/album/display.tpl:165
-#: templates/album/display.tpl:223 templates/album/view.tpl:256
+#: templates/album/display.tpl:201 templates/album/view.tpl:256
 msgid "SubAlbums"
 msgstr ""
 
-#: templates/bootstrap/album/display.tpl:171
+#: templates/bootstrap/album/display.tpl:169
 #: templates/bootstrap/album/view.tpl:265 templates/album/display.tpl:154
 #: templates/album/view.tpl:271
 msgid "This album is saved with a password by"
@@ -3218,8 +3219,4 @@ msgstr ""
 
 #: templates/block/oneitem_modify.tpl:35
 msgid "Only the picture"
-msgstr ""
-
-
-msgid "Original picture"
 msgstr ""
