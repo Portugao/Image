@@ -194,7 +194,7 @@ class MUImage_Form_Handler_Album_Edit extends MUImage_Form_Handler_Album_Base_Ed
      * Get the default redirect url. Required if no returnTo parameter has been supplied.
      * This method is called in handleCommand so we know which command has been performed.
      */
-    protected function getDefaultReturnUrl($args, $obj)
+    protected function getDefaultReturnUrl($args)
     {
         $albumId = $this->request->query->filter('id', 0, FILTER_SANITIZE_NUMBER_INT);
 
