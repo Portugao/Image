@@ -31,6 +31,14 @@
         <input type="hidden" name="func" value="finder" />
         <input type="hidden" name="objectType" id="ObjectType" value="{$objectType}" />
         <input type="hidden" name="editor" id="editorName" value="{$editorName}" />
+        {if $albums}
+            {section name=singleAlbum loop=$albums}
+                {if $album > 0  && $albums[singleAlbum].id eq $album}
+      		        <input type="hidden" name="album" id="albumId" value={$albums[singleAlbum].id} />
+            	{/if}
+            {/section}
+        
+        {/if}
 
         <fieldset>
             <legend>{gt text='Search and select picture'}</legend>
