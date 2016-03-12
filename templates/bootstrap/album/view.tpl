@@ -210,7 +210,7 @@
 {/if}
 
 {if $lct eq 'user'}
-    <div class="container-fluid album-bootstrap-view">
+    <div class="album-bootstrap-view">
 	{if isset($items) && count($items) > 0}
 	<ul class="row">
 		{foreach item='album' from=$items}

@@ -28,7 +28,6 @@
 	{if $loggedin eq true}
 	<div id="muimage-bootstrap-navbar-default">
 		<nav class="navbar navbar-default">
-  			<div class="container-fluid">
     		<!-- Titel und Schalter werden für eine bessere mobile Ansicht zusammengefasst -->
     		<div class="navbar-header">
       			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -57,8 +56,7 @@
       				{/checkpermissionblock}
       			</ul>
     		</div><!-- /.navbar-collapse -->
-  		</div><!-- /.container-fluid -->
-	</nav>
+		</nav>
 	</div>
     {/if}
 {/if}
