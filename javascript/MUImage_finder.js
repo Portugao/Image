@@ -41,7 +41,7 @@ function MUImageFinderCKEditor(editor, muimageURL)
 
     editor.popup(
         Zikula.Config.baseURL + Zikula.Config.entrypoint + '?module=MUImage&type=external&func=finder&editor=ckeditor',
-        /*width*/ '80%', /*height*/ '70%',
+        /*width*/ '80%', /*height*/ '90%',
         'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'
     );
 }
