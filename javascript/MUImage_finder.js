@@ -119,27 +119,27 @@ function getPasteSnippet(mode, itemId)
     
     
     if (pasteMode === '3') {
-    	return '<img title="' + itemTitle + '" src="' + itemPath + '" width="' + selectedWidth + '" height="auto" />';
+    	return '<img alt="' + itemTitle + '" src="' + itemPath + '" width="' + selectedWidth + '" height="auto" />';
     }
     
     if (pasteMode === '4') {
-    	return '<img class="img-responsive" title="' + itemTitle + '" src="' + tmbPath + '" />';
+    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" />';
     }
     
     if (pasteMode === '5') {
-    	return '<img class="img-responsive" title="' + itemTitle + '" src="' + prePath + '" />';
+    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" />';
     }
     
     if (pasteMode === '6') {
-    	return '<a href="' + fullPath + '" rel="imageviewer[picture]"><img class="img-responsive" title="' + itemTitle + '" src="' + tmbPath + '" /></a>';
+    	return '<a href="' + fullPath + '" rel="imageviewer[picture]"><img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" /></a>';
     }
     
     if (pasteMode === '7') {
-    	return '<a href="' + fullPath + '"rel="imageviewer[picture]"><img class="img-responsive" title="' + itemTitle + '" src="' + prePath + '" /></a>';
+    	return '<a href="' + fullPath + '"rel="imageviewer[picture]"><img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" /></a>';
     }
     
     if (pasteMode === '8') {
-    	return '<img class="img-responsive" title="' + itemTitle + '" src="' + origPath + '" />';
+    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + origPath + '" />';
     }
     
     if (pasteMode === '2' || pasteMode !== '1') {
