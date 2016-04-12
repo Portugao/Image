@@ -1,3 +1,5 @@
+{pageaddvar name='javascript' value='jquery'}
+{pageaddvar name='javascript' value='jquery.ui'}
 {* Purpose of this template: Display a popup selector of pictures for scribite integration *}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang}" lang="{lang}">
@@ -10,12 +12,14 @@
     <script type="text/javascript">/* <![CDATA[ */
         if (typeof(Zikula) == 'undefined') {var Zikula = {};}
         Zikula.Config = {'entrypoint': '{{$ourEntry|default:'index.php'}}', 'baseURL': '{{$baseurl}}'}; /* ]]> */</script>
+        <script type="text/javascript" src="{$baseurl}javascript/jquery/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="{$baseurl}javascript/jquery-ui/jquery-ui-1.9.1.custom.min.js"></script>
         <script type="text/javascript" src="{$baseurl}javascript/ajax/proto_scriptaculous.combined.min.js"></script>
         <script type="text/javascript" src="{$baseurl}javascript/helpers/Zikula.js"></script>
         <script type="text/javascript" src="{$baseurl}javascript/livepipe/livepipe.combined.min.js"></script>
         <script type="text/javascript" src="{$baseurl}javascript/helpers/Zikula.UI.js"></script>
         <script type="text/javascript" src="{$baseurl}javascript/helpers/Zikula.ImageViewer.js"></script>
-    <script type="text/javascript" src="{$baseurl}modules/MUImage/javascript/MUImage_finder.js"></script>
+    	<script type="text/javascript" src="{$baseurl}modules/MUImage/javascript/MUImage_finder.js"></script>
 {if $editorName eq 'tinymce'}
     <script type="text/javascript" src="{$baseurl}modules/Scribite/includes/tinymce/tiny_mce_popup.js"></script>
 {/if}
@@ -46,27 +50,20 @@
             {if $albums}
             	<div class="z-formrow">
             	    <label for="mUImageSelect">{gt text='Select album'}:</label>
-                    <select>
-            	       {* {if $album == 0}
-            	            {foreach item='singleAlbum' from=$albums} 	            
-            		        	<option {if $album != 0 && $album == $singleAlbum.id} selected=selected{/if} onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$singleAlbum.id}';">
-            			    		{$singleAlbum.title}
-            					</option>
-            		    	{/foreach}
-            		    {/if} *}
+                    <select id="albums">
             		    {section name=singleAlbum loop=$albums}
             		    	{if $album == 0}
             		    		{if $smarty.section.singleAlbum.index == 0}
-            		    			<option selected=selected onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}'">
+            		    			<option value="{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}" selected=selected>
             		    				{$albums[singleAlbum].title}
             						</option>
             		    		{else}
-             		        		<option onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}'">
+             		        		<option value="{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}">
             			    			{$albums[singleAlbum].title}
             						</option>           		    		
             		    		{/if}
             		    	{else}
-             		        	<option {if $albums[singleAlbum].id eq $album} selected=selected{/if} onclick="location.href='{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}'">
+             		        	<option value="{modurl modname='MUImage' type='external' func='finder' objectType='picture' editor=$editorName album=$albums[singleAlbum].id}" {if $albums[singleAlbum].id eq $album} selected=selected{/if}>
             			    		{$albums[singleAlbum].title}
             					</option>      		    	
             		    	{/if}
@@ -206,3 +203,13 @@
     *}
 </body>
 </html>
+<script type="text/javascript">
+/* <![CDATA[ */
+    var MU = jQuery.noConflict();
+	MU(document).ready(function(){
+  		MU('select#albums').change(function(){
+    		location.href = MU('select#albums').val();
+    });
+  });
+/* ]]> */
+</script>
