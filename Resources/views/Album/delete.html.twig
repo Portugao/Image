@@ -1,0 +1,40 @@
+{# purpose of this template: albums delete confirmation view #}
+{% extends routeArea == 'admin' ? 'MUMUImageModule::adminBase.html.twig' : 'MUMUImageModule::base.html.twig' %}
+{% block title __('Delete album') %}
+{% block admin_page_icon 'trash-o' %}
+{% block content %}
+    <div class="mumuimagemodule-album mumuimagemodule-delete">
+        <p class="alert alert-warning">{{ __f('Do you really want to delete this album: "%name%" ?', {'%name%': album.getTitleFromDisplayPattern()}) }}</p>
+
+        {% form_theme deleteForm with [
+            '@MUMUImageModule/Form/bootstrap_3.html.twig',
+            'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
+        ] %}
+        {{ form_start(deleteForm) }}
+        {{ form_errors(deleteForm) }}
+
+        <fieldset>
+            <legend>{{ __('Confirmation prompt') }}</legend>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    {{ form_widget(deleteForm.delete) }}
+                    {{ form_widget(deleteForm.cancel) }}
+                </div>
+            </div>
+        </fieldset>
+
+        {{ block('display_hooks') }}
+        {{ form_end(deleteForm) }}
+    </div>
+{% endblock %}
+{% block display_hooks %}
+    {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.albums.form_delete', id=album.id) %}
+    {% if hooks is iterable and hooks|length > 0 %}
+        {% for providerArea, hook in hooks %}
+            <fieldset>
+                {# <legend>{{ hookName }}</legend> #}
+                {{ hook }}
+            </fieldset>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

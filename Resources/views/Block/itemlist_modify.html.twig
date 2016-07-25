@@ -1,0 +1,19 @@
+{# Purpose of this template: Edit block for generic item list #}
+{{ form_row(form.objectType) }}
+{% if isCategorisable %}
+    {{ form_row(form.categories) }}
+{% endif %}
+{{ form_row(form.sorting) }}
+{{ form_row(form.amount) }}
+
+{{ form_row(form.template) }}
+<div id="customTemplateArea" class="hidden" data-switch="template" data-switch-value="custom">
+    {{ form_row(form.customTemplate) }}
+</div>
+
+{{ form_row(form.filter) }}
+
+{{ include('@MUMUImageModule/includeFilterSyntaxDialog.html.twig') }}
+{{ pageAddAsset('stylesheet', asset('bootstrap/css/bootstrap.min.css')) }}
+{{ pageAddAsset('stylesheet', asset('bootstrap/css/bootstrap-theme.min.css')) }}
+{{ pageAddAsset('javascript', asset('bootstrap/js/bootstrap.min.js')) }}

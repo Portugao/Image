@@ -1,0 +1,45 @@
+{# Purpose of this template: Display one certain picture within an external context #}
+<div id="picture{$picture.id}" class="mumuimagemodule-external-picture">
+{% if displayMode == 'link' %}
+    <p class="mumuimagemodule-external-link">
+    <a href="{{ path('mumuimagemodule_picture_display', { 'id': picture.id }) }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}">
+    {{ picture.getTitleFromDisplayPattern()|notifyfilters('muimage.filter_hooks.pictures.filter') }}
+    </a>
+    </p>
+{% endif %}
+{% if hasPermission('MUMUImageModule::', '::', 'ACCESS_EDIT') %}
+    {# for normal users without edit permission show only the actual file per default #}
+    {% if displayMode == 'embed' %}
+        <p class="mumuimagemodule-external-title">
+            <strong>{{ picture.getTitleFromDisplayPattern()|notifyfilters('muimage.filter_hooks.pictures.filter') }}</strong>
+        </p>
+    {% endif %}
+{% endif %}
+
+{% if displayMode == 'link' %}
+{% elseif displayMode == 'embed' %}
+    <div class="mumuimagemodule-external-snippet">
+        <a href="{{ picture.imageUploadFullPathURL }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
+        {% if picture.imageUploadMeta.isImage %}
+            {{ mumuimagemodule_thumb({ image: picture.imageUploadFullPath, objectid: 'picture-' ~ picture.id ~ '', preset: pictureThumbPresetImageUpload, tag: true, img_alt: picture.getTitleFromDisplayPattern(), img_class: 'img-thumbnail' }) }}
+        {% else %}
+            {{ __('Download') }} ({{ picture.imageUploadMeta.size|mumuimagemodule_fileSize(picture.imageUploadFullPath, false, false) }})
+        {% endif %}
+        </a>
+    </div>
+
+    {# you can distinguish the context like this: #}
+    {# % if source == 'contentType' %}
+        ...
+    {% elseif source == 'scribite' %}
+        ...
+    {% endif % #}
+
+    {# you can enable more details about the item: #}
+    {#
+        <p class="mumuimagemodule-external-description">
+            {% if picture.description is not empty %}{{ picture.description }}<br />{% endif %}
+        </p>
+    #}
+{/if}
+</div>

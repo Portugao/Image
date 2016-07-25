@@ -1,0 +1,55 @@
+{# purpose of this template: pictures rss feed #}
+{{ mumuimagemodule_templateHeaders(contentType='application/rss+xml') }}<?xml version="1.0" encoding="{% set charset = pageGetVar('meta.charset') %}{% if charset == 'ISO-8859-15' %}ISO-8859-1{% else %}{{ charset }}{% endif %}" ?>
+<rss version="2.0"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+    xmlns:admin="http://webns.net/mvcb/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:atom="http://www.w3.org/2005/Atom">
+{*<rss version="0.92">*}
+{% set homePath = pageGetVar('homepath') %}
+    <channel>
+        <title>{{ __('Latest pictures') }}</title>
+        <link>{{ homePath|e }}</link>
+        <atom:link href="{{ homePath ~ app.request.getPathInfo() }}" rel="self" type="application/rss+xml" />
+        <description>{{ __('A direct feed showing the list of pictures') }} - {{ getModVar('ZConfig', 'slogan') }}</description>
+        <language>{{ lang() }}</language>
+        {# commented out as imagepath is not defined and we can't know whether this logo exists or not
+        <image>
+            <title>{{ getModVar('ZConfig', 'sitename') }}</title>
+            <url>{{ homePath|e }}{{ imagepath }}/logo.jpg</url>
+            <link>{{ homePath|e }}</link>
+        </image>
+        #}
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <copyright>Copyright (c) {{ 'now'|date('Y') }}, {{ homePath|e }}</copyright>
+        <webMaster>{{ pageGetVar('adminmail)|e }} ({{ mumuimagemodule_userVar('name', 2, 'admin') }})</webMaster>
+{% for picture in items %}
+    {{ block('entry') }}
+{% endfor %}
+    </channel>
+</rss>
+{% block entry %}
+    <item>
+        {{ block('entry_content') }}
+    </item>
+{% endblock %}
+{% block entry_content %}
+    <title><![CDATA[{% if picture.updatedDate|default %}{{ picture.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ picture.getTitleFromDisplayPattern()|notifyfilters('mumuimagemodule.filterhook.pictures') }}]]></title>
+    <link>{{ url('mumuimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}</link>
+    <guid>{{ url('mumuimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}</guid>
+    {% if picture.createdUserId is defined %}
+        {% set cr_uname = mumuimagemodule_userVar('uname', obj.createdUserId) %}
+        {% set cr_name = mumuimagemodule_userVar('name', obj.createdUserId) %}
+        <author>{{ mumuimagemodule_userVar('email', picture.createdUserId) }} ({{ cr_name|default(cr_uname) }})</author>
+    {% endif %}
+    <description>
+        <![CDATA[
+        {{ picture.description|replace({ '<br>': '<br />' }) }}
+        ]]>
+    </description>
+    {% if picture.createdDate|default %}
+        <pubDate>{{ picture.createdDate|date('a, d b Y T +0100') }}</pubDate>
+    {% endif %}
+{% endblock %}

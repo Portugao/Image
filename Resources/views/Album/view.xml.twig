@@ -1,0 +1,9 @@
+{# purpose of this template: albums view xml view #}
+{{ mumuimagemodule_templateHeaders(contentType='text/xml') }}<?xml version="1.0" encoding="{{ pageGetVar('meta.charset') }}" ?>
+<albums>
+{% for album in items %}
+    {{ include('@MUMUImageModule/Album/include.xml.twig') }}
+{% else %}
+    <noAlbum />
+{% endfor %}
+</albums>

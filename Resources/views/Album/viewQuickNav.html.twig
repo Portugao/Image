@@ -1,0 +1,55 @@
+{# purpose of this template: albums view filter form #}
+{% if hasPermission('MUMUImageModule:Album:', '::', 'ACCESS_EDIT') %}
+    {% form_theme quickNavForm with [
+        '@MUMUImageModule/Form/bootstrap_3.html.twig',
+        'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
+    ] %}
+    {{ form_start(quickNavForm, {attr: {id: 'mUMUImageModuleAlbumQuickNavForm', class: 'mumuimagemodule-quicknav navbar-form', role: 'navigation'}}) }}
+    {{ form_errors(quickNavForm) }}
+    <fieldset>
+        <h3>{{ __('Quick navigation') }}</h3>
+        {% if categoryFilter is not defined or categoryFilter == true %}
+            {{ form_row(quickNavForm.categories) }}
+        {% endif %}
+        {% if albumFilter is not defined or albumFilter == true %}
+            {{ form_row(quickNavForm.parent) }}
+        {% endif %}
+        {% if workflowStateFilter is not defined or workflowStateFilter == true %}
+            {{ form_row(quickNavForm.workflowState) }}
+        {% endif %}
+        {% if albumAccessFilter is not defined or albumAccessFilter == true %}
+            {{ form_row(quickNavForm.albumAccess) }}
+        {% endif %}
+        {% if searchFilter is not defined or searchFilter == true %}
+            {{ form_row(quickNavForm.q) }}
+        {% endif %}
+        {% if sorting is not defined or sorting == true %}
+            {{ form_row(quickNavForm.sort) }}
+            {{ form_row(quickNavForm.sortdir) }}
+        {% else %}
+            {{ form_row(quickNavForm.sort, {attr: {class: 'hidden'}}) }}
+            {{ form_row(quickNavForm.sortdir, {attr: {class: 'hidden'}}) }}
+        {% endif %}
+        {% if pageSizeSelector is not defined or pageSizeSelector == true %}
+            {{ form_row(quickNavForm.num) }}
+        {% endif %}
+        {% if notInFrontendFilter is not defined or notInFrontendFilter == true %}
+            {{ form_row(quickNavForm.notInFrontend) }}
+        {% endif %}
+        {{ form_widget(quickNavForm.updateview) }}
+    </fieldset>
+    {{ form_end(quickNavForm) }}
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        ( function($) {
+            $(document).ready(function() {
+                mUMUImageInitQuickNavigation('album');
+                {% if searchFilter|default and searchFilter == false %}
+                    {# we can hide the submit button if we have no quick search field #}
+                    $('#quicknavSubmit').addClass('hidden');
+                {% endif %}
+            });
+        })(jQuery);
+    /* ]]> */
+    </script>
+{% endif %}

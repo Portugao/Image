@@ -1,0 +1,152 @@
+{# purpose of this template: albums display view #}
+{% extends routeArea == 'admin' ? 'MUMUImageModule::adminBase.html.twig' : 'MUMUImageModule::base.html.twig' %}
+{% block title %}
+    {% set templateTitle = album.getTitleFromDisplayPattern()|default(__('Album')) %}
+    {{ templateTitle|notifyFilters('mumuimagemodule.filter_hooks.albums.filter') }}
+    {% if album._actions|length > 0 %}
+        <div class="dropdown">
+            <a id="itemActions{{ album.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
+            
+            <ul class="dropdown-menu" role="menu" aria-labelledby="itemActions{{ album.id }}DropDownToggle">
+                {% for option in album._actions %}
+                    <li role="presentation"><a href="{{ option.url.type|mumuimagemodule_actionUrl(option.url.func, option.url.arguments) }}" title="{{ option.linkTitle|e('html_attr') }}" role="menuitem" tabindex="-1" class="fa fa-{{ option.icon }}">{{ option.linkText }}</a></li>
+                    
+                {% endfor %}
+            </ul>
+        </div>
+        <script type="text/javascript">
+        /* <![CDATA[ */
+            ( function($) {
+                $(document).ready(function() {
+                    $('.dropdown-toggle').dropdown();
+                    $('a.fa-zoom-in').attr('target', '_blank');
+                });
+            })(jQuery);
+        /* ]]> */
+        </script>
+    {% endif %}
+{% endblock %}
+{% block admin_page_icon 'eye' %}
+{% block content %}
+    <div class="mumuimagemodule-album mumuimagemodule-display">
+
+    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+        <div class="row">
+            <div class="col-sm-9">
+    {% endif %}
+
+    <dl>
+        <dt>{{ __('Title') }}</dt>
+        <dd>{{ album.title }}</dd>
+        <dt>{{ __('Description') }}</dt>
+        <dd>{{ album.description }}</dd>
+        <dt>{{ __('Parent_id') }}</dt>
+        <dd>{{ album.parent_id }}</dd>
+        <dt>{{ __('Album access') }}</dt>
+        <dd>{{ album.albumAccess|mumuimagemodule_listEntry('album', 'albumAccess') }}</dd>
+        <dt>{{ __('Password access') }}</dt>
+        <dd></dd>
+        <dt>{{ __('My friends') }}</dt>
+        <dd>{{ album.myFriends }}</dd>
+        <dt>{{ __('Not in frontend') }}</dt>
+        <dd>{{ album.notInFrontend|yesNo(true) }}</dd>
+        <dt>{{ __('Parent') }}</dt>
+        <dd>
+        {% if album.parent|default %}
+          {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+          <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.parent.id }) }}">{% spaceless %}
+            {{ album.parent.getTitleFromDisplayPattern() }}
+          {% endspaceless %}</a>
+          <a id="albumItem{{ album.parent.id }}Display" href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.parent.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="hidden"><span class="fa fa-eye"></span></a>
+          <script type="text/javascript">
+          /* <![CDATA[ */
+              document.observe('dom:loaded', function() {
+                  mUMUImageInitInlineWindow($('albumItem{{ album.parent.id }}Display'), '{{ album.parent->getTitleFromDisplayPattern()|e('js') }}');
+              });
+          /* ]]> */
+          </script>
+          {% else %}
+            {{ album.parent.getTitleFromDisplayPattern() }}
+          {% endif %}
+        {% else %}
+            {{ __('Not set.') }}
+        {% endif %}
+        </dd>
+        
+    </dl>
+    {{ include('@MUMUImageModule/Helper/includeCategoriesDisplay.html.twig', { obj: album }) }}
+    {{ include('@MUMUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: album }) }}
+
+    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+        {# include display hooks #}
+        {{ block('display_hooks') }}
+            </div>
+            <div class="col-sm-3">
+                {{ block('related_items') }}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block related_items %}
+    {% if routeArea == 'admin' %}
+        <h4>{{ __('Pictures') }}</h4>
+    {% else %}
+        <h3>{{ __('Pictures') }}</h3>
+    {% endif %}
+    
+    {% if album.picture|default %}
+        {{ include(
+            '@MUMUImageModule/Picture/includeDisplayItemListMany.html.twig',
+            { items: album.picture }
+        ) }}
+    {% endif %}
+    
+    {% set permLevel = 'ACCESS_EDIT' %}
+    {% if routeArea == 'admin' %}
+        {% set permLevel = 'ACCESS_ADMIN' %}
+    {% endif %}
+    {% set mayManage = hasPermission('MUMUImageModule:Album:', album.id ~ '::', permLevel) %}
+    {% if mayManage or (uid is defined and album.createdUserId is defined and album.createdUserId == uid) %}
+    <p class="managelink">
+        {% set createTitle = __('Create picture') %}
+        <a href="{{ path('mumuimagemodule_picture_' ~ routeArea ~ 'edit', { album: album.id, returnTo: area|lower ~ 'DisplayAlbum' }) }}" title="{{ createTitle }}" class="fa fa-plus">{{ createTitle }}</a>
+    </p>
+    {% endif %}
+    {% if routeArea == 'admin' %}
+        <h4>{{ __('Albums') }}</h4>
+    {% else %}
+        <h3>{{ __('Albums') }}</h3>
+    {% endif %}
+    
+    {% if album.children|default %}
+        {{ include(
+            '@MUMUImageModule/Album/includeDisplayItemListMany.html.twig',
+            { items: album.children }
+        ) }}
+    {% endif %}
+    
+    {% set permLevel = 'ACCESS_EDIT' %}
+    {% if routeArea == 'admin' %}
+        {% set permLevel = 'ACCESS_ADMIN' %}
+    {% endif %}
+    {% set mayManage = hasPermission('MUMUImageModule:Album:', album.id ~ '::', permLevel) %}
+    {% if mayManage or (uid is defined and album.createdUserId is defined and album.createdUserId == uid) %}
+    <p class="managelink">
+        {% set createTitle = __('Create album') %}
+        <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'edit', { parent: album.id, returnTo: area|lower ~ 'DisplayAlbum' }) }}" title="{{ createTitle }}" class="fa fa-plus">{{ createTitle }}</a>
+    </p>
+    {% endif %}
+{% endblock %}
+{% block display_hooks %}
+    {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.albums.display_view', id=album.id, urlObject=currentUrlObject) %}
+    {% for providerArea, hook in hooks %}
+        {% if providerArea != 'provider.scribite.ui_hooks.editor' %}{# fix for #664 #}
+            {{ hook }}
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+{% block footer %}
+    {{ parent() }}
+
+{% endblock %}

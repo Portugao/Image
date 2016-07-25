@@ -1,0 +1,27 @@
+{# purpose of this template: albums xml inclusion template #}
+<album id="{{ album.id }}" createdon="{{ album.createdDate|localizeddate('medium', 'short') }}" updatedon="{{ album.updatedDate|localizeddate('medium', 'short') }}">
+    <id>{{ album.id }}</id>
+    <title><![CDATA[{{ album.title }}]]></title>
+    <description><![CDATA[{{ album.description }}]]></description>
+    <parent_id>{{ album.parent_id }}</parent_id>
+    <albumAccess>{{ album.albumAccess|mumuimagemodule_listEntry('album', 'albumAccess') }}</albumAccess>
+    <passwordAccess><![CDATA[]]></passwordAccess>
+    <myFriends><![CDATA[{{ album.myFriends }}]]></myFriends>
+    <notInFrontend>{% if not album.notInFrontend %}0{% else %}1{% endif %}</notInFrontend>
+    <workflowState>{{ album.workflowState|mumuimagemodule_objectState(false)|lower }}</workflowState>
+    <parent>{% if album.parent|default %}{{ album.parent.getTitleFromDisplayPattern() }}{% endif %}</parent>
+    <picture>
+    {% if album.picture|default %}
+        {% for relatedItem in album.picture %}
+        <picture>{{ relatedItem.getTitleFromDisplayPattern() }}</picture>
+        {% endfor %}
+    {% endif %}
+    </picture>
+    <children>
+    {% if album.children|default %}
+        {% for relatedItem in album.children %}
+        <album>{{ relatedItem.getTitleFromDisplayPattern() }}</album>
+        {% endfor %}
+    {% endif %}
+    </children>
+</album>

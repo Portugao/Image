@@ -1,0 +1,8 @@
+{# Purpose of this template: Display pictures in text mailings #}
+{% for picture in items %}
+{{ picture.getTitleFromDisplayPattern() }}
+{{ url('mumuimagemodule_picture_display', { 'id': picture.id }) }}
+-----
+{% else %}
+{{ __('No pictures found.') }}
+{% endfor %}

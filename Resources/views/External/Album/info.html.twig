@@ -1,0 +1,13 @@
+{# Purpose of this template: Display item information for previewing from other modules #}
+<dl id="album{{ album.id }}">
+<dt>{{ album.getTitleFromDisplayPattern()|notifyfilters('muimage.filter_hooks.albums.filter') }}</dt>
+{% if album.description is not empty %}<dd>{{ album.description }}</dd>{% endif %}
+<dd>
+    <dl class="category-list">
+    {% for propName, catMapping in album.categories %}
+        <dt>{{ propName }}</dt>
+        <dd>{{ catMapping.category.display_name[lang] }}</dd>
+    {% endfor %}
+    </dl>
+</dd>
+</dl>

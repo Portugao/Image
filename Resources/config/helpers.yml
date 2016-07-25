@@ -1,0 +1,28 @@
+services:
+    # Helper classes
+    mu_muimage_module.model_helper:
+        class: MU\MUImageModule\Helper\ModelHelper
+        arguments: ["@service_container"]
+    
+    mu_muimage_module.controller_helper:
+        class: MU\MUImageModule\Helper\ControllerHelper
+        arguments: ["@service_container", "@translator.default", "@session", "@logger"]
+    
+    mu_muimage_module.view_helper:
+        class: MU\MUImageModule\Helper\ViewHelper
+        arguments: ["@service_container", "@translator.default"]
+    
+    mu_muimage_module.workflow_helper:
+        class: MU\MUImageModule\Helper\WorkflowHelper
+        arguments: ["@service_container", "@translator.default"]
+    
+    mu_muimage_module.hook_helper:
+        class: MU\MUImageModule\Helper\HookHelper
+        arguments: ["@hook_dispatcher"]
+    
+    mu_muimage_module.image_helper:
+        class: MU\MUImageModule\Helper\ImageHelper
+    
+    mu_muimage_module.listentries_helper:
+        class: MU\MUImageModule\Helper\ListEntriesHelper
+        arguments: ["@translator.default"]

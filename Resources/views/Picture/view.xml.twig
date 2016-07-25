@@ -1,0 +1,9 @@
+{# purpose of this template: pictures view xml view #}
+{{ mumuimagemodule_templateHeaders(contentType='text/xml') }}<?xml version="1.0" encoding="{{ pageGetVar('meta.charset') }}" ?>
+<pictures>
+{% for picture in items %}
+    {{ include('@MUMUImageModule/Picture/include.xml.twig') }}
+{% else %}
+    <noPicture />
+{% endfor %}
+</pictures>

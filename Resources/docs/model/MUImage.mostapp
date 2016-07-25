@@ -1,0 +1,204 @@
+application "MUImage" {
+    vendor "MU"
+    author "Michael Ueberschaer"
+    email "kontakt@webdesign-in-bremen.com"
+    url "http://www.webdesign-in-bremen.com"
+    version "1.4.0"
+    prefix "muimage"
+    generatorSettings {
+        settingsContainer "Einstellungen"
+        targetCoreVersion ZK14
+        amountOfExampleRows 0
+        generateIcsTemplates false
+        generateOnlyBaseClasses false
+        generatePoweredByBacklinksIntoFooterTemplates false
+        generateTests false
+        writeModelToDocs true
+        skipFiles ""
+        markFiles ""
+    }
+    entities {
+        entity "album" leading categorisable {
+            nameMultiple "albums"
+            displayPattern "#title#"
+            fields {
+                string "title" unique,
+                text "description" {
+                    mandatory false
+                },
+                integer "parent_id" nullable {
+                    defaultValue ""
+                    mandatory false
+                },
+                list "albumAccess" {
+                    items {
+                        listItem "All" ( "all" ),
+                        listItem "Users" ( "users" ) { documentation "only registered users" image "only registered users" },
+                        listItem "Friends" ( "friends" ),
+                        listItem "knownPassword" ( "known" )
+                    }
+                },
+                string "passwordAccess" password {
+                    mandatory false
+                },
+                string "myFriends" {
+                    mandatory false
+                },
+                boolean "notInFrontend" {
+                    defaultValue ""
+                    mandatory false
+                }
+            }
+            actions {
+                mainAction "Main",
+                viewAction "View",
+                displayAction "Display",
+                editAction "Edit",
+                deleteAction "Delete"
+            }
+        },
+        entity "picture" {
+            nameMultiple "pictures"
+            displayPattern "#title#"
+            fields {
+                string "title" {
+                    defaultValue ""
+                    mandatory false
+                },
+                text "description" {
+                    defaultValue ""
+                    mandatory false
+                },
+                boolean "showTitle" ajaxTogglability {
+                    defaultValue ""
+                    mandatory false
+                },
+                boolean "showDescription" ajaxTogglability {
+                    mandatory false
+                },
+                upload "imageUpload",
+                integer "imageView" {
+                    defaultValue "0"
+                    mandatory false
+                },
+                boolean "albumImage" {
+                    defaultValue ""
+                    mandatory false
+                },
+                integer "pos"
+            }
+            actions {
+                mainAction "Main",
+                viewAction "View",
+                displayAction "Display",
+                editAction "Edit",
+                deleteAction "Delete"
+            }
+        }
+    }
+    relations {
+        one2many bidirectional {
+            source "album"
+            sourceAlias "album"
+            target "picture"
+            targetAlias "picture"
+            editType ACTIVE_EDIT_PASSIVE_EDIT
+            cascade ALL
+            orderBy "pos"
+        },
+        one2many bidirectional {
+            source "album"
+            sourceAlias "parent"
+            sourceField "parent_id"
+            target "album"
+            targetAlias "children"
+            editType ACTIVE_EDIT_PASSIVE_EDIT
+            cascade REMOVE
+        }
+    }
+    variables {
+        varContainer "General" {
+            vars {
+                intVar "pagesize" {
+                    documentation "Pagesize in adminview"
+                    value "10"
+                },
+                intVar "pageSizeAdminAlbums" {
+                    value "10"
+                },
+                intVar "pageSizeAdminPictures" {
+                    value "10"
+                },
+                boolVar "showTitle" {
+                    documentation "Standard setting for showing a title of an image"
+                    value "1"
+                },
+                boolVar "showDescription" {
+                    documentation "Standard setting for showing a description of an image"
+                    value "1"
+                },
+                boolVar "countImageView" {
+                    value "1"
+                },
+                intVar "numberParentAlbums" {
+                    documentation "How many main albums may a user create"
+                    value "1"
+                },
+                intVar "numberSubAlbums" {
+                    documentation "How many sub albums may a user create"
+                    value "2"
+                },
+                intVar "numberPictures" {
+                    documentation "How many pictures may a user create"
+                    value "20"
+                },
+                intVar "fileSize" {
+                    value "\"102400\""
+                },
+                intVar "minWidth" {
+                    value "400"
+                },
+                intVar "maxWidth",
+                intVar "maxHeight",
+                listVar "groupForCommonAlbums" { value "\"\"" items {  listVarItem  "None" } } , boolVar "supportCategories" { value "0" } , boolVar "supportSubAlbums" { value "0" } , boolVar "breadcrumbInFrontend" { value "0" } , listVar "kindOfShowSubAlbums" { value "panel" items { listVarItem default "links" , listVarItem "panel" } } ,
+                textVar "ending" {
+                    value "html"
+                },
+                boolVar "userDeletePictures" {
+                    value "0"
+                }
+            } } ,
+        varContainer "Slideshows" {
+            sortOrder 2
+            vars {
+                boolVar "slideshow1",
+                intVar "slide1Interval" {
+                    value "4000"
+                },
+                intVar "slide1Speed" {
+                    value "1000"
+                }
+            }
+        }
+    , varContainer "uploadHandlers" { sortOrder 3 vars { boolVar "createSeveralPictureSizes" , textVar "widthFirst" , textVar "heightFirst" , textVar "widthSecond" , textVar "heightSecond" , textVar "widthThird" , textVar "heightThird" , boolVar "shrinkPictures" , boolVar "fileNameForTitle" { value "true" } } } } controllers {
+        adminController "Admin" {
+            actions {
+                mainAction "Main"
+            }
+        },
+        userController "User" {
+            actions {
+                mainAction "Main",
+                customAction "ZipUpload",
+                customAction "MultiUpload",
+                customAction "External",
+                customAction "EditMulti"
+            }
+        },
+        ajaxController "Ajax" {
+            actions {
+                mainAction "Main"
+            }
+        }
+    }
+}

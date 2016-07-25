@@ -1,0 +1,6 @@
+{# Purpose of this template: Display pictures within an external context #}
+{% for picture in items %}
+    <h3>{{ picture.getTitleFromDisplayPattern() }}</h3>
+    <p><a href="{{ path('mumuimagemodule_picture_display', { 'id': picture.id }) }}">{{ __('Read more') }}</a>
+    </p>
+{% endfor %}

@@ -1,0 +1,6 @@
+services:
+    mu_muimage_module.link_container:
+        class: MU\MUImageModule\Container\LinkContainer
+        arguments: ["@translator.default", "@router", "@zikula_permissions_module.api.permission", "@mu_muimage_module.controller_helper"]
+        tags:
+            - { name: zikula.link_container }

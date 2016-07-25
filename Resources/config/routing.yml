@@ -1,0 +1,5 @@
+mumuimagemodule:
+    # define routing support for these controllers
+    resource: "@MUMUImageModule/Controller"
+    # enable support for defining routes by annotations
+    type: annotation

@@ -1,0 +1,5 @@
+services:
+    # Upload handler class
+    mu_muimage_module.upload_handler:
+        class: MU\MUImageModule\UploadHandler
+        arguments: ["@translator.default", "@zikula_users_module.current_user"]

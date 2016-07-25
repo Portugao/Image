@@ -1,0 +1,10 @@
+{# Purpose of this template: Display search options #}
+<input type="hidden" id="mUMUImageModuleActive" name="active[MUMUImageModule]" value="1" />
+<div>
+    <input type="checkbox" id="active_mUMUImageModuleAlbums" name="mUMUImageModuleSearchTypes[]" value="album"{% if active_album %} checked="checked"{% endif %} />
+    <label for="active_mUMUImageModuleAlbums">{{ __('Albums', 'mumuimagemodule') }}</label>
+</div>
+<div>
+    <input type="checkbox" id="active_mUMUImageModulePictures" name="mUMUImageModuleSearchTypes[]" value="picture"{% if active_picture %} checked="checked"{% endif %} />
+    <label for="active_mUMUImageModulePictures">{{ __('Pictures', 'mumuimagemodule') }}</label>
+</div>

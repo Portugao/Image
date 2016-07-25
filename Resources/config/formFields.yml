@@ -1,0 +1,8 @@
+services:
+    # Form field types
+    
+    mu_muimage_module.form.upload_type_extension:
+        class: MU\MUImageModule\Form\Extension\UploadTypeExtension
+        arguments: ["@translator.default"]
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }

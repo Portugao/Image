@@ -1,0 +1,13 @@
+{# Purpose of this template: Display albums within an external context #}
+<dl>
+    {% for album in items %}
+        <dt>{{ album.getTitleFromDisplayPattern() }}</dt>
+        {% if album.description %}
+            <dd>{{ album.description|striptags|truncate(200, true, '&hellip;') }}</dd>
+        {% endif %}
+        <dd><a href="{{ path('mumuimagemodule_album_display', { 'id': album.id }) }}">{{ __('Read more') }}</a>
+        </dd>
+    {% else %}
+        <dt>{{ __('No entries found.') }}</dt>
+    {% endfor %}
+</dl>

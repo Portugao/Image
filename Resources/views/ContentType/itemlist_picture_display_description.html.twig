@@ -1,0 +1,13 @@
+{# Purpose of this template: Display pictures within an external context #}
+<dl>
+    {% for picture in items %}
+        <dt>{{ picture.getTitleFromDisplayPattern() }}</dt>
+        {% if picture.description %}
+            <dd>{{ picture.description|striptags|truncate(200, true, '&hellip;') }}</dd>
+        {% endif %}
+        <dd><a href="{{ path('mumuimagemodule_picture_display', { 'id': picture.id }) }}">{{ __('Read more') }}</a>
+        </dd>
+    {% else %}
+        <dt>{{ __('No entries found.') }}</dt>
+    {% endfor %}
+</dl>
