@@ -10,11 +10,11 @@ application "MUImage" {
         targetCoreVersion ZK14
         amountOfExampleRows 0
         generateIcsTemplates false
-        generateOnlyBaseClasses false
-        generatePoweredByBacklinksIntoFooterTemplates false
+        generateOnlyBaseClasses true
+        versionAllGeneratedFiles false generatePoweredByBacklinksIntoFooterTemplates false
         generateTests false
         writeModelToDocs true
-        skipFiles ""
+        skipFiles "composer.json"
         markFiles ""
     }
     entities {
@@ -153,7 +153,7 @@ application "MUImage" {
                     value "20"
                 },
                 intVar "fileSize" {
-                    value "\"102400\""
+                    value "102400"
                 },
                 intVar "minWidth" {
                     value "400"
