@@ -13,7 +13,6 @@ body {
 
 #muimageItemContainer, #muimageItemContainer2 {
     background-color: #eee;
-    height: 300px;
     overflow: auto;
     padding: 5px;
 }

@@ -132,7 +132,13 @@ class MUImage_Controller_External extends MUImage_Controller_Base_External
         }
         $view->assign('properties', $properties)
         ->assign('catIds', $categoryIds);
+        
+        $layout = ModUtil::getVar($this->name, 'layout');
 
-        return $view->display('external/' . $objectType . '/find.tpl');
+        if ($layout == 'normal') {
+            return $view->display('external/' . $objectType . '/find.tpl');
+        } else {
+        	return $view->display('bootstrap/external/' . $objectType . '/find.tpl');
+        }
     }
 }
