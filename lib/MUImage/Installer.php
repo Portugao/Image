@@ -30,20 +30,14 @@ class MUImage_Installer extends MUImage_Base_Installer
         } catch (\Exception $e) {
             return LogUtil::registerError($e->getMessage());
         }
+        
         // create all tables from according entity definitions
         try {
             DoctrineHelper::createSchema($this->entityManager, $this->listEntityClasses());
         } catch (\Exception $e) {
-            if (System::isDevelopmentMode()) {
-                return LogUtil::registerError($this->__('Doctrine Exception: ') . $e->getMessage());
-            }
-            $returnMessage = $this->__f('An error was encountered while creating the tables for the %s extension.', array($this->name));
-            if (!System::isDevelopmentMode()) {
-                $returnMessage .= ' ' . $this->__('Please enable the development mode by editing the /config/config.php file in order to reveal the error details.');
-            }
-            return LogUtil::registerError($returnMessage);
+            return LogUtil::registerError($this->__('Doctrine Exception') . ': ' . $e->getMessage());
         }
-
+        
         // set up all our vars with initial values
         $this->setVar('pagesize', 10);
         $this->setVar('pageSizeAdminAlbums', 10);
@@ -236,7 +230,9 @@ class MUImage_Installer extends MUImage_Base_Installer
                 EventUtil::registerPersistentModuleHandler('MUImage', 'moduleplugin.ckeditor.externalplugins', array('MUImage_Listener_ThirdParty', 'getCKEditorPlugins'));
 
             case '1.3.0':
-
+            	// nothing to do
+            	
+            case '1.3.':
                 // for later updates
         }
 
