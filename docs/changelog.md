@@ -1,5 +1,14 @@
 CHANGELOG
 
+Changes in 1.3.1
+
+closed #165 ckeditor is better working with many pictures
+
+closed #166 container-fluid in template deleted
+
+closed #167 ckeditor popup window larger now
+
+closed #168 album select also under chrome in finder template
 
 Changes in 1.3.0
 
