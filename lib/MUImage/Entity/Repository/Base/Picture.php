@@ -727,7 +727,19 @@ class MUImage_Entity_Repository_Base_Picture extends EntityRepository
      */
     public function retrieveCollectionResult(Query $query, $orderBy = '', $isPaginated = false)
     {
-        $result = $query->getResult();
+        $isLegacy = version_compare(\Zikula_Core::VERSION_NUM, '1.4.0') >= 0 ? false : true;
+        if ($isLegacy) {
+            $result = $query->getResult();
+        } else {
+            if (!$isPaginated) {
+                $result = $query->getResult();
+            } else {
+                $paginatorClass = 'MUImage_Paginator_Paginator';
+                $hasRelationships = true;
+                $paginator = new $paginatorClass($query, $hasRelationships);
+                list($result, $count) = $paginator->getResults();
+            }
+        }
     
         if ($orderBy == 'RAND()') {
             // each entry in $result looks like array(0 => actualRecord, 'randomIdentifiers' => randomId)
