@@ -232,7 +232,7 @@ class MUImage_Installer extends MUImage_Base_Installer
             case '1.3.0':
             	// nothing to do
             	
-            case '1.3.':
+            case '1.3.1':
                 // for later updates
         }
 
