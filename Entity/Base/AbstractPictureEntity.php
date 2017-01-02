@@ -109,6 +109,7 @@ abstract class AbstractPictureEntity extends EntityAccess
      * @Assert\NotBlank()
      * @Assert\Length(min="0", max="255")
      * @Assert\File(
+        maxSize = "200k",
         mimeTypes = {"image/*"}
      * )
      * @Assert\Image(

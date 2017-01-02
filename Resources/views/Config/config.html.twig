@@ -48,11 +48,7 @@
             <div role="tabpanel" class="tab-pane fade" id="tab2">
                 <fieldset>
                     <legend>{{ tabTitle }}</legend>
-                
-                
-                    {{ form_row(form.albumEntriesPerPageInBackend) }}
-                    {{ form_row(form.pictureEntriesPerPageInBackend) }}
-                    {{ form_row(form.avatarEntriesPerPageInBackend) }}
+                         
                     {{ form_row(form.countImageView) }}
                     {{ form_row(form.numberParentAlbums) }}
                     {{ form_row(form.numberSubAlbums) }}
@@ -63,12 +59,27 @@
                     {{ form_row(form.ending) }}
                 </fieldset>
             </div>
+            
+            {% set tabTitle = __('Listviews') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab7">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                    <p class="alert alert-info">{{ __('Here you can configure parameters for list views.')|nl2br }}</p>
+                
+                    {{ form_row(form.albumEntriesPerPage) }}
+                    {{ form_row(form.pictureEntriesPerPage) }}
+                    {{ form_row(form.avatarEntriesPerPage) }}
+                    {{ form_row(form.albumEntriesPerPageInBackend) }}
+                    {{ form_row(form.pictureEntriesPerPageInBackend) }}
+                    {{ form_row(form.avatarEntriesPerPageInBackend) }}
+                </fieldset>
+            </div>
             {% set tabTitle = __('Upload handler') %}
             <div role="tabpanel" class="tab-pane fade" id="tab3">
                 <fieldset>
                     <legend>{{ tabTitle }}</legend>
-                
-                
+                         
                     {{ form_row(form.fileSize) }}
                     {{ form_row(form.minWidth) }}
                     {{ form_row(form.maxWidth) }}
@@ -112,18 +123,7 @@
                     {{ form_row(form.moderationGroupForAvatars) }}
                 </fieldset>
             </div>
-            {% set tabTitle = __('Listviews') %}
-            <div role="tabpanel" class="tab-pane fade" id="tab7">
-                <fieldset>
-                    <legend>{{ tabTitle }}</legend>
-                
-                    <p class="alert alert-info">{{ __('Here you can configure parameters for list views.')|nl2br }}</p>
-                
-                    {{ form_row(form.albumEntriesPerPage) }}
-                    {{ form_row(form.pictureEntriesPerPage) }}
-                    {{ form_row(form.avatarEntriesPerPage) }}
-                </fieldset>
-            </div>
+
             {% set tabTitle = __('Images') %}
             <div role="tabpanel" class="tab-pane fade" id="tab8">
                 <fieldset>

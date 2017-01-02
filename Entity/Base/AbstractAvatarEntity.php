@@ -113,13 +113,14 @@ abstract class AbstractAvatarEntity extends EntityAccess
      * @Assert\NotBlank()
      * @Assert\Length(min="0", max="255")
      * @Assert\File(
+        maxSize = "100k",
         mimeTypes = {"image/*"}
      * )
      * @Assert\Image(
         minWidth = 200,
-        maxWidth = 200,
-        minHeight = 400,
-        maxHeight = 400,
+        maxWidth = 600,
+        minHeight = 200,
+        maxHeight = 600,
         allowLandscape = false,
         allowPortrait = false
      * )

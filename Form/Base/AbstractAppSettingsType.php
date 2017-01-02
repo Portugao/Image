@@ -78,6 +78,7 @@ abstract class AbstractAppSettingsType extends AbstractType
         $this->addUploadHandlerFields($builder, $options);
         $this->addAvatarsFields($builder, $options);
         $this->addDisplaySettingsFields($builder, $options);
+        $this->addWatermarkFields($builder, $options);
         $this->addModerationFields($builder, $options);
         $this->addListviewsFields($builder, $options);
         $this->addImagesFields($builder, $options);
@@ -134,6 +135,14 @@ abstract class AbstractAppSettingsType extends AbstractType
                     'title' => $this->__('The user delete pictures option.')
                 ],
             ])
+            ->add('slideshow1', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+                'label' => $this->__('Slideshow 1') . ':',
+                'required' => false,
+                'data' => (bool)$this->modVars['slideshow1'],
+                'attr' => [
+                    'title' => $this->__('The slideshow 1 option.')
+                ],
+            ])
             ->add('useAvatars', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Use avatars') . ':',
                 'required' => false,
@@ -142,12 +151,12 @@ abstract class AbstractAppSettingsType extends AbstractType
                     'title' => $this->__('The use avatars option.')
                 ],
             ])
-            ->add('slideshow1', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
-                'label' => $this->__('Slideshow 1') . ':',
+            ->add('useWatermark', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+                'label' => $this->__('Use watermark') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['slideshow1'],
+                'data' => (bool)$this->modVars['useWatermark'],
                 'attr' => [
-                    'title' => $this->__('The slideshow 1 option.')
+                    'title' => $this->__('The use watermark option.')
                 ],
             ])
         ;
@@ -194,48 +203,93 @@ abstract class AbstractAppSettingsType extends AbstractType
     public function addUploadHandlerFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fileSize', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('File size') . ':',
+            ->add('fileSizeForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('File size for pictures') . ':',
                 'required' => false,
-                'data' => $this->modVars['fileSize'],
+                'data' => $this->modVars['fileSizeForPictures'],
                 'empty_data' => intval('102400'),
                 'attr' => [
-                    'title' => $this->__('Enter the file size. Only digits are allowed.')
+                    'title' => $this->__('Enter the file size for pictures. Only digits are allowed.')
                 ],'max_length' => 255,
                 'scale' => 0
             ])
-            ->add('minWidth', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Min width') . ':',
+            ->add('fileSizeForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('File size for avatars') . ':',
                 'required' => false,
-                'data' => $this->modVars['minWidth'],
+                'data' => $this->modVars['fileSizeForAvatars'],
+                'empty_data' => intval(''),
+                'attr' => [
+                    'title' => $this->__('Enter the file size for avatars. Only digits are allowed.')
+                ],'max_length' => 255,
+                'scale' => 0
+            ])
+            ->add('minWidthForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Min width for pictures') . ':',
+                'required' => false,
+                'data' => $this->modVars['minWidthForPictures'],
                 'empty_data' => intval('400'),
                 'attr' => [
-                    'title' => $this->__('Enter the min width. Only digits are allowed.')
+                    'title' => $this->__('Enter the min width for pictures. Only digits are allowed.')
                 ],'max_length' => 255,
                 'scale' => 0
             ])
-            ->add('maxWidth', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Max width') . ':',
+            ->add('maxWidthForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Max width for pictures') . ':',
                 'required' => false,
-                'data' => $this->modVars['maxWidth'],
+                'data' => $this->modVars['maxWidthForPictures'],
                 'empty_data' => intval(''),
                 'attr' => [
-                    'title' => $this->__('Enter the max width. Only digits are allowed.')
+                    'title' => $this->__('Enter the max width for pictures. Only digits are allowed.')
                 ],'max_length' => 255,
                 'scale' => 0
             ])
-            ->add('maxHeight', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Max height') . ':',
+            ->add('maxHeightForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Max height for pictures') . ':',
                 'required' => false,
-                'data' => $this->modVars['maxHeight'],
+                'data' => $this->modVars['maxHeightForPictures'],
                 'empty_data' => intval(''),
                 'attr' => [
-                    'title' => $this->__('Enter the max height. Only digits are allowed.')
+                    'title' => $this->__('Enter the max height for pictures. Only digits are allowed.')
+                ],'max_length' => 255,
+                'scale' => 0
+            ])
+            ->add('minWidthForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Min width for avatars') . ':',
+                'required' => false,
+                'data' => $this->modVars['minWidthForAvatars'],
+                'empty_data' => intval(''),
+                'attr' => [
+                    'title' => $this->__('Enter the min width for avatars. Only digits are allowed.')
+                ],'max_length' => 255,
+                'scale' => 0
+            ])
+            ->add('maxWidthForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Max width for avatars') . ':',
+                'required' => false,
+                'data' => $this->modVars['maxWidthForAvatars'],
+                'empty_data' => intval(''),
+                'attr' => [
+                    'title' => $this->__('Enter the max width for avatars. Only digits are allowed.')
+                ],'max_length' => 255,
+                'scale' => 0
+            ])
+            ->add('maxHeightForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Max height for avatars') . ':',
+                'required' => false,
+                'data' => $this->modVars['maxHeightForAvatars'],
+                'empty_data' => intval(''),
+                'attr' => [
+                    'title' => $this->__('Enter the max height for avatars. Only digits are allowed.')
                 ],'max_length' => 255,
                 'scale' => 0
             ])
             ->add('firstWidth', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('First width') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Width for the first additional picure')
+                ],
+                'help' => $this->__('Width for the first additional picure'),
                 'required' => false,
                 'data' => $this->modVars['firstWidth'],
                 'empty_data' => intval(''),
@@ -246,6 +300,11 @@ abstract class AbstractAppSettingsType extends AbstractType
             ])
             ->add('firstHeight', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('First height') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Height for the first additional picure')
+                ],
+                'help' => $this->__('Height for the first additional picure'),
                 'required' => false,
                 'data' => $this->modVars['firstHeight'],
                 'empty_data' => intval(''),
@@ -256,6 +315,11 @@ abstract class AbstractAppSettingsType extends AbstractType
             ])
             ->add('secondWidth', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Second width') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Width for the second additional picure')
+                ],
+                'help' => $this->__('Width for the second additional picure'),
                 'required' => false,
                 'data' => $this->modVars['secondWidth'],
                 'empty_data' => intval(''),
@@ -266,6 +330,11 @@ abstract class AbstractAppSettingsType extends AbstractType
             ])
             ->add('secondHeight', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Second height') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Height for the second additional picure')
+                ],
+                'help' => $this->__('Height for the second additional picure'),
                 'required' => false,
                 'data' => $this->modVars['secondHeight'],
                 'empty_data' => intval(''),
@@ -276,6 +345,11 @@ abstract class AbstractAppSettingsType extends AbstractType
             ])
             ->add('thirdWidth', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Third width') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Width for the third additional picure')
+                ],
+                'help' => $this->__('Width for the third additional picure'),
                 'required' => false,
                 'data' => $this->modVars['thirdWidth'],
                 'empty_data' => intval(''),
@@ -286,6 +360,11 @@ abstract class AbstractAppSettingsType extends AbstractType
             ])
             ->add('thirdHeight', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Third height') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Height for the third additional picure')
+                ],
+                'help' => $this->__('Height for the third additional picure'),
                 'required' => false,
                 'data' => $this->modVars['thirdHeight'],
                 'empty_data' => intval(''),
@@ -471,6 +550,82 @@ abstract class AbstractAppSettingsType extends AbstractType
                 'attr' => [
                     'title' => $this->__('Enter the ending.')
                 ],'max_length' => 255
+            ])
+        ;
+    }
+
+    /**
+     * Adds fields for watermark fields.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addWatermarkFields(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('watermark', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+                'label' => $this->__('Watermark') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Path to the image that is for the watermark')
+                ],
+                'help' => $this->__('Path to the image that is for the watermark'),
+                'required' => false,
+                'data' => $this->modVars['watermark'],
+                'empty_data' => '',
+                'attr' => [
+                    'title' => $this->__('Enter the watermark.')
+                ],'max_length' => 255
+            ])
+            ->add('bottom', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Bottom') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('If top is set, bottom has no effect')
+                ],
+                'help' => $this->__('If top is set, bottom has no effect'),
+                'required' => false,
+                'data' => $this->modVars['bottom'],
+                'empty_data' => intval(''),
+                'attr' => [
+                    'title' => $this->__('Enter the bottom. Only digits are allowed.')
+                ],'max_length' => 255,
+                'scale' => 0
+            ])
+            ->add('left', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Left') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('If left is set, right has no effect')
+                ],
+                'help' => $this->__('If left is set, right has no effect'),
+                'required' => false,
+                'data' => $this->modVars['left'],
+                'empty_data' => intval(''),
+                'attr' => [
+                    'title' => $this->__('Enter the left. Only digits are allowed.')
+                ],'max_length' => 255,
+                'scale' => 0
+            ])
+            ->add('right', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Right') . ':',
+                'required' => false,
+                'data' => $this->modVars['right'],
+                'empty_data' => intval(''),
+                'attr' => [
+                    'title' => $this->__('Enter the right. Only digits are allowed.')
+                ],'max_length' => 255,
+                'scale' => 0
+            ])
+            ->add('top', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Top') . ':',
+                'required' => false,
+                'data' => $this->modVars['top'],
+                'empty_data' => intval(''),
+                'attr' => [
+                    'title' => $this->__('Enter the top. Only digits are allowed.')
+                ],'max_length' => 255,
+                'scale' => 0
             ])
         ;
     }

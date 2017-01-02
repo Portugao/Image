@@ -5,3 +5,6 @@ phpunit.xml
 .project
 .settings/
 .buildpath
+*generated.php
+*generated.json
+*generated.html.twig

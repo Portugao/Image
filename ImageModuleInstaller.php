@@ -148,38 +148,5 @@ class ImageModuleInstaller extends AbstractImageModuleInstaller
         return true;                
                 
         }
-        
-
-    
-        // Note there are several helpers available for making migration of your extension easier.
-        // The following convenience methods are each responsible for a single aspect of upgrading to Zikula 1.4.0.
-    
-        // here is a possible usage example
-        // of course 1.2.3 should match the number you used for the last stable 1.3.x module version.
-        /* if ($oldVersion = '1.2.3') {
-            // rename module for all modvars
-            $this->updateModVarsTo14();
-            
-            // update extension information about this app
-            $this->updateExtensionInfoFor14();
-            
-            // rename existing permission rules
-            $this->renamePermissionsFor14();
-            
-            // rename existing category registries
-            $this->renameCategoryRegistriesFor14();
-            
-            // rename all tables
-            $this->renameTablesFor14();
-            
-            // remove event handler definitions from database
-            $this->dropEventHandlersFromDatabase();
-            
-            // update module name in the hook tables
-            $this->updateHookNamesFor14();
-            
-            // update module name in the workflows table
-            $this->updateWorkflowsFor14();
-        } * /
     }
 }

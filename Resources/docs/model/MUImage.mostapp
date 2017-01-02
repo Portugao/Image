@@ -9,9 +9,9 @@ application "Image" {
         settingsContainer "Einstellungen"
         targetCoreVersion ZK14
         generateMailzApi false
-        generateModerationBlock false
+        generateModerationBlock true
         generateNewsletterPlugin false
-        generatePendingContentSupport false
+        generatePendingContentSupport true
         generateAtomTemplates false
         generateCsvTemplates false
         generateXmlTemplates false
@@ -24,7 +24,7 @@ application "Image" {
         generateTests false
         writeModelToDocs true
         skipFiles "Resources/public/images/admin.png"
-        markFiles ""
+        markFiles "composer.json,\r\nImageModuleInstaller.php,\r\nForm/AppSettingsType.php,\r\nResources/views/Config/config.html.twig\r\n"
     }
     entities {
         entity "album" leading categorisable {
@@ -80,7 +80,7 @@ application "Image" {
                     mandatory false
                 },
                 upload "imageUpload" {
-                    maxSize ""
+                    maxSize "200k"
                     minWidth 400
                     maxWidth 1000
                     minHeight 400
@@ -124,11 +124,11 @@ application "Image" {
                     mandatory false
                 },
                 upload "avatarUpload" {
-                    maxSize ""
+                    maxSize "100k"
                     minWidth 200
-                    maxWidth 200
-                    minHeight 400
-                    maxHeight 400
+                    maxWidth 600
+                    minHeight 200
+                    maxHeight 600
                     allowLandscape false
                     allowPortrait false
                 detectCorrupted true
@@ -167,8 +167,10 @@ application "Image" {
                     value ""
                 }
             ,
-                boolVar "useAvatars",
                 boolVar "slideshow1"
+            ,
+                boolVar "useAvatars",
+                boolVar "useWatermark"
             }
         },
         varContainer "Slideshows" {
@@ -183,11 +185,24 @@ application "Image" {
             }
         }
     , varContainer "uploadHandler" { sortOrder 3 vars {
-                intVar "fileSize" {
+                intVar "fileSizeForPictures" {
                     value "102400"
-                }, intVar"minWidth" {
+                }, intVar "fileSizeForAvatars" , intVar"minWidthForPictures" {
                     value "400"
-                }, intVar"maxWidth", intVar"maxHeight", intVar "firstWidth" , intVar "firstHeight" , intVar "secondWidth" , intVar "secondHeight" , intVar "thirdWidth" , intVar "thirdHeight" ,  boolVar "fileNameForTitle" } } ,
+                }, intVar"maxWidthForPictures", intVar"maxHeightForPictures", intVar "minWidthForAvatars" , intVar "maxWidthForAvatars" ,
+                intVar "maxHeightForAvatars" , intVar "firstWidth" {
+                    documentation "Width for the first additional picure"
+                }, intVar "firstHeight" {
+                    documentation "Height for the first additional picure"
+                }, intVar "secondWidth" {
+                    documentation "Width for the second additional picure"
+                }, intVar "secondHeight" {
+                    documentation "Height for the second additional picure"
+                }, intVar "thirdWidth" {
+                    documentation "Width for the third additional picure"
+                }, intVar "thirdHeight" {
+                    documentation "Height for the third additional picure"
+                },  boolVar "fileNameForTitle" } } ,
         varContainer "Avatars" {
             sortOrder 5
             vars {
@@ -232,6 +247,23 @@ application "Image" {
                 textVar "ending" {
                     value "html"
                 }
+            }
+        }
+    ,
+        varContainer "watermark" {
+            sortOrder 6
+            vars {
+                textVar "watermark" {
+                    documentation "Path to the image that is for the watermark"
+                },
+                intVar "bottom" {
+                    documentation "If top is set, bottom has no effect"
+                },
+                intVar "left" {
+                    documentation "If left is set, right has no effect"
+                },
+                intVar "right",
+                intVar "top"
             }
         }
     }

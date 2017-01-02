@@ -1,0 +1,9 @@
+{# Purpose of this template: show moderation block #}
+{% if moderationObjects|length > 0 %}
+    <ul>
+    {% for modItem in moderationObjects %}
+        {% set itemObjectType = modItem.objectType|lower %}
+        <li><a href="{{ path('muimagemodule_' ~ itemObjectType ~ '_adminview', { workflowState: modItem.state }) }}" class="bold">{{ modItem.message }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
