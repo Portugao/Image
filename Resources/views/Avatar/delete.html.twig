@@ -1,0 +1,27 @@
+{# purpose of this template: avatars delete confirmation view #}
+{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
+{% block title __('Delete avatar') %}
+{% block admin_page_icon 'trash-o' %}
+{% block content %}
+    <div class="muimagemodule-avatar muimagemodule-delete">
+        <p class="alert alert-warning">{{ __f('Do you really want to delete this avatar: "%name%" ?', {'%name%': avatar.getTitleFromDisplayPattern()}) }}</p>
+
+        {% form_theme deleteForm with [
+            '@MUImageModule/Form/bootstrap_3.html.twig',
+            'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
+        ] %}
+        {{ form_start(deleteForm) }}
+        {{ form_errors(deleteForm) }}
+
+        <fieldset>
+            <legend>{{ __('Confirmation prompt') }}</legend>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    {{ form_widget(deleteForm.delete) }}
+                    {{ form_widget(deleteForm.cancel) }}
+                </div>
+            </div>
+        </fieldset>
+        {{ form_end(deleteForm) }}
+    </div>
+{% endblock %}

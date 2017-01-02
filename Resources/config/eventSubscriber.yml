@@ -1,77 +1,82 @@
 services:
     # Event subscriber and listener classes
-    mu_muimage_module.core_listener:
-        class: MU\MUImageModule\Listener\CoreListener
+    mu_image_module.entity_lifecycle_listener:
+        class: MU\ImageModule\Listener\EntityLifecycleListener
+        tags:
+            - { name: doctrine.event_subscriber }
+    
+    mu_image_module.core_listener:
+        class: MU\ImageModule\Listener\CoreListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.kernel_listener:
-        class: MU\MUImageModule\Listener\KernelListener
+    mu_image_module.kernel_listener:
+        class: MU\ImageModule\Listener\KernelListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.installer_listener:
-        class: MU\MUImageModule\Listener\InstallerListener
+    mu_image_module.installer_listener:
+        class: MU\ImageModule\Listener\InstallerListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.moduledispatch_listener:
-        class: MU\MUImageModule\Listener\ModuleDispatchListener
+    mu_image_module.moduledispatch_listener:
+        class: MU\ImageModule\Listener\ModuleDispatchListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.mailer_listener:
-        class: MU\MUImageModule\Listener\MailerListener
+    mu_image_module.mailer_listener:
+        class: MU\ImageModule\Listener\MailerListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.page_listener:
-        class: MU\MUImageModule\Listener\PageListener
+    mu_image_module.page_listener:
+        class: MU\ImageModule\Listener\PageListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.theme_listener:
-        class: MU\MUImageModule\Listener\ThemeListener
+    mu_image_module.theme_listener:
+        class: MU\ImageModule\Listener\ThemeListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.view_listener:
-        class: MU\MUImageModule\Listener\ViewListener
+    mu_image_module.view_listener:
+        class: MU\ImageModule\Listener\ViewListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.userlogin_listener:
-        class: MU\MUImageModule\Listener\UserLoginListener
+    mu_image_module.userlogin_listener:
+        class: MU\ImageModule\Listener\UserLoginListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.userlogout_listener:
-        class: MU\MUImageModule\Listener\UserLogoutListener
+    mu_image_module.userlogout_listener:
+        class: MU\ImageModule\Listener\UserLogoutListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.user_listener:
-        class: MU\MUImageModule\Listener\UserListener
+    mu_image_module.user_listener:
+        class: MU\ImageModule\Listener\UserListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.userregistration_listener:
-        class: MU\MUImageModule\Listener\UserRegistrationListener
+    mu_image_module.userregistration_listener:
+        class: MU\ImageModule\Listener\UserRegistrationListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.users_listener:
-        class: MU\MUImageModule\Listener\UsersListener
+    mu_image_module.users_listener:
+        class: MU\ImageModule\Listener\UsersListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.group_listener:
-        class: MU\MUImageModule\Listener\GroupListener
+    mu_image_module.group_listener:
+        class: MU\ImageModule\Listener\GroupListener
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_muimage_module.thirdparty_listener:
-        class: MU\MUImageModule\Listener\ThirdPartyListener
+    mu_image_module.thirdparty_listener:
+        class: MU\ImageModule\Listener\ThirdPartyListener
         tags:
             - { name: kernel.event_subscriber }
     

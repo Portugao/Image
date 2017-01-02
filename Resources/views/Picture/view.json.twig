@@ -1,7 +1,0 @@
-{# purpose of this template: pictures view json view #}
-{{ mumuimagemodule_templateHeaders(contentType='application/json') }}[
-{% for picture in items %}
-    {% if not loop.first %},{% endif %}
-    {{ picture.toJson() }}
-{/foreach}
-]

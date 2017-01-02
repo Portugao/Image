@@ -1,0 +1,63 @@
+{# purpose of this template: avatars view filter form #}
+{% if hasPermission('MUImageModule:Avatar:', '::', 'ACCESS_EDIT') %}
+    {% form_theme quickNavForm with [
+        'bootstrap_3_layout.html.twig'
+    ] %}
+    {{ form_start(quickNavForm, {attr: {id: 'mUImageModuleAvatarQuickNavForm', class: 'muimagemodule-quicknav navbar-form', role: 'navigation'}}) }}
+    {{ form_errors(quickNavForm) }}
+    <fieldset>
+        <h3>{{ __('Quick navigation') }}</h3>
+        {% set categoriesEnabled = featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'avatar') %}
+        {% if (categoryFilter is defined and categoryFilter != true) or not categoriesEnabled %}
+            <div class="hidden">
+        {% endif %}
+            {{ form_row(quickNavForm.categories) }}
+        {% if (categoryFilter is defined and categoryFilter != true) or not categoriesEnabled %}
+            </div>
+        {% endif %}
+        {% if workflowStateFilter is defined and workflowStateFilter != true %}
+            <div class="hidden">
+        {% endif %}
+            {{ form_row(quickNavForm.workflowState) }}
+        {% if workflowStateFilter is defined and workflowStateFilter != true %}
+            </div>
+        {% endif %}
+        {% if searchFilter is defined and searchFilter != true %}
+            <div class="hidden">
+        {% endif %}
+            {{ form_row(quickNavForm.q) }}
+        {% if searchFilter is defined and searchFilter != true %}
+            </div>
+        {% endif %}
+        {% if sorting is defined and sorting != true %}
+            <div class="hidden">
+        {% endif %}
+            {{ form_row(quickNavForm.sort) }}
+            {{ form_row(quickNavForm.sortdir) }}
+        {% if sorting is defined and sorting != true %}
+            </div>
+        {% endif %}
+        {% if pageSizeSelector is defined and pageSizeSelector != true %}
+            <div class="hidden">
+        {% endif %}
+            {{ form_row(quickNavForm.num) }}
+        {% if pageSizeSelector is defined and pageSizeSelector != true %}
+            </div>
+        {% endif %}
+        {{ form_widget(quickNavForm.updateview) }}
+    </fieldset>
+    {{ form_end(quickNavForm) }}
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        ( function($) {
+            $(document).ready(function() {
+                mUImageInitQuickNavigation('avatar');
+                {% if searchFilter|default and searchFilter == false %}
+                    {# we can hide the submit button if we have no quick search field #}
+                    $('#muimagemodule_avatarquicknav_updateview').addClass('hidden');
+                {% endif %}
+            });
+        })(jQuery);
+    /* ]]> */
+    </script>
+{% endif %}

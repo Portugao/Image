@@ -1,0 +1,86 @@
+{# purpose of this template: avatars display view #}
+{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
+{% block pageTitle %}{{ avatar.getTitleFromDisplayPattern()|default(__('Avatar')) }}{% endblock %}
+{% block title %}
+    {% set templateTitle = avatar.getTitleFromDisplayPattern()|default(__('Avatar')) %}
+    {{ templateTitle }}{% if routeArea == 'admin' %} <small>({{ avatar.workflowState|muimagemodule_objectState(false)|lower }})</small>{% endif %}
+    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: avatar, area: routeArea, context: 'display' }) %}
+    <div class="dropdown">
+        <a id="itemActions{{ avatar.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
+        
+        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
+    </div>
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        ( function($) {
+            $(document).ready(function() {
+                $('h2 .dropdown > ul, h3 .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu');
+                $('h2 .dropdown > ul a, h3 .dropdown > ul a').each(function (index) {
+                    $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
+                });
+                $('h2 .dropdown > ul a i, h3 .dropdown > ul a i').addClass('fa-fw');
+                $('h2 .dropdown-toggle, h3 .dropdown-toggle').removeClass('hidden').dropdown();
+            });
+        })(jQuery);
+    /* ]]> */
+    </script>
+{% endblock %}
+{% block admin_page_icon 'eye' %}
+{% block content %}
+    <div class="muimagemodule-avatar muimagemodule-display">
+
+
+    <dl>
+        {% if avatar.workflowState is not empty and routeArea == 'admin' %}
+            <dt>{{ __('State') }}</dt>
+            <dd>{{ avatar.workflowState|muimagemodule_listEntry('avatar', 'workflowState') }}</dd>
+        {% endif %}
+        {% if avatar.title is not empty %}
+            <dt>{{ __('Title') }}</dt>
+            <dd>{{ avatar.title }}</dd>
+        {% endif %}
+        {% if avatar.description is not empty %}
+            <dt>{{ __('Description') }}</dt>
+            <dd>{{ avatar.description|safeHtml }}</dd>
+        {% endif %}
+        {% if avatar.avatarUpload is not empty %}
+            <dt>{{ __('Avatar upload') }}</dt>
+            <dd>{% if avatar.avatarUploadMeta|default %}
+            <a href="{{ avatar.avatarUploadUrl }}" title="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}"{% if avatar.avatarUploadMeta.isImage %} class="lightbox"{% endif %}>
+            {% if avatar.avatarUploadMeta.isImage %}
+                {% set thumbOptions = attribute(thumbRuntimeOptions, 'avatarAvatarUpload') %}
+                <img src="{{ avatar.avatarUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
+            {% else %}
+                {{ __('Download') }} ({{ avatar.avatarUploadMeta.size|muimagemodule_fileSize(avatar.avatarUpload.getPathname(), false, false) }})
+            {% endif %}
+            </a>
+            {% endif %}
+            </dd>
+        {% endif %}
+        
+    </dl>
+    {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'avatar') %}
+        {{ include('@MUImageModule/Helper/includeCategoriesDisplay.html.twig', { obj: avatar }) }}
+    {% endif %}
+    {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: avatar }) }}
+
+    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+    {% endif %}
+</div>
+{% endblock %}
+{% block footer %}
+    {{ parent() }}
+
+
+{% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        ( function($) {
+            $(document).ready(function() {
+                $('a.lightbox').lightbox();
+            });
+        })(jQuery);
+    /* ]]> */
+    </script>
+{% endif %}
+{% endblock %}

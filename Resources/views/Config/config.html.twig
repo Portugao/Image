@@ -1,0 +1,193 @@
+{# purpose of this template: module configuration page #}
+{% extends 'MUImageModule::adminBase.html.twig' %}
+{% block title __('Settings') %}
+{% block admin_page_icon 'wrench' %}
+{% block content %}
+    <div class="muimagemodule-config">
+        {% form_theme form with [
+            '@MUImageModule/Form/bootstrap_3.html.twig',
+            'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
+        ] %}
+        {{ form_start(form) }}
+        <ul class="nav nav-pills">
+        {% set tabTitle = __('General') %}
+        <li class="active" data-toggle="pill"><a href="#tab1" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% set tabTitle = __('Display settings') %}
+        <li data-toggle="pill"><a href="#tab2" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% set tabTitle = __('Upload handler') %}
+        <li data-toggle="pill"><a href="#tab3" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% set tabTitle = __('Slideshows') %}
+        <li data-toggle="pill"><a href="#tab4" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% set tabTitle = __('Avatars') %}
+        <li data-toggle="pill"><a href="#tab5" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% set tabTitle = __('Moderation') %}
+        <li data-toggle="pill"><a href="#tab6" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% set tabTitle = __('Listviews') %}
+        <li data-toggle="pill"><a href="#tab7" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% set tabTitle = __('Images') %}
+        <li data-toggle="pill"><a href="#tab8" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        </ul>
+
+        {{ form_errors(form) }}
+        <div class="tab-content">
+            {% set tabTitle = __('General') %}
+            <div role="tabpanel" class="tab-pane fade in active" id="tab1">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                    <p class="alert alert-info">{{ __('Here you can manage all basic settings for this application.') }}</p>
+                
+                    {{ form_row(form.supportCategories) }}
+                    {{ form_row(form.supportSubAlbums) }}
+                    {{ form_row(form.userDeletePictures) }}
+                    {{ form_row(form.useAvatars) }}
+                    {{ form_row(form.slideshow1) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Display settings') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab2">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                
+                    {{ form_row(form.albumEntriesPerPageInBackend) }}
+                    {{ form_row(form.pictureEntriesPerPageInBackend) }}
+                    {{ form_row(form.avatarEntriesPerPageInBackend) }}
+                    {{ form_row(form.countImageView) }}
+                    {{ form_row(form.numberParentAlbums) }}
+                    {{ form_row(form.numberSubAlbums) }}
+                    {{ form_row(form.numberPictures) }}
+                    {{ form_row(form.groupForCommonAlbums) }}
+                    {{ form_row(form.kindOfShowSubAlbums) }}
+                    {{ form_row(form.breadcrumbsInFrontend) }}
+                    {{ form_row(form.ending) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Upload handler') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab3">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                
+                    {{ form_row(form.fileSize) }}
+                    {{ form_row(form.minWidth) }}
+                    {{ form_row(form.maxWidth) }}
+                    {{ form_row(form.maxHeight) }}
+                    {{ form_row(form.firstWidth) }}
+                    {{ form_row(form.firstHeight) }}
+                    {{ form_row(form.secondWidth) }}
+                    {{ form_row(form.secondHeight) }}
+                    {{ form_row(form.thirdWidth) }}
+                    {{ form_row(form.thirdHeight) }}
+                    {{ form_row(form.fileNameForTitle) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Slideshows') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab4">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                
+                    {{ form_row(form.slide1Interval) }}
+                    {{ form_row(form.slide1Speed) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Avatars') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab5">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                
+                    {{ form_row(form.numberOf) }}
+                    {{ form_row(form.configAvatarWidthAndHeight) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Moderation') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab6">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                    <p class="alert alert-info">{{ __('Here you can assign moderation groups for enhanced workflow actions.')|nl2br }}</p>
+                
+                    {{ form_row(form.moderationGroupForAvatars) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Listviews') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab7">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                    <p class="alert alert-info">{{ __('Here you can configure parameters for list views.')|nl2br }}</p>
+                
+                    {{ form_row(form.albumEntriesPerPage) }}
+                    {{ form_row(form.pictureEntriesPerPage) }}
+                    {{ form_row(form.avatarEntriesPerPage) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Images') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab8">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                    <p class="alert alert-info">{{ __('Here you can define several options for image handling.')|nl2br }}</p>
+                
+                    {{ form_row(form.enableShrinkingForPictureImageUpload) }}
+                    <div id="shrinkDetailsPictureImageUpload">
+                    {{ form_row(form.shrinkWidthPictureImageUpload) }}
+                    {{ form_row(form.shrinkHeightPictureImageUpload) }}
+                    </div>
+                    {{ form_row(form.enableShrinkingForAvatarAvatarUpload) }}
+                    <div id="shrinkDetailsAvatarAvatarUpload">
+                    {{ form_row(form.shrinkWidthAvatarAvatarUpload) }}
+                    {{ form_row(form.shrinkHeightAvatarAvatarUpload) }}
+                    </div>
+                    {{ form_row(form.thumbnailModePicture) }}
+                    {{ form_row(form.thumbnailWidthPictureImageUploadView) }}
+                    {{ form_row(form.thumbnailHeightPictureImageUploadView) }}
+                    {{ form_row(form.thumbnailWidthPictureImageUploadDisplay) }}
+                    {{ form_row(form.thumbnailHeightPictureImageUploadDisplay) }}
+                    {{ form_row(form.thumbnailWidthPictureImageUploadEdit) }}
+                    {{ form_row(form.thumbnailHeightPictureImageUploadEdit) }}
+                    {{ form_row(form.thumbnailModeAvatar) }}
+                    {{ form_row(form.thumbnailWidthAvatarAvatarUploadView) }}
+                    {{ form_row(form.thumbnailHeightAvatarAvatarUploadView) }}
+                    {{ form_row(form.thumbnailWidthAvatarAvatarUploadDisplay) }}
+                    {{ form_row(form.thumbnailHeightAvatarAvatarUploadDisplay) }}
+                    {{ form_row(form.thumbnailWidthAvatarAvatarUploadEdit) }}
+                    {{ form_row(form.thumbnailHeightAvatarAvatarUploadEdit) }}
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                {{ form_widget(form.save) }}
+                {{ form_widget(form.cancel) }}
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+{% block footer %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        ( function($) {
+            function muimageToggleShrinkSettings(fieldName) {
+                var idSuffix = fieldName.replace('muimagemodule_appsettings_', '');
+                $('#shrinkDetails' + idSuffix).toggleClass('hidden', !$('#muimagemodule_appsettings_enableShrinkingFor' + idSuffix).prop('checked'));
+            }
+
+            $(document).ready(function() {
+                $('.shrink-enabler').each(function (index) {
+                    $(this).bind('click keyup', function (event) {
+                        muimageToggleShrinkSettings($(this).attr('id').replace('enableShrinkingFor', ''));
+                    });
+                    muimageToggleShrinkSettings($(this).attr('id').replace('enableShrinkingFor', ''));
+                });
+            });
+        })(jQuery);
+    /* ]]> */
+    </script>
+{% endblock %}

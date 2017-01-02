@@ -1,31 +1,34 @@
 {# Purpose of this template: Display one certain picture within an external context #}
-<div id="picture{$picture.id}" class="mumuimagemodule-external-picture">
+<div id="picture{$picture.id}" class="muimagemodule-external-picture">
 {% if displayMode == 'link' %}
-    <p class="mumuimagemodule-external-link">
-    <a href="{{ path('mumuimagemodule_picture_display', { 'id': picture.id }) }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}">
-    {{ picture.getTitleFromDisplayPattern()|notifyfilters('muimage.filter_hooks.pictures.filter') }}
+    <p class="muimagemodule-external-link">
+    <a href="{{ path('muimagemodule_picture_display', { 'id': picture.id }) }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}">
+    {{ picture.getTitleFromDisplayPattern()|notifyFilters('image.filter_hooks.pictures.filter') }}
     </a>
     </p>
 {% endif %}
-{% if hasPermission('MUMUImageModule::', '::', 'ACCESS_EDIT') %}
+{% if hasPermission('MUImageModule::', '::', 'ACCESS_EDIT') %}
     {# for normal users without edit permission show only the actual file per default #}
     {% if displayMode == 'embed' %}
-        <p class="mumuimagemodule-external-title">
-            <strong>{{ picture.getTitleFromDisplayPattern()|notifyfilters('muimage.filter_hooks.pictures.filter') }}</strong>
+        <p class="muimagemodule-external-title">
+            <strong>{{ picture.getTitleFromDisplayPattern()|notifyFilters('image.filter_hooks.pictures.filter') }}</strong>
         </p>
     {% endif %}
 {% endif %}
 
 {% if displayMode == 'link' %}
 {% elseif displayMode == 'embed' %}
-    <div class="mumuimagemodule-external-snippet">
-        <a href="{{ picture.imageUploadFullPathURL }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
+    <div class="muimagemodule-external-snippet">
+        {% if picture.imageUploadMeta|default %}
+        <a href="{{ picture.imageUploadUrl }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
         {% if picture.imageUploadMeta.isImage %}
-            {{ mumuimagemodule_thumb({ image: picture.imageUploadFullPath, objectid: 'picture-' ~ picture.id ~ '', preset: pictureThumbPresetImageUpload, tag: true, img_alt: picture.getTitleFromDisplayPattern(), img_class: 'img-thumbnail' }) }}
+            {% set thumbOptions = attribute(thumbRuntimeOptions, 'pictureImageUpload') %}
+            <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
         {% else %}
-            {{ __('Download') }} ({{ picture.imageUploadMeta.size|mumuimagemodule_fileSize(picture.imageUploadFullPath, false, false) }})
+            {{ __('Download') }} ({{ picture.imageUploadMeta.size|muimagemodule_fileSize(picture.imageUpload.getPathname(), false, false) }})
         {% endif %}
         </a>
+        {% endif %}
     </div>
 
     {# you can distinguish the context like this: #}
@@ -37,9 +40,9 @@
 
     {# you can enable more details about the item: #}
     {#
-        <p class="mumuimagemodule-external-description">
+        <p class="muimagemodule-external-description">
             {% if picture.description is not empty %}{{ picture.description }}<br />{% endif %}
         </p>
     #}
-{/if}
+{% endif %}
 </div>

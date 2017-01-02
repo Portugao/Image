@@ -1,5 +1,5 @@
 {# purpose of this template: reusable editing of standard fields #}
-{% if (obj.createdUserId is defined and obj.createdUserId) or (obj.updatedUserId is defined and obj.updatedUserId) %}
+{% if obj.createdUserId|default or obj.updatedUserId|default %}
     {% if panel|default(false) == true %}
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -13,13 +13,11 @@
         <legend>{{ __('Creation and update') }}</legend>
         <ul>
         {% if obj.createdUserId|default %}
-            {% set username = mumuimagemodule_userVar('uname', obj.createdUserId) %}
-            <li>{{ __f('Created by %user', {'%user': username}) }}</li>
+            <li>{{ __f('Created by %user', {'%user': obj.createdUserId.getUname()}) }}</li>
             <li>{{ __f('Created on %date', {'%date': obj.createdDate|localizeddate('medium', 'short')}) }}</li>
         {% endif %}
         {% if obj.updatedUserId|default %}
-            {% set username = mumuimagemodule_userVar('uname', obj.updatedUserId) %}
-            <li>{{ __f('Updated by %user', {'%user': username}) }}</li>
+            <li>{{ __f('Updated by %user', {'%user': obj.updatedUserId.getUname()}) }}</li>
             <li>{{ __f('Updated on %date', {'%date': obj.updatedDate|localizeddate('medium', 'short')}) }}</li>
         {% endif %}
         </ul>

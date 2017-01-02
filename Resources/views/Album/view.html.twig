@@ -1,16 +1,16 @@
 {# purpose of this template: albums list view #}
-{% extends routeArea == 'admin' ? 'MUMUImageModule::adminBase.html.twig' : 'MUMUImageModule::base.html.twig' %}
+{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
 {% block title __('Album list') %}
 {% block admin_page_icon 'list-alt' %}
 {% block content %}
-<div class="mumuimagemodule-album mumuimagemodule-view">
+<div class="muimagemodule-album muimagemodule-view">
 
     {{ block('page_nav_links') }}
 
-    {{ include('@MUMUImageModule/Album/viewQuickNav.html.twig', { all: showAllEntries, own: showOwnEntries, workflowStateFilter: false }) }}{# see template file for available options #}
+    {{ include('@MUImageModule/Album/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
 
     {% if routeArea == 'admin' %}
-    <form action="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="albumsViewForm" class="form-horizontal" role="form">
+    <form action="{{ path('muimagemodule_album_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="albumsViewForm" class="form-horizontal" role="form">
         <div>
     {% endif %}
         <div class="table-responsive">
@@ -26,12 +26,11 @@
                 <col id="cPasswordAccess" />
                 <col id="cMyFriends" />
                 <col id="cNotInFrontend" />
-                <col id="cParent" />
+                <col id="cAlbum" />
                 <col id="cItemActions" />
             </colgroup>
             <thead>
             <tr>
-                {% set catIdListMainString = catIdList.Main|join(',') %}
                 {% if routeArea == 'admin' %}
                     <th id="hSelect" scope="col" class="text-center">
                         <input type="checkbox" id="toggleAlbums" />
@@ -58,10 +57,10 @@
                 <th id="hNotInFrontend" scope="col" class="text-center">
                     <a href="{{ sort.notInFrontend.url }}" title="{{ __f('Sort by %s', {'%s': 'not in frontend'}) }}" class="{{ sort.notInFrontend.class }}">{{ __('Not in frontend') }}</a>
                 </th>
-                <th id="hParent" scope="col" class="text-left">
-                    <a href="{{ sort.parent.url }}" title="{{ __f('Sort by %s', {'%s': 'parent'}) }}" class="{{ sort.parent.class }}">{{ __('Parent') }}</a>
+                <th id="hAlbum" scope="col" class="text-left">
+                    <a href="{{ sort.album.url }}" title="{{ __f('Sort by %s', {'%s': 'album'}) }}" class="{{ sort.album.class }}">{{ __('Album') }}</a>
                 </th>
-                <th id="hItemActions" scope="col" class="z-order-unsorted">{{ __('Actions') }}</th>
+                <th id="hItemActions" scope="col" class="text-right z-order-unsorted">{{ __('Actions') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -74,16 +73,16 @@
                     </td>
                 {% endif %}
                 <td headers="hTitle" class="text-left">
-                    <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ album.title|notifyFilters('mumuimagemodule.filterhook.albums') }}</a>
+                    <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ album.title|notifyFilters('muimagemodule.filterhook.albums') }}</a>
                 </td>
                 <td headers="hDescription" class="text-left">
-                    {{ album.description }}
+                    {{ album.description|safeHtml }}
                 </td>
                 <td headers="hParent_id" class="text-right">
                     {{ album.parent_id }}
                 </td>
                 <td headers="hAlbumAccess" class="text-left">
-                    {{ album.albumAccess|mumuimagemodule_listEntry('album', 'albumAccess') }}
+                    {{ album.albumAccess|muimagemodule_listEntry('album', 'albumAccess') }}
                 </td>
                 <td headers="hPasswordAccess" class="text-left">
                 </td>
@@ -91,19 +90,23 @@
                     {{ album.myFriends }}
                 </td>
                 <td headers="hNotInFrontend" class="text-center">
-                    {{ album.notInFrontend|yesNo(true) }}
+                    {% if album.notInFrontend %}
+                        <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+                    {% else %}
+                        <i class="fa fa-times" title="{{ __('No') }}"></i>
+                    {% endif %}
                 </td>
-                <td headers="hParent" class="text-left">
-                    {% if album.parent|default %}
-                        <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.parent.id }) }}">{% spaceless %}
-                          {{ album.parent.getTitleFromDisplayPattern() }}
+                <td headers="hAlbum" class="text-left">
+                    {% if album.album|default %}
+                        <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id }) }}">{% spaceless %}
+                          {{ album.album.getTitleFromDisplayPattern() }}
                         {% endspaceless %}</a>
-                        <a id="albumItem{{ album.id }}_rel_{{ album.parent.id }}Display" href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', {'id': album.parent.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="fa fa-search-plus hidden"></a>
+                        <a id="albumItem{{ album.id }}_rel_{{ album.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': album.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="fa fa-search-plus hidden"></a>
                         <script type="text/javascript">
                         /* <![CDATA[ */
                             ( function($) {
                                 $(document).ready(function() {
-                                    mUMUImageInitInlineWindow($('#albumItem{{ album.id }}_rel_{{ album.parent.id }}Display'), '{{ album.parent.getTitleFromDisplayPattern()|e('js') }}');
+                                    mUImageInitInlineWindow($('#albumItem{{ album.id }}_rel_{{ album.album.id }}Display'), '{{ album.album.getTitleFromDisplayPattern()|e('js') }}');
                                 });
                             })(jQuery);
                         /* ]]> */
@@ -112,19 +115,13 @@
                         {{ __('Not set.') }}
                     {% endif %}
                 </td>
-                <td id="itemActions{{ album.id }}" headers="hItemActions" class="actions nowrap z-w02">
-                    {% if album._actions|length > 0 %}
-                        <div class="dropdown">
-                            <a id="itemActions{{ album.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
-                            
-                            <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="itemActions{{ album.id }}DropDownToggle">
-                                {% for option in album._actions %}
-                                    <li role="presentation"><a href="{{ option.url.type|mumuimagemodule_actionUrl(option.url.func, option.url.arguments) }}" title="{{ option.linkTitle|e('html_attr') }}" role="menuitem" tabindex="-1" class="fa fa-{{ option.icon }}">{{ option.linkText }}</a></li>
-                                    
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
+                <td id="itemActions{{ album.id }}" headers="hItemActions" class="actions text-right nowrap z-w02">
+                    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: album, area: routeArea, context: 'view' }) %}
+                    <div class="dropdown">
+                        <a id="itemActions{{ album.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
+                        
+                        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
+                    </div>
                 </td>
             </tr>
         {% else %}
@@ -139,14 +136,14 @@
         </table>
         </div>
         
-        {% if showAllEntries != 1 %}
-            {{ pager({ rowcount: pager.numitems, limit: pager.itemsperpage, display: 'page', route: 'mumuimagemodule_album_' ~ routeArea ~ 'view'}) }}
+        {% if showAllEntries != 1 and pager|default %}
+            {{ pager({ rowcount: pager.numitems, limit: pager.itemsperpage, display: 'page', route: 'muimagemodule_album_' ~ routeArea ~ 'view'}) }}
         {% endif %}
     {% if routeArea == 'admin' %}
             <fieldset>
-                <label for="mUMUImageModuleAction" class="col-sm-3 control-label">{{ __('With selected albums') }}</label>
+                <label for="mUImageModuleAction" class="col-sm-3 control-label">{{ __('With selected albums') }}</label>
                 <div class="col-sm-6">
-                    <select id="mUMUImageModuleAction" name="action" class="form-control input-sm">
+                    <select id="mUImageModuleAction" name="action" class="form-control input-sm">
                         <option value="">{{ __('Choose action') }}</option>
                         <option value="delete" title="{{ __('Delete content permanently.') }}">{{ __('Delete') }}</option>
                     </select>
@@ -164,26 +161,24 @@
 {% endblock %}
 {% block page_nav_links %}
     {% if canBeCreated %}
-        {% if hasPermission('MUMUImageModule:Album:', '::', 'ACCESS_EDIT') %}
+        {% if hasPermission('MUImageModule:Album:', '::', 'ACCESS_EDIT') %}
             {% set createTitle = __('Create album') %}
-            <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
+            <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
         {% endif %}
     {% endif %}
-    {% set own = showOwnEntries is defined and showOwnEntries == 1 ? 1 : 0 %}
-    {% set all = showAllEntries is defined and showAllEntries == 1 ? 1 : 0 %}
-    {% if all == 1 %}
+    {% if showAllEntries == 1 %}
         {% set linkTitle = __('Back to paginated view') %}
-        <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+        <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
     {% else %}
         {% set linkTitle = __('Show all entries') %}
-        <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'view', { all: 1 }) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+        <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'view', { all: 1 }) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
     {% endif %}
 {% endblock %}
 {% block display_hooks %}
     
     {# here you can activate calling display hooks for the view page if you need it #}
     {# % if routeArea != 'admin' %}
-        {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.albums.display_view', urlObject=currentUrlObject) %}
+        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.display_view', urlObject=currentUrlObject) %}
         {% for providerArea, hook in hooks %}
             {{ hook }}
         {% endfor %}
@@ -196,14 +191,17 @@
 /* <![CDATA[ */
     ( function($) {
         $(document).ready(function() {
-            $('.dropdown-toggle').dropdown();
-            $('a.fa-zoom-in').attr('target', '_blank');
+            $('.muimagemodule-album .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu dropdown-menu-right');
+            $('.muimagemodule-album .dropdown > ul a').each(function (index) {
+                $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
+            });
+            $('.muimagemodule-album .dropdown > ul a i').addClass('fa-fw');
+            $('.muimagemodule-album .dropdown-toggle').removeClass('hidden').dropdown();
             {% if routeArea == 'admin' %}
                 {# init the "toggle all" functionality #}
                 if ($('#toggleAlbums').length > 0) {
-                    $('#toggleAlbums').on('click', function (e) {
-                        Zikula.toggleInput('albumsViewForm');
-                        e.preventDefault();
+                    $('#toggleAlbums').click(function (event) {
+                        $('.albums-checkbox').prop('checked', $(this).prop('checked'));
                     });
                 }
             {% endif %}

@@ -1,13 +1,16 @@
 {# Purpose of this template: Display item information for previewing from other modules #}
 <dl id="picture{{ picture.id }}">
-<dt>{{ picture.getTitleFromDisplayPattern()|notifyfilters('muimage.filter_hooks.pictures.filter') }}</dt>
-<dd><a href="{{ picture.imageUploadFullPathURL }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
+<dt>{{ picture.getTitleFromDisplayPattern()|notifyFilters('image.filter_hooks.pictures.filter') }}</dt>
+<dd>{% if picture.imageUploadMeta|default %}
+<a href="{{ picture.imageUploadUrl }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
 {% if picture.imageUploadMeta.isImage %}
-    {{ mumuimagemodule_thumb({ image: picture.imageUploadFullPath, objectid: 'picture-' ~ picture.id ~ '', preset: pictureThumbPresetImageUpload, tag: true, img_alt: picture.getTitleFromDisplayPattern(), img_class: 'img-thumbnail' }) }}
+    {% set thumbOptions = attribute(thumbRuntimeOptions, 'pictureImageUpload') %}
+    <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
 {% else %}
-    {{ __('Download') }} ({{ picture.imageUploadMeta.size|mumuimagemodule_fileSize(picture.imageUploadFullPath, false, false) }})
+    {{ __('Download') }} ({{ picture.imageUploadMeta.size|muimagemodule_fileSize(picture.imageUpload.getPathname(), false, false) }})
 {% endif %}
 </a>
+{% endif %}
 </dd>
 {% if picture.description is not empty %}<dd>{{ picture.description }}</dd>{% endif %}
 </dl>

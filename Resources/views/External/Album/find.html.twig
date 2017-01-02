@@ -1,47 +1,51 @@
 {# Purpose of this template: Display a popup selector of albums for scribite integration #}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ lang() }}" lang="{{ lang() }}">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ app.request.locale }}" lang="{{ app.request.locale }}">
 <head>
     <title>{{ __('Search and select album') }}</title>
-    <link type="text/css" rel="stylesheet" href="{{ zasset('style/core.css') }}" />
-    <link type="text/css" rel="stylesheet" href="{{ zasset('@MUMUImageModule:css/style.css') }}" />
-    <link type="text/css" rel="stylesheet" href="{{ zasset('@MUMUImageModule:css/finder.css') }}" />
+    {{ pageAddAsset('stylesheet', pagevars.homepath ~ 'style/core.css') }}
+    {{ pageAddAsset('stylesheet', zasset('@MUImageModule:css/style.css')) }}
+    {{ pageAddAsset('stylesheet', zasset('@MUImageModule:css/finder.css')) }}
     <script type="text/javascript">/* <![CDATA[ */
         if (typeof(Zikula) == 'undefined') {var Zikula = {};}
-        Zikula.Config = {'entrypoint': '{{ getModVar('ZConfig', 'entrypoint', 'index.php') }}', 'baseURL': '{{ pageGetVar('homepath') }}'}; /* ]]> */
+        Zikula.Config = {'entrypoint': '{{ getModVar('ZConfig', 'entrypoint', 'index.php') }}', 'baseURL': '{{ app.request.getSchemeAndHttpHost() ~ '/' }}', 'baseURI': '{{ app.request.getBasePath() }}'}; /* ]]> */
     </script>
-    <link rel="stylesheet" href="web/bootstrap/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="web/bootstrap/css/bootstrap-theme.css" type="text/css" />
-    <script type="text/javascript" src="web/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="web/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="{{ zasset('@MUMUImageModule:js/MUMUImageModule.Finder.js') }}"></script>
+    {{ pageAddAsset('stylesheet', asset('bootstrap/css/bootstrap.min.css')) }}
+    {{ pageAddAsset('stylesheet', asset('bootstrap/css/bootstrap-theme.min.css')) }}
+    {{ pageAddAsset('javascript', asset('jquery/jquery.min.js')) }}
+    {{ pageAddAsset('javascript', asset('bootstrap/js/bootstrap.min.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Finder.js')) }}
 </head>
 <body>
     <div class="container">
-        <ul class="nav nav-pills nav-justified">
-        <li{{ objectType == 'picture' ? ' class="active"' : '' }}><a href="{{ path('mumuimagemodule_external_finder', {'objectType': 'picture', 'editor': editorName}) }}" title="{{ __('Search and select picture') }}">{{ __('Pictures') }}</a></li>
+        <ul class="nav nav-tabs">
+        <li{{ objectType == 'album' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'album', 'editor': editorName}) }}" title="{{ __('Search and select album') }}">{{ __('Albums') }}</a></li>
+        <li{{ objectType == 'picture' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'picture', 'editor': editorName}) }}" title="{{ __('Search and select picture') }}">{{ __('Pictures') }}</a></li>
+        <li{{ objectType == 'avatar' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'avatar', 'editor': editorName}) }}" title="{{ __('Search and select avatar') }}">{{ __('Avatars') }}</a></li>
         </ul>
         {% form_theme finderForm with [
-            '@MUMUImageModule/Form/bootstrap_3.html.twig',
+            '@MUImageModule/Form/bootstrap_3.html.twig',
             'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
         ] %}
-        {{ form_start(finderForm, {attr: {id: 'mUMUImageModuleSelectorForm'}}) }}
+        {{ form_start(finderForm, {attr: { id: 'mUImageModuleSelectorForm' }}) }}
         {{ form_errors(finderForm) }}
         <fieldset>
             <legend>{{ __('Search and select album') }}</legend>
-            {{ form_row(finderForm.categories) }}
+            {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
+                {{ form_row(finderForm.categories) }}
+            {% endif %}
             {{ form_row(finderForm.pasteas) }}
             <br />
             <div class="form-group">
-                <label for="mUMUImageModuleObjectId" class="col-sm-3 control-label">{{ __('Album') }}:</label>
+                <label for="mUImageModuleObjectId" class="col-sm-3 control-label">{{ __('Album') }}:</label>
                 <div class="col-sm-9">
-                    <div id="mumuimagemoduleItemContainer">
+                    <div id="muimagemoduleItemContainer">
                         <ul>
                         {% for album in items %}
                             <li>
-                                {% set itemId = album.id }}
-                                <a href="#" data-itemid="{{ itemId }}">{{ album->getTitleFromDisplayPattern() }}</a>
-                                <input type="hidden" id="url{{ itemId }}" value="{{ url('mumuimagemodule_album_display', { 'id': album.id }) }}" />
+                                {% set itemId = album.createCompositeIdentifier() %}
+                                <a href="#" data-itemid="{{ itemId }}">{{ album.getTitleFromDisplayPattern() }}</a>
+                                <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_album_display', { 'id': album.id }) }}" />
                                 <input type="hidden" id="title{{ itemId }}" value="{{ album.getTitleFromDisplayPattern()|e('html_attr') }}" />
                                 <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if album.description is not empty %}{{ album.description }}{% endif %}
                                 {% endset %}{{ description|striptags|e('html_attr') }}" />
@@ -59,7 +63,7 @@
             {{ form_row(finderForm.num) }}
             {{ form_row(finderForm.q) }}
             <div>
-                {{ pager({ display: 'page', rowcount: pager.numitems, limit: pager.itemsperpage, posvar: 'pos', maxpages: 10, route: 'mumuimagemodule_external_finder'}) }}
+                {{ pager({ display: 'page', rowcount: pager.numitems, limit: pager.itemsperpage, posvar: 'pos', maxpages: 10, route: 'muimagemodule_external_finder'}) }}
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-9">
@@ -75,16 +79,16 @@
     /* <![CDATA[ */
         ( function($) {
             $(document).ready(function() {
-                mUMUImageModule.finder.onLoad();
+                mUImageModule.finder.onLoad();
             });
         })(jQuery);
     /* ]]> */
     </script>
 
     {#
-    <div class="mumuimagemodule-finderform">
+    <div class="muimagemodule-finderform">
         <fieldset>
-            {{ render(controller('MUMUImageModule:Admin:edit')) }}
+            {{ render(controller('MUImageModule:Admin:edit')) }}
         </fieldset>
     </div>
     #}

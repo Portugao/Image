@@ -1,21 +1,21 @@
 {# purpose of this template: inclusion template for display of related pictures #}
-{% set hasAdminPermission = hasPermission('MUMUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
+{% set hasAdminPermission = hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
 {% if nolink is not defined %}
     {% set nolink = false %}
 {% endif %}
 {% if items|default and items|length > 0 %}
-<ul class="mumuimagemodule-related-item-list picture">
+<ul class="muimagemodule-related-item-list picture">
 {% for item in items %}
     {% if hasAdminPermission or item.workflowState == 'approved' %}
     <li>
 {% spaceless %}
 {% if not nolink %}
-    <a href="{{ path('mumuimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id }) }}" title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}">
+    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id }) }}" title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}">
 {% endif %}
     {{ item.getTitleFromDisplayPattern() }}
 {% if not nolink %}
     </a>
-    <a id="pictureItem{{ item.id }}Display" href="{{ path('mumuimagemodule_picture_' ~ routeArea ~ 'display''id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="fa fa-search-plus hidden"></a>
+    <a id="pictureItem{{ item.id }}Display" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="fa fa-search-plus hidden"></a>
 {% endif %}
 {% endspaceless %}
 {% if not nolink %}
@@ -23,15 +23,15 @@
     /* <![CDATA[ */
         ( function($) {
             $(document).ready(function() {
-                mUMUImageInitInlineWindow($('#pictureItem{{ item.id }}Display'), '{{ item.getTitleFromDisplayPattern()|e('js') }}');
+                mUImageInitInlineWindow($('#pictureItem{{ item.id }}Display'), '{{ item.getTitleFromDisplayPattern()|e('js') }}');
             });
         })(jQuery);
     /* ]]> */
     </script>
 {% endif %}
 <br />
-{% if item.imageUpload != '' and item.imageUploadFullPath is defined and item.imageUploadMeta.isImage %}
-    {{ mumuimagemodule_thumb({ image: item.imageUploadFullPath, objectid: 'picture-' ~ item.id ~ '', preset: relationThumbPreset, tag: true, img_alt: item.getTitleFromDisplayPattern(), img_class: 'img-rounded' }) }}
+{% if item.imageUpload is not empty and item.imageUploadMeta.isImage %}
+    <img src="{{ item.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ relationThumbRuntimeOptions.thumbnail.size[0] }}" height="{{ relationThumbRuntimeOptions.thumbnail.size[1] }}" class="img-rounded" />
 {% endif %}
     </li>
     {% endif %}

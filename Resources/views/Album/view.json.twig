@@ -1,7 +1,0 @@
-{# purpose of this template: albums view json view #}
-{{ mumuimagemodule_templateHeaders(contentType='application/json') }}[
-{% for album in items %}
-    {% if not loop.first %},{% endif %}
-    {{ album.toJson() }}
-{/foreach}
-]

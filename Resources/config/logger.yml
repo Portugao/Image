@@ -1,6 +1,6 @@
 services:
     # Log processor
-    mu_muimage_module.log.processor:
+    mu_image_module.log.processor:
         class: Monolog\Processor\PsrLogMessageProcessor
         tags:
             - { name: monolog.processor }

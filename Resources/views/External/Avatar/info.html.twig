@@ -1,0 +1,26 @@
+{# Purpose of this template: Display item information for previewing from other modules #}
+<dl id="avatar{{ avatar.id }}">
+<dt>{{ avatar.getTitleFromDisplayPattern() }}</dt>
+<dd>{% if avatar.avatarUploadMeta|default %}
+<a href="{{ avatar.avatarUploadUrl }}" title="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}"{% if avatar.avatarUploadMeta.isImage %} class="lightbox"{% endif %}>
+{% if avatar.avatarUploadMeta.isImage %}
+    {% set thumbOptions = attribute(thumbRuntimeOptions, 'avatarAvatarUpload') %}
+    <img src="{{ avatar.avatarUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
+{% else %}
+    {{ __('Download') }} ({{ avatar.avatarUploadMeta.size|muimagemodule_fileSize(avatar.avatarUpload.getPathname(), false, false) }})
+{% endif %}
+</a>
+{% endif %}
+</dd>
+{% if avatar.description is not empty %}<dd>{{ avatar.description }}</dd>{% endif %}
+{% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'avatar') %}
+    <dd>
+        <dl class="category-list">
+        {% for propName, catMapping in avatar.categories %}
+            <dt>{{ propName }}</dt>
+            <dd>{{ catMapping.category.display_name[lang] }}</dd>
+        {% endfor %}
+        </dl>
+    </dd>
+{% endif %}
+</dl>

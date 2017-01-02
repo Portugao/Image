@@ -1,4 +1,4 @@
-application "MUImage" {
+application "Image" {
     vendor "MU"
     author "Michael Ueberschaer"
     email "kontakt@webdesign-in-bremen.com"
@@ -8,13 +8,22 @@ application "MUImage" {
     generatorSettings {
         settingsContainer "Einstellungen"
         targetCoreVersion ZK14
-        amountOfExampleRows 0
+        generateMailzApi false
+        generateModerationBlock false
+        generateNewsletterPlugin false
+        generatePendingContentSupport false
+        generateAtomTemplates false
+        generateCsvTemplates false
+        generateXmlTemplates false
+        generateJsonTemplates false
+        generateKmlTemplates false
         generateIcsTemplates false
-        generateOnlyBaseClasses true
-        versionAllGeneratedFiles false generatePoweredByBacklinksIntoFooterTemplates false
+        generateOnlyBaseClasses false
+        versionAllGeneratedFiles false
+        generatePoweredByBacklinksIntoFooterTemplates false
         generateTests false
         writeModelToDocs true
-        skipFiles "composer.json"
+        skipFiles "Resources/public/images/admin.png"
         markFiles ""
     }
     entities {
@@ -27,15 +36,16 @@ application "MUImage" {
                     mandatory false
                 },
                 integer "parent_id" nullable {
-                    defaultValue ""
+                    dbName "parent_id" defaultValue ""
                     mandatory false
                 },
                 list "albumAccess" {
                     items {
-                        listItem "All" ( "all" ),
-                        listItem "Users" ( "users" ) { documentation "only registered users" image "only registered users" },
-                        listItem "Friends" ( "friends" ),
-                        listItem "knownPassword" ( "known" )
+                        listItem  "All" ( "all" ),
+                        listItem  "Users" ( "users" ) { documentation "only registered users" image "only registered users" },
+                        listItem  "Friends" ( "friends" ),
+                        
+                    listItem  "knownPassword" ( "known" )
                     }
                 },
                 string "passwordAccess" password {
@@ -69,26 +79,63 @@ application "MUImage" {
                     defaultValue ""
                     mandatory false
                 },
-                boolean "showTitle" ajaxTogglability {
-                    defaultValue ""
-                    mandatory false
+                upload "imageUpload" {
+                    maxSize ""
+                    minWidth 400
+                    maxWidth 1000
+                    minHeight 400
+                    maxHeight 1000
+                detectCorrupted true
                 },
-                boolean "showDescription" ajaxTogglability {
-                    mandatory false
-                },
-                upload "imageUpload",
                 integer "imageView" {
                     defaultValue "0"
                     mandatory false
+                displayType DISPLAY
                 },
                 boolean "albumImage" {
                     defaultValue ""
                     mandatory false
                 },
                 integer "pos"
+            {
+                    defaultValue "0"
+                }
             }
             actions {
                 mainAction "Main",
+                viewAction "View",
+                displayAction "Display",
+                editAction "Edit",
+                deleteAction "Delete"
+            }
+        }
+    ,
+        entity "avatar" categorisable {
+            nameMultiple "avatars"
+            displayPattern "#title#"
+            workflow STANDARD
+            skipHookSubscribers true
+            fields {
+                string "title" {
+                    documentation ""
+                },
+                text "description" nullable {
+                    documentation "Here you can enter, for which use cases this avatar is."
+                    mandatory false
+                },
+                upload "avatarUpload" {
+                    maxSize ""
+                    minWidth 200
+                    maxWidth 200
+                    minHeight 400
+                    maxHeight 400
+                    allowLandscape false
+                    allowPortrait false
+                detectCorrupted true
+                }
+            }
+            actions {
+                mainAction "Index",
                 viewAction "View",
                 displayAction "Display",
                 editAction "Edit",
@@ -100,43 +147,70 @@ application "MUImage" {
         one2many bidirectional {
             source "album"
             sourceAlias "album"
-            target "picture"
-            targetAlias "picture"
-            editType ACTIVE_EDIT_PASSIVE_EDIT
-            cascade ALL
-            orderBy "pos"
-        },
-        one2many bidirectional {
-            source "album"
-            sourceAlias "parent"
             sourceField "parent_id"
             target "album"
-            targetAlias "children"
-            editType ACTIVE_EDIT_PASSIVE_EDIT
-            cascade REMOVE
+            targetAlias "albums"
+        },
+        
+    one2many bidirectional {
+            source "album"
+            sourceAlias "album"
+            target "picture"
+            targetAlias "pictures"
         }
     }
     variables {
         varContainer "General" {
             vars {
-                intVar "pagesize" {
-                    documentation "Pagesize in adminview"
+                boolVar "supportCategories" ,
+                boolVar "supportSubAlbums" , boolVar "userDeletePictures" {
+                    value ""
+                }
+            ,
+                boolVar "useAvatars",
+                boolVar "slideshow1"
+            }
+        },
+        varContainer "Slideshows" {
+            sortOrder 4
+            vars {
+                intVar "slide1Interval" {
+                    value "4000"
+                },
+                intVar "slide1Speed" {
+                    value "1000"
+                }
+            }
+        }
+    , varContainer "uploadHandler" { sortOrder 3 vars {
+                intVar "fileSize" {
+                    value "102400"
+                }, intVar"minWidth" {
+                    value "400"
+                }, intVar"maxWidth", intVar"maxHeight", intVar "firstWidth" , intVar "firstHeight" , intVar "secondWidth" , intVar "secondHeight" , intVar "thirdWidth" , intVar "thirdHeight" ,  boolVar "fileNameForTitle" } } ,
+        varContainer "Avatars" {
+            sortOrder 5
+            vars {
+                intVar "numberOf"
+            {
+                    value "2"
+                },
+                textVar "configAvatarWidthAndHeight" {
+                    value "200,200;400,400"
+                }
+            }
+        }
+    ,
+        varContainer "DisplaySettings" {
+            sortOrder 2
+            vars {
+                intVar "albumEntriesPerPageInBackend" {
                     value "10"
                 },
-                intVar "pageSizeAdminAlbums" {
+                intVar "pictureEntriesPerPageInBackend" {
                     value "10"
                 },
-                intVar "pageSizeAdminPictures" {
-                    value "10"
-                },
-                boolVar "showTitle" {
-                    documentation "Standard setting for showing a title of an image"
-                    value "1"
-                },
-                boolVar "showDescription" {
-                    documentation "Standard setting for showing a description of an image"
-                    value "1"
-                },
+                intVar "avatarEntriesPerPageInBackend",
                 boolVar "countImageView" {
                     value "1"
                 },
@@ -152,35 +226,16 @@ application "MUImage" {
                     documentation "How many pictures may a user create"
                     value "20"
                 },
-                intVar "fileSize" {
-                    value "102400"
-                },
-                intVar "minWidth" {
-                    value "400"
-                },
-                intVar "maxWidth",
-                intVar "maxHeight",
-                listVar "groupForCommonAlbums" { value "\"\"" items {  listVarItem  "None" } } , boolVar "supportCategories" { value "0" } , boolVar "supportSubAlbums" { value "0" } , boolVar "breadcrumbInFrontend" { value "0" } , listVar "kindOfShowSubAlbums" { value "panel" items { listVarItem default "links" , listVarItem "panel" } } ,
+                listVar "groupForCommonAlbums" { items { listVarItem default "None" } } ,
+                listVar "kindOfShowSubAlbums" { items {  listVarItem "Links" ,  listVarItem default "Panel" } } ,
+                boolVar "breadcrumbsInFrontend" ,
                 textVar "ending" {
                     value "html"
-                },
-                boolVar "userDeletePictures" {
-                    value "0"
-                }
-            } } ,
-        varContainer "Slideshows" {
-            sortOrder 2
-            vars {
-                boolVar "slideshow1",
-                intVar "slide1Interval" {
-                    value "4000"
-                },
-                intVar "slide1Speed" {
-                    value "1000"
                 }
             }
         }
-    , varContainer "uploadHandlers" { sortOrder 3 vars { boolVar "createSeveralPictureSizes" , textVar "widthFirst" , textVar "heightFirst" , textVar "widthSecond" , textVar "heightSecond" , textVar "widthThird" , textVar "heightThird" , boolVar "shrinkPictures" , boolVar "fileNameForTitle" { value "true" } } } } controllers {
+    }
+    controllers {
         adminController "Admin" {
             actions {
                 mainAction "Main"
@@ -188,16 +243,19 @@ application "MUImage" {
         },
         userController "User" {
             actions {
-                mainAction "Main",
-                customAction "ZipUpload",
-                customAction "MultiUpload",
-                customAction "External",
-                customAction "EditMulti"
+                mainAction "Main"
             }
         },
         ajaxController "Ajax" {
             actions {
                 mainAction "Main"
+            }
+        }
+    ,
+        customController "MyController" {
+            actions {
+                customAction "zipUpload",
+                customAction "multiUpload"
             }
         }
     }

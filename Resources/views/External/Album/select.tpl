@@ -16,7 +16,7 @@
     {nocache}
     {foreach key='propertyName' item='propertyId' from=$properties}
         <p>
-            {modapifunc modname='MUMUImageModule' type='category' func='hasMultipleSelection' ot='album' registry=$propertyName assign='hasMultiSelection'}
+            {assign var='hasMultiSelection' value=$categoryHelper->hasMultipleSelection('album', $propertyName)}
             {gt text='Category' assign='categoryLabel'}
             {assign var='categorySelectorId' value='catid'}
             {assign var='categorySelectorName' value='catid'}
@@ -29,7 +29,7 @@
             {/if}
             <label for="{$baseID}_{$categorySelectorId}{$propertyName}"{$leftSide}>{$categoryLabel}:</label>
             &nbsp;
-            {selector_category name="`$baseID`_`$categorySelectorName``$propertyName`" field='id' selectedValue=$catIds.$propertyName categoryRegistryModule='MUMUImageModule' categoryRegistryTable=$objectType categoryRegistryProperty=$propertyName defaultText=$lblDefault editLink=false multipleSize=$categorySelectorSize cssClass='form-control'}
+            {selector_category name="`$baseID`_`$categorySelectorName``$propertyName`" field='id' selectedValue=$catIds.$propertyName categoryRegistryModule='MUImageModule' categoryRegistryTable=$objectType categoryRegistryProperty=$propertyName defaultText=$lblDefault editLink=false multipleSize=$categorySelectorSize cssClass='form-control'}
             <br{$break} />
         </p>
     {/foreach}
@@ -71,7 +71,7 @@
 <p>
     <label for="{$baseID}SearchTerm"{$leftSide}>{gt text='Search for'}:</label>
     <input type="text" id="{$baseID}SearchTerm" name="q" class="form-control"{$rightSide} />
-    <input type="button" id="mUMUImageModuleSearchGo" name="gosearch" value="{gt text='Filter'}" class="btn btn-default" />
+    <input type="button" id="mUImageModuleSearchGo" name="gosearch" value="{gt text='Filter'}" class="btn btn-default" />
     <br{$break} />
 </p>
 <br />
@@ -81,7 +81,7 @@
 /* <![CDATA[ */
     ( function($) {
         $(document).ready(function() {
-            mUMUImageModule.itemSelector.onLoad('{{$baseID}}', {{$selectedId|default:0}});
+            mUImageModule.itemSelector.onLoad('{{$baseID}}', {{$selectedId|default:0}});
         });
     })(jQuery);
 /* ]]> */

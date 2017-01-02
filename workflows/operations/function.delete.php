@@ -1,6 +1,6 @@
 <?php
 /**
- * MUImage.
+ * Image.
  *
  * @copyright Michael Ueberschaer (MU)
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
@@ -20,14 +20,20 @@
  *
  * @throws RuntimeException Thrown if executing the workflow action fails
  */
-function MUMUImageModule_operation_delete(&$entity, $params)
+function MUImageModule_operation_delete(&$entity, $params)
 {
 
+    // get attributes read from the workflow
+    if (isset($params['nextstate']) && !empty($params['nextstate'])) {
+        // assign value to the data object
+        $entity['workflowState'] = $params['nextstate'];
+    }
+    
     // get entity manager
     $serviceManager = \ServiceUtil::getManager();
-    $entityManager = $serviceManager->get('doctrine.entitymanager');
+    $entityManager = $serviceManager->get('doctrine.orm.default_entity_manager');
     $logger = $serviceManager->get('logger');
-    $logArgs = ['app' => 'MUMUImageModule', 'user' => $serviceManager->get('zikula_users_module.current_user')->get('uname')];
+    $logArgs = ['app' => 'MUImageModule', 'user' => $serviceManager->get('zikula_users_module.current_user')->get('uname')];
     
     // delete entity
     try {

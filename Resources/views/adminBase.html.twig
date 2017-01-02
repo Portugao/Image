@@ -1,5 +1,5 @@
 {# purpose of this template: admin area base layout #}
-{% extends 'MUMUImageModule::base.html.twig' %}
+{% extends 'MUImageModule::base.html.twig' %}
 {% block header %}
     {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
         {{ adminHeader() }}

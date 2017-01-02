@@ -1,19 +1,19 @@
 {# purpose of this template: build the form to edit an instance of album #}
-{% extends routeArea == 'admin' ? 'MUMUImageModule::adminBase.html.twig' : 'MUMUImageModule::base.html.twig' %}
+{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
 
 {% block header %}
     {{ parent() }}
-    {{ pageAddAsset('javascript', zasset('@MUMUImageModule:js/MUMUImageModule.EditFunctions.js')) }}
-    {{ pageAddAsset('javascript', zasset('@MUMUImageModule:js/MUMUImageModule.Validation.js')) }}
-    {{ pageAddAsset('javascript', asset('typeahead.js/dist/typeahead.bundle.min.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.EditFunctions.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Validation.js')) }}
+    {{ pageAddAsset('javascript', pagevars.homepath ~ 'vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js') }}
 {% endblock %}
 
 {% block title mode == 'create' ? __('Create album') : __('Edit album') %}
 {% block admin_page_icon mode == 'create' ? 'plus' : 'pencil-square-o' %}
 {% block content %}
-    <div class="mumuimagemodule-album mumuimagemodule-edit">
+    <div class="muimagemodule-album muimagemodule-edit">
 {% form_theme form with [
-    '@MUMUImageModule/Form/bootstrap_3.html.twig',
+    '@MUImageModule/Form/bootstrap_3.html.twig',
     'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
 ] %}
 {{ form_start(form, {attr: {id: 'albumEditForm'}}) }}
@@ -45,21 +45,23 @@
         </div>
     </div>
     
-    {{ include('@MUMUImageModule/Helper/includeCategoriesEdit.html.twig', { obj: album, panel: true }) }}
+    {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
+        {{ include('@MUImageModule/Helper/includeCategoriesEdit.html.twig', { obj: album, panel: true }) }}
+    {% endif %}
     {{ include(
-        '@MUMUImageModule/Album/includeSelectEditOne.html.twig',
-        { group: 'album', alias: 'parent', aliasReverse: 'children', mandatory: false, idPrefix: 'muimageAlbum_Parent', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: true }
+        '@MUImageModule/Album/includeSelectOne.html.twig',
+        { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: false }
     ) }}
     {% if mode != 'create' %}
-        {{ include('@MUMUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: album, panel: true }) }}
+        {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: album, panel: true }) }}
     {% endif %}
     
     {# include display hooks #}
     {% if mode != 'create' %}
         {% set hookId = album.id %}
-        {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.albums.form_edit', id=hookId) %}
+        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.form_edit', id=hookId) %}
     {% else %}
-        {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.albums.form_edit', id=null) %}
+        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.form_edit', id=null) %}
     {% endif %}
     {% if hooks is iterable and hooks|length > 0 %}
         {% for providerArea, hook in hooks %}
@@ -112,10 +114,11 @@
     /* <![CDATA[ */
         
                 var formButtons;
+                var triggerValidation = true;
         
                 function executeCustomValidationConstraints()
                 {
-                    mUMUImagePerformCustomValidationRules('album', '{% if mode != 'create' %}{{ album.id }}{% endif %}');
+                    mUImagePerformCustomValidationRules('album', '{% if mode != 'create' %}{{ album.id }}{% endif %}');
                 }
         
                 function triggerFormValidation()
@@ -124,15 +127,17 @@
                     if (!document.getElementById('albumEditForm').checkValidity()) {
                         // This does not really submit the form,
                         // but causes the browser to display the error message
-                        jQuery('#albumEditForm').find(':submit').not(jQuery('#btnDelete')).first().click();
+                        jQuery('#albumEditForm').find(':submit').first().click();
                     }
                 }
         
                 function handleFormSubmit (event) {
-                    triggerFormValidation();
-                    if (!document.getElementById('albumEditForm').checkValidity()) {
-                        event.preventDefault();
-                        return false;
+                    if (triggerValidation) {
+                        triggerFormValidation();
+                        if (!document.getElementById('albumEditForm').checkValidity()) {
+                            event.preventDefault();
+                            return false;
+                        }
                     }
         
                     // hide form buttons to prevent double submits by accident
@@ -150,10 +155,13 @@
                         allFormFields.change(executeCustomValidationConstraints);
         
                         formButtons = $('#albumEditForm .form-buttons input');
-                        $('#btnDelete').bind('click keypress', function (e) {
+                        $('.btn-danger').first().bind('click keypress', function (event) {
                             if (!window.confirm('{{ __('Really delete this album?') }}')) {
-                                e.preventDefault();
+                                event.preventDefault();
                             }
+                        });
+                        $('#albumEditForm button[type=submit]').bind('click keypress', function (event) {
+                            triggerValidation = !$(this).attr('formnovalidate');
                         });
                         $('#albumEditForm').submit(handleFormSubmit);
         
@@ -161,7 +169,6 @@
                             triggerFormValidation();
                         {% endif %}
         
-                        $('#albumEditForm label').tooltip();
                     });
                 })(jQuery);
     /* ]]> */

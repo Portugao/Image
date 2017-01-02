@@ -10,12 +10,11 @@
     {% else %}
         <h3 class="categories">{{ __('Categories') }}</h3>
     {% endif %}
-    <dl class="category-list">
-    {% for propName, catMapping in obj.categories %}
-        <dt>{{ propName }}</dt>
-        <dd>{{ catMapping.category.display_name[lang] }}</dd>
+    <ul class="category-list">
+    {% for catMapping in obj.categories %}
+        <li>{{ catMapping.category.display_name[app.request.locale] }}</li>
     {% endfor %}
-    </dl>
+    </ul>
     {% if panel|default(false) == true %}
                 </div>
             </div>

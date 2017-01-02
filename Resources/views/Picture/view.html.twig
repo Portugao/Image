@@ -1,30 +1,27 @@
 {# purpose of this template: pictures list view #}
-{% extends routeArea == 'admin' ? 'MUMUImageModule::adminBase.html.twig' : 'MUMUImageModule::base.html.twig' %}
+{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
 {% block title __('Picture list') %}
 {% block admin_page_icon 'list-alt' %}
 {% block content %}
-<div class="mumuimagemodule-picture mumuimagemodule-view">
+<div class="muimagemodule-picture muimagemodule-view">
 
     {{ block('page_nav_links') }}
 
-    {{ include('@MUMUImageModule/Picture/viewQuickNav.html.twig', { all: showAllEntries, own: showOwnEntries, workflowStateFilter: false }) }}{# see template file for available options #}
+    {{ include('@MUImageModule/Picture/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
 
     {% if routeArea == 'admin' %}
-    <form action="{{ path('mumuimagemodule_picture_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="picturesViewForm" class="form-horizontal" role="form">
+    <form action="{{ path('muimagemodule_picture_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="picturesViewForm" class="form-horizontal" role="form">
         <div>
     {% endif %}
         <div class="table-responsive">
-        <table class="table table-striped table-bordered table-hover table-condensed">
+        <table class="table table-striped table-bordered table-hover{% if routeArea == 'admin' %} table-condensed{% endif %}">
             <colgroup>
                 {% if routeArea == 'admin' %}
                     <col id="cSelect" />
                 {% endif %}
                 <col id="cTitle" />
                 <col id="cDescription" />
-                <col id="cShowTitle" />
-                <col id="cShowDescription" />
                 <col id="cImageUpload" />
-                <col id="cImageView" />
                 <col id="cAlbumImage" />
                 <col id="cPos" />
                 <col id="cAlbum" />
@@ -43,17 +40,8 @@
                 <th id="hDescription" scope="col" class="text-left">
                     <a href="{{ sort.description.url }}" title="{{ __f('Sort by %s', {'%s': 'description'}) }}" class="{{ sort.description.class }}">{{ __('Description') }}</a>
                 </th>
-                <th id="hShowTitle" scope="col" class="text-center">
-                    <a href="{{ sort.showTitle.url }}" title="{{ __f('Sort by %s', {'%s': 'show title'}) }}" class="{{ sort.showTitle.class }}">{{ __('Show title') }}</a>
-                </th>
-                <th id="hShowDescription" scope="col" class="text-center">
-                    <a href="{{ sort.showDescription.url }}" title="{{ __f('Sort by %s', {'%s': 'show description'}) }}" class="{{ sort.showDescription.class }}">{{ __('Show description') }}</a>
-                </th>
                 <th id="hImageUpload" scope="col" class="text-left">
                     <a href="{{ sort.imageUpload.url }}" title="{{ __f('Sort by %s', {'%s': 'image upload'}) }}" class="{{ sort.imageUpload.class }}">{{ __('Image upload') }}</a>
-                </th>
-                <th id="hImageView" scope="col" class="text-right">
-                    <a href="{{ sort.imageView.url }}" title="{{ __f('Sort by %s', {'%s': 'image view'}) }}" class="{{ sort.imageView.class }}">{{ __('Image view') }}</a>
                 </th>
                 <th id="hAlbumImage" scope="col" class="text-center">
                     <a href="{{ sort.albumImage.url }}" title="{{ __f('Sort by %s', {'%s': 'album image'}) }}" class="{{ sort.albumImage.class }}">{{ __('Album image') }}</a>
@@ -64,7 +52,7 @@
                 <th id="hAlbum" scope="col" class="text-left">
                     <a href="{{ sort.album.url }}" title="{{ __f('Sort by %s', {'%s': 'album'}) }}" class="{{ sort.album.class }}">{{ __('Album') }}</a>
                 </th>
-                <th id="hItemActions" scope="col" class="z-order-unsorted">{{ __('Actions') }}</th>
+                <th id="hItemActions" scope="col" class="text-right z-order-unsorted">{{ __('Actions') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -77,70 +65,44 @@
                     </td>
                 {% endif %}
                 <td headers="hTitle" class="text-left">
-                    <a href="{{ path('mumuimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ picture.title|notifyFilters('mumuimagemodule.filterhook.pictures') }}</a>
+                    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ picture.title|notifyFilters('muimagemodule.filterhook.pictures') }}</a>
                 </td>
                 <td headers="hDescription" class="text-left">
-                    {{ picture.description }}
-                </td>
-                <td headers="hShowTitle" class="text-center">
-                    {% set itemid = picture.id %}
-                    <a id="toggleShowTitle{{ itemid }}" href="javascript:void(0);" class="hidden">
-                    {% if picture.showTitle %}
-                        <span class="cursor-pointer fa fa-check" id="yesshowtitle_{{ itemid }}" title="{{ __('This setting is enabled. Click here to disable it.') }}"></span>
-                        <span class="cursor-pointer fa fa-times hidden" id="noshowtitle_{{ itemid }}" title="{{ __('This setting is disabled. Click here to enable it.') }}"></span>
-                    {% else %}
-                        <span class="cursor-pointer fa fa-check hidden" id="yesshowtitle_{{ itemid }}" title="{{ __('This setting is enabled. Click here to disable it.') }}"></span>
-                        <span class="cursor-pointer fa fa-times" id="noshowtitle_{{ itemid }}" title="{{ __('This setting is disabled. Click here to enable it.') }}"></span>
-                    {% endif %}
-                    </a>
-                    <noscript><div id="noscriptShowTitle{{ itemid }}">
-                        {{ picture.showTitle|yesNo(true) }}
-                    </div></noscript>
-                </td>
-                <td headers="hShowDescription" class="text-center">
-                    {% set itemid = picture.id %}
-                    <a id="toggleShowDescription{{ itemid }}" href="javascript:void(0);" class="hidden">
-                    {% if picture.showDescription %}
-                        <span class="cursor-pointer fa fa-check" id="yesshowdescription_{{ itemid }}" title="{{ __('This setting is enabled. Click here to disable it.') }}"></span>
-                        <span class="cursor-pointer fa fa-times hidden" id="noshowdescription_{{ itemid }}" title="{{ __('This setting is disabled. Click here to enable it.') }}"></span>
-                    {% else %}
-                        <span class="cursor-pointer fa fa-check hidden" id="yesshowdescription_{{ itemid }}" title="{{ __('This setting is enabled. Click here to disable it.') }}"></span>
-                        <span class="cursor-pointer fa fa-times" id="noshowdescription_{{ itemid }}" title="{{ __('This setting is disabled. Click here to enable it.') }}"></span>
-                    {% endif %}
-                    </a>
-                    <noscript><div id="noscriptShowDescription{{ itemid }}">
-                        {{ picture.showDescription|yesNo(true) }}
-                    </div></noscript>
+                    {{ picture.description|safeHtml }}
                 </td>
                 <td headers="hImageUpload" class="text-left">
-                    <a href="{{ picture.imageUploadFullPathURL }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
+                    {% if picture.imageUploadMeta|default %}
+                    <a href="{{ picture.imageUploadUrl }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
                     {% if picture.imageUploadMeta.isImage %}
-                        {{ mumuimagemodule_thumb({ image: picture.imageUploadFullPath, objectid: 'picture-' ~ picture.id ~ '', preset: pictureThumbPresetImageUpload, tag: true, img_alt: picture.getTitleFromDisplayPattern(), img_class: 'img-thumbnail' }) }}
+                        {% set thumbOptions = attribute(thumbRuntimeOptions, 'pictureImageUpload') %}
+                        <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
                     {% else %}
-                        {{ __('Download') }} ({{ picture.imageUploadMeta.size|mumuimagemodule_fileSize(picture.imageUploadFullPath, false, false) }})
+                        {{ __('Download') }} ({{ picture.imageUploadMeta.size|muimagemodule_fileSize(picture.imageUpload.getPathname(), false, false) }})
                     {% endif %}
                     </a>
-                </td>
-                <td headers="hImageView" class="text-right">
-                    {{ picture.imageView }}
+                    {% endif %}
                 </td>
                 <td headers="hAlbumImage" class="text-center">
-                    {{ picture.albumImage|yesNo(true) }}
+                    {% if picture.albumImage %}
+                        <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+                    {% else %}
+                        <i class="fa fa-times" title="{{ __('No') }}"></i>
+                    {% endif %}
                 </td>
                 <td headers="hPos" class="text-right">
                     {{ picture.pos }}
                 </td>
                 <td headers="hAlbum" class="text-left">
                     {% if picture.album|default %}
-                        <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
+                        <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
                           {{ picture.album.getTitleFromDisplayPattern() }}
                         {% endspaceless %}</a>
-                        <a id="albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display" href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="fa fa-search-plus hidden"></a>
+                        <a id="albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="fa fa-search-plus hidden"></a>
                         <script type="text/javascript">
                         /* <![CDATA[ */
                             ( function($) {
                                 $(document).ready(function() {
-                                    mUMUImageInitInlineWindow($('#albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display'), '{{ picture.album.getTitleFromDisplayPattern()|e('js') }}');
+                                    mUImageInitInlineWindow($('#albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display'), '{{ picture.album.getTitleFromDisplayPattern()|e('js') }}');
                                 });
                             })(jQuery);
                         /* ]]> */
@@ -149,24 +111,18 @@
                         {{ __('Not set.') }}
                     {% endif %}
                 </td>
-                <td id="itemActions{{ picture.id }}" headers="hItemActions" class="actions nowrap z-w02">
-                    {% if picture._actions|length > 0 %}
-                        <div class="dropdown">
-                            <a id="itemActions{{ picture.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
-                            
-                            <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="itemActions{{ picture.id }}DropDownToggle">
-                                {% for option in picture._actions %}
-                                    <li role="presentation"><a href="{{ option.url.type|mumuimagemodule_actionUrl(option.url.func, option.url.arguments) }}" title="{{ option.linkTitle|e('html_attr') }}" role="menuitem" tabindex="-1" class="fa fa-{{ option.icon }}">{{ option.linkText }}</a></li>
-                                    
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
+                <td id="itemActions{{ picture.id }}" headers="hItemActions" class="actions text-right nowrap z-w02">
+                    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: picture, area: routeArea, context: 'view' }) %}
+                    <div class="dropdown">
+                        <a id="itemActions{{ picture.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
+                        
+                        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
+                    </div>
                 </td>
             </tr>
         {% else %}
             <tr class="z-{{ routeArea == 'admin' ? 'admin' : 'data' }}tableempty">
-                <td class="text-left" colspan="{% if routeArea == 'admin' %}11{% else %}10{% endif %}">
+                <td class="text-left" colspan="{% if routeArea == 'admin' %}8{% else %}7{% endif %}">
             {{ __('No pictures found.') }}
               </td>
             </tr>
@@ -176,14 +132,14 @@
         </table>
         </div>
         
-        {% if showAllEntries != 1 %}
-            {{ pager({ rowcount: pager.numitems, limit: pager.itemsperpage, display: 'page', route: 'mumuimagemodule_picture_' ~ routeArea ~ 'view'}) }}
+        {% if showAllEntries != 1 and pager|default %}
+            {{ pager({ rowcount: pager.numitems, limit: pager.itemsperpage, display: 'page', route: 'muimagemodule_picture_' ~ routeArea ~ 'view'}) }}
         {% endif %}
     {% if routeArea == 'admin' %}
             <fieldset>
-                <label for="mUMUImageModuleAction" class="col-sm-3 control-label">{{ __('With selected pictures') }}</label>
+                <label for="mUImageModuleAction" class="col-sm-3 control-label">{{ __('With selected pictures') }}</label>
                 <div class="col-sm-6">
-                    <select id="mUMUImageModuleAction" name="action" class="form-control input-sm">
+                    <select id="mUImageModuleAction" name="action" class="form-control input-sm">
                         <option value="">{{ __('Choose action') }}</option>
                         <option value="delete" title="{{ __('Delete content permanently.') }}">{{ __('Delete') }}</option>
                     </select>
@@ -201,26 +157,24 @@
 {% endblock %}
 {% block page_nav_links %}
     {% if canBeCreated %}
-        {% if hasPermission('MUMUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
+        {% if hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
             {% set createTitle = __('Create picture') %}
-            <a href="{{ path('mumuimagemodule_picture_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
+            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
         {% endif %}
     {% endif %}
-    {% set own = showOwnEntries is defined and showOwnEntries == 1 ? 1 : 0 %}
-    {% set all = showAllEntries is defined and showAllEntries == 1 ? 1 : 0 %}
-    {% if all == 1 %}
+    {% if showAllEntries == 1 %}
         {% set linkTitle = __('Back to paginated view') %}
-        <a href="{{ path('mumuimagemodule_picture_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+        <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
     {% else %}
         {% set linkTitle = __('Show all entries') %}
-        <a href="{{ path('mumuimagemodule_picture_' ~ routeArea ~ 'view', { all: 1 }) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+        <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', { all: 1 }) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
     {% endif %}
 {% endblock %}
 {% block display_hooks %}
     
     {# here you can activate calling display hooks for the view page if you need it #}
     {# % if routeArea != 'admin' %}
-        {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.pictures.display_view', urlObject=currentUrlObject) %}
+        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', urlObject=currentUrlObject) %}
         {% for providerArea, hook in hooks %}
             {{ hook }}
         {% endfor %}
@@ -233,19 +187,18 @@
 /* <![CDATA[ */
     ( function($) {
         $(document).ready(function() {
-            $('.dropdown-toggle').dropdown();
-            $('a.fa-zoom-in').attr('target', '_blank');
-            {% for picture in items %}
-                {% set itemid = picture.id %}
-                mUMUImageInitToggle('picture', 'showTitle', '{{ itemid|e('js') }}');
-                mUMUImageInitToggle('picture', 'showDescription', '{{ itemid|e('js') }}');
-            {% endfor %}
+            $('a.lightbox').lightbox();
+            $('.muimagemodule-picture .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu dropdown-menu-right');
+            $('.muimagemodule-picture .dropdown > ul a').each(function (index) {
+                $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
+            });
+            $('.muimagemodule-picture .dropdown > ul a i').addClass('fa-fw');
+            $('.muimagemodule-picture .dropdown-toggle').removeClass('hidden').dropdown();
             {% if routeArea == 'admin' %}
                 {# init the "toggle all" functionality #}
                 if ($('#togglePictures').length > 0) {
-                    $('#togglePictures').on('click', function (e) {
-                        Zikula.toggleInput('picturesViewForm');
-                        e.preventDefault();
+                    $('#togglePictures').click(function (event) {
+                        $('.pictures-checkbox').prop('checked', $(this).prop('checked'));
                     });
                 }
             {% endif %}

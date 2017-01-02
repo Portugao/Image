@@ -1,24 +1,24 @@
 {# Purpose of this template: Display one certain album within an external context #}
-<div id="album{$album.id}" class="mumuimagemodule-external-album">
+<div id="album{$album.id}" class="muimagemodule-external-album">
 {% if displayMode == 'link' %}
-    <p class="mumuimagemodule-external-link">
-    <a href="{{ path('mumuimagemodule_album_display', { 'id': album.id }) }}" title="{{ album.getTitleFromDisplayPattern()|e('html_attr') }}">
-    {{ album.getTitleFromDisplayPattern()|notifyfilters('muimage.filter_hooks.albums.filter') }}
+    <p class="muimagemodule-external-link">
+    <a href="{{ path('muimagemodule_album_display', { 'id': album.id }) }}" title="{{ album.getTitleFromDisplayPattern()|e('html_attr') }}">
+    {{ album.getTitleFromDisplayPattern()|notifyFilters('image.filter_hooks.albums.filter') }}
     </a>
     </p>
 {% endif %}
-{% if hasPermission('MUMUImageModule::', '::', 'ACCESS_EDIT') %}
+{% if hasPermission('MUImageModule::', '::', 'ACCESS_EDIT') %}
     {# for normal users without edit permission show only the actual file per default #}
     {% if displayMode == 'embed' %}
-        <p class="mumuimagemodule-external-title">
-            <strong>{{ album.getTitleFromDisplayPattern()|notifyfilters('muimage.filter_hooks.albums.filter') }}</strong>
+        <p class="muimagemodule-external-title">
+            <strong>{{ album.getTitleFromDisplayPattern()|notifyFilters('image.filter_hooks.albums.filter') }}</strong>
         </p>
     {% endif %}
 {% endif %}
 
 {% if displayMode == 'link' %}
 {% elseif displayMode == 'embed' %}
-    <div class="mumuimagemodule-external-snippet">
+    <div class="muimagemodule-external-snippet">
         &nbsp;
     </div>
 
@@ -31,15 +31,17 @@
 
     {# you can enable more details about the item: #}
     {#
-        <p class="mumuimagemodule-external-description">
+        <p class="muimagemodule-external-description">
             {% if album.description is not empty %}{{ album.description }}<br />{% endif %}
-            <dl class="category-list">
-            {% for propName, catMapping in album.categories %}
-                <dt>{{ propName }}</dt>
-                <dd>{{ catMapping.category.display_name[lang] }}</dd>
-            {% endfor %}
-            </dl>
+            {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
+                <dl class="category-list">
+                {% for propName, catMapping in album.categories %}
+                    <dt>{{ propName }}</dt>
+                    <dd>{{ catMapping.category.display_name[lang] }}</dd>
+                {% endfor %}
+                </dl>
+            {% endif %}
         </p>
     #}
-{/if}
+{% endif %}
 </div>

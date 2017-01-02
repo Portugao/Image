@@ -1,0 +1,42 @@
+{# purpose of this template: inclusion template for managing related album #}
+{% if displayMode is not defined or displayMode is empty %}
+    {% set displayMode = 'choices' %}
+{% endif %}
+{% if allowEditing is not defined or allowEditing is empty %}
+    {% set allowEditing = false %}
+{% endif %}
+{% if panel|default(false) == true %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseAlbum">{{ __('Album') }}</a></h3>
+        </div>
+        <div id="collapseAlbum" class="panel-collapse collapse in">
+            <div class="panel-body">
+{% else %}
+    <fieldset class="album">
+{% endif %}
+    <legend>{{ __('Album') }}</legend>
+    {% if displayMode == 'choices' %}
+        {{ form_row(attribute(form, alias)) }}
+    {% elseif displayMode == 'autocomplete' %}
+        {% set createUrl = allowEditing ? path('muimagemodule_album_' ~ routeArea ~ 'edit') : '' %}
+        {{ form_row(attribute(form, alias)) }}
+        <div class="muimagemodule-relation-leftside">
+            {% if attribute(linkingItem, alias) is defined %}
+                {{ include(
+                    'Album/includeSelectItemListOne.html.twig',
+                    { item: attribute(linkingItem, alias) }
+                ) }}
+            {% else %}
+                {{ include('Album/includeSelectItemListOne.html.twig') }}
+            {% endif %}
+        </div>
+        <br style="clear: both" />
+    {% endif %}
+{% if panel|default(false) == true %}
+            </div>
+        </div>
+    </div>
+{% else %}
+    </fieldset>
+{% endif %}

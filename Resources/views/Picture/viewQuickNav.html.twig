@@ -1,40 +1,54 @@
 {# purpose of this template: pictures view filter form #}
-{% if hasPermission('MUMUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
+{% if hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
     {% form_theme quickNavForm with [
-        '@MUMUImageModule/Form/bootstrap_3.html.twig',
-        'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
+        'bootstrap_3_layout.html.twig'
     ] %}
-    {{ form_start(quickNavForm, {attr: {id: 'mUMUImageModulePictureQuickNavForm', class: 'mumuimagemodule-quicknav navbar-form', role: 'navigation'}}) }}
+    {{ form_start(quickNavForm, {attr: {id: 'mUImageModulePictureQuickNavForm', class: 'muimagemodule-quicknav navbar-form', role: 'navigation'}}) }}
     {{ form_errors(quickNavForm) }}
     <fieldset>
         <h3>{{ __('Quick navigation') }}</h3>
-        {% if albumFilter is not defined or albumFilter == true %}
+        {% if albumFilter is defined and albumFilter != true %}
+            <div class="hidden">
+        {% endif %}
             {{ form_row(quickNavForm.album) }}
+        {% if albumFilter is defined and albumFilter != true %}
+            </div>
         {% endif %}
-        {% if workflowStateFilter is not defined or workflowStateFilter == true %}
+        {% if workflowStateFilter is defined and workflowStateFilter != true %}
+            <div class="hidden">
+        {% endif %}
             {{ form_row(quickNavForm.workflowState) }}
+        {% if workflowStateFilter is defined and workflowStateFilter != true %}
+            </div>
         {% endif %}
-        {% if searchFilter is not defined or searchFilter == true %}
+        {% if searchFilter is defined and searchFilter != true %}
+            <div class="hidden">
+        {% endif %}
             {{ form_row(quickNavForm.q) }}
+        {% if searchFilter is defined and searchFilter != true %}
+            </div>
         {% endif %}
-        {% if sorting is not defined or sorting == true %}
+        {% if sorting is defined and sorting != true %}
+            <div class="hidden">
+        {% endif %}
             {{ form_row(quickNavForm.sort) }}
             {{ form_row(quickNavForm.sortdir) }}
-        {% else %}
-            {{ form_row(quickNavForm.sort, {attr: {class: 'hidden'}}) }}
-            {{ form_row(quickNavForm.sortdir, {attr: {class: 'hidden'}}) }}
+        {% if sorting is defined and sorting != true %}
+            </div>
         {% endif %}
-        {% if pageSizeSelector is not defined or pageSizeSelector == true %}
+        {% if pageSizeSelector is defined and pageSizeSelector != true %}
+            <div class="hidden">
+        {% endif %}
             {{ form_row(quickNavForm.num) }}
+        {% if pageSizeSelector is defined and pageSizeSelector != true %}
+            </div>
         {% endif %}
-        {% if showTitleFilter is not defined or showTitleFilter == true %}
-            {{ form_row(quickNavForm.showTitle) }}
+        {% if albumImageFilter is defined and albumImageFilter != true %}
+            <div class="hidden">
         {% endif %}
-        {% if showDescriptionFilter is not defined or showDescriptionFilter == true %}
-            {{ form_row(quickNavForm.showDescription) }}
-        {% endif %}
-        {% if albumImageFilter is not defined or albumImageFilter == true %}
             {{ form_row(quickNavForm.albumImage) }}
+        {% if albumImageFilter is defined and albumImageFilter != true %}
+            </div>
         {% endif %}
         {{ form_widget(quickNavForm.updateview) }}
     </fieldset>
@@ -43,10 +57,10 @@
     /* <![CDATA[ */
         ( function($) {
             $(document).ready(function() {
-                mUMUImageInitQuickNavigation('picture');
+                mUImageInitQuickNavigation('picture');
                 {% if searchFilter|default and searchFilter == false %}
                     {# we can hide the submit button if we have no quick search field #}
-                    $('#quicknavSubmit').addClass('hidden');
+                    $('#muimagemodule_picturequicknav_updateview').addClass('hidden');
                 {% endif %}
             });
         })(jQuery);

@@ -3,31 +3,26 @@
     
     {{ pageAddAsset('stylesheet', asset('jquery-ui/themes/base/jquery-ui.min.css')) }}
     {{ pageAddAsset('javascript', asset('bootstrap/js/bootstrap.min.js')) }}
-    {#{ pageAddAsset('javascript', 'zikula') }}{# still required for Gettext #}
     {{ pageAddAsset('javascript', asset('bootstrap-media-lightbox/bootstrap-media-lightbox.min.js')) }}
     {{ pageAddAsset('stylesheet', asset('bootstrap-media-lightbox/bootstrap-media-lightbox.css')) }}
     {{ pageAddAsset('stylesheet', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.css')) }}
     {{ pageAddAsset('javascript', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.js')) }}
-    {{ pageAddAsset('javascript', zasset('@MUMUImageModule:js/MUMUImageModule.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.js')) }}
     {{ polyfill(['forms', 'forms-ext']) }}
-
-    {# initialise additional gettext domain for translations within javascript #}
-    {# blocked by https://github.com/zikula/core/issues/2601 #}
-    {# commented out because not sure yet whether this is still required in 1.4.x #}
-    {# { pageAddVar('jsgettext', 'mumuimagemodule_js:MUMUImageModule') } #}
 {% endblock %}
 
 {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
     {% block appTitle %}
-        <h2 class="userheader">{{ __('M u image') }}</h2>
-        {{ moduleLinks(type='user', modName='MUMUImageModule') }}
+        {{ moduleHeader('user', '', '', false, true, false, true) }}
     {% endblock %}
 {% endif %}
 
 {% block titleArea %}
     <h2>{% block title %}{% endblock %}</h2>
 {% endblock %}
-{{ pageSetVar('title', block('title')) }}
+{{ pageSetVar('title', block('pageTitle')|default(block('title'))) }}
+
+{{ block('moderation_panel') }}
 
 {{ showflashes() }}
 
@@ -37,7 +32,7 @@
     {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
     {% elseif app.request.query.get('func') == 'edit' %}
         {{ pageAddAsset('stylesheet', 'style/core.css') }}
-        {{ pageAddAsset('stylesheet', zasset('@MUMUImageModule:css/style.css')) }}
+        {{ pageAddAsset('stylesheet', zasset('@MUImageModule:css/style.css')) }}
         {{ pageAddAsset('stylesheet', zasset('@ZikulaThemeModule:css/form/style.css')) }}
         {{ pageAddAsset('stylesheet', zasset('@ZikulaAndreas08Theme:css/fluid960gs/reset.css')) }}
         {% set pageStyles %}
@@ -48,5 +43,20 @@
         </style>
         {% endset %}
         {{ pageAddAsset('header', pageStyles) }}
+    {% endif %}
+{% endblock %}
+
+{% block moderation_panel %}
+    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+        {% set moderationObjects = muimagemodule_moderationObjects() %}
+        {% if moderationObjects|length > 0 %}
+            {% for modItem in moderationObjects %}
+                <p class="alert alert-info alert-dismissable text-center">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {% set itemObjectType = modItem.objectType|lower %}
+                    <a href="{{ path('muimagemodule_' ~ itemObjectType ~ '_adminview', { workflowState: modItem.state }) }}" class="bold alert-link">{{ modItem.message }}</a>
+                </p>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 {% endblock %}

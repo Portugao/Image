@@ -1,5 +1,5 @@
 {# purpose of this template: reusable display of standard fields #}
-{% if (obj.createdUserId is defined and obj.createdUserId) or (obj.updatedUserId is defined and obj.updatedUserId) %}
+{% if obj.createdUserId|default or obj.updatedUserId|default %}
     {% if panel|default(false) == true %}
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -13,17 +13,15 @@
     <dl class="propertylist">
     {% if obj.createdUserId|default %}
         <dt>{{ __('Creation') }}</dt>
-        {% set cr_uname = mumuimagemodule_userVar('uname', obj.createdUserId) %}
-        {% set profileLink = obj.createdUserId|mumuimagemodule_profileLink %}
-        <dd class="avatar">{{ mumuimagemodule_userAvatar(uid=obj.createdUserId, rating='g')|raw }}</dd>
-        <dd>{{ __f('Created by %user on %date', {'%user': profileLink, '%date': obj.createdDate|localizeddate('medium', 'short')}) }}</dd>
+        {% set profileLink = obj.createdUserId.getUid()|profileLinkByUserId() %}
+        <dd class="avatar">{{ muimagemodule_userAvatar(uid=obj.createdUserId.getUid(), rating='g') }}</dd>
+        <dd>{{ __f('Created by %user on %date', {'%user': profileLink, '%date': obj.createdDate|localizeddate('medium', 'short')})|raw }}</dd>
     {% endif %}
     {% if obj.updatedUserId|default %}
         <dt>{{ __('Last update') }}</dt>
-        {% set lu_uname = mumuimagemodule_userVar('uname', obj.updatedUserId) %}
-        {% set profileLink = obj.updatedUserId|mumuimagemodule_profileLink %}
-        <dd class="avatar">{{ mumuimagemodule_userAvatar(uid=obj.updatedUserId, rating='g')|raw }}</dd>
-        <dd>{{ __f('Updated by %user on %date', {'%user': profileLink, '%date': obj.updatedDate|localizeddate('medium', 'short')}) }}</dd>
+        {% set profileLink = obj.updatedUserId.getUid()|profileLinkByUserId() %}
+        <dd class="avatar">{{ muimagemodule_userAvatar(uid=obj.updatedUserId.getUid(), rating='g') }}</dd>
+        <dd>{{ __f('Updated by %user on %date', {'%user': profileLink, '%date': obj.updatedDate|localizeddate('medium', 'short')})|raw }}</dd>
     {% endif %}
     </dl>
     {% if panel|default(false) == true %}

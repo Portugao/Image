@@ -1,111 +1,100 @@
 {# purpose of this template: pictures display view #}
-{% extends routeArea == 'admin' ? 'MUMUImageModule::adminBase.html.twig' : 'MUMUImageModule::base.html.twig' %}
+{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
+{% block pageTitle %}{{ picture.getTitleFromDisplayPattern()|default(__('Picture')) }}{% endblock %}
 {% block title %}
     {% set templateTitle = picture.getTitleFromDisplayPattern()|default(__('Picture')) %}
-    {{ templateTitle|notifyFilters('mumuimagemodule.filter_hooks.pictures.filter') }}
-    {% if picture._actions|length > 0 %}
-        <div class="dropdown">
-            <a id="itemActions{{ picture.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
-            
-            <ul class="dropdown-menu" role="menu" aria-labelledby="itemActions{{ picture.id }}DropDownToggle">
-                {% for option in picture._actions %}
-                    <li role="presentation"><a href="{{ option.url.type|mumuimagemodule_actionUrl(option.url.func, option.url.arguments) }}" title="{{ option.linkTitle|e('html_attr') }}" role="menuitem" tabindex="-1" class="fa fa-{{ option.icon }}">{{ option.linkText }}</a></li>
-                    
-                {% endfor %}
-            </ul>
-        </div>
-        <script type="text/javascript">
-        /* <![CDATA[ */
-            ( function($) {
-                $(document).ready(function() {
-                    $('.dropdown-toggle').dropdown();
-                    $('a.fa-zoom-in').attr('target', '_blank');
+    {{ templateTitle|notifyFilters('muimagemodule.filter_hooks.pictures.filter') }}
+    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: picture, area: routeArea, context: 'display' }) %}
+    <div class="dropdown">
+        <a id="itemActions{{ picture.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
+        
+        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
+    </div>
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        ( function($) {
+            $(document).ready(function() {
+                $('h2 .dropdown > ul, h3 .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu');
+                $('h2 .dropdown > ul a, h3 .dropdown > ul a').each(function (index) {
+                    $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
                 });
-            })(jQuery);
-        /* ]]> */
-        </script>
-    {% endif %}
+                $('h2 .dropdown > ul a i, h3 .dropdown > ul a i').addClass('fa-fw');
+                $('h2 .dropdown-toggle, h3 .dropdown-toggle').removeClass('hidden').dropdown();
+            });
+        })(jQuery);
+    /* ]]> */
+    </script>
 {% endblock %}
 {% block admin_page_icon 'eye' %}
 {% block content %}
-    <div class="mumuimagemodule-picture mumuimagemodule-display">
+    <div class="muimagemodule-picture muimagemodule-display">
 
 
     <dl>
-        <dt>{{ __('Title') }}</dt>
-        <dd>{{ picture.title }}</dd>
-        <dt>{{ __('Description') }}</dt>
-        <dd>{{ picture.description }}</dd>
-        <dt>{{ __('Show title') }}</dt>
-        <dd>{% set itemid = picture.id %}
-        <a id="toggleShowTitle{{ itemid }}" href="javascript:void(0);" class="hidden">
-        {% if picture.showTitle %}
-            <span class="cursor-pointer fa fa-check" id="yesshowtitle_{{ itemid }}" title="{{ __('This setting is enabled. Click here to disable it.') }}"></span>
-            <span class="cursor-pointer fa fa-times hidden" id="noshowtitle_{{ itemid }}" title="{{ __('This setting is disabled. Click here to enable it.') }}"></span>
-        {% else %}
-            <span class="cursor-pointer fa fa-check hidden" id="yesshowtitle_{{ itemid }}" title="{{ __('This setting is enabled. Click here to disable it.') }}"></span>
-            <span class="cursor-pointer fa fa-times" id="noshowtitle_{{ itemid }}" title="{{ __('This setting is disabled. Click here to enable it.') }}"></span>
+        {% if picture.title is not empty %}
+            <dt>{{ __('Title') }}</dt>
+            <dd>{{ picture.title }}</dd>
         {% endif %}
-        </a>
-        <noscript><div id="noscriptShowTitle{{ itemid }}">
-            {{ picture.showTitle|yesNo(true) }}
-        </div></noscript>
-        </dd>
-        <dt>{{ __('Show description') }}</dt>
-        <dd>{% set itemid = picture.id %}
-        <a id="toggleShowDescription{{ itemid }}" href="javascript:void(0);" class="hidden">
-        {% if picture.showDescription %}
-            <span class="cursor-pointer fa fa-check" id="yesshowdescription_{{ itemid }}" title="{{ __('This setting is enabled. Click here to disable it.') }}"></span>
-            <span class="cursor-pointer fa fa-times hidden" id="noshowdescription_{{ itemid }}" title="{{ __('This setting is disabled. Click here to enable it.') }}"></span>
-        {% else %}
-            <span class="cursor-pointer fa fa-check hidden" id="yesshowdescription_{{ itemid }}" title="{{ __('This setting is enabled. Click here to disable it.') }}"></span>
-            <span class="cursor-pointer fa fa-times" id="noshowdescription_{{ itemid }}" title="{{ __('This setting is disabled. Click here to enable it.') }}"></span>
+        {% if picture.description is not empty %}
+            <dt>{{ __('Description') }}</dt>
+            <dd>{{ picture.description|safeHtml }}</dd>
         {% endif %}
-        </a>
-        <noscript><div id="noscriptShowDescription{{ itemid }}">
-            {{ picture.showDescription|yesNo(true) }}
-        </div></noscript>
-        </dd>
-        <dt>{{ __('Image upload') }}</dt>
-        <dd><a href="{{ picture.imageUploadFullPathURL }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
-        {% if picture.imageUploadMeta.isImage %}
-            {{ mumuimagemodule_thumb({ image: picture.imageUploadFullPath, objectid: 'picture-' ~ picture.id ~ '', preset: pictureThumbPresetImageUpload, tag: true, img_alt: picture.getTitleFromDisplayPattern(), img_class: 'img-thumbnail' }) }}
-        {% else %}
-            {{ __('Download') }} ({{ picture.imageUploadMeta.size|mumuimagemodule_fileSize(picture.imageUploadFullPath, false, false) }})
+        {% if picture.imageUpload is not empty %}
+            <dt>{{ __('Image upload') }}</dt>
+            <dd>{% if picture.imageUploadMeta|default %}
+            <a href="{{ picture.imageUploadUrl }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
+            {% if picture.imageUploadMeta.isImage %}
+                {% set thumbOptions = attribute(thumbRuntimeOptions, 'pictureImageUpload') %}
+                <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
+            {% else %}
+                {{ __('Download') }} ({{ picture.imageUploadMeta.size|muimagemodule_fileSize(picture.imageUpload.getPathname(), false, false) }})
+            {% endif %}
+            </a>
+            {% endif %}
+            </dd>
         {% endif %}
-        </a>
-        </dd>
-        <dt>{{ __('Image view') }}</dt>
-        <dd>{{ picture.imageView }}</dd>
-        <dt>{{ __('Album image') }}</dt>
-        <dd>{{ picture.albumImage|yesNo(true) }}</dd>
-        <dt>{{ __('Pos') }}</dt>
-        <dd>{{ picture.pos }}</dd>
+        {% if picture.imageView is not empty %}
+            <dt>{{ __('Image view') }}</dt>
+            <dd>{{ picture.imageView }}</dd>
+        {% endif %}
+        {% if picture.albumImage is not empty %}
+            <dt>{{ __('Album image') }}</dt>
+            <dd>{% if picture.albumImage %}
+                <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+            {% else %}
+                <i class="fa fa-times" title="{{ __('No') }}"></i>
+            {% endif %}
+            </dd>
+        {% endif %}
+        {% if picture.pos is not empty %}
+            <dt>{{ __('Pos') }}</dt>
+            <dd>{{ picture.pos }}</dd>
+        {% endif %}
+        {% if picture.album|default %}
         <dt>{{ __('Album') }}</dt>
         <dd>
-        {% if picture.album|default %}
           {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
-          <a href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
-            {{ picture.album.getTitleFromDisplayPattern() }}
-          {% endspaceless %}</a>
-          <a id="albumItem{{ picture.album.id }}Display" href="{{ path('mumuimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="hidden"><span class="fa fa-eye"></span></a>
-          <script type="text/javascript">
-          /* <![CDATA[ */
-              document.observe('dom:loaded', function() {
-                  mUMUImageInitInlineWindow($('albumItem{{ picture.album.id }}Display'), '{{ picture.album->getTitleFromDisplayPattern()|e('js') }}');
-              });
-          /* ]]> */
-          </script>
-          {% else %}
-            {{ picture.album.getTitleFromDisplayPattern() }}
-          {% endif %}
-        {% else %}
-            {{ __('Not set.') }}
+              <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
+                {{ picture.album.getTitleFromDisplayPattern() }}
+              {% endspaceless %}</a>
+              <a id="albumItem{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="hidden"><span class="fa fa-eye"></span></a>
+              <script type="text/javascript">
+              /* <![CDATA[ */
+                  ( function($) {
+                      $(document).ready(function() {
+                          mUImageInitInlineWindow($('albumItem{{ picture.album.id }}Display'), '{{ picture.album.getTitleFromDisplayPattern()|e('js') }}');
+                      });
+                  })(jQuery);
+              /* ]]> */
+              </script>
+              {% else %}
+                {{ picture.album.getTitleFromDisplayPattern() }}
+              {% endif %}
+            </dd>
         {% endif %}
-        </dd>
         
     </dl>
-    {{ include('@MUMUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: picture }) }}
+    {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: picture }) }}
 
     {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
         {# include display hooks #}
@@ -114,7 +103,7 @@
 </div>
 {% endblock %}
 {% block display_hooks %}
-    {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.pictures.display_view', id=picture.id, urlObject=currentUrlObject) %}
+    {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', id=picture.id, urlObject=currentUrlObject) %}
     {% for providerArea, hook in hooks %}
         {% if providerArea != 'provider.scribite.ui_hooks.editor' %}{# fix for #664 #}
             {{ hook }}
@@ -130,9 +119,7 @@
     /* <![CDATA[ */
         ( function($) {
             $(document).ready(function() {
-                {% set itemid = picture.id %}
-                mUMUImageInitToggle('picture', 'showTitle', '{{ itemid|e('html_attr') }}');
-                mUMUImageInitToggle('picture', 'showDescription', '{{ itemid|e('html_attr') }}');
+                $('a.lightbox').lightbox();
             });
         })(jQuery);
     /* ]]> */

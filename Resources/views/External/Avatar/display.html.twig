@@ -1,0 +1,56 @@
+{# Purpose of this template: Display one certain avatar within an external context #}
+<div id="avatar{$avatar.id}" class="muimagemodule-external-avatar">
+{% if displayMode == 'link' %}
+    <p class="muimagemodule-external-link">
+    <a href="{{ path('muimagemodule_avatar_display', { 'id': avatar.id }) }}" title="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}">
+    {{ avatar.getTitleFromDisplayPattern() }}
+    </a>
+    </p>
+{% endif %}
+{% if hasPermission('MUImageModule::', '::', 'ACCESS_EDIT') %}
+    {# for normal users without edit permission show only the actual file per default #}
+    {% if displayMode == 'embed' %}
+        <p class="muimagemodule-external-title">
+            <strong>{{ avatar.getTitleFromDisplayPattern() }}</strong>
+        </p>
+    {% endif %}
+{% endif %}
+
+{% if displayMode == 'link' %}
+{% elseif displayMode == 'embed' %}
+    <div class="muimagemodule-external-snippet">
+        {% if avatar.avatarUploadMeta|default %}
+        <a href="{{ avatar.avatarUploadUrl }}" title="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}"{% if avatar.avatarUploadMeta.isImage %} class="lightbox"{% endif %}>
+        {% if avatar.avatarUploadMeta.isImage %}
+            {% set thumbOptions = attribute(thumbRuntimeOptions, 'avatarAvatarUpload') %}
+            <img src="{{ avatar.avatarUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
+        {% else %}
+            {{ __('Download') }} ({{ avatar.avatarUploadMeta.size|muimagemodule_fileSize(avatar.avatarUpload.getPathname(), false, false) }})
+        {% endif %}
+        </a>
+        {% endif %}
+    </div>
+
+    {# you can distinguish the context like this: #}
+    {# % if source == 'contentType' %}
+        ...
+    {% elseif source == 'scribite' %}
+        ...
+    {% endif % #}
+
+    {# you can enable more details about the item: #}
+    {#
+        <p class="muimagemodule-external-description">
+            {% if avatar.description is not empty %}{{ avatar.description }}<br />{% endif %}
+            {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'avatar') %}
+                <dl class="category-list">
+                {% for propName, catMapping in avatar.categories %}
+                    <dt>{{ propName }}</dt>
+                    <dd>{{ catMapping.category.display_name[lang] }}</dd>
+                {% endfor %}
+                </dl>
+            {% endif %}
+        </p>
+    #}
+{% endif %}
+</div>

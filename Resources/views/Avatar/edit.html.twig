@@ -1,0 +1,135 @@
+{# purpose of this template: build the form to edit an instance of avatar #}
+{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
+
+{% block header %}
+    {{ parent() }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.EditFunctions.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Validation.js')) }}
+{% endblock %}
+
+{% block title mode == 'create' ? __('Create avatar') : __('Edit avatar') %}
+{% block admin_page_icon mode == 'create' ? 'plus' : 'pencil-square-o' %}
+{% block content %}
+    <div class="muimagemodule-avatar muimagemodule-edit">
+{% form_theme form with [
+    '@MUImageModule/Form/bootstrap_3.html.twig',
+    'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
+] %}
+{{ form_start(form, {attr: {id: 'avatarEditForm'}}) }}
+{{ form_errors(form) }}
+<fieldset>
+    <legend>{{ __('Content') }}</legend>
+    
+    {{ form_row(form.title) }}
+    
+    {{ form_row(form.description) }}
+    
+    {{ form_row(form.avatarUpload) }}
+</fieldset>
+
+{% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'avatar') %}
+    {{ include('@MUImageModule/Helper/includeCategoriesEdit.html.twig', { obj: avatar }) }}
+{% endif %}
+{% if mode != 'create' %}
+    {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: avatar }) }}
+{% endif %}
+
+<fieldset>
+    <legend>{{ __('Communication') }}</legend>
+    {{ form_row(form.additionalNotificationRemarks) }}
+</fieldset>
+
+{# include return control #}
+{% if mode == 'create' %}
+    <fieldset>
+        <legend>{{ __('Return control') }}</legend>
+        {{ form_row(form.repeatCreation) }}
+    </fieldset>
+{% endif %}
+
+{# include possible submit actions #}
+<div class="form-group form-buttons">
+    <div class="col-sm-offset-3 col-sm-9">
+        {% for action in actions %}
+            {{ form_widget(attribute(form, action.id)) }}
+        {% endfor %}
+        {{ form_widget(form.reset) }}
+        {{ form_widget(form.cancel) }}
+    </div>
+</div>
+{{ form_end(form) }}
+</div>
+{% endblock %}
+{% block footer %}
+    {{ parent() }}
+
+    {% set editImage = '<span class="fa fa-pencil-square-o"></span>' %}
+    {% set deleteImage = '<span class="fa fa-trash-o"></span>' %}
+    
+    
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        
+                var formButtons;
+                var triggerValidation = true;
+        
+                function executeCustomValidationConstraints()
+                {
+                    mUImagePerformCustomValidationRules('avatar', '{% if mode != 'create' %}{{ avatar.id }}{% endif %}');
+                }
+        
+                function triggerFormValidation()
+                {
+                    executeCustomValidationConstraints();
+                    if (!document.getElementById('avatarEditForm').checkValidity()) {
+                        // This does not really submit the form,
+                        // but causes the browser to display the error message
+                        jQuery('#avatarEditForm').find(':submit').first().click();
+                    }
+                }
+        
+                function handleFormSubmit (event) {
+                    if (triggerValidation) {
+                        triggerFormValidation();
+                        if (!document.getElementById('avatarEditForm').checkValidity()) {
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+        
+                    // hide form buttons to prevent double submits by accident
+                    formButtons.each(function (index) {
+                        jQuery(this).addClass('hidden');
+                    });
+        
+                    return true;
+                }
+        
+                ( function($) {
+                    $(document).ready(function() {
+                        $('a.lightbox').lightbox();
+        
+                        var allFormFields = $('#avatarEditForm input, #avatarEditForm select, #avatarEditForm textarea');
+                        allFormFields.change(executeCustomValidationConstraints);
+        
+                        formButtons = $('#avatarEditForm .form-buttons input');
+                        $('.btn-danger').first().bind('click keypress', function (event) {
+                            if (!window.confirm('{{ __('Really delete this avatar?') }}')) {
+                                event.preventDefault();
+                            }
+                        });
+                        $('#avatarEditForm button[type=submit]').bind('click keypress', function (event) {
+                            triggerValidation = !$(this).attr('formnovalidate');
+                        });
+                        $('#avatarEditForm').submit(handleFormSubmit);
+        
+                        {% if mode != 'create' %}
+                            triggerFormValidation();
+                        {% endif %}
+        
+                        mUImageInitUploadField('muimagemodule_avatar_avatarUpload_avatarUpload');
+                    });
+                })(jQuery);
+    /* ]]> */
+    </script>
+{% endblock %}

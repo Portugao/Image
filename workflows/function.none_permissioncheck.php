@@ -1,6 +1,6 @@
 <?php
 /**
- * MUImage.
+ * Image.
  *
  * @copyright Michael Ueberschaer (MU)
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License
@@ -22,12 +22,12 @@
  *
  * @return bool Whether the current user is allowed to execute the action or not
  */
-function MUMUImageModule_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
+function MUImageModule_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
 
     // calculate the permission component
     $objectType = $obj['_objectType'];
-    $component = 'MUMUImageModule:' . ucfirst($objectType) . ':';
+    $component = 'MUImageModule:' . ucfirst($objectType) . ':';
 
     // calculate the permission instance
     $instance = $obj->createCompositeIdentifier() . '::';
@@ -41,7 +41,7 @@ function MUMUImageModule_workflow_none_permissioncheck($obj, $permLevel, $curren
 /**
  * This helper functions cares for including the strings used in the workflow into translation.
  */
-function MUMUImageModule_workflow_none_gettextstrings()
+function MUImageModule_workflow_none_gettextstrings()
 {
     $serviceManager = \ServiceUtil::getManager();
     $translator = $serviceManager->get('translator.default');

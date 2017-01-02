@@ -1,9 +1,0 @@
-# generated at Fri Nov 07 15:32:46 CET 2014 by ModuleStudio 0.6.2 (http://modulestudio.de)
-# ----------------------------------------------------------------------
-# Purpose of file: give access to upload files treated in this directory
-# ----------------------------------------------------------------------
-deny from all
-<FilesMatch "\.(__EXTENSIONS__)$">
-    order allow,deny
-    allow from all
-</filesmatch>

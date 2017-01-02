@@ -1,8 +1,0 @@
-{# Purpose of this template: Display albums in text mailings #}
-{% for album in items %}
-{{ album.getTitleFromDisplayPattern() }}
-{{ url('mumuimagemodule_album_display', { 'id': album.id }) }}
------
-{% else %}
-{{ __('No albums found.') }}
-{% endfor %}

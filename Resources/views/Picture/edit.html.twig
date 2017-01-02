@@ -1,19 +1,19 @@
 {# purpose of this template: build the form to edit an instance of picture #}
-{% extends routeArea == 'admin' ? 'MUMUImageModule::adminBase.html.twig' : 'MUMUImageModule::base.html.twig' %}
+{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
 
 {% block header %}
     {{ parent() }}
-    {{ pageAddAsset('javascript', zasset('@MUMUImageModule:js/MUMUImageModule.EditFunctions.js')) }}
-    {{ pageAddAsset('javascript', zasset('@MUMUImageModule:js/MUMUImageModule.Validation.js')) }}
-    {{ pageAddAsset('javascript', asset('typeahead.js/dist/typeahead.bundle.min.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.EditFunctions.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Validation.js')) }}
+    {{ pageAddAsset('javascript', pagevars.homepath ~ 'vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js') }}
 {% endblock %}
 
 {% block title mode == 'create' ? __('Create picture') : __('Edit picture') %}
 {% block admin_page_icon mode == 'create' ? 'plus' : 'pencil-square-o' %}
 {% block content %}
-    <div class="mumuimagemodule-picture mumuimagemodule-edit">
+    <div class="muimagemodule-picture muimagemodule-edit">
 {% form_theme form with [
-    '@MUMUImageModule/Form/bootstrap_3.html.twig',
+    '@MUImageModule/Form/bootstrap_3.html.twig',
     'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
 ] %}
 {{ form_start(form, {attr: {id: 'pictureEditForm'}}) }}
@@ -25,10 +25,6 @@
     
     {{ form_row(form.description) }}
     
-    {{ form_row(form.showTitle) }}
-    
-    {{ form_row(form.showDescription) }}
-    
     {{ form_row(form.imageUpload) }}
     
     {{ form_row(form.imageView) }}
@@ -39,19 +35,19 @@
 </fieldset>
 
 {{ include(
-    '@MUMUImageModule/Album/includeSelectEditOne.html.twig',
-    { group: 'picture', alias: 'album', aliasReverse: 'picture', mandatory: false, idPrefix: 'muimagePicture_Album', linkingItem: picture, displayMode: 'choices', allowEditing: true }
+    '@MUImageModule/Album/includeSelectOne.html.twig',
+    { group: 'picture', alias: 'album', aliasReverse: 'pictures', mandatory: false, idPrefix: 'muimagePicture_Album', linkingItem: picture, displayMode: 'choices', allowEditing: false }
 ) }}
 {% if mode != 'create' %}
-    {{ include('@MUMUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: picture }) }}
+    {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: picture }) }}
 {% endif %}
 
 {# include display hooks #}
 {% if mode != 'create' %}
     {% set hookId = picture.id %}
-    {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.pictures.form_edit', id=hookId) %}
+    {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.form_edit', id=hookId) %}
 {% else %}
-    {% set hooks = notifyDisplayHooks(eventName='mumuimagemodule.ui_hooks.pictures.form_edit', id=null) %}
+    {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.form_edit', id=null) %}
 {% endif %}
 {% if hooks is iterable and hooks|length > 0 %}
     {% for providerArea, hook in hooks %}
@@ -96,10 +92,11 @@
     /* <![CDATA[ */
         
                 var formButtons;
+                var triggerValidation = true;
         
                 function executeCustomValidationConstraints()
                 {
-                    mUMUImagePerformCustomValidationRules('picture', '{% if mode != 'create' %}{{ picture.id }}{% endif %}');
+                    mUImagePerformCustomValidationRules('picture', '{% if mode != 'create' %}{{ picture.id }}{% endif %}');
                 }
         
                 function triggerFormValidation()
@@ -108,15 +105,17 @@
                     if (!document.getElementById('pictureEditForm').checkValidity()) {
                         // This does not really submit the form,
                         // but causes the browser to display the error message
-                        jQuery('#pictureEditForm').find(':submit').not(jQuery('#btnDelete')).first().click();
+                        jQuery('#pictureEditForm').find(':submit').first().click();
                     }
                 }
         
                 function handleFormSubmit (event) {
-                    triggerFormValidation();
-                    if (!document.getElementById('pictureEditForm').checkValidity()) {
-                        event.preventDefault();
-                        return false;
+                    if (triggerValidation) {
+                        triggerFormValidation();
+                        if (!document.getElementById('pictureEditForm').checkValidity()) {
+                            event.preventDefault();
+                            return false;
+                        }
                     }
         
                     // hide form buttons to prevent double submits by accident
@@ -129,15 +128,19 @@
         
                 ( function($) {
                     $(document).ready(function() {
+                        $('a.lightbox').lightbox();
         
                         var allFormFields = $('#pictureEditForm input, #pictureEditForm select, #pictureEditForm textarea');
                         allFormFields.change(executeCustomValidationConstraints);
         
                         formButtons = $('#pictureEditForm .form-buttons input');
-                        $('#btnDelete').bind('click keypress', function (e) {
+                        $('.btn-danger').first().bind('click keypress', function (event) {
                             if (!window.confirm('{{ __('Really delete this picture?') }}')) {
-                                e.preventDefault();
+                                event.preventDefault();
                             }
+                        });
+                        $('#pictureEditForm button[type=submit]').bind('click keypress', function (event) {
+                            triggerValidation = !$(this).attr('formnovalidate');
                         });
                         $('#pictureEditForm').submit(handleFormSubmit);
         
@@ -145,8 +148,7 @@
                             triggerFormValidation();
                         {% endif %}
         
-                        $('#pictureEditForm label').tooltip();
-                        mUMUImageInitUploadField('imageUpload');
+                        mUImageInitUploadField('muimagemodule_picture_imageUpload_imageUpload');
                     });
                 })(jQuery);
     /* ]]> */

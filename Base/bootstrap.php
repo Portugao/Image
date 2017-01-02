@@ -1,6 +1,6 @@
 <?php
 /**
- * MUImage.
+ * Image.
  *
  * @copyright Michael Ueberschaer (MU)
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License

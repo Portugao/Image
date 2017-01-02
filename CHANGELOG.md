@@ -1,3 +1,3 @@
 # CHANGELOG
 
-Changes in MUMUImageModule 1.4.0
+Changes in MUImageModule 1.4.0

@@ -28,8 +28,6 @@
         <option value="workflowState"{if $sort eq 'workflowState'} selected="selected"{/if}>{gt text='Workflow state'}</option>
         <option value="title"{if $sort eq 'title'} selected="selected"{/if}>{gt text='Title'}</option>
         <option value="description"{if $sort eq 'description'} selected="selected"{/if}>{gt text='Description'}</option>
-        <option value="showTitle"{if $sort eq 'showTitle'} selected="selected"{/if}>{gt text='Show title'}</option>
-        <option value="showDescription"{if $sort eq 'showDescription'} selected="selected"{/if}>{gt text='Show description'}</option>
         <option value="imageUpload"{if $sort eq 'imageUpload'} selected="selected"{/if}>{gt text='Image upload'}</option>
         <option value="imageView"{if $sort eq 'imageView'} selected="selected"{/if}>{gt text='Image view'}</option>
         <option value="albumImage"{if $sort eq 'albumImage'} selected="selected"{/if}>{gt text='Album image'}</option>
@@ -47,7 +45,7 @@
 <p>
     <label for="{$baseID}SearchTerm"{$leftSide}>{gt text='Search for'}:</label>
     <input type="text" id="{$baseID}SearchTerm" name="q" class="form-control"{$rightSide} />
-    <input type="button" id="mUMUImageModuleSearchGo" name="gosearch" value="{gt text='Filter'}" class="btn btn-default" />
+    <input type="button" id="mUImageModuleSearchGo" name="gosearch" value="{gt text='Filter'}" class="btn btn-default" />
     <br{$break} />
 </p>
 <br />
@@ -57,7 +55,7 @@
 /* <![CDATA[ */
     ( function($) {
         $(document).ready(function() {
-            mUMUImageModule.itemSelector.onLoad('{{$baseID}}', {{$selectedId|default:0}});
+            mUImageModule.itemSelector.onLoad('{{$baseID}}', {{$selectedId|default:0}});
         });
     })(jQuery);
 /* ]]> */
