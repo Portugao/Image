@@ -140,7 +140,7 @@ abstract class AbstractPictureType extends AbstractType
         ]);
         $builder->add('imageView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
             'label' => $this->__('Image view') . ':',
-            'empty_data' => '0',
+            'empty_data' => '',
             'attr' => [
                 'class' => ' validate-digits',
                 'title' => $this->__('Enter the image view of the picture. Only digits are allowed.')
