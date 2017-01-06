@@ -19,6 +19,8 @@
             <div class="col-sm-9">
     {% endif %}
 
+    <div class="row">
+    <div class="col-md-4">
     <dl>
         {% if album.title is not empty %}
             <dt>{{ __('Title') }}</dt>
@@ -28,7 +30,7 @@
             <dt>{{ __('Description') }}</dt>
             <dd>{{ album.description|safeHtml }}</dd>
         {% endif %}
-        {% if album.parent_id is not empty %}
+        {#% if album.parent_id is not empty %}
             <dt>{{ __('Parent_id') }}</dt>
             <dd>{{ album.parent_id }}</dd>
         {% endif %}
@@ -43,7 +45,7 @@
         {% if album.myFriends is not empty %}
             <dt>{{ __('My friends') }}</dt>
             <dd>{{ album.myFriends }}</dd>
-        {% endif %}
+        {% endif %#}
         {% if album.notInFrontend is not empty %}
             <dt>{{ __('Not in frontend') }}</dt>
             <dd>{% if album.notInFrontend %}
@@ -74,10 +76,14 @@
         {% endif %}
         
     </dl>
+    </div>
+    <div class="col-md-4">
     {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
         {{ include('@MUImageModule/Helper/includeCategoriesDisplay.html.twig', { obj: album }) }}
     {% endif %}
     {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: album }) }}
+    </div>
+    </div>
 
     {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
         {# include display hooks #}
