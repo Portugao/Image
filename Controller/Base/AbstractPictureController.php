@@ -203,9 +203,9 @@ abstract class AbstractPictureController extends AbstractController
             new Column('albumImage'),
             new Column('pos'),
             new Column('album'),
-            new Column('createdUserId'),
+            new Column('createdBy'),
             new Column('createdDate'),
-            new Column('updatedUserId'),
+            new Column('updatedBy'),
             new Column('updatedDate'),
         ]);
         
@@ -350,7 +350,6 @@ abstract class AbstractPictureController extends AbstractController
         $repository->setRequest($request);
         
         $entity = $picture;
-        
         
         $entity->initWorkflow();
         

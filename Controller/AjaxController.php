@@ -47,8 +47,8 @@ class AjaxController extends AbstractAjaxController
     
     /**
      * Retrieve item list for finder selections in Forms, Content type plugin and Scribite.
-     *
-     * @Route("/getItemListFinder", options={"expose"=true})
+    *
+    * @Route("/getItemListFinder", options={"expose"=true})
     
      *
      * @param string $ot      Name of currently used object type
@@ -64,8 +64,8 @@ class AjaxController extends AbstractAjaxController
     
     /**
      * Searches for entities for auto completion usage.
-     *
-     * @Route("/getItemListAutoCompletion", options={"expose"=true})
+    *
+    * @Route("/getItemListAutoCompletion", options={"expose"=true})
     
      *
      * @param Request $request Current request instance
@@ -79,9 +79,9 @@ class AjaxController extends AbstractAjaxController
     
     /**
      * Checks whether a field value is a duplicate or not.
-     *
-     * @Route("/checkForDuplicate", options={"expose"=true})
-     * @Method("POST")
+    *
+    * @Route("/checkForDuplicate", options={"expose"=true})
+    
      *
      * @param Request $request Current request instance
      *
@@ -93,5 +93,6 @@ class AjaxController extends AbstractAjaxController
     {
         return parent::checkForDuplicateAction($request);
     }
+
     // feel free to add your own controller methods here
 }

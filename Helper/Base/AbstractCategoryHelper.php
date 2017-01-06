@@ -68,8 +68,7 @@ abstract class AbstractCategoryHelper
     private $categoryPermissionApi;
 
     /**
-     * Constructor.
-     * Initialises member vars.
+     * CategoryHelper constructor.
      *
      * @param ContainerBuilder      $container             ContainerBuilder service instance
      * @param TranslatorInterface   $translator            Translator service instance
@@ -269,9 +268,7 @@ abstract class AbstractCategoryHelper
     {
         $objectType = $this->determineObjectType($objectType, 'getAllProperties');
     
-        $propertyIdsPerName = $this->categoryRegistryApi->getModuleRegistriesIds('MUImageModule', ucfirst($objectType) . 'Entity');
-    
-        return $propertyIdsPerName;
+        return $this->categoryRegistryApi->getModuleRegistriesIds('MUImageModule', ucfirst($objectType) . 'Entity');
     }
     
     /**
@@ -286,9 +283,7 @@ abstract class AbstractCategoryHelper
     {
         $objectType = $this->determineObjectType($objectType, 'getAllPropertiesWithMainCat');
     
-        $registryInfo = $this->categoryRegistryApi->getModuleCategoryIds('MUImageModule', ucfirst($objectType) . 'Entity', $arrayKey);
-    
-        return $registryInfo;
+        return $this->categoryRegistryApi->getModuleCategoryIds('MUImageModule', ucfirst($objectType) . 'Entity', $arrayKey);
     }
     
     /**
@@ -303,9 +298,7 @@ abstract class AbstractCategoryHelper
     {
         $objectType = $this->determineObjectType($objectType, 'getMainCatForProperty');
     
-        $catId = $this->categoryRegistryApi->getModuleCategoryId('MUImageModule', ucfirst($objectType) . 'Entity', $property);
-    
-        return $catId;
+        return $this->categoryRegistryApi->getModuleCategoryId('MUImageModule', ucfirst($objectType) . 'Entity', $property);
     }
     
     /**
@@ -317,11 +310,7 @@ abstract class AbstractCategoryHelper
      */
     public function getPrimaryProperty($objectType = '')
     {
-        $objectType = $this->determineObjectType($objectType, 'getPrimaryProperty');
-    
-        $registry = 'Main';
-    
-        return $registry;
+        return 'Main';
     }
     
     /**
@@ -362,6 +351,7 @@ abstract class AbstractCategoryHelper
      */
     protected function determineObjectType($objectType = '', $methodName = '')
     {
+        
         $controllerHelper = new \MU\ImageModule\Helper\ControllerHelper($this->container, $this->translator, $this->session, $this->logger);
         $utilArgs = ['api' => 'category', 'action' => $methodName];
         if (!in_array($objectType, $controllerHelper->getObjectTypes('api', $utilArgs))) {

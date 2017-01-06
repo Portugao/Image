@@ -71,24 +71,24 @@
             <dd>{{ picture.pos }}</dd>
         {% endif %}
         {% if picture.album|default %}
-        <dt>{{ __('Album') }}</dt>
-        <dd>
-          {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
-              <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
-                {{ picture.album.getTitleFromDisplayPattern() }}
-              {% endspaceless %}</a>
-              <a id="albumItem{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="hidden"><span class="fa fa-eye"></span></a>
-              <script type="text/javascript">
-              /* <![CDATA[ */
-                  ( function($) {
-                      $(document).ready(function() {
-                          mUImageInitInlineWindow($('albumItem{{ picture.album.id }}Display'), '{{ picture.album.getTitleFromDisplayPattern()|e('js') }}');
-                      });
-                  })(jQuery);
-              /* ]]> */
-              </script>
+            <dt>{{ __('Album') }}</dt>
+            <dd>
+              {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+                  <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
+                    {{ picture.album.getTitleFromDisplayPattern() }}
+                  {% endspaceless %}</a>
+                  <a id="albumItem{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="hidden"><span class="fa fa-eye"></span></a>
+                  <script type="text/javascript">
+                  /* <![CDATA[ */
+                      ( function($) {
+                          $(document).ready(function() {
+                              mUImageInitInlineWindow($('albumItem{{ picture.album.id }}Display'), '{{ picture.album.getTitleFromDisplayPattern()|e('js') }}');
+                          });
+                      })(jQuery);
+                  /* ]]> */
+                  </script>
               {% else %}
-                {{ picture.album.getTitleFromDisplayPattern() }}
+                  {{ picture.album.getTitleFromDisplayPattern() }}
               {% endif %}
             </dd>
         {% endif %}
@@ -113,16 +113,15 @@
 {% block footer %}
     {{ parent() }}
 
-
-{% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                $('a.lightbox').lightbox();
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
-{% endif %}
+    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+        <script type="text/javascript">
+        /* <![CDATA[ */
+            ( function($) {
+                $(document).ready(function() {
+                    $('a.lightbox').lightbox();
+                });
+            })(jQuery);
+        /* ]]> */
+        </script>
+    {% endif %}
 {% endblock %}

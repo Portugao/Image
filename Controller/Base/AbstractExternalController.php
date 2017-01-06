@@ -26,7 +26,6 @@ use MU\ImageModule\Helper\FeatureActivationHelper;
  */
 abstract class AbstractExternalController extends AbstractController
 {
-
     /**
      * Displays one item of a certain object type using a separate template for external usages.
      *
@@ -106,7 +105,6 @@ abstract class AbstractExternalController extends AbstractController
         PageUtil::addVar('stylesheet', '@MUImageModule/Resources/public/css/style.css');
         
         $controllerHelper = $this->get('mu_image_module.controller_helper');
-        
         $utilArgs = ['controller' => 'external', 'action' => 'finder'];
         if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $utilArgs))) {
             $objectType = $controllerHelper->getDefaultObjectType('controllerType', $utilArgs);
@@ -116,12 +114,12 @@ abstract class AbstractExternalController extends AbstractController
             throw new AccessDeniedException();
         }
         
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
-        $repository->setRequest($request);
-        
         if (empty($editor) || !in_array($editor, ['tinymce', 'ckeditor'])) {
             return $this->__('Error: Invalid editor context given for external controller action.');
         }
+        
+        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        $repository->setRequest($request);
         if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
             $sort = $repository->getDefaultSortingField();
         }
@@ -176,13 +174,13 @@ abstract class AbstractExternalController extends AbstractController
         if (in_array($objectType, ['album', 'avatar'])) {
             $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
             if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-            $filteredEntities = [];
-            foreach ($entities as $entity) {
-                if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                    $filteredEntities[] = $entity;
+                $filteredEntities = [];
+                foreach ($entities as $entity) {
+                    if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
+                        $filteredEntities[] = $entity;
+                    }
                 }
-            }
-            $entities = $filteredEntities;
+                $entities = $filteredEntities;
             }
         }
         
@@ -200,6 +198,8 @@ abstract class AbstractExternalController extends AbstractController
             'itemsperpage' => $resultsPerPage
         ];
         
-        return $this->render('@MUImageModule/External/' . ucfirst($objectType) . '/find.html.twig', $templateParameters);
+        $output = $this->renderView('@MUImageModule/External/' . ucfirst($objectType) . '/find.html.twig', $templateParameters);
+        
+        return new PlainResponse($output);
     }
 }

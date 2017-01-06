@@ -69,24 +69,24 @@
             </dd>
         {% endif %}
         {% if album.album|default %}
-        <dt>{{ __('Album') }}</dt>
-        <dd>
-          {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
-              <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id }) }}">{% spaceless %}
-                {{ album.album.getTitleFromDisplayPattern() }}
-              {% endspaceless %}</a>
-              <a id="albumItem{{ album.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="hidden"><span class="fa fa-eye"></span></a>
-              <script type="text/javascript">
-              /* <![CDATA[ */
-                  ( function($) {
-                      $(document).ready(function() {
-                          mUImageInitInlineWindow($('albumItem{{ album.album.id }}Display'), '{{ album.album.getTitleFromDisplayPattern()|e('js') }}');
-                      });
-                  })(jQuery);
-              /* ]]> */
-              </script>
+            <dt>{{ __('Album') }}</dt>
+            <dd>
+              {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+                  <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id }) }}">{% spaceless %}
+                    {{ album.album.getTitleFromDisplayPattern() }}
+                  {% endspaceless %}</a>
+                  <a id="albumItem{{ album.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="hidden"><span class="fa fa-eye"></span></a>
+                  <script type="text/javascript">
+                  /* <![CDATA[ */
+                      ( function($) {
+                          $(document).ready(function() {
+                              mUImageInitInlineWindow($('albumItem{{ album.album.id }}Display'), '{{ album.album.getTitleFromDisplayPattern()|e('js') }}');
+                          });
+                      })(jQuery);
+                  /* ]]> */
+                  </script>
               {% else %}
-                {{ album.album.getTitleFromDisplayPattern() }}
+                  {{ album.album.getTitleFromDisplayPattern() }}
               {% endif %}
             </dd>
         {% endif %}
@@ -127,7 +127,7 @@
         {% set permLevel = 'ACCESS_ADMIN' %}
     {% endif %}
     {% set mayManage = hasPermission('MUImageModule:Album:', album.id ~ '::', permLevel) %}
-    {% if mayManage or (currentUser|default and album.createdUserId|default and album.createdUserId.getUid() == currentUser.uid) %}
+    {% if mayManage or (currentUser|default and album.createdBy|default and album.createdBy.getUid() == currentUser.uid) %}
     <p class="managelink">
         {% set createTitle = __('Create album') %}
         <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'edit', { album: album.id }) }}" title="{{ createTitle }}" class="fa fa-plus">{{ createTitle }}</a>
@@ -151,7 +151,7 @@
         {% set permLevel = 'ACCESS_ADMIN' %}
     {% endif %}
     {% set mayManage = hasPermission('MUImageModule:Album:', album.id ~ '::', permLevel) %}
-    {% if mayManage or (currentUser|default and album.createdUserId|default and album.createdUserId.getUid() == currentUser.uid) %}
+    {% if mayManage or (currentUser|default and album.createdBy|default and album.createdBy.getUid() == currentUser.uid) %}
     <p class="managelink">
         {% set createTitle = __('Create picture') %}
         <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit', { album: album.id }) }}" title="{{ createTitle }}" class="fa fa-plus">{{ createTitle }}</a>
@@ -168,5 +168,4 @@
 {% endblock %}
 {% block footer %}
     {{ parent() }}
-
 {% endblock %}

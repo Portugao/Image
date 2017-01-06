@@ -31,8 +31,7 @@ abstract class AbstractHookHelper
     protected $hookDispatcher;
 
     /**
-     * Constructor.
-     * Initialises member vars.
+     * HookHelper constructor.
      *
      * @param HookDispatcher $hookDispatcher Hook dispatcher service instance
      */

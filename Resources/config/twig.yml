@@ -2,7 +2,12 @@ services:
     # Twig extension
     mu_image_module.twig_extension:
         class: MU\ImageModule\Twig\TwigExtension
-        arguments: ["@translator.default", "@zikula_extensions_module.api.variable", "@mu_image_module.workflow_helper", "@mu_image_module.view_helper", "@mu_image_module.listentries_helper"]
+        arguments:
+            - "@translator.default"
+            - "@zikula_extensions_module.api.variable"
+            - "@mu_image_module.workflow_helper"
+            - "@mu_image_module.view_helper"
+            - "@mu_image_module.listentries_helper"
         public: false
         tags:
             - { name: twig.extension }

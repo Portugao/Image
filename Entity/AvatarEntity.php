@@ -19,8 +19,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use MU\ImageModule\Traits\EntityWorkflowTrait;
 use MU\ImageModule\Traits\StandardFieldsTrait;
-use Zikula\UsersModule\Entity\UserEntity;
 
 /**
  * Entity class that defines the entity structure and behaviours.

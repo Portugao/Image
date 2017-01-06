@@ -144,8 +144,12 @@ class ModuleDispatchListener extends AbstractModuleDispatchListener
         parent::customClassName($event);
     
         // Format data like so:
-        // $serviceManager = \ServiceUtil::getManager();
-        // $event->data[] = ['url' => $serviceManager->get('router')->generate('muimagemodule_user_index'), 'text' => $serviceManager->get('translator.default')->__('Link text')];
+        // $router = \ServiceUtil::get('router');
+        // $translator = \ServiceUtil::get('translator.default');
+        // $event->data[] = [
+        //     'url' => $router->generate('muimagemodule_user_index'),
+        //     'text' => $translator->__('Link text')
+        // ];
     
         // you can access general data available in the event
         

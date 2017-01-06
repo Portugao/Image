@@ -23,7 +23,7 @@ abstract class AbstractModerationBlock extends AbstractBlockHandler
      * Display the block content.
      *
      * @param array $properties The block properties array
-    
+     *
      * @return array|string
      */
     public function display(array $properties)
@@ -58,8 +58,6 @@ abstract class AbstractModerationBlock extends AbstractBlockHandler
      */
     protected function getDisplayTemplate()
     {
-        $template = '@MUImageModule/Block/moderation.html.twig';
-    
-        return $template;
+        return '@MUImageModule/Block/moderation.html.twig';
     }
 }

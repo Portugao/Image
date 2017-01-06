@@ -20,12 +20,14 @@
         <li data-toggle="pill"><a href="#tab4" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
         {% set tabTitle = __('Avatars') %}
         <li data-toggle="pill"><a href="#tab5" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
-        {% set tabTitle = __('Moderation') %}
+        {% set tabTitle = __('Watermark') %}
         <li data-toggle="pill"><a href="#tab6" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
-        {% set tabTitle = __('Listviews') %}
+        {% set tabTitle = __('Moderation') %}
         <li data-toggle="pill"><a href="#tab7" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
-        {% set tabTitle = __('Images') %}
+        {% set tabTitle = __('Listviews') %}
         <li data-toggle="pill"><a href="#tab8" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% set tabTitle = __('Images') %}
+        <li data-toggle="pill"><a href="#tab9" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
         </ul>
 
         {{ form_errors(form) }}
@@ -40,15 +42,17 @@
                     {{ form_row(form.supportCategories) }}
                     {{ form_row(form.supportSubAlbums) }}
                     {{ form_row(form.userDeletePictures) }}
-                    {{ form_row(form.useAvatars) }}
                     {{ form_row(form.slideshow1) }}
+                    {{ form_row(form.useAvatars) }}
+                    {{ form_row(form.useWatermark) }}
+                    {{ form_row(form.useExtendedFeatures) }}
                 </fieldset>
             </div>
             {% set tabTitle = __('Display settings') %}
             <div role="tabpanel" class="tab-pane fade" id="tab2">
                 <fieldset>
                     <legend>{{ tabTitle }}</legend>
-                         
+                
                     {{ form_row(form.countImageView) }}
                     {{ form_row(form.numberParentAlbums) }}
                     {{ form_row(form.numberSubAlbums) }}
@@ -59,38 +63,26 @@
                     {{ form_row(form.ending) }}
                 </fieldset>
             </div>
-            
-            {% set tabTitle = __('Listviews') %}
-            <div role="tabpanel" class="tab-pane fade" id="tab7">
-                <fieldset>
-                    <legend>{{ tabTitle }}</legend>
-                
-                    <p class="alert alert-info">{{ __('Here you can configure parameters for list views.')|nl2br }}</p>
-                
-                    {{ form_row(form.albumEntriesPerPage) }}
-                    {{ form_row(form.pictureEntriesPerPage) }}
-                    {{ form_row(form.avatarEntriesPerPage) }}
-                    {{ form_row(form.albumEntriesPerPageInBackend) }}
-                    {{ form_row(form.pictureEntriesPerPageInBackend) }}
-                    {{ form_row(form.avatarEntriesPerPageInBackend) }}
-                </fieldset>
-            </div>
             {% set tabTitle = __('Upload handler') %}
             <div role="tabpanel" class="tab-pane fade" id="tab3">
                 <fieldset>
                     <legend>{{ tabTitle }}</legend>
-                         
-                    {{ form_row(form.fileSize) }}
-                    {{ form_row(form.minWidth) }}
-                    {{ form_row(form.maxWidth) }}
-                    {{ form_row(form.maxHeight) }}
+                
+                
+                    {{ form_row(form.fileSizeForPictures) }}
+                    {{ form_row(form.fileSizeForAvatars) }}
+                    {{ form_row(form.minWidthForPictures) }}
+                    {{ form_row(form.maxWidthForPictures) }}
+                    {{ form_row(form.maxHeightForPictures) }}
+                    {{ form_row(form.minWidthForAvatars) }}
+                    {{ form_row(form.maxWidthForAvatars) }}
+                    {{ form_row(form.maxHeightForAvatars) }}
                     {{ form_row(form.firstWidth) }}
                     {{ form_row(form.firstHeight) }}
                     {{ form_row(form.secondWidth) }}
                     {{ form_row(form.secondHeight) }}
                     {{ form_row(form.thirdWidth) }}
                     {{ form_row(form.thirdHeight) }}
-                    {{ form_row(form.fileNameForTitle) }}
                 </fieldset>
             </div>
             {% set tabTitle = __('Slideshows') %}
@@ -109,12 +101,25 @@
                     <legend>{{ tabTitle }}</legend>
                 
                 
-                    {{ form_row(form.numberOf) }}
-                    {{ form_row(form.configAvatarWidthAndHeight) }}
+                    {{ form_row(form.numberHeightAndNameOfAvatars) }}
+                    {{ form_row(form.shrink) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Watermark') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab6">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                
+                    {{ form_row(form.watermark) }}
+                    {{ form_row(form.bottom) }}
+                    {{ form_row(form.left) }}
+                    {{ form_row(form.right) }}
+                    {{ form_row(form.top) }}
                 </fieldset>
             </div>
             {% set tabTitle = __('Moderation') %}
-            <div role="tabpanel" class="tab-pane fade" id="tab6">
+            <div role="tabpanel" class="tab-pane fade" id="tab7">
                 <fieldset>
                     <legend>{{ tabTitle }}</legend>
                 
@@ -123,9 +128,23 @@
                     {{ form_row(form.moderationGroupForAvatars) }}
                 </fieldset>
             </div>
-
-            {% set tabTitle = __('Images') %}
+            {% set tabTitle = __('Listviews') %}
             <div role="tabpanel" class="tab-pane fade" id="tab8">
+                <fieldset>
+                    <legend>{{ tabTitle }}</legend>
+                
+                    <p class="alert alert-info">{{ __('Here you can configure parameters for list views.')|nl2br }}</p>
+                
+                    {{ form_row(form.albumEntriesPerPage) }}
+                    {{ form_row(form.pictureEntriesPerPage) }}
+                    {{ form_row(form.avatarEntriesPerPage) }}
+                    {{ form_row(form.albumEntriesPerPageInBackend) }}
+                    {{ form_row(form.pictureEntriesPerPageInBackend) }}
+                    {{ form_row(form.avatarEntriesPerPageInBackend) }}
+                </fieldset>
+            </div>
+            {% set tabTitle = __('Images') %}
+            <div role="tabpanel" class="tab-pane fade" id="tab9">
                 <fieldset>
                     <legend>{{ tabTitle }}</legend>
                 

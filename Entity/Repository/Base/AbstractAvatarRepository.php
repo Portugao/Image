@@ -64,9 +64,10 @@ abstract class AbstractAvatarRepository extends EntityRepository
             'title',
             'description',
             'avatarUpload',
-            'createdUserId',
-            'updatedUserId',
+            'supportedModules',
+            'createdBy',
             'createdDate',
+            'updatedBy',
             'updatedDate',
         ];
     }
@@ -168,9 +169,8 @@ abstract class AbstractAvatarRepository extends EntityRepository
     /**
      * Returns an array of additional template variables which are specific to the object type treated by this repository.
      *
-     * @param ImageHelper $imageHelper ImageHelper service instance
-     * @param string      $context     Usage context (allowed values: controllerAction, api, actionHandler, block, contentType)
-     * @param array       $args        Additional arguments
+     * @param string $context Usage context (allowed values: controllerAction, api, actionHandler, block, contentType)
+     * @param array  $args    Additional arguments
      *
      * @return array List of template variables to be assigned
      */
@@ -191,7 +191,6 @@ abstract class AbstractAvatarRepository extends EntityRepository
             }
     
             // initialise Imagine runtime options
-    
             $objectType = 'avatar';
             $thumbRuntimeOptions = [];
             $thumbRuntimeOptions[$objectType . 'AvatarUpload'] = $imageHelper->getRuntimeOptions($objectType, 'avatarUpload', $context, $args);
@@ -227,6 +226,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
         $categoryHelper = \ServiceUtil::get('mu_image_module.category_helper');
         $parameters['catIdList'] = $categoryHelper->retrieveCategoriesFromRequest('avatar', 'GET');
         $parameters['workflowState'] = $this->getRequest()->query->get('workflowState', '');
+        $parameters['supportedModules'] = $this->getRequest()->query->get('supportedModules', '');
         $parameters['q'] = $this->getRequest()->query->get('q', '');
         
     
@@ -280,8 +280,8 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->update('MU\ImageModule\Entity\AvatarEntity', 'tbl')
-           ->set('tbl.createdUserId', $newUserId)
-           ->where('tbl.createdUserId = :creator')
+           ->set('tbl.createdBy', $newUserId)
+           ->where('tbl.createdBy= :creator')
            ->setParameter('creator', $userId);
         $query = $qb->getQuery();
         $query->execute();
@@ -313,8 +313,8 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->update('MU\ImageModule\Entity\AvatarEntity', 'tbl')
-           ->set('tbl.updatedUserId', $newUserId)
-           ->where('tbl.updatedUserId = :editor')
+           ->set('tbl.updatedBy', $newUserId)
+           ->where('tbl.updatedBy = :editor')
            ->setParameter('editor', $userId);
         $query = $qb->getQuery();
         $query->execute();
@@ -344,7 +344,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->delete('MU\ImageModule\Entity\AvatarEntity', 'tbl')
-           ->where('tbl.createdUserId = :creator')
+           ->where('tbl.createdBy = :creator')
            ->setParameter('creator', $userId);
         $query = $qb->getQuery();
     
@@ -375,7 +375,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->delete('MU\ImageModule\Entity\AvatarEntity', 'tbl')
-           ->where('tbl.updatedUserId = :editor')
+           ->where('tbl.updatedBy = :editor')
            ->setParameter('editor', $userId);
         $query = $qb->getQuery();
     
@@ -434,7 +434,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
     {
         $results = $this->selectByIdList([$id], $useJoins, $slimMode);
     
-        return (count($results) > 0) ? $results[0] : null;
+        return count($results) > 0 ? $results[0] : null;
     }
     
     /**
@@ -524,7 +524,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param integer      $currentPage    Where to start selection
      * @param integer      $resultsPerPage Amount of items to select
      *
-     * @return array Created query instance and amount of affected items
+     * @return Query Created query instance
      */
     public function getSelectWherePaginatedQuery(QueryBuilder $qb, $currentPage = 1, $resultsPerPage = 25)
     {
@@ -535,10 +535,8 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $query->setFirstResult($offset)
               ->setMaxResults($resultsPerPage);
-        $count = 0; // will be set at a later stage (in calling method)
-        
     
-        return [$query, $count];
+        return $query;
     }
     
     /**
@@ -559,7 +557,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $page = $currentPage;
         
-        list($query, $count) = $this->getSelectWherePaginatedQuery($qb, $page, $resultsPerPage);
+        $query = $this->getSelectWherePaginatedQuery($qb, $page, $resultsPerPage);
     
         return $this->retrieveCollectionResult($query, $orderBy, true);
     }
@@ -677,7 +675,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $qb = $this->addSearchFilter($qb, $fragment);
     
-        list($query, $count) = $this->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
+        $query = $this->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
     
         return $this->retrieveCollectionResult($query, $orderBy, true);
     }
@@ -709,6 +707,8 @@ abstract class AbstractAvatarRepository extends EntityRepository
             $where .= 'tbl.description LIKE \'%' . $fragment . '%\'';
             $where .= ((!empty($where)) ? ' OR ' : '');
             $where .= 'tbl.avatarUpload = \'' . $fragment . '\'';
+            $where .= ((!empty($where)) ? ' OR ' : '');
+            $where .= 'tbl.supportedModules = \'' . $fragment . '\'';
         } else {
             $where .= ((!empty($where)) ? ' OR ' : '');
             $where .= 'tbl.workflowState = \'' . $fragment . '\'';
@@ -718,6 +718,8 @@ abstract class AbstractAvatarRepository extends EntityRepository
             $where .= 'tbl.description LIKE \'%' . $fragment . '%\'';
             $where .= ((!empty($where)) ? ' OR ' : '');
             $where .= 'tbl.avatarUpload = \'' . $fragment . '\'';
+            $where .= ((!empty($where)) ? ' OR ' : '');
+            $where .= 'tbl.supportedModules = \'' . $fragment . '\'';
         }
         $where = '(' . $where . ')';
     
@@ -884,58 +886,58 @@ abstract class AbstractAvatarRepository extends EntityRepository
     protected function genericBaseQueryAddWhere(QueryBuilder $qb, $where = '')
     {
         if (!empty($where)) {
-        // Use FilterUtil to support generic filtering.
-        //$qb->where($where);
+            // Use FilterUtil to support generic filtering.
+            //$qb->where($where);
     
-        // Create filter configuration.
-        $filterConfig = new FilterConfig($qb);
+            // Create filter configuration.
+            $filterConfig = new FilterConfig($qb);
     
-        // Define plugins to be used during filtering.
-        $filterPluginManager = new FilterPluginManager(
-            $filterConfig,
+            // Define plugins to be used during filtering.
+            $filterPluginManager = new FilterPluginManager(
+                $filterConfig,
     
-            // Array of plugins to load.
-            // If no plugin with default = true given the compare plugin is loaded and used for unconfigured fields.
-            // Multiple objects of the same plugin with different configurations are possible.
-            [
-            ],
+                // Array of plugins to load.
+                // If no plugin with default = true given the compare plugin is loaded and used for unconfigured fields.
+                // Multiple objects of the same plugin with different configurations are possible.
+                [
+                ],
     
-            // Allowed operators per field.
-            // Array in the form "field name => operator array".
-            // If a field is not set in this array all operators are allowed.
-            []
-        );
+                // Allowed operators per field.
+                // Array in the form "field name => operator array".
+                // If a field is not set in this array all operators are allowed.
+                []
+            );
     
-        // add category plugins dynamically for all existing registry properties
-        // we need to create one category plugin instance for each one
-        $categoryHelper = \ServiceUtil::get('mu_image_module.category_helper');
-        $categoryProperties = $categoryHelper->getAllProperties('avatar');
-        foreach ($categoryProperties as $propertyName => $registryId) {
-            $config['plugins'][] = new CategoryFilter('MUImageModule', $propertyName, 'categories' . ucfirst($propertyName));
-        }
+            // add category plugins dynamically for all existing registry properties
+            // we need to create one category plugin instance for each one
+            $categoryHelper = \ServiceUtil::get('mu_image_module.category_helper');
+            $categoryProperties = $categoryHelper->getAllProperties('avatar');
+            foreach ($categoryProperties as $propertyName => $registryId) {
+                $config['plugins'][] = new CategoryFilter('MUImageModule', $propertyName, 'categories' . ucfirst($propertyName));
+            }
     
-        // Request object to obtain the filter string (only needed if the filter is set via GET or it reads values from GET).
-        // We do this not per default (for now) to prevent problems with explicite filters set by blocks or content types.
-        // TODO readd automatic request processing (basically replacing applyDefaultFilters() and addCommonViewFilters()).
-        $request = null;
+            // Request object to obtain the filter string (only needed if the filter is set via GET or it reads values from GET).
+            // We do this not per default (for now) to prevent problems with explicite filters set by blocks or content types.
+            // TODO readd automatic request processing (basically replacing applyDefaultFilters() and addCommonViewFilters()).
+            $request = null;
     
-        // Name of filter variable(s) (filterX).
-        $filterKey = 'filter';
+            // Name of filter variable(s) (filterX).
+            $filterKey = 'filter';
     
-        // initialise FilterUtil and assign both query builder and configuration
-        $filterUtil = new FilterUtil($filterPluginManager, $request, $filterKey);
+            // initialise FilterUtil and assign both query builder and configuration
+            $filterUtil = new FilterUtil($filterPluginManager, $request, $filterKey);
     
-        // set our given filter
-        $filterUtil->setFilter($where);
+            // set our given filter
+            $filterUtil->setFilter($where);
     
-        // you could add explicit filters at this point, something like
-        // $filterUtil->addFilter('foo:eq:something,bar:gt:100');
-        // read more at
-        // https://github.com/zikula/core/blob/master/src/lib/Zikula/Component/FilterUtil/README.md
-        // https://github.com/zikula/core/blob/master/src/lib/Zikula/Component/FilterUtil/Resources/docs/users.md
+            // you could add explicit filters at this point, something like
+            // $filterUtil->addFilter('foo:eq:something,bar:gt:100');
+            // read more at
+            // https://github.com/zikula/core/blob/1.4/src/lib/legacy/util/FilterUtil/docs/developers.md
+            // https://github.com/zikula/core/blob/1.4/src/lib/legacy/util/FilterUtil/docs/users.md
     
-        // now enrich the query builder
-        $filterUtil->enrichQuery();
+            // now enrich the query builder
+            $filterUtil->enrichQuery();
         }
     
         if (null === $this->getRequest()) {
@@ -944,11 +946,11 @@ abstract class AbstractAvatarRepository extends EntityRepository
         }
     
         
-        $showOnlyOwnEntries = $this->getRequest()->query->getDigits('own', 0);
+        $showOnlyOwnEntries = $this->getRequest()->query->getInt('own', 0);
         if ($showOnlyOwnEntries == 1) {
             
             $uid = $this->getRequest()->getSession()->get('uid');
-            $qb->andWhere('tbl.createdUserId = :creator')
+            $qb->andWhere('tbl.createdBy = :creator')
                ->setParameter('creator', $uid);
         }
     

@@ -38,9 +38,9 @@
     <title><![CDATA[{% if avatar.updatedDate|default %}{{ avatar.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ avatar.getTitleFromDisplayPattern() }}]]></title>
     <link>{{ url('muimagemodule_avatar_' ~ routeArea ~ 'display', { 'id': avatar.id }) }}</link>
     <guid>{{ url('muimagemodule_avatar_' ~ routeArea ~ 'display', { 'id': avatar.id }) }}</guid>
-    {% if avatar.createdUserId is defined %}
-        {% set realName = muimagemodule_userVar('name', obj.createdUserId.getUid()) %}
-        <author>{{ avatar.createdUserId.getEmail() }} ({{ realName|default(obj.createdUserId.getUname()) }})</author>
+    {% if avatar.createdBy|default %}
+        {% set realName = muimagemodule_userVar('name', obj.createdBy.getUid()) %}
+        <author>{{ avatar.createdBy.getEmail() }} ({{ realName|default(obj.createdBy.getUname()) }})</author>
     {% endif %}
     <category><![CDATA[{{ __('Categories') }}: {% for propName, catMapping in avatar.categories %}{{ catMapping.category.display_name[lang] }}{% if not loop.last %}, {% endif %}{% endfor %}]]></category>
     <description>

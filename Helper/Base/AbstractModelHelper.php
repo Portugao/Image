@@ -25,8 +25,7 @@ abstract class AbstractModelHelper
     protected $container;
 
     /**
-     * Constructor.
-     * Initialises member vars.
+     * ModelHelper constructor.
      *
      * @param ContainerBuilder $container ContainerBuilder service instance
      */
@@ -95,6 +94,6 @@ abstract class AbstractModelHelper
     
         $repository = $this->container->get('mu_image_module.' . $objectType . '_factory')->getRepository();
     
-        return ($repository->selectCount() > 0);
+        return $repository->selectCount() > 0;
     }
 }

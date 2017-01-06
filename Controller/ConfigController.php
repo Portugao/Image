@@ -42,5 +42,6 @@ class ConfigController extends AbstractConfigController
     {
         return parent::configAction($request);
     }
+
     // feel free to add your own controller methods here
 }

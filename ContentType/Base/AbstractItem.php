@@ -51,9 +51,7 @@ abstract class AbstractItem extends \Content_AbstractContentType
      */
     public function getTitle()
     {
-        $serviceManager = ServiceUtil::getManager();
-    
-        return $serviceManager->get('translator.default')->__('MUImageModule detail view');
+        return ServiceUtil::get('translator.default')->__('MUImageModule detail view');
     }
     
     /**
@@ -63,9 +61,7 @@ abstract class AbstractItem extends \Content_AbstractContentType
      */
     public function getDescription()
     {
-        $serviceManager = ServiceUtil::getManager();
-    
-        return $serviceManager->get('translator.default')->__('Display or link a single MUImageModule object.');
+        return ServiceUtil::get('translator.default')->__('Display or link a single MUImageModule object.');
     }
     
     /**
@@ -104,6 +100,7 @@ abstract class AbstractItem extends \Content_AbstractContentType
     public function display()
     {
         if (null !== $this->id && !empty($this->displayMode)) {
+            
             return ModUtil::func('MUImageModule', 'external', 'display', $this->getDisplayArguments());
         }
     
@@ -116,12 +113,11 @@ abstract class AbstractItem extends \Content_AbstractContentType
     public function displayEditing()
     {
         if (null !== $this->id && !empty($this->displayMode)) {
+            
             return ModUtil::func('MUImageModule', 'external', 'display', $this->getDisplayArguments());
         }
     
-        $serviceManager = ServiceUtil::getManager();
-        
-        return $serviceManager->get('translator.default')->__('No item selected.');
+        return ServiceUtil::get('translator.default')->__('No item selected.');
     }
     
     /**
@@ -159,7 +155,7 @@ abstract class AbstractItem extends \Content_AbstractContentType
     public function startEditing()
     {
         // ensure our custom plugins are loaded
-        array_push($this->view->plugins_dir, 'modules/MUImageModule/Resources/views//plugins');
+        array_push($this->view->plugins_dir, 'modules/MU/Image/Resources/views//plugins');
     
         // required as parameter for the item selector plugin
         $this->view->assign('objectType', $this->objectType);

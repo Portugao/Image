@@ -104,7 +104,7 @@ abstract class AbstractItemListBlockType extends AbstractType
      */
     public function addCategoriesField(FormBuilderInterface $builder, array $options)
     {
-        if (!$options['isCategorisable'] || is_null($options['categoryHelper'])) {
+        if (!$options['isCategorisable'] || null === $options['categoryHelper']) {
             return;
         }
     

@@ -41,18 +41,18 @@
                 <div class="col-sm-9">
                     <div id="muimagemoduleItemContainer">
                         <ul>
-                        {% for avatar in items %}
-                            <li>
-                                {% set itemId = avatar.createCompositeIdentifier() %}
-                                <a href="#" data-itemid="{{ itemId }}">{{ avatar.getTitleFromDisplayPattern() }}</a>
-                                <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_avatar_display', { 'id': avatar.id }) }}" />
-                                <input type="hidden" id="title{{ itemId }}" value="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}" />
-                                <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if avatar.description is not empty %}{{ avatar.description }}{% endif %}
-                                {% endset %}{{ description|striptags|e('html_attr') }}" />
-                            </li>
-                        {% else %}
-                            <li>{{ __('No entries found.') }}</li>
-                        {% endfor %}
+                            {% for avatar in items %}
+                                <li>
+                                    {% set itemId = avatar.createCompositeIdentifier() %}
+                                    <a href="#" data-itemid="{{ itemId }}">{{ avatar.getTitleFromDisplayPattern() }}</a>
+                                    <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_avatar_display', { 'id': avatar.id }) }}" />
+                                    <input type="hidden" id="title{{ itemId }}" value="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}" />
+                                    <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if avatar.description is not empty %}{{ avatar.description }}{% endif %}
+                                    {% endset %}{{ description|striptags|e('html_attr') }}" />
+                                </li>
+                            {% else %}
+                                <li>{{ __('No entries found.') }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>

@@ -200,9 +200,10 @@ abstract class AbstractAvatarController extends AbstractController
             new Column('title'),
             new Column('description'),
             new Column('avatarUpload'),
-            new Column('createdUserId'),
+            new Column('supportedModules'),
+            new Column('createdBy'),
             new Column('createdDate'),
-            new Column('updatedUserId'),
+            new Column('updatedBy'),
             new Column('updatedDate'),
         ]);
         
@@ -268,13 +269,13 @@ abstract class AbstractAvatarController extends AbstractController
         
         $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-        $filteredEntities = [];
-        foreach ($entities as $entity) {
-            if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                $filteredEntities[] = $entity;
+            $filteredEntities = [];
+            foreach ($entities as $entity) {
+                if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
+                    $filteredEntities[] = $entity;
+                }
             }
-        }
-        $entities = $filteredEntities;
+            $entities = $filteredEntities;
         }
         
         foreach ($entities as $k => $entity) {
@@ -353,7 +354,6 @@ abstract class AbstractAvatarController extends AbstractController
         $repository->setRequest($request);
         
         $entity = $avatar;
-        
         
         $entity->initWorkflow();
         

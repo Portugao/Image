@@ -13,7 +13,6 @@
 namespace MU\ImageModule\Form\Plugin\Base;
 
 use FormUtil;
-use ModUtil;
 use PageUtil;
 use ServiceUtil;
 use Zikula_Form_Plugin_TextInput;

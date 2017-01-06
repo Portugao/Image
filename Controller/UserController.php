@@ -41,5 +41,6 @@ class UserController extends AbstractUserController
         return parent::indexAction($request);
     }
 
+
     // feel free to add your own controller methods here
 }

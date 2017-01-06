@@ -12,7 +12,7 @@
     {% endif %}
     <ul class="category-list">
     {% for catMapping in obj.categories %}
-        <li>{{ catMapping.category.display_name[app.request.locale] }}</li>
+        <li>{{ catMapping.category.display_name[app.request.locale]|default(catMapping.category.name) }}</li>
     {% endfor %}
     </ul>
     {% if panel|default(false) == true %}

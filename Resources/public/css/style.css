@@ -4,7 +4,6 @@ div#z-maincontent.z-module-image table tbody tr td {
 }
 
 /* display pages */
-
 .muimagemodule-display div.col-sm-3 h3 {
     color: #333;
     font-weight: 400;
@@ -38,7 +37,7 @@ div.muimagemodule-relation-rightside {
     width: 65%;
 }
 
-/* hide legends if z-panels are used as both contain the same labels */
+/* hide legends if panels are used as both contain the same labels */
 div.image-edit .panel legend {
     display: none;
 }

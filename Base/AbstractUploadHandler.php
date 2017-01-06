@@ -54,11 +54,11 @@ abstract class AbstractUploadHandler
     protected $forbiddenFileTypes;
 
     /**
-     * Constructor initialising the supported object types.
-    *
-    * @param TranslatorInterface $translator     Translator service instance
-    * @param CurrentUserApi      $currentUserApi CurrentUserApi service instance
-    * @param VariableApi         $variableApi    VariableApi service instance
+     * UploadHandler constructor.
+     *
+     * @param TranslatorInterface $translator     Translator service instance
+     * @param CurrentUserApi      $currentUserApi CurrentUserApi service instance
+     * @param VariableApi         $variableApi    VariableApi service instance
      */
     public function __construct(TranslatorInterface $translator, CurrentUserApi $currentUserApi, VariableApi $variableApi)
     {
@@ -413,6 +413,7 @@ abstract class AbstractUploadHandler
                 return false;
             }
         }
+    
         $entity[$fieldName] = '';
         $entity[$fieldName . 'Meta'] = [];
         $entity[$fieldName . 'Url'] = '';

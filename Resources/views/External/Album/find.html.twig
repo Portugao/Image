@@ -41,18 +41,18 @@
                 <div class="col-sm-9">
                     <div id="muimagemoduleItemContainer">
                         <ul>
-                        {% for album in items %}
-                            <li>
-                                {% set itemId = album.createCompositeIdentifier() %}
-                                <a href="#" data-itemid="{{ itemId }}">{{ album.getTitleFromDisplayPattern() }}</a>
-                                <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_album_display', { 'id': album.id }) }}" />
-                                <input type="hidden" id="title{{ itemId }}" value="{{ album.getTitleFromDisplayPattern()|e('html_attr') }}" />
-                                <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if album.description is not empty %}{{ album.description }}{% endif %}
-                                {% endset %}{{ description|striptags|e('html_attr') }}" />
-                            </li>
-                        {% else %}
-                            <li>{{ __('No entries found.') }}</li>
-                        {% endfor %}
+                            {% for album in items %}
+                                <li>
+                                    {% set itemId = album.createCompositeIdentifier() %}
+                                    <a href="#" data-itemid="{{ itemId }}">{{ album.getTitleFromDisplayPattern() }}</a>
+                                    <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_album_display', { 'id': album.id }) }}" />
+                                    <input type="hidden" id="title{{ itemId }}" value="{{ album.getTitleFromDisplayPattern()|e('html_attr') }}" />
+                                    <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if album.description is not empty %}{{ album.description }}{% endif %}
+                                    {% endset %}{{ description|striptags|e('html_attr') }}" />
+                                </li>
+                            {% else %}
+                                <li>{{ __('No entries found.') }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>

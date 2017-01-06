@@ -13,24 +13,31 @@
 namespace MU\ImageModule\Helper\Base;
 
 use Zikula\Common\Translator\TranslatorInterface;
+use Zikula\Common\Translator\TranslatorTrait;
 
 /**
  * Helper base class for list field entries related methods.
  */
 abstract class AbstractListEntriesHelper
 {
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
+    use TranslatorTrait;
 
     /**
-     * Constructor.
-     * Initialises member vars.
+     * ListEntriesHelper constructor.
      *
      * @param TranslatorInterface $translator Translator service instance
      */
     public function __construct(TranslatorInterface $translator)
+    {
+        $this->setTranslator($translator);
+    }
+
+    /**
+     * Sets the translator.
+     *
+     * @param TranslatorInterface $translator Translator service instance
+     */
+    public function setTranslator(/*TranslatorInterface */$translator)
     {
         $this->translator = $translator;
     }
@@ -145,6 +152,9 @@ abstract class AbstractListEntriesHelper
                     case 'workflowState':
                         $result = false;
                         break;
+                    case 'supportedModules':
+                        $result = false;
+                        break;
                 }
                 break;
         }
@@ -191,6 +201,9 @@ abstract class AbstractListEntriesHelper
                     case 'workflowState':
                         $entries = $this->getWorkflowStateEntriesForAvatar();
                         break;
+                    case 'supportedModules':
+                        $entries = $this->getSupportedModulesEntriesForAvatar();
+                        break;
                 }
                 break;
         }
@@ -209,15 +222,15 @@ abstract class AbstractListEntriesHelper
         $states = [];
         $states[] = [
             'value'   => 'approved',
-            'text'    => $this->translator->__('Approved'),
-            'title'   => $this->translator->__('Content has been approved and is available online.'),
+            'text'    => $this->__('Approved'),
+            'title'   => $this->__('Content has been approved and is available online.'),
             'image'   => '',
             'default' => false
         ];
         $states[] = [
             'value'   => '!approved',
-            'text'    => $this->translator->__('All except approved'),
-            'title'   => $this->translator->__('Shows all items except these which are approved'),
+            'text'    => $this->__('All except approved'),
+            'title'   => $this->__('Shows all items except these which are approved'),
             'image'   => '',
             'default' => false
         ];
@@ -235,28 +248,28 @@ abstract class AbstractListEntriesHelper
         $states = [];
         $states[] = [
             'value'   => 'all',
-            'text'    => $this->translator->__('All'),
+            'text'    => $this->__('All'),
             'title'   => '',
             'image'   => '',
             'default' => false
         ];
         $states[] = [
             'value'   => 'users',
-            'text'    => $this->translator->__('Users'),
-            'title'   => $this->translator->__('only registered users'),
+            'text'    => $this->__('Users'),
+            'title'   => $this->__('only registered users'),
             'image'   => 'only registered users.png',
             'default' => false
         ];
         $states[] = [
             'value'   => 'friends',
-            'text'    => $this->translator->__('Friends'),
+            'text'    => $this->__('Friends'),
             'title'   => '',
             'image'   => '',
             'default' => false
         ];
         $states[] = [
             'value'   => 'known',
-            'text'    => $this->translator->__('Known password'),
+            'text'    => $this->__('Known password'),
             'title'   => '',
             'image'   => '',
             'default' => false
@@ -275,15 +288,15 @@ abstract class AbstractListEntriesHelper
         $states = [];
         $states[] = [
             'value'   => 'approved',
-            'text'    => $this->translator->__('Approved'),
-            'title'   => $this->translator->__('Content has been approved and is available online.'),
+            'text'    => $this->__('Approved'),
+            'title'   => $this->__('Content has been approved and is available online.'),
             'image'   => '',
             'default' => false
         ];
         $states[] = [
             'value'   => '!approved',
-            'text'    => $this->translator->__('All except approved'),
-            'title'   => $this->translator->__('Shows all items except these which are approved'),
+            'text'    => $this->__('All except approved'),
+            'title'   => $this->__('Shows all items except these which are approved'),
             'image'   => '',
             'default' => false
         ];
@@ -301,29 +314,48 @@ abstract class AbstractListEntriesHelper
         $states = [];
         $states[] = [
             'value'   => 'waiting',
-            'text'    => $this->translator->__('Waiting'),
-            'title'   => $this->translator->__('Content has been submitted and waits for approval.'),
+            'text'    => $this->__('Waiting'),
+            'title'   => $this->__('Content has been submitted and waits for approval.'),
             'image'   => '',
             'default' => false
         ];
         $states[] = [
             'value'   => 'approved',
-            'text'    => $this->translator->__('Approved'),
-            'title'   => $this->translator->__('Content has been approved and is available online.'),
+            'text'    => $this->__('Approved'),
+            'title'   => $this->__('Content has been approved and is available online.'),
             'image'   => '',
             'default' => false
         ];
         $states[] = [
             'value'   => '!waiting',
-            'text'    => $this->translator->__('All except waiting'),
-            'title'   => $this->translator->__('Shows all items except these which are waiting'),
+            'text'    => $this->__('All except waiting'),
+            'title'   => $this->__('Shows all items except these which are waiting'),
             'image'   => '',
             'default' => false
         ];
         $states[] = [
             'value'   => '!approved',
-            'text'    => $this->translator->__('All except approved'),
-            'title'   => $this->translator->__('Shows all items except these which are approved'),
+            'text'    => $this->__('All except approved'),
+            'title'   => $this->__('Shows all items except these which are approved'),
+            'image'   => '',
+            'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'supported modules' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getSupportedModulesEntriesForAvatar()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'all',
+            'text'    => $this->__('All'),
+            'title'   => '',
             'image'   => '',
             'default' => false
         ];

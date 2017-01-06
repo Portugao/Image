@@ -41,5 +41,6 @@ class AdminController extends AbstractAdminController
         return parent::indexAction($request);
     }
 
+
     // feel free to add your own controller methods here
 }

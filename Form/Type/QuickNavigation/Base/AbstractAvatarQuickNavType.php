@@ -149,6 +149,26 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
             'multiple' => false,
             'expanded' => false
         ]);
+        $listEntries = $this->listHelper->getEntries('avatar', 'supportedModules');
+        $choices = [];
+        $choiceAttributes = [];
+        foreach ($listEntries as $entry) {
+            $choices[$entry['text']] = $entry['value'];
+            $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
+        }
+        $builder->add('supportedModules', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            'label' => $this->__('Supported modules'),
+            'attr' => [
+                'class' => 'input-sm'
+            ],
+            'required' => false,
+            'placeholder' => $this->__('All'),
+            'choices' => $choices,
+            'choices_as_values' => true,
+            'choice_attr' => $choiceAttributes,
+            'multiple' => false,
+            'expanded' => false
+        ]);
     }
 
     /**
@@ -189,8 +209,9 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
                     $this->__('Title') => 'title',
                     $this->__('Description') => 'description',
                     $this->__('Avatar upload') => 'avatarUpload',
+                    $this->__('Supported modules') => 'supportedModules',
                     $this->__('Creation date') => 'createdDate',
-                    $this->__('Creator') => 'createdUserId',
+                    $this->__('Creator') => 'createdBy',
                     $this->__('Update date') => 'updatedDate'
                 ],
                 'choices_as_values' => true,

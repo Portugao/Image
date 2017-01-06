@@ -22,6 +22,13 @@
         {% if workflowStateFilter is defined and workflowStateFilter != true %}
             </div>
         {% endif %}
+        {% if supportedModulesFilter is defined and supportedModulesFilter != true %}
+            <div class="hidden">
+        {% endif %}
+            {{ form_row(quickNavForm.supportedModules) }}
+        {% if supportedModulesFilter is defined and supportedModulesFilter != true %}
+            </div>
+        {% endif %}
         {% if searchFilter is defined and searchFilter != true %}
             <div class="hidden">
         {% endif %}

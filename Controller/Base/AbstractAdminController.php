@@ -29,7 +29,6 @@ use MU\ImageModule\Helper\FeatureActivationHelper;
  */
 abstract class AbstractAdminController extends AbstractController
 {
-
     /**
      * This is the default action handling the main area called without defining arguments.
      *

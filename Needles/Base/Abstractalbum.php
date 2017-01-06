@@ -27,13 +27,13 @@ function MUImageModule_needleapi_album_base($args)
     // cache the results
     static $cache;
     if (!isset($cache)) {
-        $cache = array();
+        $cache = [];
     }
 
-    $dom = \ZLanguage::getModuleDomain('MUImageModule');
+    $translator = \ServiceUtil::get('translator.default');
 
     if (empty($nid)) {
-        return '<em>' . \DataUtil::formatForDisplay(__('No correct needle id given.', $dom)) . '</em>';
+        return '<em>' . \DataUtil::formatForDisplay(__('No correct needle id given.')) . '</em>';
     }
 
     if (isset($cache[$nid])) {
@@ -42,7 +42,7 @@ function MUImageModule_needleapi_album_base($args)
     }
 
     if (!\ModUtil::available('MUImageModule')) {
-        $cache[$nid] = '<em>' . \DataUtil::formatForDisplay(__f('Module %s is not available.', array('MUImageModule'), $dom)) . '</em>';
+        $cache[$nid] = '<em>' . \DataUtil::formatForDisplay($translator->__f('Module %s is not available.', ['%s' => MUImageModule'])) . '</em>';
 
         return $cache[$nid];
     }
@@ -60,7 +60,7 @@ function MUImageModule_needleapi_album_base($args)
         }
     }
 
-    $cache[$nid] = '<a href="' . $router->generate('muimagemodule_albums_view') . '" title="' . __('View albums', $dom) . '">' . __('Albums', $dom) . '</a>';
+    $cache[$nid] = '<a href="' . $router->generate('muimagemodule_albums_view') . '" title="' . $translator->__('View albums') . '">' . $translator->__('Albums') . '</a>';
     $needleParts = explode('-', $needleId);
     if ($needleParts[0] != 'ALBUM' || count($needleParts) < 2) {
         $cache[$nid] = '';
@@ -80,13 +80,12 @@ function MUImageModule_needleapi_album_base($args)
     $selectionHelper = \ServiceUtil::get('mu_image_module.selection_helper');
     $entity = $selectionHelper->getEntity('album', $entityId);
     if (null === $entity) {
-        $cache[$nid] = '<em>' . __f('Album with id %s could not be found', [$entityId], $dom) . '</em>';
+        $cache[$nid] = '<em>' . $translator->__f('Album with id %s could not be found', ['%s' => $entityId]) . '</em>';
 
         return $cache[$nid];
     }
 
     $title = $entity->getTitleFromDisplayPattern();
-
     $cache[$nid] = '<a href="' . $router->generate('muimagemodule_albums_display', ['id' => $entityId]) . '" title="' . str_replace('"', '', $title) . '">' . $title . '</a>';
 
     return $cache[$nid];

@@ -57,6 +57,10 @@
             {% endif %}
             </dd>
         {% endif %}
+        {% if avatar.supportedModules is not empty %}
+            <dt>{{ __('Supported modules') }}</dt>
+            <dd>{{ avatar.supportedModules|muimagemodule_listEntry('avatar', 'supportedModules') }}</dd>
+        {% endif %}
         
     </dl>
     {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'avatar') %}
@@ -71,16 +75,15 @@
 {% block footer %}
     {{ parent() }}
 
-
-{% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                $('a.lightbox').lightbox();
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
-{% endif %}
+    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+        <script type="text/javascript">
+        /* <![CDATA[ */
+            ( function($) {
+                $(document).ready(function() {
+                    $('a.lightbox').lightbox();
+                });
+            })(jQuery);
+        /* ]]> */
+        </script>
+    {% endif %}
 {% endblock %}

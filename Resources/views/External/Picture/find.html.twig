@@ -38,18 +38,18 @@
                 <div class="col-sm-9">
                     <div id="muimagemoduleItemContainer">
                         <ul>
-                        {% for picture in items %}
-                            <li>
-                                {% set itemId = picture.createCompositeIdentifier() %}
-                                <a href="#" data-itemid="{{ itemId }}">{{ picture.getTitleFromDisplayPattern() }}</a>
-                                <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_picture_display', { 'id': picture.id }) }}" />
-                                <input type="hidden" id="title{{ itemId }}" value="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}" />
-                                <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if picture.description is not empty %}{{ picture.description }}{% endif %}
-                                {% endset %}{{ description|striptags|e('html_attr') }}" />
-                            </li>
-                        {% else %}
-                            <li>{{ __('No entries found.') }}</li>
-                        {% endfor %}
+                            {% for picture in items %}
+                                <li>
+                                    {% set itemId = picture.createCompositeIdentifier() %}
+                                    <a href="#" data-itemid="{{ itemId }}">{{ picture.getTitleFromDisplayPattern() }}</a>
+                                    <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_picture_display', { 'id': picture.id }) }}" />
+                                    <input type="hidden" id="title{{ itemId }}" value="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}" />
+                                    <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if picture.description is not empty %}{{ picture.description }}{% endif %}
+                                    {% endset %}{{ description|striptags|e('html_attr') }}" />
+                                </li>
+                            {% else %}
+                                <li>{{ __('No entries found.') }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>

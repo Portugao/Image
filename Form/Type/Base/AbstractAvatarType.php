@@ -145,6 +145,25 @@ abstract class AbstractAvatarType extends AbstractType
             'allowed_extensions' => 'gif, jpeg, jpg, png',
             'allowed_size' => 0
         ]);
+        $listEntries = $this->listHelper->getEntries('avatar', 'supportedModules');
+        $choices = [];
+        $choiceAttributes = [];
+        foreach ($listEntries as $entry) {
+            $choices[$entry['text']] = $entry['value'];
+            $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
+        }
+        $builder->add('supportedModules', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            'label' => $this->__('Supported modules') . ':',
+            'empty_data' => '',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('Choose the supported modules')
+            ],'choices' => $choices,
+            'choices_as_values' => true,
+            'choice_attr' => $choiceAttributes,
+            'multiple' => false,
+            'expanded' => false
+        ]);
     }
 
     /**

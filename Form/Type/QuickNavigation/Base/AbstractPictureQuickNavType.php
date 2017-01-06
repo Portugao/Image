@@ -197,7 +197,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
                     $this->__('Album image') => 'albumImage',
                     $this->__('Pos') => 'pos',
                     $this->__('Creation date') => 'createdDate',
-                    $this->__('Creator') => 'createdUserId',
+                    $this->__('Creator') => 'createdBy',
                     $this->__('Update date') => 'updatedDate'
                 ],
                 'choices_as_values' => true,

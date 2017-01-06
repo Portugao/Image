@@ -161,7 +161,7 @@ abstract class AbstractAlbumFinderType extends AbstractType
                     $this->__('My friends') => 'myFriends',
                     $this->__('Not in frontend') => 'notInFrontend',
                     $this->__('Creation date') => 'createdDate',
-                    $this->__('Creator') => 'createdUserId',
+                    $this->__('Creator') => 'createdBy',
                     $this->__('Update date') => 'updatedDate'
                 ],
                 'choices_as_values' => true,

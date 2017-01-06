@@ -303,6 +303,7 @@ abstract class AbstractEditHandler extends EditHandler
                     }
                     return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_admindisplay', $urlArgs);
                 }
+    
                 return $this->getDefaultReturnUrl($args);
             case 'user':
                 return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_index');
@@ -315,6 +316,7 @@ abstract class AbstractEditHandler extends EditHandler
                     }
                     return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_display', $urlArgs);
                 }
+    
                 return $this->getDefaultReturnUrl($args);
             case 'adminViewAlbum':
                 return $this->router->generate('muimagemodule_album_adminview');
@@ -322,6 +324,7 @@ abstract class AbstractEditHandler extends EditHandler
                 if (!empty($this->relationPresets['album'])) {
                     return $this->router->generate('muimagemodule_album_admindisplay',  ['id' => $this->relationPresets['album']]);
                 }
+    
                 return $this->getDefaultReturnUrl($args);
             case 'userViewAlbum':
                 return $this->router->generate('muimagemodule_album_view');
@@ -329,6 +332,7 @@ abstract class AbstractEditHandler extends EditHandler
                 if (!empty($this->relationPresets['album'])) {
                     return $this->router->generate('muimagemodule_album_display',  ['id' => $this->relationPresets['album']]);
                 }
+    
                 return $this->getDefaultReturnUrl($args);
             default:
                 return $this->getDefaultReturnUrl($args);

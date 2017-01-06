@@ -2,13 +2,19 @@ services:
     # Entity factory classes
     mu_image_module.album_factory:
         class: MU\ImageModule\Entity\Factory\AlbumFactory
-        arguments: ["@doctrine.orm.entity_manager", MU\ImageModule\Entity\AlbumEntity]
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - MU\ImageModule\Entity\AlbumEntity
     
     mu_image_module.picture_factory:
         class: MU\ImageModule\Entity\Factory\PictureFactory
-        arguments: ["@doctrine.orm.entity_manager", MU\ImageModule\Entity\PictureEntity]
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - MU\ImageModule\Entity\PictureEntity
     
     mu_image_module.avatar_factory:
         class: MU\ImageModule\Entity\Factory\AvatarFactory
-        arguments: ["@doctrine.orm.entity_manager", MU\ImageModule\Entity\AvatarEntity]
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - MU\ImageModule\Entity\AvatarEntity
     

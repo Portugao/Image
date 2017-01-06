@@ -26,7 +26,6 @@ use MU\ImageModule\Helper\FeatureActivationHelper;
  */
 abstract class AbstractMyControllerController extends AbstractController
 {
-
     /**
      * This is a custom action.
      *

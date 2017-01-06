@@ -3,90 +3,137 @@ services:
     
     mu_image_module.form.type.albumquicknav:
         class: MU\ImageModule\Form\Type\QuickNavigation\AlbumQuickNavType
-        arguments: ["@translator.default", "@request_stack", "@mu_image_module.listentries_helper", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@request_stack"
+            - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.picturequicknav:
         class: MU\ImageModule\Form\Type\QuickNavigation\PictureQuickNavType
-        arguments: ["@translator.default", "@request_stack", "@mu_image_module.listentries_helper", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@request_stack"
+            - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.avatarquicknav:
         class: MU\ImageModule\Form\Type\QuickNavigation\AvatarQuickNavType
-        arguments: ["@translator.default", "@request_stack", "@mu_image_module.listentries_helper", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@request_stack"
+            - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.handler.album:
         class: MU\ImageModule\Form\Handler\Album\EditHandler
-        arguments: ["@service_container", "@translator.default", "@request_stack", "@router"]
+        arguments:
+            - "@service_container"
+            - "@translator.default"
+            - "@request_stack"
+            - "@router"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.album:
         class: MU\ImageModule\Form\Type\AlbumType
-        arguments: ["@translator.default", "@mu_image_module.album_factory", "@mu_image_module.listentries_helper", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.album_factory"
+            - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.handler.picture:
         class: MU\ImageModule\Form\Handler\Picture\EditHandler
-        arguments: ["@service_container", "@translator.default", "@request_stack", "@router"]
+        arguments:
+            - "@service_container"
+            - "@translator.default"
+            - "@request_stack"
+            - "@router"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.picture:
         class: MU\ImageModule\Form\Type\PictureType
-        arguments: ["@translator.default", "@mu_image_module.picture_factory", "@mu_image_module.listentries_helper", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.picture_factory"
+            - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.handler.avatar:
         class: MU\ImageModule\Form\Handler\Avatar\EditHandler
-        arguments: ["@service_container", "@translator.default", "@request_stack", "@router"]
+        arguments:
+            - "@service_container"
+            - "@translator.default"
+            - "@request_stack"
+            - "@router"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.avatar:
         class: MU\ImageModule\Form\Type\AvatarType
-        arguments: ["@translator.default", "@mu_image_module.avatar_factory", "@mu_image_module.listentries_helper", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.avatar_factory"
+            - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.deleteentity:
         class: MU\ImageModule\Form\DeleteEntityType
-        arguments: ["@translator.default"]
+        arguments:
+            - "@translator.default"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.block.itemlist:
         class: MU\ImageModule\Block\Form\Type\ItemListBlockType
-        arguments: ["@translator.default"]
+        arguments:
+            - "@translator.default"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.albumfinder:
         class: MU\ImageModule\Form\Type\Finder\AlbumFinderType
-        arguments: ["@translator.default", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.picturefinder:
         class: MU\ImageModule\Form\Type\Finder\PictureFinderType
-        arguments: ["@translator.default", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.avatarfinder:
         class: MU\ImageModule\Form\Type\Finder\AvatarFinderType
-        arguments: ["@translator.default", "@mu_image_module.feature_activation_helper"]
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.feature_activation_helper"
         tags:
             - { name: form.type }
     
     mu_image_module.form.type.appsettings:
         class: MU\ImageModule\Form\AppSettingsType
-        arguments: ["@translator.default", "@zikula_extensions_module.api.variable", "@zikula_groups_module.group_repository"]
+        arguments:
+            - "@translator.default"
+            - "@zikula_extensions_module.api.variable"
+            - "@zikula_groups_module.group_repository"
         tags:
             - { name: form.type }

@@ -159,6 +159,27 @@ abstract class AbstractAppSettingsType extends AbstractType
                     'title' => $this->__('The use watermark option.')
                 ],
             ])
+            ->add('useExtendedFeatures', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+                'label' => $this->__('Use extended features') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Do you want to limit creating of albums, subalbums or pictures?
+                    Do want set a group for common albums?
+                    Do you want to give the option to rule the access to albums?
+                    
+                    Then you can enable these features here!')
+                ],
+                'help' => $this->__('Do you want to limit creating of albums, subalbums or pictures?
+                Do want set a group for common albums?
+                Do you want to give the option to rule the access to albums?
+                
+                Then you can enable these features here!'),
+                'required' => false,
+                'data' => (bool)$this->modVars['useExtendedFeatures'],
+                'attr' => [
+                    'title' => $this->__('The use extended features option.')
+                ],
+            ])
         ;
     }
 
@@ -373,14 +394,6 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],'max_length' => 255,
                 'scale' => 0
             ])
-            ->add('fileNameForTitle', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
-                'label' => $this->__('File name for title') . ':',
-                'required' => false,
-                'data' => (bool)$this->modVars['fileNameForTitle'],
-                'attr' => [
-                    'title' => $this->__('The file name for title option.')
-                ],
-            ])
         ;
     }
 
@@ -393,24 +406,27 @@ abstract class AbstractAppSettingsType extends AbstractType
     public function addAvatarsFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('numberOf', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Number of') . ':',
+            ->add('numberHeightAndNameOfAvatars', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+                'label' => $this->__('Number height and name of avatars') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Here you can set, how many avatar sizes with which name you wish.')
+                ],
+                'help' => $this->__('Here you can set, how many avatar sizes with which name you wish.'),
                 'required' => false,
-                'data' => $this->modVars['numberOf'],
-                'empty_data' => intval('2'),
+                'data' => $this->modVars['numberHeightAndNameOfAvatars'],
+                'empty_data' => '200,thumb;400,view;600,normal',
                 'attr' => [
-                    'title' => $this->__('Enter the number of. Only digits are allowed.')
-                ],'max_length' => 255,
-                'scale' => 0
-            ])
-            ->add('configAvatarWidthAndHeight', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
-                'label' => $this->__('Config avatar width and height') . ':',
-                'required' => false,
-                'data' => $this->modVars['configAvatarWidthAndHeight'],
-                'empty_data' => '200,200;400,400',
-                'attr' => [
-                    'title' => $this->__('Enter the config avatar width and height.')
+                    'title' => $this->__('Enter the number height and name of avatars.')
                 ],'max_length' => 255
+            ])
+            ->add('shrink', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+                'label' => $this->__('Shrink') . ':',
+                'required' => false,
+                'data' => (bool)$this->modVars['shrink'],
+                'attr' => [
+                    'title' => $this->__('The shrink option.')
+                ],
             ])
         ;
     }
@@ -426,6 +442,11 @@ abstract class AbstractAppSettingsType extends AbstractType
         $builder
             ->add('albumEntriesPerPageInBackend', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Album entries per page in backend') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('The amount of albums shown per page in the backend')
+                ],
+                'help' => $this->__('The amount of albums shown per page in the backend'),
                 'required' => false,
                 'data' => $this->modVars['albumEntriesPerPageInBackend'],
                 'empty_data' => intval('10'),
@@ -436,6 +457,11 @@ abstract class AbstractAppSettingsType extends AbstractType
             ])
             ->add('pictureEntriesPerPageInBackend', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Picture entries per page in backend') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('The amount of pictures shown per page in the backend')
+                ],
+                'help' => $this->__('The amount of pictures shown per page in the backend'),
                 'required' => false,
                 'data' => $this->modVars['pictureEntriesPerPageInBackend'],
                 'empty_data' => intval('10'),
@@ -446,9 +472,14 @@ abstract class AbstractAppSettingsType extends AbstractType
             ])
             ->add('avatarEntriesPerPageInBackend', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Avatar entries per page in backend') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('The amount of avatars shown per page in the backend')
+                ],
+                'help' => $this->__('The amount of avatars shown per page in the backend'),
                 'required' => false,
                 'data' => $this->modVars['avatarEntriesPerPageInBackend'],
-                'empty_data' => intval(''),
+                'empty_data' => intval('10'),
                 'attr' => [
                     'title' => $this->__('Enter the avatar entries per page in backend. Only digits are allowed.')
                 ],'max_length' => 255,

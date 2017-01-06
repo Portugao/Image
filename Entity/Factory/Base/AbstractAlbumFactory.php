@@ -38,15 +38,15 @@ abstract class AbstractAlbumFactory
     protected $repository;
 
     /**
-     * Constructor.
+     * AlbumFactory constructor.
      *
-     * @param ObjectManager $om        The object manager to be used for determining the repository
-     * @param String        $className Full qualified class name to be used for albums
+     * @param ObjectManager $objectManager The object manager to be used for determining the repository
+     * @param String        $className     Full qualified class name to be used for albums
      */
-    public function __construct(ObjectManager $om, $className)
+    public function __construct(ObjectManager $objectManager, $className)
     {
         $this->className = $className;
-        $this->objectManager = $om;
+        $this->objectManager = $objectManager;
         $this->repository = $this->objectManager->getRepository($className);
     }
 

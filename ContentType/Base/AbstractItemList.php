@@ -12,7 +12,6 @@
 
 namespace MU\ImageModule\ContentType\Base;
 
-use ModUtil;
 use ServiceUtil;
 use ZLanguage;
 use MU\ImageModule\Helper\FeatureActivationHelper;
@@ -119,9 +118,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType
      */
     public function getTitle()
     {
-        $serviceManager = ServiceUtil::getManager();
-    
-        return $serviceManager->get('translator.default')->__('MUImageModule list view');
+        return ServiceUtil::get('translator.default')->__('MUImageModule list view');
     }
     
     /**
@@ -131,9 +128,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType
      */
     public function getDescription()
     {
-        $serviceManager = ServiceUtil::getManager();
-    
-        return $serviceManager->get('translator.default')->__('Display list of MUImageModule objects.');
+        return ServiceUtil::get('translator.default')->__('Display list of MUImageModule objects.');
     }
     
     /**
@@ -176,52 +171,52 @@ abstract class AbstractItemList extends \Content_AbstractContentType
         $this->filter = $data['filter'];
         $featureActivationHelper = $serviceManager->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
-        $this->categorisableObjectTypes = ['album', 'avatar'];
-        $categoryHelper = $serviceManager->get('mu_image_module.category_helper');
+            $this->categorisableObjectTypes = ['album', 'avatar'];
+            $categoryHelper = $serviceManager->get('mu_image_module.category_helper');
     
-        // fetch category properties
-        $this->catRegistries = [];
-        $this->catProperties = [];
-        if (in_array($this->objectType, $this->categorisableObjectTypes)) {
-            $selectionHelper = $serviceManager->get('mu_image_module.selection_helper');
-            $idFields = $selectionHelper->getIdFields($this->objectType);
-            $this->catRegistries = $categoryHelper->getAllPropertiesWithMainCat($this->objectType, $idFields[0]);
-            $this->catProperties = $categoryHelper->getAllProperties($this->objectType);
-        }
-    
-        if (!isset($data['catIds'])) {
-            $primaryRegistry = $categoryHelper->getPrimaryProperty($this->objectType);
-            $data['catIds'] = [$primaryRegistry => []];
-            // backwards compatibility
-            if (isset($data['catId'])) {
-                $data['catIds'][$primaryRegistry][] = $data['catId'];
-                unset($data['catId']);
+            // fetch category properties
+            $this->catRegistries = [];
+            $this->catProperties = [];
+            if (in_array($this->objectType, $this->categorisableObjectTypes)) {
+                $selectionHelper = $serviceManager->get('mu_image_module.selection_helper');
+                $idFields = $selectionHelper->getIdFields($this->objectType);
+                $this->catRegistries = $categoryHelper->getAllPropertiesWithMainCat($this->objectType, $idFields[0]);
+                $this->catProperties = $categoryHelper->getAllProperties($this->objectType);
             }
-        } elseif (!is_array($data['catIds'])) {
-            $data['catIds'] = explode(',', $data['catIds']);
-        }
     
-        foreach ($this->catRegistries as $registryId => $registryCid) {
-            $propName = '';
-            foreach ($this->catProperties as $propertyName => $propertyId) {
-                if ($propertyId == $registryId) {
-                    $propName = $propertyName;
-                    break;
+            if (!isset($data['catIds'])) {
+                $primaryRegistry = $categoryHelper->getPrimaryProperty($this->objectType);
+                $data['catIds'] = [$primaryRegistry => []];
+                // backwards compatibility
+                if (isset($data['catId'])) {
+                    $data['catIds'][$primaryRegistry][] = $data['catId'];
+                    unset($data['catId']);
+                }
+            } elseif (!is_array($data['catIds'])) {
+                $data['catIds'] = explode(',', $data['catIds']);
+            }
+    
+            foreach ($this->catRegistries as $registryId => $registryCid) {
+                $propName = '';
+                foreach ($this->catProperties as $propertyName => $propertyId) {
+                    if ($propertyId == $registryId) {
+                        $propName = $propertyName;
+                        break;
+                    }
+                }
+                if (isset($data['catids' . $propName])) {
+                    $data['catIds'][$propName] = $data['catids' . $propName];
+                }
+                if (!is_array($data['catIds'][$propName])) {
+                    if ($data['catIds'][$propName]) {
+                        $data['catIds'][$propName] = [$data['catIds'][$propName]];
+                    } else {
+                        $data['catIds'][$propName] = [];
+                    }
                 }
             }
-            if (isset($data['catids' . $propName])) {
-                $data['catIds'][$propName] = $data['catids' . $propName];
-            }
-            if (!is_array($data['catIds'][$propName])) {
-                if ($data['catIds'][$propName]) {
-                    $data['catIds'][$propName] = [$data['catIds'][$propName]];
-                } else {
-                    $data['catIds'][$propName] = [];
-                }
-            }
-        }
     
-        $this->catIds = $data['catIds'];
+            $this->catIds = $data['catIds'];
         }
     }
     
@@ -236,7 +231,6 @@ abstract class AbstractItemList extends \Content_AbstractContentType
     
         $serviceManager = ServiceUtil::getManager();
         $repository = $serviceManager->get('mu_image_module.' . $this->objectType . '_factory')->getRepository();
-    
         $permissionApi = $serviceManager->get('zikula_permissions_module.api.permission');
     
         // create query
@@ -246,29 +240,29 @@ abstract class AbstractItemList extends \Content_AbstractContentType
     
         $featureActivationHelper = $serviceManager->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
-        // apply category filters
-        if (in_array($this->objectType, $this->categorisableObjectTypes)) {
-            if (is_array($this->catIds) && count($this->catIds) > 0) {
-                $categoryHelper = $serviceManager->get('mu_image_module.category_helper');
-                $qb = $categoryHelper->buildFilterClauses($qb, $this->objectType, $this->catIds);
+            // apply category filters
+            if (in_array($this->objectType, $this->categorisableObjectTypes)) {
+                if (is_array($this->catIds) && count($this->catIds) > 0) {
+                    $categoryHelper = $serviceManager->get('mu_image_module.category_helper');
+                    $qb = $categoryHelper->buildFilterClauses($qb, $this->objectType, $this->catIds);
+                }
             }
-        }
         }
     
         // get objects from database
         $currentPage = 1;
         $resultsPerPage = isset($this->amount) ? $this->amount : 1;
-        list($query, $count) = $repository->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
+        $query = $repository->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
         list($entities, $objectCount) = $repository->retrieveCollectionResult($query, $orderBy, true);
     
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
-        $filteredEntities = [];
-        foreach ($entities as $entity) {
-            if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                $filteredEntities[] = $entity;
+            $filteredEntities = [];
+            foreach ($entities as $entity) {
+                if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
+                    $filteredEntities[] = $entity;
+                }
             }
-        }
-        $entities = $filteredEntities;
+            $entities = $filteredEntities;
         }
     
         $data = [
@@ -295,9 +289,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType
     
         $template = $this->getDisplayTemplate();
     
-        $output = $serviceManager->get('twig')->render('@MUImageModule/' . $template, $templateParameters);
-    
-        return $output;
+        return $serviceManager->get('twig')->render('@MUImageModule/' . $template, $templateParameters);
     }
     
     /**
@@ -394,43 +386,43 @@ abstract class AbstractItemList extends \Content_AbstractContentType
         $this->view->toplevelmodule = 'MUImageModule';
     
         // ensure our custom plugins are loaded
-        array_push($this->view->plugins_dir, 'modules/MUImageModule/Resources/views//plugins');
+        array_push($this->view->plugins_dir, 'modules/MU/Image/Resources/views//plugins');
     
         $featureActivationHelper = $serviceManager->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
-        // assign category data
-        $this->view->assign('registries', $this->catRegistries)
-                   ->assign('properties', $this->catProperties);
+            // assign category data
+            $this->view->assign('registries', $this->catRegistries)
+                       ->assign('properties', $this->catProperties);
     
-        // assign categories lists for simulating category selectors
-        $serviceManager = ServiceUtil::getManager();
-        $translator = $serviceManager->get('translator.default');
-        $locale = $serviceManager->get('request_stack')->getMasterRequest()->getLocale();
-        $categories = [];
-        $categoryApi = $serviceManager->get('zikula_categories_module.api.category');
-        foreach ($this->catRegistries as $registryId => $registryCid) {
-            $propName = '';
-            foreach ($this->catProperties as $propertyName => $propertyId) {
-                if ($propertyId == $registryId) {
-                    $propName = $propertyName;
-                    break;
+            // assign categories lists for simulating category selectors
+            $serviceManager = ServiceUtil::getManager();
+            $translator = $serviceManager->get('translator.default');
+            $locale = $serviceManager->get('request_stack')->getMasterRequest()->getLocale();
+            $categories = [];
+            $categoryApi = $serviceManager->get('zikula_categories_module.api.category');
+            foreach ($this->catRegistries as $registryId => $registryCid) {
+                $propName = '';
+                foreach ($this->catProperties as $propertyName => $propertyId) {
+                    if ($propertyId == $registryId) {
+                        $propName = $propertyName;
+                        break;
+                    }
                 }
+    
+                //$mainCategory = $categoryApi->getCategoryById($registryCid);
+                $cats = $categoryApi->getSubCategories($registryCid, true, true, false, true, false, null, '', null, 'sort_value');
+                $catsForDropdown = [
+                    ['value' => '', 'text' => $translator->__('All')]
+                ];
+                foreach ($cats as $cat) {
+                    $catName = isset($cat['display_name'][$locale]) ? $cat['display_name'][$locale] : $cat['name'];
+                    $catsForDropdown[] = ['value' => $cat['id'], 'text' => $catName];
+                }
+                $categories[$propName] = $catsForDropdown;
             }
     
-            //$mainCategory = $categoryApi->getCategoryById($registryCid);
-            $cats = $categoryApi->getSubCategories($registryCid, true, true, false, true, false, null, '', null, 'sort_value');
-            $catsForDropdown = [
-                ['value' => '', 'text' => $translator->__('All')]
-            ];
-            foreach ($cats as $cat) {
-                $catName = isset($cat['display_name'][$locale]) ? $cat['display_name'][$locale] : $cat['name'];
-                $catsForDropdown[] = ['value' => $cat['id'], 'text' => $catName];
-            }
-            $categories[$propName] = $catsForDropdown;
-        }
-    
-        $this->view->assign('categories', $categories)
-        ->assign('categoryHelper', $serviceManager->get('mu_image_module.category_helper'));
+            $this->view->assign('categories', $categories)
+                       ->assign('categoryHelper', $serviceManager->get('mu_image_module.category_helper'));
         }
     }
     

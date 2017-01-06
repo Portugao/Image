@@ -135,8 +135,7 @@ abstract class AbstractAlbumType extends AbstractType
             'attr' => [
                 'class' => '',
                 'title' => $this->__('Choose the album access')
-            ],'placeholder' => '',
-            'choices' => $choices,
+            ],'choices' => $choices,
             'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,

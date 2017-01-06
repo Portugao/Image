@@ -112,8 +112,7 @@ abstract class AbstractNotificationHelper
     protected $name;
     
     /**
-     * Constructor.
-     * Initialises member vars.
+     * NotificationHelper constructor.
      *
      * @param TranslatorInterface $translator     Translator service instance
      * @param SessionInterface    $session        Session service instance
@@ -218,8 +217,8 @@ abstract class AbstractNotificationHelper
             foreach (array_keys($moderatorGroup['members']) as $uid) {
                 $this->addRecipient($uid);
             }
-        } elseif ($this->recipientType == 'creator' && isset($this->entity['createdUserId'])) {
-            $creatorUid = $this->entity['createdUserId'];
+        } elseif ($this->recipientType == 'creator' && method_exists($entity, 'getCreatedBy')) {
+            $creatorUid = $this->entity->getCreatedBy()->getUid();
     
             $this->addRecipient($creatorUid);
         }
@@ -295,6 +294,11 @@ abstract class AbstractNotificationHelper
         return $totalResult;
     }
     
+    /**
+     * Returns the subject used for the emails to be sent.
+     *
+     * @return string
+     */
     protected function getMailSubject()
     {
         $mailSubject = '';
@@ -317,6 +321,11 @@ abstract class AbstractNotificationHelper
         return $mailSubject;
     }
     
+    /**
+     * Collects data used by the email templates.
+     *
+     * @return array
+     */
     protected function prepareEmailData()
     {
         $objectType = $this->entity['_objectType'];

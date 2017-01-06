@@ -66,6 +66,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('slideshow1', false);
         $this->setVar('useAvatars', false);
         $this->setVar('useWatermark', false);
+        $this->setVar('useExtendedFeatures', false);
         $this->setVar('slide1Interval', 4000);
         $this->setVar('slide1Speed', 1000);
         $this->setVar('fileSizeForPictures', 102400);
@@ -82,12 +83,11 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('secondHeight', 0);
         $this->setVar('thirdWidth', 0);
         $this->setVar('thirdHeight', 0);
-        $this->setVar('fileNameForTitle', false);
-        $this->setVar('numberOf', 2);
-        $this->setVar('configAvatarWidthAndHeight', '200,200;400,400');
+        $this->setVar('numberHeightAndNameOfAvatars', '200,thumb;400,view;600,normal');
+        $this->setVar('shrink', false);
         $this->setVar('albumEntriesPerPageInBackend', 10);
         $this->setVar('pictureEntriesPerPageInBackend', 10);
-        $this->setVar('avatarEntriesPerPageInBackend', 0);
+        $this->setVar('avatarEntriesPerPageInBackend', 10);
         $this->setVar('countImageView', false);
         $this->setVar('numberParentAlbums', 1);
         $this->setVar('numberSubAlbums', 2);
@@ -216,8 +216,8 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
                 }
         }
     
-        // Note there are several helpers available for making migration of your extension easier.
-        // The following convenience methods are each responsible for a single aspect of upgrading to Zikula 1.4.0.
+        // Note there are several helpers available for making migrating your extension from Zikula 1.3 to 1.4 easier.
+        // The following convenience methods are each responsible for a single aspect of upgrading to Zikula 1.4.x.
     
         // here is a possible usage example
         // of course 1.2.3 should match the number you used for the last stable 1.3.x module version.
@@ -481,7 +481,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     
         // remove all module vars
         $this->delVars();
-    
+        
         // remove category registry entries
         ModUtil::dbInfoLoad('ZikulaCategoriesModule');
         DBUtil::deleteWhere('categories_registry', 'modname = \'MUImageModule\'');

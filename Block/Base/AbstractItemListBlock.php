@@ -29,7 +29,7 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
     protected $categorisableObjectTypes;
     
     /**
-     * Constructor.
+     * ItemListBlock constructor.
      *
      * @param AbstractBundle $bundle An AbstractBundle instance
      *
@@ -75,7 +75,6 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
     
         $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
     
-    
         // create query
         $where = $properties['filter'];
         $orderBy = $this->getSortParam($properties, $repository);
@@ -97,17 +96,17 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         // get objects from database
         $currentPage = 1;
         $resultsPerPage = $properties['amount'];
-        list($query, $count) = $repository->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
+        $query = $repository->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
         list($entities, $objectCount) = $repository->retrieveCollectionResult($query, $orderBy, true);
     
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-        $filteredEntities = [];
-        foreach ($entities as $entity) {
-            if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                $filteredEntities[] = $entity;
+            $filteredEntities = [];
+            foreach ($entities as $entity) {
+                if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
+                    $filteredEntities[] = $entity;
+                }
             }
-        }
-        $entities = $filteredEntities;
+            $entities = $filteredEntities;
         }
     
         // set a block title
@@ -161,6 +160,7 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         } else {
             $template = 'Block/itemlist.html.twig';
         }
+    
         $template = '@MUImageModule/' . $template;
     
         return $template;

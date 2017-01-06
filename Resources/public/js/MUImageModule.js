@@ -66,6 +66,9 @@ function mUImageInitQuickNavigation(objectType)
         if (jQuery('#' + fieldPrefix + 'workflowState').length > 0) {
             jQuery('#' + fieldPrefix + 'workflowState').change(function () { mUImageSubmitQuickNavForm(objectType); });
         }
+        if (jQuery('#' + fieldPrefix + 'supportedModules').length > 0) {
+            jQuery('#' + fieldPrefix + 'supportedModules').change(function () { mUImageSubmitQuickNavForm(objectType); });
+        }
         break;
     default:
         break;

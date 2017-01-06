@@ -27,7 +27,6 @@ use MU\ImageModule\Helper\FeatureActivationHelper;
  */
 abstract class AbstractConfigController extends AbstractController
 {
-
     /**
      * This method takes care of the application configuration.
      *

@@ -38,9 +38,9 @@
     <title><![CDATA[{% if picture.updatedDate|default %}{{ picture.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ picture.getTitleFromDisplayPattern()|notifyFilters('muimagemodule.filterhook.pictures') }}]]></title>
     <link>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}</link>
     <guid>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}</guid>
-    {% if picture.createdUserId is defined %}
-        {% set realName = muimagemodule_userVar('name', obj.createdUserId.getUid()) %}
-        <author>{{ picture.createdUserId.getEmail() }} ({{ realName|default(obj.createdUserId.getUname()) }})</author>
+    {% if picture.createdBy|default %}
+        {% set realName = muimagemodule_userVar('name', obj.createdBy.getUid()) %}
+        <author>{{ picture.createdBy.getEmail() }} ({{ realName|default(obj.createdBy.getUname()) }})</author>
     {% endif %}
     <description>
         <![CDATA[

@@ -38,9 +38,9 @@
     <title><![CDATA[{% if album.updatedDate|default %}{{ album.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ album.getTitleFromDisplayPattern()|notifyFilters('muimagemodule.filterhook.albums') }}]]></title>
     <link>{{ url('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}</link>
     <guid>{{ url('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}</guid>
-    {% if album.createdUserId is defined %}
-        {% set realName = muimagemodule_userVar('name', obj.createdUserId.getUid()) %}
-        <author>{{ album.createdUserId.getEmail() }} ({{ realName|default(obj.createdUserId.getUname()) }})</author>
+    {% if album.createdBy|default %}
+        {% set realName = muimagemodule_userVar('name', obj.createdBy.getUid()) %}
+        <author>{{ album.createdBy.getEmail() }} ({{ realName|default(obj.createdBy.getUname()) }})</author>
     {% endif %}
     <category><![CDATA[{{ __('Categories') }}: {% for propName, catMapping in album.categories %}{{ catMapping.category.display_name[lang] }}{% if not loop.last %}, {% endif %}{% endfor %}]]></category>
     <description>

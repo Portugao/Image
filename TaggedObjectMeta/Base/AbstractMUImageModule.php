@@ -24,12 +24,12 @@ use Zikula\Core\UrlInterface;
 abstract class AbstractMUImageModule extends AbstractTaggedObjectMeta
 {
     /**
-     * Constructor.
+     * MUImageModule constructor.
      *
-     * @param integer             $objectId  Identifier of treated object
-     * @param integer             $areaId    Name of hook area
-     * @param string              $module    Name of the owning module
-     * @param string              $urlString **deprecated**
+     * @param integer      $objectId  Identifier of treated object
+     * @param integer      $areaId    Name of hook area
+     * @param string       $module    Name of the owning module
+     * @param string       $urlString **deprecated**
      * @param UrlInterface $urlObject Object carrying url arguments
      */
     function __construct($objectId, $areaId, $module, $urlString = null, UrlInterface $urlObject = null)
@@ -68,8 +68,8 @@ abstract class AbstractMUImageModule extends AbstractTaggedObjectMeta
             $this->setObjectDate('');
         }
     
-        if (method_exists($entity, 'getCreatedUserId')) {
-            $this->setObjectAuthor(UserUtil::getVar('uname', $entity['createdUserId']));
+        if (method_exists($entity, 'getCreatedBy')) {
+            $this->setObjectAuthor($entity->getCreatedBy()->getUname());
         } else {
             $this->setObjectAuthor('');
         }

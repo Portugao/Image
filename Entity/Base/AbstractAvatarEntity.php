@@ -17,15 +17,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use MU\ImageModule\Traits\EntityWorkflowTrait;
 use MU\ImageModule\Traits\StandardFieldsTrait;
-use Zikula\UsersModule\Entity\UserEntity;
 
 use DataUtil;
-use FormUtil;
 use RuntimeException;
 use ServiceUtil;
-use UserUtil;
-use Zikula_Workflow_Util;
 use Zikula\Core\Doctrine\EntityAccess;
 
 /**
@@ -42,8 +39,12 @@ use Zikula\Core\Doctrine\EntityAccess;
 abstract class AbstractAvatarEntity extends EntityAccess
 {
     /**
-     * Hook standard fields behaviour.
-     * Updates createdUserId, updatedUserId, createdDate, updatedDate fields.
+     * Hook entity workflow field and behaviour.
+     */
+    use EntityWorkflowTrait;
+
+    /**
+     * Hook standard fields behaviour embedding createdBy, updatedBy, createdDate, updatedDate fields.
      */
     use StandardFieldsTrait;
 
@@ -57,11 +58,6 @@ abstract class AbstractAvatarEntity extends EntityAccess
      * @var boolean Option to bypass validation if needed
      */
     protected $_bypassValidation = false;
-    
-    /**
-     * @var array The current workflow data of this object
-     */
-    protected $__WORKFLOW__ = [];
     
     /**
      * @ORM\Id
@@ -136,6 +132,14 @@ abstract class AbstractAvatarEntity extends EntityAccess
      * @var string $avatarUploadUrl
      */
     protected $avatarUploadUrl = '';
+    /**
+     * @ORM\Column(length=255)
+     * @Assert\NotBlank()
+     * @Assert\Choice(callback="getSupportedModulesAllowedValues", multiple=false)
+     * @var string $supportedModules
+     */
+    protected $supportedModules = null;
+    
     
     /**
      * @ORM\OneToMany(targetEntity="\MU\ImageModule\Entity\AvatarCategoryEntity", 
@@ -147,7 +151,8 @@ abstract class AbstractAvatarEntity extends EntityAccess
     
     
     /**
-     * Constructor.
+     * AvatarEntity constructor.
+     *
      * Will not be called by Doctrine and can therefore be used
      * for own implementation purposes. It is also possible to add
      * arbitrary arguments as with every other class method.
@@ -156,6 +161,19 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function __construct()
     {
+        $serviceManager = ServiceUtil::getManager();
+        
+        $listHelper = $serviceManager->get('mu_image_module.listentries_helper');
+        
+        $items = [];
+        $listEntries = $listHelper->getSupportedModulesEntriesForAvatar();
+        foreach ($listEntries as $listEntry) {
+            if (true === $listEntry['default']) {
+                $items[] = $listEntry['value'];
+            }
+        }
+        $this->supportedModules = implode('###', $items);
+        
         $this->initWorkflow();
         $this->categories = new ArrayCollection();
     }
@@ -202,28 +220,6 @@ abstract class AbstractAvatarEntity extends EntityAccess
     public function set_bypassValidation($_bypassValidation)
     {
         $this->_bypassValidation = $_bypassValidation;
-    }
-    
-    /**
-     * Returns the __ w o r k f l o w__.
-     *
-     * @return array
-     */
-    public function get__WORKFLOW__()
-    {
-        return $this->__WORKFLOW__;
-    }
-    
-    /**
-     * Sets the __ w o r k f l o w__.
-     *
-     * @param array $__WORKFLOW__
-     *
-     * @return void
-     */
-    public function set__WORKFLOW__($__WORKFLOW__ = [])
-    {
-        $this->__WORKFLOW__ = $__WORKFLOW__;
     }
     
     
@@ -382,6 +378,28 @@ abstract class AbstractAvatarEntity extends EntityAccess
     }
     
     /**
+     * Returns the supported modules.
+     *
+     * @return string
+     */
+    public function getSupportedModules()
+    {
+        return $this->supportedModules;
+    }
+    
+    /**
+     * Sets the supported modules.
+     *
+     * @param string $supportedModules
+     *
+     * @return void
+     */
+    public function setSupportedModules($supportedModules)
+    {
+        $this->supportedModules = isset($supportedModules) ? $supportedModules : '';
+    }
+    
+    /**
      * Returns the categories.
      *
      * @return ArrayCollection[]
@@ -445,8 +463,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function getTitleFromDisplayPattern()
     {
-        $serviceManager = ServiceUtil::getManager();
-        $listHelper = $serviceManager->get('mu_image_module.listentries_helper');
+        $listHelper = ServiceUtil::get('mu_image_module.listentries_helper');
     
         $formattedTitle = ''
                 . $this->getTitle();
@@ -476,69 +493,23 @@ abstract class AbstractAvatarEntity extends EntityAccess
     }
     
     /**
-     * Sets/retrieves the workflow details.
+     * Returns a list of possible choices for the supportedModules list field.
+     * This method is used for validation.
      *
-     * @param boolean $forceLoading load the workflow record
-     *
-     * @throws RuntimeException Thrown if retrieving the workflow object fails
+     * @return array List of allowed choices
      */
-    public function initWorkflow($forceLoading = false)
+    public static function getSupportedModulesAllowedValues()
     {
-        $currentFunc = FormUtil::getPassedValue('func', 'index', 'GETPOST', FILTER_SANITIZE_STRING);
-        $isReuse = FormUtil::getPassedValue('astemplate', '', 'GETPOST', FILTER_SANITIZE_STRING);
-    
-        // apply workflow with most important information
-        $idColumn = 'id';
-        
         $serviceManager = ServiceUtil::getManager();
-        $workflowHelper = $serviceManager->get('mu_image_module.workflow_helper');
-        
-        $schemaName = $workflowHelper->getWorkflowName($this['_objectType']);
-        $this['__WORKFLOW__'] = [
-            'module' => 'MUImageModule',
-            'state' => $this['workflowState'],
-            'obj_table' => $this['_objectType'],
-            'obj_idcolumn' => $idColumn,
-            'obj_id' => $this[$idColumn],
-            'schemaname' => $schemaName
-        ];
-        
-        // load the real workflow only when required (e. g. when func is edit or delete)
-        if ((!in_array($currentFunc, ['index', 'view', 'display']) && empty($isReuse)) || $forceLoading) {
-            $result = Zikula_Workflow_Util::getWorkflowForObject($this, $this['_objectType'], $idColumn, 'MUImageModule');
-            if (!$result) {
-                $flashBag = $serviceManager->get('session')->getFlashBag();
-                $flashBag->add('error', $serviceManager->get('translator.default')->__('Error! Could not load the associated workflow.'));
-            }
+        $helper = $serviceManager->get('mu_image_module.listentries_helper');
+        $listEntries = $helper->getSupportedModulesEntriesForAvatar();
+    
+        $allowedValues = [];
+        foreach ($listEntries as $entry) {
+            $allowedValues[] = $entry['value'];
         }
-        
-        if (!is_object($this['__WORKFLOW__']) && !isset($this['__WORKFLOW__']['schemaname'])) {
-            $workflow = $this['__WORKFLOW__'];
-            $workflow['schemaname'] = $schemaName;
-            $this['__WORKFLOW__'] = $workflow;
-        }
-    }
     
-    /**
-     * Resets workflow data back to initial state.
-     * To be used after cloning an entity object.
-     */
-    public function resetWorkflow()
-    {
-        $this->setWorkflowState('initial');
-    
-        $serviceManager = ServiceUtil::getManager();
-        $workflowHelper = $serviceManager->get('mu_image_module.workflow_helper');
-    
-        $schemaName = $workflowHelper->getWorkflowName($this['_objectType']);
-        $this['__WORKFLOW__'] = [
-            'module' => 'MUImageModule',
-            'state' => $this['workflowState'],
-            'obj_table' => $this['_objectType'],
-            'obj_idcolumn' => 'id',
-            'obj_id' => 0,
-            'schemaname' => $schemaName
-        ];
+        return $allowedValues;
     }
     
     /**
@@ -552,6 +523,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
             return true;
         }
     
+        
         $serviceManager = ServiceUtil::getManager();
     
         $validator = $serviceManager->get('validator');
@@ -639,7 +611,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function __toString()
     {
-        return 'Avatar ' . $this->createCompositeIdentifier();
+        return 'Avatar ' . $this->createCompositeIdentifier() . ': ' . $this->getTitleFromDisplayPattern();
     }
     
     /**
@@ -654,33 +626,37 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function __clone()
     {
-        // If the entity has an identity, proceed as normal.
-        if ($this->id) {
-            // unset identifiers
-            $this->setId(0);
-    
-            // reset Workflow
-            $this->resetWorkflow();
-    
-            // reset upload fields
-            $this->setAvatarUpload('');
-            $this->setAvatarUploadMeta([]);
-    
-            $this->setCreatedDate(null);
-            $this->setCreatedUserId(null);
-            $this->setUpdatedDate(null);
-            $this->setUpdatedUserId(null);
-    
-    
-            // clone categories
-            $categories = $this->categories;
-            $this->categories = new ArrayCollection();
-            foreach ($categories as $c) {
-                $newCat = clone $c;
-                $this->categories->add($newCat);
-                $newCat->setEntity($this);
-            }
+        // if the entity has no identity do nothing, do NOT throw an exception
+        if (!($this->id)) {
+            return;
         }
-        // otherwise do nothing, do NOT throw an exception!
+    
+        // otherwise proceed
+    
+        // unset identifiers
+        $this->setId(0);
+    
+        // reset workflow
+        $this->resetWorkflow();
+    
+        // reset upload fields
+        $this->setAvatarUpload('');
+        $this->setAvatarUploadMeta([]);
+        $this->setAvatarUploadUrl('');
+    
+        $this->setCreatedBy(null);
+        $this->setCreatedDate(null);
+        $this->setUpdatedBy(null);
+        $this->setUpdatedDate(null);
+    
+    
+        // clone categories
+        $categories = $this->categories;
+        $this->categories = new ArrayCollection();
+        foreach ($categories as $c) {
+            $newCat = clone $c;
+            $this->categories->add($newCat);
+            $newCat->setEntity($this);
+        }
     }
 }

@@ -205,9 +205,9 @@ abstract class AbstractAlbumController extends AbstractController
             new Column('myFriends'),
             new Column('notInFrontend'),
             new Column('album'),
-            new Column('createdUserId'),
+            new Column('createdBy'),
             new Column('createdDate'),
-            new Column('updatedUserId'),
+            new Column('updatedBy'),
             new Column('updatedDate'),
         ]);
         
@@ -273,13 +273,13 @@ abstract class AbstractAlbumController extends AbstractController
         
         $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-        $filteredEntities = [];
-        foreach ($entities as $entity) {
-            if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                $filteredEntities[] = $entity;
+            $filteredEntities = [];
+            foreach ($entities as $entity) {
+                if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
+                    $filteredEntities[] = $entity;
+                }
             }
-        }
-        $entities = $filteredEntities;
+            $entities = $filteredEntities;
         }
         
         foreach ($entities as $k => $entity) {
@@ -363,7 +363,6 @@ abstract class AbstractAlbumController extends AbstractController
         $repository->setRequest($request);
         
         $entity = $album;
-        
         
         $entity->initWorkflow();
         

@@ -23,7 +23,7 @@ application "Image" {
         generatePoweredByBacklinksIntoFooterTemplates false
         generateTests false
         writeModelToDocs true
-        skipFiles "Resources/public/images/admin.png"
+        skipFiles "Resources/public/images/admin.png\r\nREADME.md"
         markFiles "composer.json,\r\nImageModuleInstaller.php,\r\nForm/AppSettingsType.php,\r\nResources/views/Config/config.html.twig\r\n"
     }
     entities {
@@ -88,9 +88,10 @@ application "Image" {
                 detectCorrupted true
                 },
                 integer "imageView" {
-                    defaultValue "0"
+                    defaultValue ""
                     mandatory false
                 displayType DISPLAY
+                visible false
                 },
                 boolean "albumImage" {
                     defaultValue ""
@@ -133,6 +134,13 @@ application "Image" {
                     allowPortrait false
                 detectCorrupted true
                 }
+            ,
+                list "supportedModules" {
+                    defaultValue ""
+                    items {
+                        listItem "All" ( "all" )
+                    }
+                }
             }
             actions {
                 mainAction "Index",
@@ -171,6 +179,10 @@ application "Image" {
             ,
                 boolVar "useAvatars",
                 boolVar "useWatermark"
+            ,
+                boolVar "useExtendedFeatures" {
+                    documentation "Do you want to limit creating of albums, subalbums or pictures?\r\nDo want set a group for common albums?\r\nDo you want to give the option to rule the access to albums?\r\n\r\nThen you can enable these features here!"
+                }
             }
         },
         varContainer "Slideshows" {
@@ -202,17 +214,18 @@ application "Image" {
                     documentation "Width for the third additional picure"
                 }, intVar "thirdHeight" {
                     documentation "Height for the third additional picure"
-                },  boolVar "fileNameForTitle" } } ,
+                }
+            }
+        } ,
         varContainer "Avatars" {
             sortOrder 5
             vars {
-                intVar "numberOf"
-            {
-                    value "2"
-                },
-                textVar "configAvatarWidthAndHeight" {
-                    value "200,200;400,400"
+                textVar "numberHeightAndNameOfAvatars" {
+                    documentation "Here you can set, how many avatar sizes with which name you wish."
+                    value "200,thumb;400,view;600,normal"
                 }
+            ,
+                boolVar "shrink"
             }
         }
     ,
@@ -220,12 +233,17 @@ application "Image" {
             sortOrder 2
             vars {
                 intVar "albumEntriesPerPageInBackend" {
+                    documentation "The amount of albums shown per page in the backend"
                     value "10"
                 },
                 intVar "pictureEntriesPerPageInBackend" {
+                    documentation "The amount of pictures shown per page in the backend"
                     value "10"
                 },
-                intVar "avatarEntriesPerPageInBackend",
+                intVar "avatarEntriesPerPageInBackend" {
+                    documentation "The amount of avatars shown per page in the backend"
+                    value "10"
+                },
                 boolVar "countImageView" {
                     value "1"
                 },

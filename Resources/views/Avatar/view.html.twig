@@ -4,10 +4,11 @@
 {% block admin_page_icon 'list-alt' %}
 {% block content %}
 <div class="muimagemodule-avatar muimagemodule-view">
-
+{% if routeArea == 'admin' %}
     {{ block('page_nav_links') }}
+{% endif %}
 
-    {{ include('@MUImageModule/Avatar/viewQuickNav.html.twig') }}{# see template file for available options #}
+    {#{ include('@MUImageModule/Avatar/viewQuickNav.html.twig') }#}{# see template file for available options #}
 
     {% if routeArea == 'admin' %}
     <form action="{{ path('muimagemodule_avatar_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="avatarsViewForm" class="form-horizontal" role="form">
@@ -25,6 +26,7 @@
                 <col id="cTitle" />
                 <col id="cDescription" />
                 <col id="cAvatarUpload" />
+                <col id="cSupportedModules" />
                 <col id="cItemActions" />
             </colgroup>
             <thead>
@@ -47,6 +49,9 @@
                 </th>
                 <th id="hAvatarUpload" scope="col" class="text-left">
                     <a href="{{ sort.avatarUpload.url }}" title="{{ __f('Sort by %s', {'%s': 'avatar upload'}) }}" class="{{ sort.avatarUpload.class }}">{{ __('Avatar upload') }}</a>
+                </th>
+                <th id="hSupportedModules" scope="col" class="text-left">
+                    <a href="{{ sort.supportedModules.url }}" title="{{ __f('Sort by %s', {'%s': 'supported modules'}) }}" class="{{ sort.supportedModules.class }}">{{ __('Supported modules') }}</a>
                 </th>
                 <th id="hItemActions" scope="col" class="text-right z-order-unsorted">{{ __('Actions') }}</th>
             </tr>
@@ -81,6 +86,9 @@
                     </a>
                     {% endif %}
                 </td>
+                <td headers="hSupportedModules" class="text-left">
+                    {{ avatar.supportedModules|muimagemodule_listEntry('avatar', 'supportedModules') }}
+                </td>
                 <td id="itemActions{{ avatar.id }}" headers="hItemActions" class="actions text-right nowrap z-w02">
                     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: avatar, area: routeArea, context: 'view' }) %}
                     <div class="dropdown">
@@ -92,7 +100,7 @@
             </tr>
         {% else %}
             <tr class="z-{{ routeArea == 'admin' ? 'admin' : 'data' }}tableempty">
-                <td class="text-left" colspan="{% if routeArea == 'admin' %}6{% else %}5{% endif %}">
+                <td class="text-left" colspan="{% if routeArea == 'admin' %}7{% else %}6{% endif %}">
             {{ __('No avatars found.') }}
               </td>
             </tr>
@@ -142,27 +150,27 @@
 {% block footer %}
     {{ parent() }}
 
-<script type="text/javascript">
-/* <![CDATA[ */
-    ( function($) {
-        $(document).ready(function() {
-            $('a.lightbox').lightbox();
-            $('.muimagemodule-avatar .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu dropdown-menu-right');
-            $('.muimagemodule-avatar .dropdown > ul a').each(function (index) {
-                $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        ( function($) {
+            $(document).ready(function() {
+                $('a.lightbox').lightbox();
+                $('.muimagemodule-avatar .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu dropdown-menu-right');
+                $('.muimagemodule-avatar .dropdown > ul a').each(function (index) {
+                    $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
+                });
+                $('.muimagemodule-avatar .dropdown > ul a i').addClass('fa-fw');
+                $('.muimagemodule-avatar .dropdown-toggle').removeClass('hidden').dropdown();
+                {% if routeArea == 'admin' %}
+                    {# init the "toggle all" functionality #}
+                    if ($('#toggleAvatars').length > 0) {
+                        $('#toggleAvatars').click(function (event) {
+                            $('.avatars-checkbox').prop('checked', $(this).prop('checked'));
+                        });
+                    }
+                {% endif %}
             });
-            $('.muimagemodule-avatar .dropdown > ul a i').addClass('fa-fw');
-            $('.muimagemodule-avatar .dropdown-toggle').removeClass('hidden').dropdown();
-            {% if routeArea == 'admin' %}
-                {# init the "toggle all" functionality #}
-                if ($('#toggleAvatars').length > 0) {
-                    $('#toggleAvatars').click(function (event) {
-                        $('.avatars-checkbox').prop('checked', $(this).prop('checked'));
-                    });
-                }
-            {% endif %}
-        });
-    })(jQuery);
-/* ]]> */
-</script>
+        })(jQuery);
+    /* ]]> */
+    </script>
 {% endblock %}

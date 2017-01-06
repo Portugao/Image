@@ -157,8 +157,9 @@ abstract class AbstractAvatarFinderType extends AbstractType
                     $this->__('Title') => 'title',
                     $this->__('Description') => 'description',
                     $this->__('Avatar upload') => 'avatarUpload',
+                    $this->__('Supported modules') => 'supportedModules',
                     $this->__('Creation date') => 'createdDate',
-                    $this->__('Creator') => 'createdUserId',
+                    $this->__('Creator') => 'createdBy',
                     $this->__('Update date') => 'updatedDate'
                 ],
                 'choices_as_values' => true,

@@ -87,13 +87,13 @@
     {formlabel for='mUImageModuleFilter' text=$filterLabel cssClass='col-sm-3 control-label'}
     <div class="col-sm-9">
         {formtextinput id='mUImageModuleFilter' dataField='filter' group='data' mandatory=false maxLength=255 cssClass='form-control'}
-        <span class="help-block">
+        {*<span class="help-block">
             <a class="fa fa-filter" data-toggle="modal" data-target="#filterSyntaxModal">{gt text='Show syntax examples' domain='muimagemodule'}</a>
-        </span>
+        </span>*}
     </div>
 </div>
 
-{include file='include_filterSyntaxDialog.tpl'}
+{*include file='include_filterSyntaxDialog.tpl'*}
 
 {pageaddvar name='stylesheet' value='web/bootstrap/css/bootstrap.min.css'}
 {pageaddvar name='stylesheet' value='web/bootstrap/css/bootstrap-theme.min.css'}

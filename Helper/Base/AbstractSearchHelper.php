@@ -117,6 +117,7 @@ abstract class AbstractSearchHelper extends AbstractSearchable
                     $whereArray[] = 'tbl.title';
                     $whereArray[] = 'tbl.description';
                     $whereArray[] = 'tbl.avatarUpload';
+                    $whereArray[] = 'tbl.supportedModules';
                     break;
             }
     
