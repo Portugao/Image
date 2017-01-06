@@ -124,3 +124,9 @@ div.muimagemodule-view .avatar img {
     width: auto;
     max-height: 24px;
 }
+
+/***************OWN********************/
+
+.album-bootstrap-view ul {
+	list-style-type: none;
+}

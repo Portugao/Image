@@ -6,6 +6,8 @@
 <div class="muimagemodule-album muimagemodule-view">
 
     {{ block('page_nav_links') }}
+    
+    {% set extended = getModVar('MUEternizerModule', 'useExtendedFeature') %}
 
     {% if routeArea != 'admin' %}
     <div class="album-bootstrap-view">
@@ -13,31 +15,40 @@
 	<ul class="row">
 		{% for album in items %}
 			{% if album.parent == NULL %}
+			{% if extended == 1 %}
 		    	{% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %}
+		    {% else %}
+		        {% set accessThisAlbum = 1 %}
+		    {% endif %}
 		    	{% if accessThisAlbum == 1 %}
 		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
 		    		<div class="thumbnail album-view-container">
-					{% set albumpicture = muimagemodule_giveImageOfAlbum(albumId=album.id) %}
-					{% if albumpicture is defined %}
+					{#% set albumpicture = muimagemodule_giveImageOfAlbum(albumId=album.id) %#}
+					{% set albumpicture = '' %}
+					{% if albumpicture != '' %}
 					<a data-placement="top" data-toggle="tooltip" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
        				<img src="{#thumb image=albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'#}" alt="">
     				</a>
     				{% else %}
     				<a data-placement="top" data-toggle="tooltip" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
-   					<img src="modules/MUImage/images/placeholder.png" width="300" height="200" />
+   					<img src="/modules/MU/ImageModule/Resources/public/images/placeholder.png" width="300" height="200" />
     				</a>
     				{% endif %}    		 		
     				<div class="caption album-view-info">
-    				<a title="{{ __('Details') }}" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}">
+    				<a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ __('View detail page')|e('html_attr') }}">
     				<i class="fa fa-eye fa-2x"></i>
     				</a>&nbsp;	
     				{% if hasPermission('MUImageModule:Album:', '::', 'ACCESS_EDIT') %}
-    					{% set groupmember = muimagemodule_checkGroupMember(createdBy=album.createdBy.getUid()) %}
-    						{% if coredata.user.getUid() == album.createdBY or groupMember == 1 %}		
-    							<a title="{{ __('Edit') }}" href="{#modurl modname='MUImage' type='user' func='edit' ot='album' id=album.id#}">
+    				    {% if extended == 1 %}
+    					    {% set groupMember = muimagemodule_checkGroupMember(createdBy=album.createdBy.getUid()) %}
+    				    {% else %}
+    				        {% set groupMember = 1 %}
+    				    {% endif %}
+    				    {% if groupMember == 1 %}		
+    					    <a title="{{ __('Edit') }}" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'edit', { 'id': album.id }) }}">
     							<i class="fa fa-pencil-square-o fa-2x"></i>
-    							</a>
-    						{% endif %}
+    					    </a>
+    					{% endif %}
     				{% endif %}	
     				<div>		
 					{% if album.children is defined and album.children != null and album.children|length > 0 %}			    
@@ -47,7 +58,7 @@
 					{% endif %}
 					</div>
 					<p>
-					{{ __('Pictures') }}: {album.picture|length}
+					{{ __('Pictures') }}: {{ album.pictures|length }}
            			</p>			
     				</div>			
 					</div>
@@ -57,11 +68,15 @@
 	    {% endfor %}
 	       
 	    {% for album in items %}
-	    	{#muimageCheckAlbumAccess albumid=album.id assign='accessThisAlbum'#}
+	        {% if extended == 1 %}
+	    	    {% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %}
+	    	{% else %}
+	    	    {% set accessThisAlbum = 1 %}
+	    	{% endif %}
 				{% if accessThisAlbum == 2 %}
 					<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
 						<div class="thumbnail">
-							<span style="width: 300px; height: 200px; background: url(modules/MUImage/images/placeholder.png) no-repeat center center; background-size: cover;">
+							<span style="width: 300px; height: 200px; background: url(/modules/MU/ImageModule/Resources/public/images/placeholder.png) no-repeat center center; background-size: cover;">
 		        				{#usergetvar name='uname' uid=album.createdUserId assign='username'#}
 		        				{{ __('This album is saved with a password by') }}: {username}<br /><br />
 		        				{#{ set albumid = album.id }#}
