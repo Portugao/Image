@@ -13,6 +13,7 @@
 namespace MU\ImageModule\Helper;
 
 use MU\ImageModule\Helper\Base\AbstractControllerHelper;
+use DataUtil;
 use ModUtil;
 use UserUtil;
 
@@ -70,9 +71,10 @@ class ControllerHelper extends AbstractControllerHelper {
 	public function checkAlbumAccess($albumid) 
 	{
 		// we get the actual user id
-		$userid = UserUtil::getVar('uid');
+		$userid = \UserUtil::getVar('uid');
 		
-		$albumrepository = MUImage_Util_Model::getAlbumRepository();
+		$albumrepository = $this->get('mu_image_module.album_factory')->getRepository();
+		
 		$thisAlbum = $albumrepository->selectById($albumid);
 		
 		$groupMember = self::checkGroupMember($thisAlbum['createdBy']);
@@ -86,7 +88,7 @@ class ControllerHelper extends AbstractControllerHelper {
 		if ($thisAlbum['albumAccess'] == 'all' ) {
 			return 1;
 		}
-		if ($thisAlbum['albumAccess'] == 'users' && UserUtil::isLoggedIn() === true) {
+		if ($thisAlbum['albumAccess'] == 'users' && \UserUtil::isLoggedIn() === true) {
 			return 1;
 		}
 		if ($thisAlbum['albumAccess'] == 'friends') {
@@ -97,7 +99,7 @@ class ControllerHelper extends AbstractControllerHelper {
 			$friends = explode(',', $thisAlbum['myFriends']);
 			if (is_array($friends)) {
 				foreach ($friends as $friend) {
-					$friendIds[] = UserUtil::getIdFromName($friend);
+					$friendIds[] = \UserUtil::getIdFromName($friend);
 				}
 			}
 			if (is_array($friendIds)) {
@@ -107,8 +109,8 @@ class ControllerHelper extends AbstractControllerHelper {
 			}
 		}
 		if ($thisAlbum['albumAccess'] == 'known') {
-			$userid = UserUtil::getVar('uid');
-			if ($thisAlbum['createdUserId'] == $userid) {
+			$userid = \UserUtil::getVar('uid');
+			if ($thisAlbum['createdBy'] == $userid) {
 				return 1;
 			} else {
 				$passwordArray = SessionUtil::getVar('muimagePasswordArray');
@@ -129,23 +131,23 @@ class ControllerHelper extends AbstractControllerHelper {
 		return false;		
 	}
 	
-	public function giveImageOfAlbum($albumid)
+	public function giveImageOfAlbum($albumId)
 	{
-		$repository = MUImage_Util_Model::getPictureRepository();
-		$where = 'tbl.album = ' . DataUtil::formatForStore($albumid);
+		$repository = $this->container->get('mu_image_module.picture_factory')->getRepository();
+		$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
 		$where .= ' AND ';
 		$where .= 'tbl.albumImage = 1';
 		$pictures = $repository->selectWhere($where);
 		
+		
 		if (count($pictures) == 0) {
-			$where = 'tbl.album = ' . DataUtil::formatForStore($albumid);
+			$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
 			$pictures = $repository->selectWhere($where);
 		}
-		
-		if (array_key_exists('assign', $params)) {
-			$view->assign($params['assign'], $pictures[0]);
-			return;
-		}
+		if (count($pictures) >= 0) {
 		return $pictures[0];
+		} else {
+			return '';
+		}
 	}
 }
