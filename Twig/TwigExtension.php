@@ -28,11 +28,13 @@ class TwigExtension extends AbstractTwigExtension
     {
         $functions = parent::getFunctions();
         $functions[] = new \Twig_SimpleFunction('muimagemodule_checkGroupMember', [$this, 'checkGroupMember']);
+        $functions[] = new \Twig_SimpleFunction('muimagemodule_checkAlbumAccess', [$this, 'checkAlbumAccess']);
+        $functions[] = new \Twig_SimpleFunction('muimagemodule_giveImageOfAlbum', [$this, 'giveImageOfAlbum']);
         return $functions;
     }
     
     /**
-     * The mueternizermodule_checkGroupMember function checks if an user is in the the group of the creator.
+     * The muimagemodule_checkGroupMember function checks if an user is in the the group of the creator.
      *
      * @return string The output of the plugin
      */
@@ -42,6 +44,29 @@ class TwigExtension extends AbstractTwigExtension
     
     	return $out;
     }
+    
+    /**
+     * The muimagemodule_checkAlbumAccess function checks if an user has access to an album.
+     *
+     * @return string The output of the plugin
+     */
+    public function checkAlbumAccess($albumId)
+    {
+    	$out = $this->controllerHelper->checkAlbumAccess($albumId);
+    
+    	return $out;
+    }
 
+    /**
+     * The muimagemodule_giveImageOfAlbum function checks if an user has access to an album.
+     *
+     * @return string The output of the plugin
+     */
+    public function giveImageOfAlbum($albumId)
+    {
+    	$out = $this->controllerHelper->giveImageOfAlbum($albumId);
+    
+    	return $out;
+    }
        
 }
