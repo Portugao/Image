@@ -14,7 +14,8 @@
 {% block content %}
     <div class="muimagemodule-picture muimagemodule-display">
 
-
+    <div class="row">
+    <div class="col-md-7">
     <dl>
         {% if picture.title is not empty %}
             <dt>{{ __('Title') }}</dt>
@@ -39,7 +40,7 @@
             </dd>
         {% endif %}
         {% if picture.imageView is not empty %}
-            <dt>{{ __('Image view') }}</dt>
+            <dt>{{ __('Hits') }}</dt>
             <dd>{{ picture.imageView }}</dd>
         {% endif %}
         {% if picture.albumImage is not empty %}
@@ -51,10 +52,12 @@
             {% endif %}
             </dd>
         {% endif %}
+        <div class="hidden">
         {% if picture.pos is not empty %}
             <dt>{{ __('Pos') }}</dt>
             <dd>{{ picture.pos }}</dd>
         {% endif %}
+        </div>
         {% if picture.album|default %}
             <dt>{{ __('Album') }}</dt>
             <dd>
@@ -70,7 +73,11 @@
         {% endif %}
         
     </dl>
+    </div>
+    <div class="col-md-5">
     {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: picture }) }}
+    </div>
+    </div>
 
     {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
         {# include display hooks #}
