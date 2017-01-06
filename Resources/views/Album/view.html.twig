@@ -26,11 +26,11 @@
 					{#% set albumpicture = muimagemodule_giveImageOfAlbum(albumId=album.id) %#}
 					{% set albumpicture = '' %}
 					{% if albumpicture != '' %}
-					<a data-placement="top" data-toggle="tooltip" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
+					<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
        				<img src="{#thumb image=albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'#}" alt="">
     				</a>
     				{% else %}
-    				<a data-placement="top" data-toggle="tooltip" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
+    				<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
    					<img src="/modules/MU/ImageModule/Resources/public/images/placeholder.png" width="300" height="200" />
     				</a>
     				{% endif %}    		 		
