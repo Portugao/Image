@@ -13,11 +13,11 @@
 	<ul class="row">
 		{% for album in items %}
 			{% if album.parent == NULL %}
-		    	{% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumid=album.id) %}
+		    	{% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %}
 		    	{% if accessThisAlbum == 1 %}
 		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
 		    		<div class="thumbnail album-view-container">
-					{% set albumpicture = muimagemodule_giveImageOfAlbum(albumid=album.id) %}
+					{% set albumpicture = muimagemodule_giveImageOfAlbum(albumId=album.id) %}
 					{% if albumpicture is defined %}
 					<a data-placement="top" data-toggle="tooltip" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
        				<img src="{#thumb image=albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'#}" alt="">
@@ -28,7 +28,7 @@
     				</a>
     				{% endif %}    		 		
     				<div class="caption album-view-info">
-    				<a title="{{ __('Details') }}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=album.id}">
+    				<a title="{{ __('Details') }}" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}">
     				<i class="fa fa-eye fa-2x"></i>
     				</a>&nbsp;	
     				{% if hasPermission('MUImageModule:Album:', '::', 'ACCESS_EDIT') %}
