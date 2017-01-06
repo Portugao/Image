@@ -109,6 +109,7 @@ class AvatarController extends AbstractAvatarController
      */
     public function viewAction(Request $request, $sort, $sortdir, $pos, $num)
     {
+    	$num = $this->getVar('avatarEntriesPerPage');
         return parent::viewAction($request, $sort, $sortdir, $pos, $num);
     }
     /**
