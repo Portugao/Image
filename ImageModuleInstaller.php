@@ -142,7 +142,9 @@ class ImageModuleInstaller extends AbstractImageModuleInstaller
             	// nothing to do
             	
             case '1.3.1':
-                // for later updates
+            	// delete modvars
+                $this->delVar('fileNameForTitle');
+                $this->delVar('layout');
                 
         // update successful
         return true;                
