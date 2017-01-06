@@ -8,7 +8,9 @@
             <div id="collapseCategories" class="panel-collapse collapse in">
                 <div class="panel-body">
     {% else %}
+    {% if obj.categories|length > 0 %}
         <h3 class="categories">{{ __('Categories') }}</h3>
+    {% endif %}
     {% endif %}
     <ul class="category-list">
     {% for catMapping in obj.categories %}
