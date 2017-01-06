@@ -2,6 +2,11 @@
 {% extends 'MUImageModule::adminBase.html.twig' %}
 {% block title __('Settings') %}
 {% block admin_page_icon 'wrench' %}
+
+{% set avatars = getModVar('MUImageModule', 'useAvatars') %}
+{% set slideshow1 = getModVar('MUImageModule', 'slideshow1') %}
+{% set watermark = getModVar('MUImageModule', 'useWatermark') %}
+        
 {% block content %}
     <div class="muimagemodule-config">
         {% form_theme form with [
@@ -16,12 +21,18 @@
         <li data-toggle="pill"><a href="#tab2" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
         {% set tabTitle = __('Upload handler') %}
         <li data-toggle="pill"><a href="#tab3" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% if slideshow1 == 1 %}
         {% set tabTitle = __('Slideshows') %}
         <li data-toggle="pill"><a href="#tab4" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% endif %}
+        {% if avatars == 1 %}
         {% set tabTitle = __('Avatars') %}
         <li data-toggle="pill"><a href="#tab5" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% endif %}
+        {% if watermark == 1 %}
         {% set tabTitle = __('Watermark') %}
         <li data-toggle="pill"><a href="#tab6" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
+        {% endif %}
         {% set tabTitle = __('Moderation') %}
         <li data-toggle="pill"><a href="#tab7" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
         {% set tabTitle = __('Listviews') %}
@@ -29,7 +40,7 @@
         {% set tabTitle = __('Images') %}
         <li data-toggle="pill"><a href="#tab9" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a></li>
         </ul>
-
+        
         {{ form_errors(form) }}
         <div class="tab-content">
             {% set tabTitle = __('General') %}
@@ -85,6 +96,9 @@
                     {{ form_row(form.thirdHeight) }}
                 </fieldset>
             </div>
+            {% if slideshow1 == 0 %}
+                <div class="hidden">
+            {% endif %}
             {% set tabTitle = __('Slideshows') %}
             <div role="tabpanel" class="tab-pane fade" id="tab4">
                 <fieldset>
@@ -95,6 +109,12 @@
                     {{ form_row(form.slide1Speed) }}
                 </fieldset>
             </div>
+            {% if slideshow1 == 0 %}
+                </div>
+            {% endif %}
+            {% if avatars == 0 %}
+                <div class="hidden">
+            {% endif %}
             {% set tabTitle = __('Avatars') %}
             <div role="tabpanel" class="tab-pane fade" id="tab5">
                 <fieldset>
@@ -105,6 +125,12 @@
                     {{ form_row(form.shrink) }}
                 </fieldset>
             </div>
+            {% if avatars == 0 %}
+                </div>
+            {% endif %}
+            {% if watermark == 0 %}
+                <div class="hidden">
+            {% endif %}
             {% set tabTitle = __('Watermark') %}
             <div role="tabpanel" class="tab-pane fade" id="tab6">
                 <fieldset>
@@ -118,6 +144,9 @@
                     {{ form_row(form.top) }}
                 </fieldset>
             </div>
+            {% if watermark == 0 %}
+                </div>
+            {% endif %}
             {% set tabTitle = __('Moderation') %}
             <div role="tabpanel" class="tab-pane fade" id="tab7">
                 <fieldset>
