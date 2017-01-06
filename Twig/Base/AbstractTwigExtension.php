@@ -16,6 +16,7 @@ use Twig_Extension;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\ExtensionsModule\Api\VariableApi;
+use MU\ImageModule\Helper\ControllerHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
 use MU\ImageModule\Helper\ViewHelper;
 use MU\ImageModule\Helper\WorkflowHelper;
@@ -46,6 +47,11 @@ abstract class AbstractTwigExtension extends Twig_Extension
      * @var ListEntriesHelper
      */
     protected $listHelper;
+    
+    /**
+     * @var ControllerHelper
+     */
+    protected $controllerHelper;
     
     /**
      * TwigExtension constructor.
