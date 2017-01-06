@@ -32,12 +32,18 @@
                     
                     {{ form_row(form.description) }}
                     
-                    
+                    {% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
+                    {% if extended == 0 %}
+                    <div class="hidden">
+                    {% endif %}
                     {{ form_row(form.albumAccess) }}
                     
                     {{ form_row(form.passwordAccess) }}
                     
                     {{ form_row(form.myFriends) }}
+                    {% if extended == 0 %}
+                    </div>
+                    {% endif %}
                     
                     {{ form_row(form.notInFrontend) }}
                     
@@ -56,14 +62,14 @@
         '@MUImageModule/Album/includeSelectOne.html.twig',
         { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: false }
     ) }}
-    {{ include(
+    {#{ include(
         '@MUImageModule/Album/Many.html.twig',
         { group: 'album', alias: 'albums', aliasReverse: 'album', mandatory: false, idPrefix: 'muimageAlbum_Albums', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: true }
     ) }}
     {{ include(
         '@MUImageModule/Picture/Many.html.twig',
         { group: 'album', alias: 'pictures', aliasReverse: 'album', mandatory: false, idPrefix: 'muimageAlbum_Pictures', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: true }
-    ) }}
+    ) }#}
     {% if mode != 'create' %}
         {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: album, panel: true }) }}
     {% endif %}

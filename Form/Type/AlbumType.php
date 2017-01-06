@@ -14,10 +14,21 @@ namespace MU\ImageModule\Form\Type;
 
 use MU\ImageModule\Form\Type\Base\AbstractAlbumType;
 
+use Symfony\Component\Form\FormBuilderInterface;
+
 /**
  * Album editing form type implementation class.
  */
 class AlbumType extends AbstractAlbumType
 {
-    // feel free to extend the album editing form type class here
+    /**
+     * Adds fields for outgoing relationships.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addOutgoingRelationshipFields(FormBuilderInterface $builder, array $options)
+    {
+		return;
+    }
 }
