@@ -53,10 +53,12 @@
             {% endif %}
             </dd>
         {% endif %}
+        <div class="hidden">
         {% if album.pos is not empty %}
             <dt>{{ __('Pos') }}</dt>
             <dd>{{ album.pos }}</dd>
         {% endif %}
+        </div>
         {% if album.album|default %}
             <dt>{{ __('Album') }}</dt>
             <dd>
