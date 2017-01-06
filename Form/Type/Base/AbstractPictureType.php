@@ -110,6 +110,7 @@ abstract class AbstractPictureType extends AbstractType
      */
     public function addEntityFields(FormBuilderInterface $builder, array $options)
     {
+        
         $builder->add('title', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
@@ -119,6 +120,7 @@ abstract class AbstractPictureType extends AbstractType
             ],'required' => false,
             'max_length' => 255,
         ]);
+        
         $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
             'label' => $this->__('Description') . ':',
             'empty_data' => '',
@@ -128,6 +130,7 @@ abstract class AbstractPictureType extends AbstractType
             ],'required' => false,
             'max_length' => 2000,
         ]);
+        
         $builder->add('imageUpload', 'MU\ImageModule\Form\Type\Field\UploadType', [
             'label' => $this->__('Image upload') . ':',
             'attr' => [
@@ -138,6 +141,7 @@ abstract class AbstractPictureType extends AbstractType
             'allowed_extensions' => 'gif, jpeg, jpg, png',
             'allowed_size' => 0
         ]);
+        
         $builder->add('imageView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
             'label' => $this->__('Image view') . ':',
             'empty_data' => '',
@@ -148,6 +152,7 @@ abstract class AbstractPictureType extends AbstractType
             'max_length' => 11,
             'scale' => 0
         ]);
+        
         $builder->add('albumImage', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
             'label' => $this->__('Album image') . ':',
             'attr' => [
@@ -155,6 +160,7 @@ abstract class AbstractPictureType extends AbstractType
                 'title' => $this->__('album image ?')
             ],'required' => false,
         ]);
+        
         $builder->add('pos', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
             'label' => $this->__('Pos') . ':',
             'empty_data' => '0',

@@ -19,5 +19,29 @@ use MU\ImageModule\Twig\Base\AbstractTwigExtension;
  */
 class TwigExtension extends AbstractTwigExtension
 {
-    // feel free to add your own Twig extension methods here
+    /**
+     * Returns a list of custom Twig functions.
+     *
+     * @return array
+     */
+    public function getFunctions()
+    {
+        $functions = parent::getFunctions();
+        $functions[] = new \Twig_SimpleFunction('muimagemodule_checkGroupMember', [$this, 'checkGroupMember']);
+        return $functions;
+    }
+    
+    /**
+     * The mueternizermodule_checkGroupMember function checks if an user is in the the group of the creator.
+     *
+     * @return string The output of the plugin
+     */
+    public function checkGroupMember($createdBy)
+    {
+    	$out = $this->controllerHelper->checkGroupMember($createdBy);
+    
+    	return $out;
+    }
+
+       
 }

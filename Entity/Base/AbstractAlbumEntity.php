@@ -130,6 +130,16 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     protected $notInFrontend = false;
     
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\Type(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\NotEqualTo(value=0)
+     * @Assert\LessThan(value=2147483647, message="Length of field value must not be higher than 11.")) {
+     * @var integer $pos
+     */
+    protected $pos = 0;
+    
     
     /**
      * @ORM\OneToMany(targetEntity="\MU\ImageModule\Entity\AlbumCategoryEntity", 
@@ -187,6 +197,7 @@ abstract class AbstractAlbumEntity extends EntityAccess
     public function __construct()
     {
         $serviceManager = ServiceUtil::getManager();
+        $this->pos = 1;
         
         $listHelper = $serviceManager->get('mu_image_module.listentries_helper');
         
@@ -448,6 +459,28 @@ abstract class AbstractAlbumEntity extends EntityAccess
         if ($notInFrontend !== $this->notInFrontend) {
             $this->notInFrontend = (bool)$notInFrontend;
         }
+    }
+    
+    /**
+     * Returns the pos.
+     *
+     * @return integer
+     */
+    public function getPos()
+    {
+        return $this->pos;
+    }
+    
+    /**
+     * Sets the pos.
+     *
+     * @param integer $pos
+     *
+     * @return void
+     */
+    public function setPos($pos)
+    {
+        $this->pos = intval($pos);
     }
     
     /**

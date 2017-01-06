@@ -217,14 +217,14 @@ abstract class AbstractEditHandler
         $this->returnTo = $this->request->query->get('returnTo', null);
         if (null === $this->returnTo) {
             // default to referer
-            if ($this->request->getSession()->has('referer')) {
-                $this->returnTo = $this->request->getSession()->get('referer');
-            } elseif ($this->request->headers->has('referer')) {
-                $this->returnTo = $this->request->headers->get('referer');
-                $this->request->getSession()->set('referer', $this->returnTo);
+            if ($this->request->getSession()->has('muimagemoduleReferer')) {
+                $this->returnTo = $this->request->getSession()->get('muimagemoduleReferer');
+            } elseif ($this->request->headers->has('muimagemoduleReferer')) {
+                $this->returnTo = $this->request->headers->get('muimagemoduleReferer');
+                $this->request->getSession()->set('muimagemoduleReferer', $this->returnTo);
             } elseif ($this->request->server->has('HTTP_REFERER')) {
                 $this->returnTo = $this->request->server->get('HTTP_REFERER');
-                $this->request->getSession()->set('referer', $this->returnTo);
+                $this->request->getSession()->set('muimagemoduleReferer', $this->returnTo);
             }
         }
         // store current uri for repeated creations
@@ -424,20 +424,7 @@ abstract class AbstractEditHandler
     {
         $codes = [];
     
-        // index page of admin area
-        $codes[] = 'admin';
-        // admin list of entities
-        $codes[] = 'adminView';
-        // admin display page of treated entity
-        $codes[] = 'adminDisplay';
-        // index page of user area
-        $codes[] = 'user';
-        // user list of entities
-        $codes[] = 'userView';
-        // user display page of treated entity
-        $codes[] = 'userDisplay';
-        // index page of ajax area
-        $codes[] = 'ajax';
+        // to be filled by subclasses
     
         return $codes;
     }

@@ -143,11 +143,8 @@ mUImageModule.itemSelector.onLoad = function (baseId, selectedId)
     // required as a changed object type requires a new instance of the item selector plugin
     jQuery('#mUImageModuleObjectType').change(mUImageModule.itemSelector.onParamChanged);
 
-    if (jQuery('#' + baseId + '_catidMain').length > 0) {
-        jQuery('#' + baseId + '_catidMain').change(mUImageModule.itemSelector.onParamChanged);
-    } else if (jQuery('#' + baseId + '_catidsMain').length > 0) {
-        jQuery('#' + baseId + '_catidsMain').change(mUImageModule.itemSelector.onParamChanged);
-    }
+    jQuery('#' + baseId + '_catidMain').change(mUImageModule.itemSelector.onParamChanged);
+    jQuery('#' + baseId + '_catidsMain').change(mUImageModule.itemSelector.onParamChanged);
     jQuery('#' + baseId + 'Id').change(mUImageModule.itemSelector.onItemChanged);
     jQuery('#' + baseId + 'Sort').change(mUImageModule.itemSelector.onParamChanged);
     jQuery('#' + baseId + 'SortDir').change(mUImageModule.itemSelector.onParamChanged);
@@ -166,18 +163,21 @@ mUImageModule.itemSelector.onParamChanged = function ()
 
 mUImageModule.itemSelector.getItemList = function ()
 {
-    var baseId, params;
+    var baseId;
+    var params;
 
     baseId = image.itemSelector.baseId;
-    params = 'ot=' + baseId + '&';
-    if (jQuery('#' + baseId + '_catidMain').length > 0) {
-        params += 'catidMain=' + jQuery('#' + baseId + '_catidMain').val() + '&';
-    } else if (jQuery('#' + baseId + '_catidsMain').length > 0) {
-        params += 'catidsMain=' + jQuery('#' + baseId + '_catidsMain').val() + '&';
+    params = {
+        ot: baseId
+        sort: jQuery('#' + baseId + 'Sort').val(),
+        sortdir: jQuery('#' + baseId + 'SortDir').val(),
+        q: jQuery('#' + baseId + 'SearchTerm').val()
     }
-    params += 'sort=' + jQuery('#' + baseId + 'Sort').val() + '&' +
-              'sortdir=' + jQuery('#' + baseId + 'SortDir').val() + '&' +
-              'q=' + jQuery('#' + baseId + 'SearchTerm').val();
+    if (jQuery('#' + baseId + '_catidMain').length > 0) {
+        params[catidMain] = jQuery('#' + baseId + '_catidMain').val();
+    } else if (jQuery('#' + baseId + '_catidsMain').length > 0) {
+        params[catidsMain] = jQuery('#' + baseId + '_catidsMain').val();
+    }
 
     jQuery.ajax({
         type: 'POST',

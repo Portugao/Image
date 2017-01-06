@@ -11,21 +11,10 @@
     {{ item.getTitleFromDisplayPattern() }}
 {% if not nolink %}
     </a>
-    <a id="pictureItem{{ item.id }}Display" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="fa fa-search-plus hidden"></a>
+    <a id="pictureItem{{ item.id }}Display" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
 {% endif %}
 {% endspaceless %}
 </h4>
-{% if not nolink %}
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                mUImageInitInlineWindow($('#pictureItem{{ item.id }}Display'), '{{ item.getTitleFromDisplayPattern()|e('js') }}');
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
-{% endif %}
 <br />
 {% if item.imageUpload is not empty and item.imageUploadMeta.isImage %}
     <img src="{{ item.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ relationThumbRuntimeOptions.thumbnail.size[0] }}" height="{{ relationThumbRuntimeOptions.thumbnail.size[1] }}" class="img-rounded" />

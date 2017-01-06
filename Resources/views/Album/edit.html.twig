@@ -3,8 +3,8 @@
 
 {% block header %}
     {{ parent() }}
-    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.EditFunctions.js')) }}
-    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Validation.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Validation.js', 98)) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.EditFunctions.js', 99)) }}
     {{ pageAddAsset('javascript', pagevars.homepath ~ 'vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js') }}
 {% endblock %}
 
@@ -16,7 +16,7 @@
     '@MUImageModule/Form/bootstrap_3.html.twig',
     'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
 ] %}
-{{ form_start(form, {attr: {id: 'albumEditForm'}}) }}
+{{ form_start(form, {attr: {id: 'albumEditForm', class: 'muimage-edit-form'}}) }}
 {{ form_errors(form) }}
 <div class="panel-group" id="accordion">
     <div class="panel panel-default">
@@ -40,6 +40,10 @@
                     {{ form_row(form.myFriends) }}
                     
                     {{ form_row(form.notInFrontend) }}
+                    
+                    <div class="hidden">
+                        {{ form_row(form.pos) }}
+                    </div>
                 </fieldset>
             </div>
         </div>
@@ -52,17 +56,21 @@
         '@MUImageModule/Album/includeSelectOne.html.twig',
         { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: false }
     ) }}
+    {{ include(
+        '@MUImageModule/Album/Many.html.twig',
+        { group: 'album', alias: 'albums', aliasReverse: 'album', mandatory: false, idPrefix: 'muimageAlbum_Albums', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: true }
+    ) }}
+    {{ include(
+        '@MUImageModule/Picture/Many.html.twig',
+        { group: 'album', alias: 'pictures', aliasReverse: 'album', mandatory: false, idPrefix: 'muimageAlbum_Pictures', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: true }
+    ) }}
     {% if mode != 'create' %}
         {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: album, panel: true }) }}
     {% endif %}
     
     {# include display hooks #}
-    {% if mode != 'create' %}
-        {% set hookId = album.id %}
-        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.form_edit', id=hookId) %}
-    {% else %}
-        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.form_edit', id=null) %}
-    {% endif %}
+    {% set hookId = mode != 'create' ? album.id : null %}
+    {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.form_edit', id=hookId) %}
     {% if hooks is iterable and hooks|length > 0 %}
         {% for providerArea, hook in hooks %}
             {% if providerArea != 'provider.scribite.ui_hooks.editor' %}{# fix for #664 #}
@@ -112,62 +120,10 @@
     <script type="text/javascript">
     /* <![CDATA[ */
         
-        var formButtons;
-        var triggerValidation = true;
-        
-        function executeCustomValidationConstraints()
-        {
-            mUImagePerformCustomValidationRules('album', '{% if mode != 'create' %}{{ album.id }}{% endif %}');
-        }
-        
-        function triggerFormValidation()
-        {
-            executeCustomValidationConstraints();
-            if (!document.getElementById('albumEditForm').checkValidity()) {
-                // This does not really submit the form,
-                // but causes the browser to display the error message
-                jQuery('#albumEditForm').find(':submit').first().click();
-            }
-        }
-        
-        function handleFormSubmit (event) {
-            if (triggerValidation) {
-                triggerFormValidation();
-                if (!document.getElementById('albumEditForm').checkValidity()) {
-                    event.preventDefault();
-                    return false;
-                }
-            }
-        
-            // hide form buttons to prevent double submits by accident
-            formButtons.each(function (index) {
-                jQuery(this).addClass('hidden');
-            });
-        
-            return true;
-        }
         
         ( function($) {
             $(document).ready(function() {
-        
-                var allFormFields = $('#albumEditForm input, #albumEditForm select, #albumEditForm textarea');
-                allFormFields.change(executeCustomValidationConstraints);
-        
-                formButtons = $('#albumEditForm .form-buttons input');
-                $('.btn-danger').first().bind('click keypress', function (event) {
-                    if (!window.confirm('{{ __('Really delete this album?') }}')) {
-                        event.preventDefault();
-                    }
-                });
-                $('#albumEditForm button[type=submit]').bind('click keypress', function (event) {
-                    triggerValidation = !$(this).attr('formnovalidate');
-                });
-                $('#albumEditForm').submit(handleFormSubmit);
-        
-                {% if mode != 'create' %}
-                    triggerFormValidation();
-                {% endif %}
-        
+                mUImageInitEditForm('{{ mode }}', '{% if mode != 'create' %}{{ album.id }}{% endif %}');
             });
         })(jQuery);
     /* ]]> */

@@ -15,20 +15,9 @@
     {{ item.getTitleFromDisplayPattern() }}
 {% if not nolink %}
     </a>
-    <a id="albumItem{{ item.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="fa fa-search-plus hidden"></a>
+    <a id="albumItem{{ item.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
 {% endif %}
 {% endspaceless %}
-{% if not nolink %}
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                mUImageInitInlineWindow($('#albumItem{{ item.id }}Display'), '{{ item.getTitleFromDisplayPattern()|e('js') }}');
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
-{% endif %}
     </li>
     {% endif %}
 {% endfor %}

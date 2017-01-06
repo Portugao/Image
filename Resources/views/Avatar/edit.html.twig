@@ -3,8 +3,8 @@
 
 {% block header %}
     {{ parent() }}
-    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.EditFunctions.js')) }}
-    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Validation.js')) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Validation.js', 98)) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.EditFunctions.js', 99)) }}
 {% endblock %}
 
 {% block title mode == 'create' ? __('Create avatar') : __('Edit avatar') %}
@@ -15,7 +15,7 @@
     '@MUImageModule/Form/bootstrap_3.html.twig',
     'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
 ] %}
-{{ form_start(form, {attr: {id: 'avatarEditForm'}}) }}
+{{ form_start(form, {attr: {id: 'avatarEditForm', class: 'muimage-edit-form'}}) }}
 {{ form_errors(form) }}
 <fieldset>
     <legend>{{ __('Content') }}</legend>
@@ -71,63 +71,10 @@
     <script type="text/javascript">
     /* <![CDATA[ */
         
-        var formButtons;
-        var triggerValidation = true;
-        
-        function executeCustomValidationConstraints()
-        {
-            mUImagePerformCustomValidationRules('avatar', '{% if mode != 'create' %}{{ avatar.id }}{% endif %}');
-        }
-        
-        function triggerFormValidation()
-        {
-            executeCustomValidationConstraints();
-            if (!document.getElementById('avatarEditForm').checkValidity()) {
-                // This does not really submit the form,
-                // but causes the browser to display the error message
-                jQuery('#avatarEditForm').find(':submit').first().click();
-            }
-        }
-        
-        function handleFormSubmit (event) {
-            if (triggerValidation) {
-                triggerFormValidation();
-                if (!document.getElementById('avatarEditForm').checkValidity()) {
-                    event.preventDefault();
-                    return false;
-                }
-            }
-        
-            // hide form buttons to prevent double submits by accident
-            formButtons.each(function (index) {
-                jQuery(this).addClass('hidden');
-            });
-        
-            return true;
-        }
         
         ( function($) {
             $(document).ready(function() {
-                $('a.lightbox').lightbox();
-        
-                var allFormFields = $('#avatarEditForm input, #avatarEditForm select, #avatarEditForm textarea');
-                allFormFields.change(executeCustomValidationConstraints);
-        
-                formButtons = $('#avatarEditForm .form-buttons input');
-                $('.btn-danger').first().bind('click keypress', function (event) {
-                    if (!window.confirm('{{ __('Really delete this avatar?') }}')) {
-                        event.preventDefault();
-                    }
-                });
-                $('#avatarEditForm button[type=submit]').bind('click keypress', function (event) {
-                    triggerValidation = !$(this).attr('formnovalidate');
-                });
-                $('#avatarEditForm').submit(handleFormSubmit);
-        
-                {% if mode != 'create' %}
-                    triggerFormValidation();
-                {% endif %}
-        
+                mUImageInitEditForm('{{ mode }}', '{% if mode != 'create' %}{{ avatar.id }}{% endif %}');
                 mUImageInitUploadField('muimagemodule_avatar_avatarUpload_avatarUpload');
             });
         })(jQuery);

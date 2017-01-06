@@ -94,6 +94,7 @@ abstract class AbstractAlbumType extends AbstractType
      */
     public function addEntityFields(FormBuilderInterface $builder, array $options)
     {
+        
         $builder->add('title', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
@@ -103,6 +104,7 @@ abstract class AbstractAlbumType extends AbstractType
             ],'required' => true,
             'max_length' => 255,
         ]);
+        
         $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
             'label' => $this->__('Description') . ':',
             'empty_data' => '',
@@ -112,16 +114,8 @@ abstract class AbstractAlbumType extends AbstractType
             ],'required' => false,
             'max_length' => 2000,
         ]);
-        $builder->add('parent_id', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-            'label' => $this->__('Parent_id') . ':',
-            'empty_data' => '',
-            'attr' => [
-                'class' => ' validate-digits',
-                'title' => $this->__('Enter the parent_id of the album. Only digits are allowed.')
-            ],'required' => false,
-            'max_length' => 11,
-            'scale' => 0
-        ]);
+        
+        
         $listEntries = $this->listHelper->getEntries('album', 'albumAccess');
         $choices = [];
         $choiceAttributes = [];
@@ -141,6 +135,7 @@ abstract class AbstractAlbumType extends AbstractType
             'multiple' => false,
             'expanded' => false
         ]);
+        
         $builder->add('passwordAccess', 'Symfony\Component\Form\Extension\Core\Type\PasswordType', [
             'label' => $this->__('Password access') . ':',
             'empty_data' => '',
@@ -150,6 +145,7 @@ abstract class AbstractAlbumType extends AbstractType
             ],'required' => false,
             'max_length' => 255,
         ]);
+        
         $builder->add('myFriends', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
             'label' => $this->__('My friends') . ':',
             'empty_data' => '',
@@ -159,12 +155,24 @@ abstract class AbstractAlbumType extends AbstractType
             ],'required' => false,
             'max_length' => 255,
         ]);
+        
         $builder->add('notInFrontend', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
             'label' => $this->__('Not in frontend') . ':',
             'attr' => [
                 'class' => '',
                 'title' => $this->__('not in frontend ?')
             ],'required' => false,
+        ]);
+        
+        $builder->add('pos', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            'label' => $this->__('Pos') . ':',
+            'empty_data' => '0',
+            'attr' => [
+                'class' => ' validate-digits',
+                'title' => $this->__('Enter the pos of the album. Only digits are allowed.')
+            ],'required' => true,
+            'max_length' => 11,
+            'scale' => 0
         ]);
     }
 

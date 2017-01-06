@@ -7,8 +7,6 @@
 
     {{ block('page_nav_links') }}
 
-    {{ include('@MUImageModule/Album/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
-    
     {% if routeArea != 'admin' %}
     <div class="album-bootstrap-view">
 	{% if items is defined and items|length > 0 %}
@@ -30,26 +28,26 @@
     				</a>
     				{% endif %}    		 		
     				<div class="caption album-view-info">
-    				<a title="{gt text='Details'}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=album.id}">
+    				<a title="{{ __('Details') }}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=album.id}">
     				<i class="fa fa-eye fa-2x"></i>
     				</a>&nbsp;	
     				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
     					{#muimageCheckGroupMember createdUserId=album.createdUserId assign='groupMember'#}
-    						{% if coredata.user.uid == album.createdUserId || groupMember == 1 %}		
-    							<a title="{gt text='Edit}" href="{modurl modname='MUImage' type='user' func='edit' ot='album' id=album.id}">
+    						{% if coredata.user.getUid() == album.createdBY or groupMember == 1 %}		
+    							<a title="{{ __('Edit') }}" href="{#modurl modname='MUImage' type='user' func='edit' ot='album' id=album.id#}">
     							<i class="fa fa-pencil-square-o fa-2x"></i>
     							</a>
     						{% /if %}
-    				{% /checkpermissionblock %}	
+    				{% endif %}	
     				<div>		
 					{% if album.children is defined and album.children != null and album.children|length > 0 %}			    
-			    		{gt text='SubAlbums'}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=album.children}    
+			    		{{ __('SubAlbums) }}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=album.children}    
 					{% else %}
-						{gt text='No SubAlbums'}
+						{{ __('No SubAlbums') }}
 					{% endif %}
 					</div>
 					<p>
-					{gt text='Pictures'}: {album.picture|@count}
+					{{ __('Pictures') }}: {album.picture|@count}
            			</p>			
     				</div>			
 					</div>
@@ -65,8 +63,8 @@
 						<div class="thumbnail">
 							<span style="width: 300px; heigt: 200px; background: url(modules/MUImage/images/placeholder.png) no-repeat center center; background-size: cover;">
 		        				{usergetvar name='uname' uid=album.createdUserId assign='username'}
-		        				{gt text='This album is saved with a password by'}: {username}<br /><br />
-		        				{gt text=album.id assign='albumid'}
+		        				{{ __('This album is saved with a password by') }}: {username}<br /><br />
+		        				{{ set albumid = __(album.id) }}
                 				{include file='bootstrap/album/enterPassword.tpl' id=albumid}		
 							</span>
    						</div>
@@ -75,9 +73,12 @@
 	    {% endfor %}
 	</ul>
 	{% else %}
-	    {% gt text='No albums' %}
+	    {{ __('No albums') }}
 	{% endif %}
 	</div>
+
+    {% if routeArea == 'admin' %}
+    {{ include('@MUImageModule/Album/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
 
     {% if routeArea == 'admin' %}
     <form action="{{ path('muimagemodule_album_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="albumsViewForm" class="form-horizontal" role="form">
@@ -96,6 +97,7 @@
                 <col id="cPasswordAccess" />
                 <col id="cMyFriends" />
                 <col id="cNotInFrontend" />
+                <col id="cPos" />
                 <col id="cAlbum" />
                 <col id="cItemActions" />
             </colgroup>
@@ -103,7 +105,7 @@
             <tr>
                 {% if routeArea == 'admin' %}
                     <th id="hSelect" scope="col" class="text-center">
-                        <input type="checkbox" id="toggleAlbums" />
+                        <input type="checkbox" class="muimage-mass-toggle" />
                     </th>
                 {% endif %}
                 <th id="hTitle" scope="col" class="text-left">
@@ -127,6 +129,9 @@
                 <th id="hNotInFrontend" scope="col" class="text-center">
                     <a href="{{ sort.notInFrontend.url }}" title="{{ __f('Sort by %s', {'%s': 'not in frontend'}) }}" class="{{ sort.notInFrontend.class }}">{{ __('Not in frontend') }}</a>
                 </th>
+                <th id="hPos" scope="col" class="text-right">
+                    <a href="{{ sort.pos.url }}" title="{{ __f('Sort by %s', {'%s': 'pos'}) }}" class="{{ sort.pos.class }}">{{ __('Pos') }}</a>
+                </th>
                 <th id="hAlbum" scope="col" class="text-left">
                     <a href="{{ sort.album.url }}" title="{{ __f('Sort by %s', {'%s': 'album'}) }}" class="{{ sort.album.class }}">{{ __('Album') }}</a>
                 </th>
@@ -139,7 +144,7 @@
             <tr>
                 {% if routeArea == 'admin' %}
                     <td headers="hSelect" class="text-center">
-                        <input type="checkbox" name="items[]" value="{{ album.id }}" class="albums-checkbox" />
+                        <input type="checkbox" name="items[]" value="{{ album.id }}" class="muimage-toggle-checkbox" />
                     </td>
                 {% endif %}
                 <td headers="hTitle" class="text-left">
@@ -166,21 +171,15 @@
                         <i class="fa fa-times" title="{{ __('No') }}"></i>
                     {% endif %}
                 </td>
+                <td headers="hPos" class="text-right">
+                    {{ album.pos }}
+                </td>
                 <td headers="hAlbum" class="text-left">
                     {% if album.album|default %}
                         <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id }) }}">{% spaceless %}
                           {{ album.album.getTitleFromDisplayPattern() }}
                         {% endspaceless %}</a>
-                        <a id="albumItem{{ album.id }}_rel_{{ album.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': album.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="fa fa-search-plus hidden"></a>
-                        <script type="text/javascript">
-                        /* <![CDATA[ */
-                            ( function($) {
-                                $(document).ready(function() {
-                                    mUImageInitInlineWindow($('#albumItem{{ album.id }}_rel_{{ album.album.id }}Display'), '{{ album.album.getTitleFromDisplayPattern()|e('js') }}');
-                                });
-                            })(jQuery);
-                        /* ]]> */
-                        </script>
+                        <a id="albumItem{{ album.id }}_rel_{{ album.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': album.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ album.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
                     {% else %}
                         {{ __('Not set.') }}
                     {% endif %}
@@ -189,14 +188,13 @@
                     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: album, area: routeArea, context: 'view' }) %}
                     <div class="dropdown">
                         <a id="itemActions{{ album.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
-                        
                         {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
                     </div>
                 </td>
             </tr>
         {% else %}
             <tr class="z-{{ routeArea == 'admin' ? 'admin' : 'data' }}tableempty">
-                <td class="text-left" colspan="{% if routeArea == 'admin' %}10{% else %}9{% endif %}">
+                <td class="text-left" colspan="{% if routeArea == 'admin' %}11{% else %}10{% endif %}">
             {{ __('No albums found.') }}
               </td>
             </tr>
@@ -224,6 +222,7 @@
             </fieldset>
         </div>
     </form>
+    {% endif %}
     {% endif %}
 
     {{ block('display_hooks') }}
@@ -253,30 +252,4 @@
             {{ hook }}
         {% endfor %}
     {% endif % #}
-{% endblock %}
-{% block footer %}
-    {{ parent() }}
-
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                $('.muimagemodule-album .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu dropdown-menu-right');
-                $('.muimagemodule-album .dropdown > ul a').each(function (index) {
-                    $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
-                });
-                $('.muimagemodule-album .dropdown > ul a i').addClass('fa-fw');
-                $('.muimagemodule-album .dropdown-toggle').removeClass('hidden').dropdown();
-                {% if routeArea == 'admin' %}
-                    {# init the "toggle all" functionality #}
-                    if ($('#toggleAlbums').length > 0) {
-                        $('#toggleAlbums').click(function (event) {
-                            $('.albums-checkbox').prop('checked', $(this).prop('checked'));
-                        });
-                    }
-                {% endif %}
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
 {% endblock %}

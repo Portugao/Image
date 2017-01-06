@@ -77,16 +77,7 @@ abstract class AbstractAlbumController extends AbstractController
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
-        
-        if ($isAdmin) {
-            
-            return $this->redirectToRoute('muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view');
-        }
-        
-        if (!$isAdmin) {
-            
-            return $this->redirectToRoute('muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view');
-        }
+        return $this->redirectToRoute('muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view');
         
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
@@ -204,6 +195,7 @@ abstract class AbstractAlbumController extends AbstractController
             new Column('passwordAccess'),
             new Column('myFriends'),
             new Column('notInFrontend'),
+            new Column('pos'),
             new Column('album'),
             new Column('createdBy'),
             new Column('createdDate'),
@@ -532,13 +524,8 @@ abstract class AbstractAlbumController extends AbstractController
             throw new \RuntimeException($this->__('Error! Could not determine workflow actions.'));
         }
         
-        if ($isAdmin) {
-            // redirect to the list of albums
-            $redirectRoute = 'muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view';
-        } else {
-            // redirect to the list of albums
-            $redirectRoute = 'muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view';
-        }
+        // redirect to the list of albums
+        $redirectRoute = 'muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view';
         
         // check whether deletion is allowed
         $deleteActionId = 'delete';

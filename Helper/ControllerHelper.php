@@ -14,10 +14,57 @@ namespace MU\ImageModule\Helper;
 
 use MU\ImageModule\Helper\Base\AbstractControllerHelper;
 
+use ModUtil;
+use UserUtil;
+
 /**
  * Helper implementation class for controller layer methods.
  */
 class ControllerHelper extends AbstractControllerHelper
 {
-    // feel free to add your own convenience methods here
+/**
+ * The muimageCheckGroupMember method is checking if the actual user
+ * is in the same group as user created the relevant item
+ *
+ * @return bool
+ */
+public function checkGroupMember($createdBy)
+{	
+        if (\UserUtil::isLoggedIn() === false) {
+            return false;
+        }
+        $uid = \UserUtil::getVar('uid');
+        $uidGroups = \UserUtil::getGroupListForUser($uid);
+        $uidGroups = explode(',', $uidGroups);
+
+        $createdUserIdGroups = \UserUtil::getGroupListForUser($createdBy);
+        $createdUserIdGroups = explode(',', $createdUserIdGroups);
+
+        if ($uid == $createdBy) {
+            return true;
+        }
+
+        $commonGroup = \ModUtil::getVar('MUImage', 'groupForCommonAlbums');
+
+        if ($commonGroup != 'notset') {
+            foreach ($uidGroups as $uidGroup) {
+                if ($uidGroup == 2) {
+                    return true;
+                }
+                if (in_array($uidGroup, $createdUserIdGroups)) {
+                    if ($uidGroup > 2) {
+                        return true;
+                    }
+                }
+            }
+        } else {
+            foreach ($uidGroups as $uidGroup) {
+                if ($uidGroup == 2) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+}
 }

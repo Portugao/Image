@@ -164,14 +164,16 @@ abstract class AbstractAppSettingsType extends AbstractType
                 'label_attr' => [
                     'class' => 'tooltips',
                     'title' => $this->__('Do you want to limit creating of albums, subalbums or pictures?
-                    Do want set a group for common albums?
+                    Do you want set a group for common albums?
                     Do you want to give the option to rule the access to albums?
+                    Do you want to use Categories for Albums or Avatars?
                     
                     Then you can enable these features here!')
                 ],
                 'help' => $this->__('Do you want to limit creating of albums, subalbums or pictures?
-                Do want set a group for common albums?
+                Do you want set a group for common albums?
                 Do you want to give the option to rule the access to albums?
+                Do you want to use Categories for Albums or Avatars?
                 
                 Then you can enable these features here!'),
                 'required' => false,

@@ -335,17 +335,14 @@ abstract class AbstractNotificationHelper
         $remarks = $this->session->get($this->name . 'AdditionalNotificationRemarks', '');
     
         $urlArgs = $this->entity->createUrlArgs();
-        $displayUrl = '';
-        $editUrl = '';
     
-        if ($this->recipientType == 'moderator' || $this->recipientType == 'superModerator') {
-            $routeArea = 'admin';
-            $displayUrl = $this->router->generate('muimagemodule_' . strtolower($objectType) . '_' . $routeArea . 'display', $urlArgs, true);
-            $editUrl = $this->router->generate('muimagemodule_' . strtolower($objectType) . '_' . $routeArea . 'edit', $urlArgs, true);
-        } elseif ($this->recipientType == 'creator') {
-            $displayUrl = $this->router->generate('muimagemodule_' . strtolower($objectType) . '_display', $urlArgs, true);
-            $editUrl = $this->router->generate('muimagemodule_' . strtolower($objectType) . '_edit', $urlArgs, true);
-        }
+        $hasDisplayAction = in_array($objectType, ['album', 'picture', 'avatar']);
+        $hasEditAction = in_array($objectType, ['album', 'picture', 'avatar']);
+        $routeArea = in_array($this->recipientType, ['moderator', 'superModerator']) ? 'admin' : '';
+        $routePrefix = 'muimagemodule_' . strtolower($objectType) . '_' . $routeArea;
+    
+        $displayUrl = $hasDisplayAction ? $this->router->generate($routePrefix . 'display', $urlArgs, true) : '';
+        $editUrl = $hasEditAction ? $this->router->generate($routePrefix . 'edit', $urlArgs, true) : '';
     
         $emailData = [
             'name' => $this->entity->getTitleFromDisplayPattern(),

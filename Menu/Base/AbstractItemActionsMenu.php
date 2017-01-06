@@ -56,60 +56,56 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
         $this->setTranslator($this->container->get('translator'));
 
         $entity = $options['entity'];
-        $area = $options['area'];
+        $routeArea = $options['area'];
         $context = $options['context'];
 
         $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
         $currentUserApi = $this->container->get('zikula_users_module.current_user');
         $menu->setChildrenAttribute('class', 'list-inline');
 
-        
-        $currentLegacyControllerType = $area != '' ? $area : 'user';
-        $currentFunc = $context;
-        
         if ($entity instanceof AlbumEntity) {
             $component = 'MUImageModule:Album:';
             $instance = $entity['id'] . '::';
+            $routePrefix = 'muimagemodule_album_';
         
-        if ($currentLegacyControllerType == 'admin') {
-            if (in_array($currentFunc, ['index', 'view'])) {
+            if ($routeArea == 'admin') {
                 $menu->addChild($this->__('Preview'), [
-                    'route' => 'muimagemodule_album_display',
+                    'route' => $routePrefix . 'display',
                     'routeParameters' => ['id' => $entity['id']]
                 ])->setAttribute('icon', 'fa fa-search-plus');
                 $menu[$this->__('Preview')]->setLinkAttribute('target', '_blank');
                 $menu[$this->__('Preview')]->setLinkAttribute('title', $this->__('Open preview page'));
+            }
+            if ($context != 'display') {
                 $menu->addChild($this->__('Details'), [
-                    'route' => 'muimagemodule_album_admindisplay',
+                    'route' => $routePrefix . $routeArea . 'display',
                     'routeParameters' => ['id' => $entity['id']]
                 ])->setAttribute('icon', 'fa fa-eye');
                 $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
             }
-            if (in_array($currentFunc, ['index', 'view', 'display'])) {
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
-                    $menu->addChild($this->__('Edit'), [
-                        'route' => 'muimagemodule_album_adminedit',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-pencil-square-o');
-                    $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this album'));
-                    $menu->addChild($this->__('Reuse'), [
-                        'route' => 'muimagemodule_album_adminedit',
-                        'routeParameters' => ['astemplate' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-files-o');
-                    $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new album'));
-                }
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
-                    $menu->addChild($this->__('Delete'), [
-                        'route' => 'muimagemodule_album_admindelete',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-trash-o');
-                    $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this album'));
-                }
+            if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
+                $menu->addChild($this->__('Edit'), [
+                    'route' => $routePrefix . $routeArea . 'edit',
+                    'routeParameters' => ['id' => $entity['id']]
+                ])->setAttribute('icon', 'fa fa-pencil-square-o');
+                $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this album'));
+                $menu->addChild($this->__('Reuse'), [
+                    'route' => $routePrefix . $routeArea . 'edit',
+                    'routeParameters' => ['astemplate' => $entity['id']]
+                ])->setAttribute('icon', 'fa fa-files-o');
+                $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new album'));
             }
-            if ($currentFunc == 'display') {
+            if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
+                $menu->addChild($this->__('Delete'), [
+                    'route' => $routePrefix . $routeArea . 'delete',
+                    'routeParameters' => ['id' => $entity['id']]
+                ])->setAttribute('icon', 'fa fa-trash-o');
+                $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this album'));
+            }
+            if ($context == 'display') {
                 $title = $this->__('Back to overview');
                 $menu->addChild($title, [
-                    'route' => 'muimagemodule_album_adminview'
+                    'route' => $routePrefix . $routeArea . 'view'
                 ])->setAttribute('icon', 'fa fa-reply');
                 $menu[$title]->setLinkAttribute('title', $title);
             }
@@ -122,247 +118,112 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             
                 $title = $this->__('Create album');
                 $menu->addChild($title, [
-                    'route' => 'muimagemodule_album_adminedit',
+                    'route' => 'muimagemodule_album_' . $routeArea . 'edit',
                     'routeParameters' => ['album' => $entity['id']]
                 ])->setAttribute('icon', 'fa fa-plus');
                 $menu[$title]->setLinkAttribute('title', $title);
             
                 $title = $this->__('Create picture');
                 $menu->addChild($title, [
-                    'route' => 'muimagemodule_picture_adminedit',
+                    'route' => 'muimagemodule_picture_' . $routeArea . 'edit',
                     'routeParameters' => ['album' => $entity['id']]
                 ])->setAttribute('icon', 'fa fa-plus');
                 $menu[$title]->setLinkAttribute('title', $title);
             }
-        }
-        if ($currentLegacyControllerType == 'user') {
-            if (in_array($currentFunc, ['index', 'view'])) {
-                $menu->addChild($this->__('Details'), [
-                    'route' => 'muimagemodule_album_display',
-                    'routeParameters' => ['id' => $entity['id']]
-                ])->setAttribute('icon', 'fa fa-eye');
-                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
-            }
-            if (in_array($currentFunc, ['index', 'view', 'display'])) {
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
-                    $menu->addChild($this->__('Edit'), [
-                        'route' => 'muimagemodule_album_edit',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-pencil-square-o');
-                    $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this album'));
-                    $menu->addChild($this->__('Reuse'), [
-                        'route' => 'muimagemodule_album_edit',
-                        'routeParameters' => ['astemplate' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-files-o');
-                    $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new album'));
-                }
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
-                    $menu->addChild($this->__('Delete'), [
-                        'route' => 'muimagemodule_album_delete',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-trash-o');
-                    $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this album'));
-                }
-            }
-            if ($currentFunc == 'display') {
-                $title = $this->__('Back to overview');
-                $menu->addChild($title, [
-                    'route' => 'muimagemodule_album_view'
-                ])->setAttribute('icon', 'fa fa-reply');
-                $menu[$title]->setLinkAttribute('title', $title);
-            }
-            
-            // more actions for adding new related items
-            $authAdmin = $permissionApi->hasPermission($component, $instance, ACCESS_ADMIN);
-            
-            $uid = $currentUserApi->get('uid');
-            if ($authAdmin || (isset($uid) && method_exists($entity, 'getCreatedBy') && $entity->getCreatedBy()->getUid() == $uid)) {
-            
-                $title = $this->__('Create album');
-                $menu->addChild($title, [
-                    'route' => 'muimagemodule_album_edit',
-                    'routeParameters' => ['album' => $entity['id']]
-                ])->setAttribute('icon', 'fa fa-plus');
-                $menu[$title]->setLinkAttribute('title', $title);
-            
-                $title = $this->__('Create picture');
-                $menu->addChild($title, [
-                    'route' => 'muimagemodule_picture_edit',
-                    'routeParameters' => ['album' => $entity['id']]
-                ])->setAttribute('icon', 'fa fa-plus');
-                $menu[$title]->setLinkAttribute('title', $title);
-            }
-        }
         }
         if ($entity instanceof PictureEntity) {
             $component = 'MUImageModule:Picture:';
             $instance = $entity['id'] . '::';
+            $routePrefix = 'muimagemodule_picture_';
         
-        if ($currentLegacyControllerType == 'admin') {
-            if (in_array($currentFunc, ['index', 'view'])) {
+            if ($routeArea == 'admin') {
                 $menu->addChild($this->__('Preview'), [
-                    'route' => 'muimagemodule_picture_display',
+                    'route' => $routePrefix . 'display',
                     'routeParameters' => ['id' => $entity['id']]
                 ])->setAttribute('icon', 'fa fa-search-plus');
                 $menu[$this->__('Preview')]->setLinkAttribute('target', '_blank');
                 $menu[$this->__('Preview')]->setLinkAttribute('title', $this->__('Open preview page'));
+            }
+            if ($context != 'display') {
                 $menu->addChild($this->__('Details'), [
-                    'route' => 'muimagemodule_picture_admindisplay',
+                    'route' => $routePrefix . $routeArea . 'display',
                     'routeParameters' => ['id' => $entity['id']]
                 ])->setAttribute('icon', 'fa fa-eye');
                 $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
             }
-            if (in_array($currentFunc, ['index', 'view', 'display'])) {
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
-                    $menu->addChild($this->__('Edit'), [
-                        'route' => 'muimagemodule_picture_adminedit',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-pencil-square-o');
-                    $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this picture'));
-                    $menu->addChild($this->__('Reuse'), [
-                        'route' => 'muimagemodule_picture_adminedit',
-                        'routeParameters' => ['astemplate' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-files-o');
-                    $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new picture'));
-                }
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
-                    $menu->addChild($this->__('Delete'), [
-                        'route' => 'muimagemodule_picture_admindelete',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-trash-o');
-                    $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this picture'));
-                }
-            }
-            if ($currentFunc == 'display') {
-                $title = $this->__('Back to overview');
-                $menu->addChild($title, [
-                    'route' => 'muimagemodule_picture_adminview'
-                ])->setAttribute('icon', 'fa fa-reply');
-                $menu[$title]->setLinkAttribute('title', $title);
-            }
-        }
-        if ($currentLegacyControllerType == 'user') {
-            if (in_array($currentFunc, ['index', 'view'])) {
-                $menu->addChild($this->__('Details'), [
-                    'route' => 'muimagemodule_picture_display',
+            if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
+                $menu->addChild($this->__('Edit'), [
+                    'route' => $routePrefix . $routeArea . 'edit',
                     'routeParameters' => ['id' => $entity['id']]
-                ])->setAttribute('icon', 'fa fa-eye');
-                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
+                ])->setAttribute('icon', 'fa fa-pencil-square-o');
+                $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this picture'));
+                $menu->addChild($this->__('Reuse'), [
+                    'route' => $routePrefix . $routeArea . 'edit',
+                    'routeParameters' => ['astemplate' => $entity['id']]
+                ])->setAttribute('icon', 'fa fa-files-o');
+                $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new picture'));
             }
-            if (in_array($currentFunc, ['index', 'view', 'display'])) {
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
-                    $menu->addChild($this->__('Edit'), [
-                        'route' => 'muimagemodule_picture_edit',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-pencil-square-o');
-                    $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this picture'));
-                    $menu->addChild($this->__('Reuse'), [
-                        'route' => 'muimagemodule_picture_edit',
-                        'routeParameters' => ['astemplate' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-files-o');
-                    $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new picture'));
-                }
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
-                    $menu->addChild($this->__('Delete'), [
-                        'route' => 'muimagemodule_picture_delete',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-trash-o');
-                    $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this picture'));
-                }
+            if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
+                $menu->addChild($this->__('Delete'), [
+                    'route' => $routePrefix . $routeArea . 'delete',
+                    'routeParameters' => ['id' => $entity['id']]
+                ])->setAttribute('icon', 'fa fa-trash-o');
+                $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this picture'));
             }
-            if ($currentFunc == 'display') {
+            if ($context == 'display') {
                 $title = $this->__('Back to overview');
                 $menu->addChild($title, [
-                    'route' => 'muimagemodule_picture_view'
+                    'route' => $routePrefix . $routeArea . 'view'
                 ])->setAttribute('icon', 'fa fa-reply');
                 $menu[$title]->setLinkAttribute('title', $title);
             }
-        }
         }
         if ($entity instanceof AvatarEntity) {
             $component = 'MUImageModule:Avatar:';
             $instance = $entity['id'] . '::';
+            $routePrefix = 'muimagemodule_avatar_';
         
-        if ($currentLegacyControllerType == 'admin') {
-            if (in_array($currentFunc, ['index', 'view'])) {
+            if ($routeArea == 'admin') {
                 $menu->addChild($this->__('Preview'), [
-                    'route' => 'muimagemodule_avatar_display',
+                    'route' => $routePrefix . 'display',
                     'routeParameters' => ['id' => $entity['id']]
                 ])->setAttribute('icon', 'fa fa-search-plus');
                 $menu[$this->__('Preview')]->setLinkAttribute('target', '_blank');
                 $menu[$this->__('Preview')]->setLinkAttribute('title', $this->__('Open preview page'));
+            }
+            if ($context != 'display') {
                 $menu->addChild($this->__('Details'), [
-                    'route' => 'muimagemodule_avatar_admindisplay',
+                    'route' => $routePrefix . $routeArea . 'display',
                     'routeParameters' => ['id' => $entity['id']]
                 ])->setAttribute('icon', 'fa fa-eye');
                 $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
             }
-            if (in_array($currentFunc, ['index', 'view', 'display'])) {
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
-                    $menu->addChild($this->__('Edit'), [
-                        'route' => 'muimagemodule_avatar_adminedit',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-pencil-square-o');
-                    $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this avatar'));
-                    $menu->addChild($this->__('Reuse'), [
-                        'route' => 'muimagemodule_avatar_adminedit',
-                        'routeParameters' => ['astemplate' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-files-o');
-                    $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new avatar'));
-                }
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
-                    $menu->addChild($this->__('Delete'), [
-                        'route' => 'muimagemodule_avatar_admindelete',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-trash-o');
-                    $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this avatar'));
-                }
-            }
-            if ($currentFunc == 'display') {
-                $title = $this->__('Back to overview');
-                $menu->addChild($title, [
-                    'route' => 'muimagemodule_avatar_adminview'
-                ])->setAttribute('icon', 'fa fa-reply');
-                $menu[$title]->setLinkAttribute('title', $title);
-            }
-        }
-        if ($currentLegacyControllerType == 'user') {
-            if (in_array($currentFunc, ['index', 'view'])) {
-                $menu->addChild($this->__('Details'), [
-                    'route' => 'muimagemodule_avatar_display',
+            if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
+                $menu->addChild($this->__('Edit'), [
+                    'route' => $routePrefix . $routeArea . 'edit',
                     'routeParameters' => ['id' => $entity['id']]
-                ])->setAttribute('icon', 'fa fa-eye');
-                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
+                ])->setAttribute('icon', 'fa fa-pencil-square-o');
+                $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this avatar'));
+                $menu->addChild($this->__('Reuse'), [
+                    'route' => $routePrefix . $routeArea . 'edit',
+                    'routeParameters' => ['astemplate' => $entity['id']]
+                ])->setAttribute('icon', 'fa fa-files-o');
+                $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new avatar'));
             }
-            if (in_array($currentFunc, ['index', 'view', 'display'])) {
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
-                    $menu->addChild($this->__('Edit'), [
-                        'route' => 'muimagemodule_avatar_edit',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-pencil-square-o');
-                    $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this avatar'));
-                    $menu->addChild($this->__('Reuse'), [
-                        'route' => 'muimagemodule_avatar_edit',
-                        'routeParameters' => ['astemplate' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-files-o');
-                    $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new avatar'));
-                }
-                if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
-                    $menu->addChild($this->__('Delete'), [
-                        'route' => 'muimagemodule_avatar_delete',
-                        'routeParameters' => ['id' => $entity['id']]
-                    ])->setAttribute('icon', 'fa fa-trash-o');
-                    $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this avatar'));
-                }
+            if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
+                $menu->addChild($this->__('Delete'), [
+                    'route' => $routePrefix . $routeArea . 'delete',
+                    'routeParameters' => ['id' => $entity['id']]
+                ])->setAttribute('icon', 'fa fa-trash-o');
+                $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this avatar'));
             }
-            if ($currentFunc == 'display') {
+            if ($context == 'display') {
                 $title = $this->__('Back to overview');
                 $menu->addChild($title, [
-                    'route' => 'muimagemodule_avatar_view'
+                    'route' => $routePrefix . $routeArea . 'view'
                 ])->setAttribute('icon', 'fa fa-reply');
                 $menu[$title]->setLinkAttribute('title', $title);
             }
-        }
         }
 
         return $menu;

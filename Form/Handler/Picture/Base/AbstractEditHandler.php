@@ -19,7 +19,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use ModUtil;
 use RuntimeException;
 use System;
-use UserUtil;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
@@ -108,14 +107,27 @@ abstract class AbstractEditHandler extends EditHandler
     {
         $codes = parent::getRedirectCodes();
     
-        // admin list of albums
-        $codes[] = 'adminViewAlbum';
-        // admin display page of treated album
-        $codes[] = 'adminDisplayAlbum';
+        // user index page of picture area
+        $codes[] = 'userIndex';
+        // admin index page of picture area
+        $codes[] = 'adminIndex';
+        // user list of pictures
+        $codes[] = 'userView';
+        // admin list of pictures
+        $codes[] = 'adminView';
+        // user detail page of treated picture
+        $codes[] = 'userDisplay';
+        // admin detail page of treated picture
+        $codes[] = 'adminDisplay';
+    
         // user list of albums
         $codes[] = 'userViewAlbum';
-        // user display page of treated album
+        // admin list of albums
+        $codes[] = 'adminViewAlbum';
+        // user detail page of related album
         $codes[] = 'userDisplayAlbum';
+        // admin detail page of related album
+        $codes[] = 'adminDisplayAlbum';
     
         return $codes;
     }
@@ -142,10 +154,11 @@ abstract class AbstractEditHandler extends EditHandler
         }
     
         $routeArea = array_key_exists('routeArea', $this->templateParameters) ? $this->templateParameters['routeArea'] : '';
+        $routePrefix = 'muimagemodule_' . $this->objectTypeLower . '_' . $routeArea;
     
         // redirect to the list of pictures
         $viewArgs = [];
-        $url = $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_' . $routeArea . 'view', $viewArgs);
+        $url = $this->router->generate($routePrefix . 'view', $viewArgs);
     
         return $url;
     }
@@ -280,8 +293,8 @@ abstract class AbstractEditHandler extends EditHandler
             return $this->repeatReturnUrl;
         }
     
-        if ($this->request->getSession()->has('referer')) {
-            $this->request->getSession()->del('referer');
+        if ($this->request->getSession()->has('muimagemoduleReferer')) {
+            $this->request->getSession()->del('muimagemoduleReferer');
         }
     
         // normal usage, compute return url from given redirect code
@@ -290,47 +303,35 @@ abstract class AbstractEditHandler extends EditHandler
             return $this->getDefaultReturnUrl($args);
         }
     
+        $routeArea = substr($this->returnTo, 0, 5) == 'admin' ? 'admin' : '';
+        $routePrefix = 'muimagemodule_' . $this->objectTypeLower . '_' . $routeArea;
+    
         // parse given redirect code and return corresponding url
         switch ($this->returnTo) {
-            case 'admin':
-                return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_adminindex');
+            case 'userIndex':
+            case 'adminIndex':
+                return $this->router->generate($routePrefix . 'index');
+            case 'userView':
             case 'adminView':
-                return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_adminview');
+                return $this->router->generate($routePrefix . 'view');
+            case 'userDisplay':
             case 'adminDisplay':
                 if ($args['commandName'] != 'delete' && !($this->templateParameters['mode'] == 'create' && $args['commandName'] == 'cancel')) {
                     foreach ($this->idFields as $idField) {
                         $urlArgs[$idField] = $this->idValues[$idField];
                     }
-                    return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_admindisplay', $urlArgs);
-                }
     
-                return $this->getDefaultReturnUrl($args);
-            case 'user':
-                return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_index');
-            case 'userView':
-                return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_view');
-            case 'userDisplay':
-                if ($args['commandName'] != 'delete' && !($this->templateParameters['mode'] == 'create' && $args['commandName'] == 'cancel')) {
-                    foreach ($this->idFields as $idField) {
-                        $urlArgs[$idField] = $this->idValues[$idField];
-                    }
-                    return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_display', $urlArgs);
-                }
-    
-                return $this->getDefaultReturnUrl($args);
-            case 'adminViewAlbum':
-                return $this->router->generate('muimagemodule_album_adminview');
-            case 'adminDisplayAlbum':
-                if (!empty($this->relationPresets['album'])) {
-                    return $this->router->generate('muimagemodule_album_admindisplay',  ['id' => $this->relationPresets['album']]);
+                    return $this->router->generate($routePrefix . 'display', $urlArgs);
                 }
     
                 return $this->getDefaultReturnUrl($args);
             case 'userViewAlbum':
-                return $this->router->generate('muimagemodule_album_view');
+            case 'adminViewAlbum':
+                return $this->router->generate('muimagemodule_album_' . $routeArea . 'view');
             case 'userDisplayAlbum':
+            case 'adminDisplayAlbum':
                 if (!empty($this->relationPresets['album'])) {
-                    return $this->router->generate('muimagemodule_album_display',  ['id' => $this->relationPresets['album']]);
+                    return $this->router->generate('muimagemodule_album_' . $routeArea . 'display',  ['id' => $this->relationPresets['album']]);
                 }
     
                 return $this->getDefaultReturnUrl($args);

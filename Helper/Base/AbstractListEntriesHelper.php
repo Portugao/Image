@@ -359,6 +359,13 @@ abstract class AbstractListEntriesHelper
             'image'   => '',
             'default' => false
         ];
+        $states[] = [
+            'value'   => 'none',
+            'text'    => $this->__('None'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
+        ];
     
         return $states;
     }

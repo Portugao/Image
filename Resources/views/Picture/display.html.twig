@@ -7,23 +7,8 @@
     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: picture, area: routeArea, context: 'display' }) %}
     <div class="dropdown">
         <a id="itemActions{{ picture.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
-        
         {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
     </div>
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                $('h2 .dropdown > ul, h3 .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu');
-                $('h2 .dropdown > ul a, h3 .dropdown > ul a').each(function (index) {
-                    $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
-                });
-                $('h2 .dropdown > ul a i, h3 .dropdown > ul a i').addClass('fa-fw');
-                $('h2 .dropdown-toggle, h3 .dropdown-toggle').removeClass('hidden').dropdown();
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
 {% endblock %}
 {% block admin_page_icon 'eye' %}
 {% block content %}
@@ -77,16 +62,7 @@
                   <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
                     {{ picture.album.getTitleFromDisplayPattern() }}
                   {% endspaceless %}</a>
-                  <a id="albumItem{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="hidden"><span class="fa fa-eye"></span></a>
-                  <script type="text/javascript">
-                  /* <![CDATA[ */
-                      ( function($) {
-                          $(document).ready(function() {
-                              mUImageInitInlineWindow($('albumItem{{ picture.album.id }}Display'), '{{ picture.album.getTitleFromDisplayPattern()|e('js') }}');
-                          });
-                      })(jQuery);
-                  /* ]]> */
-                  </script>
+                  <a id="albumItem{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
               {% else %}
                   {{ picture.album.getTitleFromDisplayPattern() }}
               {% endif %}
@@ -109,19 +85,4 @@
             {{ hook }}
         {% endif %}
     {% endfor %}
-{% endblock %}
-{% block footer %}
-    {{ parent() }}
-
-    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
-        <script type="text/javascript">
-        /* <![CDATA[ */
-            ( function($) {
-                $(document).ready(function() {
-                    $('a.lightbox').lightbox();
-                });
-            })(jQuery);
-        /* ]]> */
-        </script>
-    {% endif %}
 {% endblock %}

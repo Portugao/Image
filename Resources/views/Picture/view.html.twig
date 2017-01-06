@@ -31,7 +31,7 @@
             <tr>
                 {% if routeArea == 'admin' %}
                     <th id="hSelect" scope="col" class="text-center">
-                        <input type="checkbox" id="togglePictures" />
+                        <input type="checkbox" class="muimage-mass-toggle" />
                     </th>
                 {% endif %}
                 <th id="hTitle" scope="col" class="text-left">
@@ -61,7 +61,7 @@
             <tr>
                 {% if routeArea == 'admin' %}
                     <td headers="hSelect" class="text-center">
-                        <input type="checkbox" name="items[]" value="{{ picture.id }}" class="pictures-checkbox" />
+                        <input type="checkbox" name="items[]" value="{{ picture.id }}" class="muimage-toggle-checkbox" />
                     </td>
                 {% endif %}
                 <td headers="hTitle" class="text-left">
@@ -97,16 +97,7 @@
                         <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
                           {{ picture.album.getTitleFromDisplayPattern() }}
                         {% endspaceless %}</a>
-                        <a id="albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="fa fa-search-plus hidden"></a>
-                        <script type="text/javascript">
-                        /* <![CDATA[ */
-                            ( function($) {
-                                $(document).ready(function() {
-                                    mUImageInitInlineWindow($('#albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display'), '{{ picture.album.getTitleFromDisplayPattern()|e('js') }}');
-                                });
-                            })(jQuery);
-                        /* ]]> */
-                        </script>
+                        <a id="albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
                     {% else %}
                         {{ __('Not set.') }}
                     {% endif %}
@@ -115,7 +106,6 @@
                     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: picture, area: routeArea, context: 'view' }) %}
                     <div class="dropdown">
                         <a id="itemActions{{ picture.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
-                        
                         {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
                     </div>
                 </td>
@@ -179,31 +169,4 @@
             {{ hook }}
         {% endfor %}
     {% endif % #}
-{% endblock %}
-{% block footer %}
-    {{ parent() }}
-
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                $('a.lightbox').lightbox();
-                $('.muimagemodule-picture .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu dropdown-menu-right');
-                $('.muimagemodule-picture .dropdown > ul a').each(function (index) {
-                    $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
-                });
-                $('.muimagemodule-picture .dropdown > ul a i').addClass('fa-fw');
-                $('.muimagemodule-picture .dropdown-toggle').removeClass('hidden').dropdown();
-                {% if routeArea == 'admin' %}
-                    {# init the "toggle all" functionality #}
-                    if ($('#togglePictures').length > 0) {
-                        $('#togglePictures').click(function (event) {
-                            $('.pictures-checkbox').prop('checked', $(this).prop('checked'));
-                        });
-                    }
-                {% endif %}
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
 {% endblock %}

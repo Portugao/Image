@@ -1,0 +1,23 @@
+{# purpose of this template: inclusion template for display of related pictures #}
+{% set editImage = '<span class="fa fa-pencil-square-o"></span>' %}
+{% set removeImage = '<span class="fa fa-trash-o"></span>' %}
+
+<input type="hidden" id="{{ idPrefix }}" name="{{ idPrefix }}" value="{% if items is defined and items is iterable %}{% for item in items %}{{ item.id }}{% if not loop.last %},{% endif %}{% endfor %}{% endif %}" />
+<input type="hidden" id="{{ idPrefix }}Mode" name="{{ idPrefix }}Mode" value="1" />
+
+<ul id="{{ idPrefix }}ReferenceList">
+{% if items is defined and items is iterable %}
+{% for item in items %}
+{% set idPrefixItem = idPrefix ~ 'Reference_' ~ item.id %}
+<li id="{{ idPrefixItem }}">
+    {{ item.getTitleFromDisplayPattern() }}
+    <a id="{{ idPrefixItem }}Edit" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit', { 'id': item.id }) }}">{{ editImage }}</a>
+     <a id="{{ idPrefixItem }}Remove" href="javascript:muimageRemoveRelatedItem('{{ idPrefix }}', '{{ item.id }}');">{{ removeImage }}</a>
+    <br />
+    {% if item.imageUpload is not empty and item.imageUploadMeta.isImage %}
+        <img src="{{ item.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ relationThumbRuntimeOptions.thumbnail.size[0] }}" height="{{ relationThumbRuntimeOptions.thumbnail.size[1] }}" class="img-rounded" />
+    {% endif %}
+</li>
+{% endfor %}
+{% endif %}
+</ul>

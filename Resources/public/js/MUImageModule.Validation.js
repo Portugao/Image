@@ -65,28 +65,23 @@ var lastAlbumTitle = '';
  */
 function mUImageUniqueCheck(ucOt, val, elem, ucEx)
 {
-    var params;
-
     if (elem.val() == window['last' + mUImageCapitaliseFirstLetter(ucOt) + mUImageCapitaliseFirstLetter(elem.attr('id')) ]) {
         return true;
     }
 
     window['last' + mUImageCapitaliseFirstLetter(ucOt) + mUImageCapitaliseFirstLetter(elem.attr('id')) ] = elem.val();
 
-    // build parameters object
-    params = {
-        ot: ucOt,
-        fn: encodeURIComponent(elem.attr('id')),
-        v: encodeURIComponent(val),
-        ex: ucEx
-    };
-
     var result = true;
 
     jQuery.ajax({
         type: 'POST',
         url: Routing.generate('muimagemodule_ajax_checkforduplicate'),
-        data: params,
+        data: {
+            ot: ucOt,
+            fn: encodeURIComponent(elem.attr('id')),
+            v: encodeURIComponent(val),
+            ex: ucEx
+        },
         async: false
     }).done(function(res) {
         if (null == res.data || true === res.data.isDuplicate) {
@@ -123,7 +118,7 @@ function mUImageValidateUploadExtension(val, elem)
 /**
  * Runs special validation rules.
  */
-function mUImagePerformCustomValidationRules(objectType, currentEntityId)
+function mUImageExecuteCustomValidationRules(objectType, currentEntityId)
 {
     jQuery('.validate-nospace').each( function() {
         if (!mUImageValidateNoSpace(jQuery(this).val())) {

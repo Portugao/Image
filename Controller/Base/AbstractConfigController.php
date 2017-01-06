@@ -14,16 +14,10 @@ namespace MU\ImageModule\Controller\Base;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use ModUtil;
-use RuntimeException;
 use Zikula\Core\Controller\AbstractController;
-use Zikula\Core\RouteUrl;
-use Zikula\Core\Response\PlainResponse;
-use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
- * config controller class.
+ * Config controller base class.
  */
 abstract class AbstractConfigController extends AbstractController
 {
@@ -70,5 +64,4 @@ abstract class AbstractConfigController extends AbstractController
         // render the config form
         return $this->render('@MUImageModule/Config/config.html.twig', $templateParameters);
     }
-
 }

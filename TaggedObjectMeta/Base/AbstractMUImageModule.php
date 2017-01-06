@@ -53,7 +53,7 @@ abstract class AbstractMUImageModule extends AbstractTaggedObjectMeta
         $repository = $serviceManager->get('mu_image_module.' . $objectType . '_factory')->getRepository();
         $useJoins = false;
     
-        /** TODO support composite identifiers properly at this point */
+        
         $entity = $repository->selectById($objectId, $useJoins);
         if (false === $entity || (!is_array($entity) && !is_object($entity))) {
             return;

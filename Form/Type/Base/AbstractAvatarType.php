@@ -112,6 +112,7 @@ abstract class AbstractAvatarType extends AbstractType
      */
     public function addEntityFields(FormBuilderInterface $builder, array $options)
     {
+        
         $builder->add('title', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
@@ -121,6 +122,7 @@ abstract class AbstractAvatarType extends AbstractType
             ],'required' => true,
             'max_length' => 255,
         ]);
+        
         $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
             'label' => $this->__('Description') . ':',
             'label_attr' => [
@@ -135,6 +137,7 @@ abstract class AbstractAvatarType extends AbstractType
             ],'required' => false,
             'max_length' => 2000,
         ]);
+        
         $builder->add('avatarUpload', 'MU\ImageModule\Form\Type\Field\UploadType', [
             'label' => $this->__('Avatar upload') . ':',
             'attr' => [
@@ -145,6 +148,7 @@ abstract class AbstractAvatarType extends AbstractType
             'allowed_extensions' => 'gif, jpeg, jpg, png',
             'allowed_size' => 0
         ]);
+        
         $listEntries = $this->listHelper->getEntries('avatar', 'supportedModules');
         $choices = [];
         $choiceAttributes = [];

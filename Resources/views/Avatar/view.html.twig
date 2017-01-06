@@ -4,11 +4,10 @@
 {% block admin_page_icon 'list-alt' %}
 {% block content %}
 <div class="muimagemodule-avatar muimagemodule-view">
-{% if routeArea == 'admin' %}
-    {{ block('page_nav_links') }}
-{% endif %}
 
-    {#{ include('@MUImageModule/Avatar/viewQuickNav.html.twig') }#}{# see template file for available options #}
+    {{ block('page_nav_links') }}
+
+    {{ include('@MUImageModule/Avatar/viewQuickNav.html.twig') }}{# see template file for available options #}
 
     {% if routeArea == 'admin' %}
     <form action="{{ path('muimagemodule_avatar_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="avatarsViewForm" class="form-horizontal" role="form">
@@ -33,7 +32,7 @@
             <tr>
                 {% if routeArea == 'admin' %}
                     <th id="hSelect" scope="col" class="text-center">
-                        <input type="checkbox" id="toggleAvatars" />
+                        <input type="checkbox" class="muimage-mass-toggle" />
                     </th>
                 {% endif %}
                 {% if routeArea == 'admin' %}
@@ -62,7 +61,7 @@
             <tr>
                 {% if routeArea == 'admin' %}
                     <td headers="hSelect" class="text-center">
-                        <input type="checkbox" name="items[]" value="{{ avatar.id }}" class="avatars-checkbox" />
+                        <input type="checkbox" name="items[]" value="{{ avatar.id }}" class="muimage-toggle-checkbox" />
                     </td>
                 {% endif %}
                 {% if routeArea == 'admin' %}<td headers="hWorkflowState" class="text-left nowrap">
@@ -93,7 +92,6 @@
                     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: avatar, area: routeArea, context: 'view' }) %}
                     <div class="dropdown">
                         <a id="itemActions{{ avatar.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
-                        
                         {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
                     </div>
                 </td>
@@ -146,31 +144,4 @@
         {% set linkTitle = __('Show all entries') %}
         <a href="{{ path('muimagemodule_avatar_' ~ routeArea ~ 'view', { all: 1 }) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
     {% endif %}
-{% endblock %}
-{% block footer %}
-    {{ parent() }}
-
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                $('a.lightbox').lightbox();
-                $('.muimagemodule-avatar .dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu dropdown-menu-right');
-                $('.muimagemodule-avatar .dropdown > ul a').each(function (index) {
-                    $(this).html($(this).html() + $(this).find('i').first().data('original-title'));
-                });
-                $('.muimagemodule-avatar .dropdown > ul a i').addClass('fa-fw');
-                $('.muimagemodule-avatar .dropdown-toggle').removeClass('hidden').dropdown();
-                {% if routeArea == 'admin' %}
-                    {# init the "toggle all" functionality #}
-                    if ($('#toggleAvatars').length > 0) {
-                        $('#toggleAvatars').click(function (event) {
-                            $('.avatars-checkbox').prop('checked', $(this).prop('checked'));
-                        });
-                    }
-                {% endif %}
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
 {% endblock %}

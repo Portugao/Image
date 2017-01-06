@@ -72,16 +72,6 @@
         {{ form_end(finderForm) }}
     </div>
 
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                mUImageModule.finder.onLoad();
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
-
     {#
     <div class="muimagemodule-finderform">
         <fieldset>
@@ -89,5 +79,18 @@
         </fieldset>
     </div>
     #}
+
+    {% set customJsInit %}
+        <script type="text/javascript">
+        /* <![CDATA[ */
+            ( function($) {
+                $(document).ready(function() {
+                    mUImageModule.finder.onLoad();
+                });
+            })(jQuery);
+        /* ]]> */
+        </script>
+    {% endset %}
+    {{ pageAddAsset('footer', customJsInit) }}
 </body>
 </html>

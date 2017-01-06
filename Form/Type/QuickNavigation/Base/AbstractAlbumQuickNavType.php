@@ -247,6 +247,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
                     $this->__('Password access') => 'passwordAccess',
                     $this->__('My friends') => 'myFriends',
                     $this->__('Not in frontend') => 'notInFrontend',
+                    $this->__('Pos') => 'pos',
                     $this->__('Creation date') => 'createdDate',
                     $this->__('Creator') => 'createdBy',
                     $this->__('Update date') => 'updatedDate'

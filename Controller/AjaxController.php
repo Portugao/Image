@@ -13,37 +13,24 @@
 namespace MU\ImageModule\Controller;
 
 use MU\ImageModule\Controller\Base\AbstractAjaxController;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Zikula\ThemeModule\Engine\Annotation\Theme;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use RuntimeException;
+use Zikula\Core\Response\Ajax\AjaxResponse;
+use Zikula\Core\Response\Ajax\BadDataResponse;
+use Zikula\Core\Response\Ajax\FatalResponse;
+use Zikula\Core\Response\Ajax\NotFoundResponse;
 
 /**
- * Ajax controller class providing navigation and interaction functionality.
+ * Ajax controller implementation class.
  *
  * @Route("/ajax")
  */
 class AjaxController extends AbstractAjaxController
 {
-    /**
-     * This is the default action handling the main area called without defining arguments.
-     *
-     * @Route("/ajax",
-     *        methods = {"GET"}
-     * )
-     *
-     * @param Request  $request      Current request instance
-     *
-     * @return mixed Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     */
-    public function indexAction(Request $request)
-    {
-        return parent::indexAction($request);
-    }
-
     
     /**
      * Retrieve item list for finder selections in Forms, Content type plugin and Scribite.
@@ -94,5 +81,5 @@ class AjaxController extends AbstractAjaxController
         return parent::checkForDuplicateAction($request);
     }
 
-    // feel free to add your own controller methods here
+    // feel free to add your own ajax controller methods here
 }
