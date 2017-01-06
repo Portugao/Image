@@ -13,14 +13,14 @@
 	<ul class="row">
 		{% for album in items %}
 			{% if album.parent == NULL %}
-		    	{muimageCheckAlbumAccess albumid=album.id assign='accessThisAlbum'}
+		    	{% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumid=album.id) %}
 		    	{% if accessThisAlbum == 1 %}
 		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
 		    		<div class="thumbnail album-view-container">
-					{#muimageGiveImageOfAlbum albumid=album.id assign='albumpicture'#}
+					{% set albumpicture = muimagemodule_giveImageOfAlbum(albumid=album.id) %}
 					{% if albumpicture is defined %}
 					<a data-placement="top" data-toggle="tooltip" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
-       				<img src="{thumb image=albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'}" alt="">
+       				<img src="{#thumb image=albumpicture.imageUploadFullPath width=300 height=200 mode='outset' extension='jpg'#}" alt="">
     				</a>
     				{% else %}
     				<a data-placement="top" data-toggle="tooltip" href="{#modurl modname='MUImage' type='user' func='display' ot='album' id=album.id#}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
@@ -31,23 +31,23 @@
     				<a title="{{ __('Details') }}" href="{modurl modname='MUImage' type='user' func='display' ot='album' id=album.id}">
     				<i class="fa fa-eye fa-2x"></i>
     				</a>&nbsp;	
-    				{checkpermissionblock component='MUImage::' instance='.*' level='ACCESS_EDIT'}
-    					{#muimageCheckGroupMember createdUserId=album.createdUserId assign='groupMember'#}
+    				{% if hasPermission('MUImageModule:Album:', '::', 'ACCESS_EDIT') %}
+    					{% set groupmember = muimagemodule_checkGroupMember(createdBy=album.createdBy.getUid()) %}
     						{% if coredata.user.getUid() == album.createdBY or groupMember == 1 %}		
     							<a title="{{ __('Edit') }}" href="{#modurl modname='MUImage' type='user' func='edit' ot='album' id=album.id#}">
     							<i class="fa fa-pencil-square-o fa-2x"></i>
     							</a>
-    						{% /if %}
+    						{% endif %}
     				{% endif %}	
     				<div>		
 					{% if album.children is defined and album.children != null and album.children|length > 0 %}			    
-			    		{{ __('SubAlbums) }}: {include file='bootstrap/album/include_displayItemListMany.tpl' items=album.children}    
+			    		{{ __('SubAlbums') }}: {#include file='bootstrap/album/include_displayItemListMany.tpl' items=album.children#}    
 					{% else %}
 						{{ __('No SubAlbums') }}
 					{% endif %}
 					</div>
 					<p>
-					{{ __('Pictures') }}: {album.picture|@count}
+					{{ __('Pictures') }}: {album.picture|length}
            			</p>			
     				</div>			
 					</div>
@@ -61,21 +61,22 @@
 				{% if accessThisAlbum == 2 %}
 					<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
 						<div class="thumbnail">
-							<span style="width: 300px; heigt: 200px; background: url(modules/MUImage/images/placeholder.png) no-repeat center center; background-size: cover;">
-		        				{usergetvar name='uname' uid=album.createdUserId assign='username'}
+							<span style="width: 300px; height: 200px; background: url(modules/MUImage/images/placeholder.png) no-repeat center center; background-size: cover;">
+		        				{#usergetvar name='uname' uid=album.createdUserId assign='username'#}
 		        				{{ __('This album is saved with a password by') }}: {username}<br /><br />
-		        				{{ set albumid = __(album.id) }}
-                				{include file='bootstrap/album/enterPassword.tpl' id=albumid}		
+		        				{#{ set albumid = album.id }#}
+                				{#include file='bootstrap/album/enterPassword.tpl' id=albumid#}		
 							</span>
    						</div>
    					</li>
-				{% /if %}	    
+				{% endif %}	    
 	    {% endfor %}
 	</ul>
 	{% else %}
 	    {{ __('No albums') }}
 	{% endif %}
 	</div>
+	{% endif %}
 
     {% if routeArea == 'admin' %}
     {{ include('@MUImageModule/Album/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
