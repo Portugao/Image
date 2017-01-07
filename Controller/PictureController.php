@@ -199,6 +199,28 @@ class PictureController extends AbstractPictureController
     {
         return parent::editAction($request);
     }
+    
+    /**
+     * This action provides a handling of edit requests.
+     *
+     * @Route("/picture/multiupload/{albumid}.{_format}",
+     *        requirements = {"albumid" = "\d+", "_format" = "html"},
+     *        defaults = {"albumid" = "0", "_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     *
+     * @param Request  $request      Current request instance
+     *
+     * @return mixed Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function multiuploadAction(Request $request)
+    {
+        return self::multiuploadInternal($request);
+    }
     /**
      * This action provides a handling of simple delete requests in the admin area.
      *
@@ -287,5 +309,38 @@ class PictureController extends AbstractPictureController
         return parent::handleSelectedEntriesAction($request);
     }
 
-    // feel free to add your own controller methods here
+    /**
+     * This method includes the common implementation code for multiupload().
+     */
+    protected function multiuploadInternal(Request $request, $isAdmin = false)
+    {
+        // parameter specifying which type of objects we are treating
+        $objectType = 'picture';
+        $utilArgs = ['controller' => 'picture', 'action' => 'edit'];
+        $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
+        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+            throw new AccessDeniedException();
+        }
+        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        
+        $templateParameters = [
+            'routeArea' => $isAdmin ? 'admin' : ''
+        ];
+        $imageHelper = $this->get('mu_image_module.image_helper');
+        $templateParameters = array_merge($templateParameters, $repository->getAdditionalTemplateParameters($imageHelper, 'controllerAction', $utilArgs));
+        
+        // delegate form processing to the form handler
+        $formHandler = $this->get('mu_image_module.form.handler.picture');
+        $result = $formHandler->processForm($templateParameters);
+        if ($result instanceof RedirectResponse) {
+            return $result;
+        }
+        
+        $viewHelper = $this->get('mu_image_module.view_helper');
+        $templateParameters = $formHandler->getTemplateParameters();
+        $templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
+        
+        // fetch and return the appropriate template
+        return $viewHelper->processTemplate($this->get('twig'), $objectType, 'multiupload', $request, $templateParameters);
+    }
 }
