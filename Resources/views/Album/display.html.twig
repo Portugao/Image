@@ -93,12 +93,12 @@
   				<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
     			<span class="fa fa-caret-down"></span></a>
   				<ul class="dropdown-menu">
-  					<li><a href="#"><i class="fa fa-pencil fa-fw"></i> {{ __('Edit') }}</a></li>
-  					<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> {{ __('Delete') }}</a></li>
+  					<li><a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'edit', { 'id': album.id }) }}"><i class="fa fa-pencil fa-fw"></i> {{ __('Edit') }}</a></li>
+  					<li><a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'delete', { 'id': album.id }) }}"><i class="fa fa-trash-o fa-fw"></i> {{ __('Delete') }}</a></li>
   					{#% if otherPictures == true %#}
-    					<li><a href="#"><i class="fa fa-upload fa-fw"></i> {{ __('Add') }}</a></li>  				
-    					<li><a href="#"><i class="fa fa-upload fa-fw"></i> {{ __('Multi-Add') }}</a></li>
-    					<li><a href="#"><i class="fa fa-file-archive-o fa-fw"></i> {{ __('Zip-Add') }}</a></li>
+    					<li><a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit') }}"><i class="fa fa-upload fa-fw"></i> {{ __('Add') }}</a></li>  				
+    					<li><a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'multiupload') }}"><i class="fa fa-upload fa-fw"></i> {{ __('Multi-Add') }}</a></li>
+    					<li><a href="{#{ path('muimagemodule_picture_' ~ routeArea ~ 'zipupload') }#}"><i class="fa fa-file-archive-o fa-fw"></i> {{ __('Zip-Add') }}</a></li>
   					{#% endif %#}
   				</ul>
 			</div>
