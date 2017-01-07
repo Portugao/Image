@@ -4,12 +4,15 @@
 {% block title %}
     {% set templateTitle = album.getTitleFromDisplayPattern()|default(__('Album')) %}
     {{ templateTitle|notifyFilters('muimagemodule.filter_hooks.albums.filter') }}
+    {% if routeArea == 'admin' %}
     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: album, area: routeArea, context: 'display' }) %}
     <div class="dropdown">
         <a id="itemActions{{ album.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
         {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
     </div>
+    {% endif %}
 {% endblock %}
+{% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
 {% block admin_page_icon 'eye' %}
 {% block content %}
     <div class="muimagemodule-album muimagemodule-display">
@@ -19,8 +22,6 @@
             <div class="col-sm-9">
     {% endif %}
 
-    <div class="row">
-    <div class="col-md-4">
     <dl>
         {% if album.title is not empty %}
             <dt>{{ __('Title') }}</dt>
@@ -76,14 +77,36 @@
         {% endif %}
         
     </dl>
-    </div>
-    <div class="col-md-4">
     {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
         {{ include('@MUImageModule/Helper/includeCategoriesDisplay.html.twig', { obj: album }) }}
     {% endif %}
+    {% if routeArea != 'admin' %}
+    {% if extended == 1 %}
+        {% set groupMember = muimagemodule_checkGroupMember(createdBy=album.createdBy.getUid()) %}
+    {% else %}
+    	{% set groupMember = 1 %}
+    {% endif %}
+	{% if groupMember == 1 %}
+		<div id="action-for-albums" class="col-md-5">
+			<div style="z-index: 5000;" class="btn-group">
+  				<a class="btn btn-default" href="#"><i class="fa fa-user fa-fw"></i>{{ __('Actions for this album') }}</a>
+  				<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+    			<span class="fa fa-caret-down"></span></a>
+  				<ul class="dropdown-menu">
+  					<li><a href="#"><i class="fa fa-pencil fa-fw"></i> {{ __('Edit') }}</a></li>
+  					<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> {{ __('Delete') }}</a></li>
+  					{#% if otherPictures == true %#}
+    					<li><a href="#"><i class="fa fa-upload fa-fw"></i> {{ __('Add') }}</a></li>  				
+    					<li><a href="#"><i class="fa fa-upload fa-fw"></i> {{ __('Multi-Add') }}</a></li>
+    					<li><a href="#"><i class="fa fa-file-archive-o fa-fw"></i> {{ __('Zip-Add') }}</a></li>
+  					{#% endif %#}
+  				</ul>
+			</div>
+	  	</div>
+	{% endif %}
+	{% endif %}<br style="clear: both;" />
     {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: album }) }}
-    </div>
-    </div>
+
 
     {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
         {# include display hooks #}
@@ -96,7 +119,11 @@
     {% endif %}
 </div>
 {% endblock %}
+
 {% block related_items %}
+{% if routeArea != 'admin' %}
+    <div class="hidden">
+{% endif %}
     {% if routeArea == 'admin' %}
         <h4>{{ __('Albums') }}</h4>
     {% else %}
@@ -145,7 +172,11 @@
         <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit', { album: album.id }) }}" title="{{ createTitle }}" class="fa fa-plus">{{ createTitle }}</a>
     </p>
     {% endif %}
+{% if routeArea != 'admin' %}
+    </div>
+{% endif %}
 {% endblock %}
+
 {% block display_hooks %}
     {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.display_view', id=album.id, urlObject=currentUrlObject) %}
     {% for providerArea, hook in hooks %}
