@@ -17,6 +17,7 @@
 			{% if album.parent == NULL %}
 			{% if extended == 1 %}
 		    	{% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %}
+		    	{% set accessThisAlbum = 1 %}
 		    {% else %}
 		        {% set accessThisAlbum = 1 %}
 		    {% endif %}
@@ -40,7 +41,7 @@
     				</a>&nbsp;	
     				{% if hasPermission('MUImageModule:Album:', '::', 'ACCESS_EDIT') %}
     				    {% if extended == 1 %}
-    					    {% set groupMember = muimagemodule_checkGroupMember(createdBy=album.createdBy.getUid()) %}
+    					    {% set groupMember = muimagemodule_checkGroupMember(created=album.createdBy_id) %}
     				    {% else %}
     				        {% set groupMember = 1 %}
     				    {% endif %}
@@ -69,7 +70,8 @@
 	       
 	    {% for album in items %}
 	        {% if extended == 1 %}
-	    	    {% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %}
+	    	    {#% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %#}
+	    	    {% set accessThisAlbum = 1 %}
 	    	{% else %}
 	    	    {% set accessThisAlbum = 1 %}
 	    	{% endif %}
@@ -79,7 +81,7 @@
 							<span style="width: 300px; height: 200px; background: url(/modules/MU/ImageModule/Resources/public/images/placeholder.png) no-repeat center center; background-size: cover;">
 		        				{#usergetvar name='uname' uid=album.createdUserId assign='username'#}
 		        				{{ __('This album is saved with a password by') }}: {username}<br /><br />
-		        				{#{ set albumid = album.id }#}
+		        				{% set albumid = album.id %}
                 				{#include file='bootstrap/album/enterPassword.tpl' id=albumid#}		
 							</span>
    						</div>

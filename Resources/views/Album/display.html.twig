@@ -10,6 +10,14 @@
         <a id="itemActions{{ album.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
         {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
     </div>
+    {% else %}
+    	<div id="album_breadcrump">
+    	{% set breadcrumbs = getModVar('MUImageModule', 'breadcrumbInFrontend') %}
+		{% if breadcrumbs == 1 %}
+		    {% set breadcrumb = muimagemodule_breadcrumb(albumId=album.id) %}
+		    {{ breadcrumb }}		    	
+		{% endif %}
+	</div>
     {% endif %}
 {% endblock %}
 {% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
@@ -84,7 +92,7 @@
     {% endif %}
     {% if routeArea != 'admin' %}
     {% if extended == 1 %}
-        {% set groupMember = muimagemodule_checkGroupMember(createdBy=album.createdBy.getUid()) %}
+        {% set groupMember = muimagemodule_checkGroupMember(created=album.createdBy.getUid()) %}
     {% else %}
     	{% set groupMember = 1 %}
     {% endif %}
@@ -152,7 +160,15 @@
         {% endif %}
     </div>
     {% else %}
-    
+        {{ include(
+            '@MUImageModule/Picture/includeDisplayItemListMany.html.twig',
+             { items: album.pictures }
+        ) }}    
+        
+        {{ include(
+            '@MUImageModule/Album/includeDisplayItemListMany.html.twig',
+             { items: album.albums }
+        ) }}     
     {% endif %}
     {% endif %}
 	
