@@ -89,7 +89,7 @@
     	{% set groupMember = 1 %}
     {% endif %}
 	{% if groupMember == 1 %}
-		<div id="action-for-albums" class="col-md-6">
+		<div id="action-for-albums">
 			<div class="btn-group">
   				<a class="btn btn-default" href="#"><i class="fa fa-user fa-fw"></i>{{ __('Actions for this album') }}</a>
   				<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
@@ -109,11 +109,50 @@
 	{% endif %}<br /><br style="clear: both;" />
 	
 	{% if routeArea != 'admin' %}
-    {% if album.pictures|default %}
-        {{ include(
-            '@MUImageModule/Picture/includeDisplayItemListMany.html.twig',
-            { items: album.pictures }
-        ) }}
+	{% set usePanel = getModVar('MUImageModule', 'kindOfShowSubAlbums') %}
+	{% if usePanel == 'panel' %}
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {% if album.pictures|default %}
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="überschriftEins">
+                <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEins" aria-expanded="true" aria-controls"collapseEins">
+                    {{ __('Pictures') }}
+                </a>
+                </h4>
+                </div>
+                <div id="collapseEins" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="überschriftEins">
+                    <div class="panel-body">
+                        {{ include(
+                        '@MUImageModule/Picture/includeDisplayItemListMany.html.twig',
+                        { items: album.pictures }
+                        ) }}          
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if album.albums|default %}
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="überschriftZwei">
+                <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseZwei" aria-expanded="false" aria-controls"collapseZwei">
+                    {{ __('Sub Albums') }}
+                </a>
+                </h4>
+                </div>
+                <div id="collapseZwei" class="panel-collapse collapse" role="tabpanel" aria-labelledby="überschriftZwei">
+                    <div class="panel-body">
+                        {{ include(
+                        '@MUImageModule/Album/includeDisplayItemListMany.html.twig',
+                        { items: album.albums }
+                        ) }}          
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% else %}
+    
     {% endif %}
     {% endif %}
 	
