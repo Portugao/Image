@@ -28,20 +28,20 @@ class ControllerHelper extends AbstractControllerHelper {
 	 *
 	 * @param unknown $createdBy        	
 	 */
-	public function checkGroupMember($createdBy) {
+	public function checkGroupMember($created) {
 		if (\UserUtil::isLoggedIn () === false) {
 			return false;
 		}
-		$uid = \UserUtil::getVar ( 'uid' );
+		$uid = \UserUtil::getVar('uid');
+		if ($uid == $created) {
+			return true;
+		}
+		
 		$uidGroups = \UserUtil::getGroupListForUser ( $uid );
 		$uidGroups = explode ( ',', $uidGroups );
 		
-		$createdUserIdGroups = \UserUtil::getGroupListForUser ( $createdBy );
+		$createdUserIdGroups = \UserUtil::getGroupListForUser ($created);
 		$createdUserIdGroups = explode ( ',', $createdUserIdGroups );
-		
-		if ($uid == $createdBy) {
-			return true;
-		}
 		
 		$commonGroup = \ModUtil::getVar ( 'MUImage', 'groupForCommonAlbums' );
 		
@@ -73,16 +73,16 @@ class ControllerHelper extends AbstractControllerHelper {
 		// we get the actual user id
 		$userid = \UserUtil::getVar('uid');
 		
-		$albumrepository = $this->get('mu_image_module.album_factory')->getRepository();
+		$albumrepository = $this->container->get('mu_image_module.album_factory')->getRepository();
 		
 		$thisAlbum = $albumrepository->selectById($albumid);
 		
-		$groupMember = self::checkGroupMember($thisAlbum['createdBy']);
+		$groupMember = self::checkGroupMember($thisAlbum['createdBy_id']);
 		if ($groupMember == 1) {
 			return 1;
 		}
 		
-		if ($thisAlbum['notInFrontend'] == 1 && $thisAlbum['createdBy'] != $userid) {
+		if ($thisAlbum['notInFrontend'] == 1 && $thisAlbum['createdBy_id'] != $userid) {
 			return 0;
 		}
 		if ($thisAlbum['albumAccess'] == 'all' ) {
@@ -131,23 +131,76 @@ class ControllerHelper extends AbstractControllerHelper {
 		return false;		
 	}
 	
+	/**
+	 * 
+	 * @param int $albumId
+	 * @return unknown|array
+	 */
 	public function giveImageOfAlbum($albumId)
 	{
-		$repository = $this->container->get('mu_image_module.picture_factory')->getRepository();
+		//$repository = $this->container->get('mu_image_module.picture_factory')->getRepository();
+		$selectionHelper = $this->container->get('mu_image_module.selection_helper');
 		$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
 		$where .= ' AND ';
 		$where .= 'tbl.albumImage = 1';
-		$pictures = $repository->selectWhere($where);
+		$pictures = $selectionHelper->getEntities('picture', [], $where);
 		
 		
 		if (count($pictures) == 0) {
 			$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
-			$pictures = $repository->selectWhere($where);
+			$pictures = $selectionHelper->getEntities('picture', [], $where);
 		}
 		if (count($pictures) >= 0) {
 		return $pictures[0];
 		} else {
 			return '';
 		}
+	}
+	
+	public function breadcrumb($albumId, $params = array())
+	{
+		$dom = ZLanguage::getModuleDomain('MUImage');
+		
+		$repository = MUImage_Util_Model::getAlbumRepository();
+		$album = $repository->selectById($albumId);
+		if (!isset($params['out'])) {
+			$out = '';
+		} else {
+			$out = html_entity_decode($params['out']);
+		}
+		if (!isset($params['loop'])) {
+			$loop = 0;
+		} else {
+			$loop = $params['loop'];
+		}
+		if ($loop == 0) {
+			$thisAlbum = $album;
+		} else {
+			$thisAlbum = $params['thisAlbum'];
+		}
+		
+		if ($album) {
+			$albumParent = $album->getParent();
+			if ($albumParent) {
+				$url = ModUtil::url('MUImage', 'user', 'display', array('ot' => 'album', 'id' => $albumParent['id']));
+				$out = '<li><a href="' . $url . '">' . $albumParent['title'] . '</a></li>' . $out;
+		
+				$params['albumId'] = $albumParent['id'];
+				$params['out'] = $out;
+				$params['loop'] = $loop + 1;
+				$params['thisAlbum'] = $thisAlbum;
+				smarty_function_muimageBreadcrumb($params, $view);
+			} else {
+				$url = ModUtil::url('MUImage', 'user', 'main');
+				if (ModUtil::getVar('MUImage', 'layout') == 'bootstrap') {
+					$out = '<ol class="breadcrumb">' . '<li><a href="' . $url . '">' . __('Albums', $dom) . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol>';
+				} else {
+					$out = '<ol class="breadcrumb-normal">' . '<li><a href="' . $url . '">' . __('Albums', $dom) . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol><br style="clear: both;" />';
+		
+				}
+
+				return $out;
+			}
+		}		
 	}
 }
