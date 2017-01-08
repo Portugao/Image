@@ -548,6 +548,18 @@ ol.breadcrumb-normal > li + li::before {
 
 /**********SORTABLE*********************/
 
+#sortable {
+	list-style-type: none;
+	margin: 25px 0 0 0;
+}
+
+#sortable .ui-state-default {
+	border: none;
+	background: none;
+	margin: 0 5px 5px 0;
+	padding: 0;
+}
+
 #muimage_pictures_content ul {
 	list-style: none;
 }
