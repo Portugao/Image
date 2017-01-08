@@ -14,11 +14,12 @@ namespace MU\ImageModule\Twig;
 
 use MU\ImageModule\Twig\Base\AbstractTwigExtension;
 
+
 /**
  * Twig extension implementation class.
  */
 class TwigExtension extends AbstractTwigExtension
-{
+{	
     /**
      * Returns a list of custom Twig functions.
      *
@@ -30,6 +31,8 @@ class TwigExtension extends AbstractTwigExtension
         $functions[] = new \Twig_SimpleFunction('muimagemodule_checkGroupMember', [$this, 'checkGroupMember']);
         $functions[] = new \Twig_SimpleFunction('muimagemodule_checkAlbumAccess', [$this, 'checkAlbumAccess']);
         $functions[] = new \Twig_SimpleFunction('muimagemodule_giveImageOfAlbum', [$this, 'giveImageOfAlbum']);
+        $functions[] = new \Twig_SimpleFunction('muimagemodule_breadcrumb', [$this, 'breadcrumb']);
+        
         return $functions;
     }
     
@@ -38,9 +41,9 @@ class TwigExtension extends AbstractTwigExtension
      *
      * @return string The output of the plugin
      */
-    public function checkGroupMember($createdBy)
+    public function checkGroupMember($created)
     {
-    	$out = $this->controllerHelper->checkGroupMember($createdBy);
+    	$out = $this->controllerHelper->checkGroupMember($created);
     
     	return $out;
     }
@@ -65,6 +68,18 @@ class TwigExtension extends AbstractTwigExtension
     public function giveImageOfAlbum($albumId)
     {
     	$out = $this->controllerHelper->giveImageOfAlbum($albumId);
+    
+    	return $out;
+    }
+    
+    /**
+     * The muimagemodule_breadcrumb function gives breadcrumb for the actual album.
+     *
+     * @return string The output of the plugin
+     */
+    public function breadcrumb($albumId)
+    {
+    	$out = $this->controllerHelper->breadcrumb($albumId);
     
     	return $out;
     }
