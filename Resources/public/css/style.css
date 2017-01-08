@@ -550,7 +550,6 @@ ol.breadcrumb-normal > li + li::before {
 
 #sortable {
 	list-style-type: none;
-	margin: 25px 0 0 0;
 }
 
 #sortable .ui-state-default {
