@@ -32,6 +32,57 @@ function mUImageInitQuickNavigation()
 }
 
 /**
+ * Toggles a certain flag for a given item.
+ */
+function mUImageToggleFlag(objectType, fieldName, itemId)
+{
+    jQuery.ajax({
+        type: 'POST',
+        url: Routing.generate('muimagemodule_ajax_toggleflag'),
+        data: {
+            ot: objectType,
+            field: fieldName,
+            id: itemId
+        }
+    }).done(function(res) {
+        // get data returned by the ajax response
+        var idSuffix;
+        var toggleLink;
+        var data;
+
+        idSuffix = mUImageCapitaliseFirstLetter(fieldName) + itemId;
+        toggleLink = jQuery('#toggle' + idSuffix);
+        data = res.data;
+
+        if (data.message) {
+            mUImageSimpleAlert(toggleLink, Translator.__('Success'), data.message, 'toggle' + idSuffix + 'DoneAlert', 'success');
+        }
+
+        toggleLink.find('.fa-check').toggleClass('hidden', true !== data.state);
+        toggleLink.find('.fa-times').toggleClass('hidden', true === data.state);
+    });
+}
+
+/**
+ * Initialise ajax-based toggle for all affected boolean fields on the current page.
+ */
+function mUImageInitAjaxToggles()
+{
+    jQuery('.muimage-ajax-toggle').click(function (event) {
+        var objectType;
+        var fieldName;
+        var itemId;
+
+        event.preventDefault();
+        objectType = jQuery(this).data('object-type');
+        fieldName = jQuery(this).data('field-name');
+        itemId = jQuery(this).data('item-id');
+
+        mUImageToggleFlag(objectType, fieldName, itemId);
+    }).removeClass('hidden');
+}
+
+/**
  * Simulates a simple alert using bootstrap.
  */
 function mUImageSimpleAlert(beforeElem, title, content, alertId, cssClass)
@@ -173,8 +224,10 @@ jQuery(document).ready(function() {
         mUImageInitQuickNavigation();
         mUImageInitMassToggle();
         mUImageInitItemActions('view');
+        mUImageInitAjaxToggles();
     } else if (isDisplayPage) {
         mUImageInitItemActions('display');
+        mUImageInitAjaxToggles();
     }
 
     mUImageInitQuickViewModals();
