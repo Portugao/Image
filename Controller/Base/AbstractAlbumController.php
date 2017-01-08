@@ -12,7 +12,7 @@
 
 namespace MU\ImageModule\Controller\Base;
 
-use MU\ImageModule\Entity\AlbumEntity;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -20,14 +20,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use ModUtil;
-use RuntimeException;
-use System;
 use Zikula\Component\SortableColumns\Column;
 use Zikula\Component\SortableColumns\SortableColumns;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\Core\RouteUrl;
-use Zikula\Core\Response\PlainResponse;
+use MU\ImageModule\Entity\AlbumEntity;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
@@ -39,9 +36,9 @@ abstract class AbstractAlbumController extends AbstractController
      * This is the default action handling the main admin area called without defining arguments.
      * @Cache(expires="+7 days", public=true)
      *
-     * @param Request  $request      Current request instance
+     * @param Request $request Current request instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -54,9 +51,9 @@ abstract class AbstractAlbumController extends AbstractController
      * This is the default action handling the main area called without defining arguments.
      * @Cache(expires="+7 days", public=true)
      *
-     * @param Request  $request      Current request instance
+     * @param Request $request Current request instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -72,16 +69,15 @@ abstract class AbstractAlbumController extends AbstractController
     {
         // parameter specifying which type of objects we are treating
         $objectType = 'album';
-        $utilArgs = ['controller' => 'album', 'action' => 'main'];
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_OVERVIEW;
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
-        return $this->redirectToRoute('muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view');
-        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
+        
+        return $this->redirectToRoute('muimagemodule_album_' . $templateParameters['routeArea'] . 'view');
         
         // return index template
         return $this->render('@MUImageModule/Album/index.html.twig', $templateParameters);
@@ -90,13 +86,13 @@ abstract class AbstractAlbumController extends AbstractController
      * This action provides an item list overview in the admin area.
      * @Cache(expires="+2 hours", public=false)
      *
-     * @param Request  $request      Current request instance
-     * @param string  $sort         Sorting field
-     * @param string  $sortdir      Sorting direction
-     * @param int     $pos          Current pager position
-     * @param int     $num          Amount of entries to display
+     * @param Request $request Current request instance
+     * @param string $sort         Sorting field
+     * @param string $sortdir      Sorting direction
+     * @param int    $pos          Current pager position
+     * @param int    $num          Amount of entries to display
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -109,13 +105,13 @@ abstract class AbstractAlbumController extends AbstractController
      * This action provides an item list overview.
      * @Cache(expires="+2 hours", public=false)
      *
-     * @param Request  $request      Current request instance
-     * @param string  $sort         Sorting field
-     * @param string  $sortdir      Sorting direction
-     * @param int     $pos          Current pager position
-     * @param int     $num          Amount of entries to display
+     * @param Request $request Current request instance
+     * @param string $sort         Sorting field
+     * @param string $sortdir      Sorting direction
+     * @param int    $pos          Current pager position
+     * @param int    $num          Amount of entries to display
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -131,60 +127,20 @@ abstract class AbstractAlbumController extends AbstractController
     {
         // parameter specifying which type of objects we are treating
         $objectType = 'album';
-        $utilArgs = ['controller' => 'album', 'action' => 'view'];
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
-        $repository->setRequest($request);
-        $viewHelper = $this->get('mu_image_module.view_helper');
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
-        $imageHelper = $this->get('mu_image_module.image_helper');
-        $selectionHelper = $this->get('mu_image_module.selection_helper');
-        
-        // convenience vars to make code clearer
-        $currentUrlArgs = [];
-        $where = '';
-        
-        $showOwnEntries = $request->query->getInt('own', $this->getVar('showOnlyOwnEntries', 0));
-        $showAllEntries = $request->query->getInt('all', 0);
-        
-        $templateParameters['own'] = $showAllEntries;
-        $templateParameters['all'] = $showOwnEntries;
-        if ($showAllEntries == 1) {
-            $currentUrlArgs['all'] = 1;
-        }
-        if ($showOwnEntries == 1) {
-            $currentUrlArgs['own'] = 1;
-        }
-        
-        $additionalParameters = $repository->getAdditionalTemplateParameters($imageHelper, 'controllerAction', $utilArgs);
-        
-        $resultsPerPage = 0;
-        if ($showAllEntries != 1) {
-            // the number of items displayed on a page for pagination
-            $resultsPerPage = $num;
-            if (in_array($resultsPerPage, [0, 10])) {
-                $resultsPerPage = $this->getVar($objectType . 'EntriesPerPage', 10);
-            }
-        }
-        
-        // parameter for used sorting field
-        if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
-            $sort = $repository->getDefaultSortingField();
-            System::queryStringSetVar('sort', $sort);
-            $request->query->set('sort', $sort);
-            // set default sorting in route parameters (e.g. for the pager)
-            $routeParams = $request->attributes->get('_route_params');
-            $routeParams['sort'] = $sort;
-            $request->attributes->set('_route_params', $routeParams);
-        }
+        $controllerHelper = $this->get('mu_image_module.controller_helper');
+        $viewHelper = $this->get('mu_image_module.view_helper');
         
         // parameter for used sort order
         $sortdir = strtolower($sortdir);
+        $request->query->set('sort', $sort);
+        $request->query->set('sortdir', $sortdir);
         
         $sortableColumns = new SortableColumns($this->get('router'), 'muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view', 'sort', 'sortdir');
         $sortableColumns->addColumns([
@@ -203,115 +159,29 @@ abstract class AbstractAlbumController extends AbstractController
             new Column('updatedDate'),
         ]);
         
-        $additionalUrlParameters = [
-            'all' => $showAllEntries,
-            'own' => $showOwnEntries,
-            'num' => $resultsPerPage
-        ];
-        foreach ($additionalParameters as $parameterName => $parameterValue) {
-            if (false !== stripos($parameterName, 'thumbRuntimeOptions')) {
-                continue;
-            }
-            $additionalUrlParameters[$parameterName] = $parameterValue;
-        }
-        
-        $templateParameters['sort'] = $sort;
-        $templateParameters['sortdir'] = $sortdir;
-        $templateParameters['num'] = $resultsPerPage;
-        
-        $tpl = '';
-        if ($request->isMethod('POST')) {
-            $tpl = $request->request->getAlnum('tpl', '');
-        } elseif ($request->isMethod('GET')) {
-            $tpl = $request->query->getAlnum('tpl', '');
-        }
-        $templateParameters['tpl'] = $tpl;
-        
-        $quickNavForm = $this->createForm('MU\ImageModule\Form\Type\QuickNavigation\\' . ucfirst($objectType) . 'QuickNavType', $templateParameters);
-        if ($quickNavForm->handleRequest($request) && $quickNavForm->isSubmitted()) {
-            $quickNavData = $quickNavForm->getData();
-            foreach ($quickNavData as $fieldName => $fieldValue) {
-                if ($fieldName == 'routeArea') {
-                    continue;
-                }
-                if ($fieldName == 'all') {
-                    $showAllEntries = $additionalUrlParameters['all'] = $templateParameters['all'] = $fieldValue;
-                } elseif ($fieldName == 'own') {
-                    $showOwnEntries = $additionalUrlParameters['own'] = $templateParameters['own'] = $fieldValue;
-                } elseif ($fieldName == 'num') {
-                    $resultsPerPage = $additionalUrlParameters['num'] = $fieldValue;
-                } else {
-                    // set filter as query argument, fetched inside repository
-                    $request->query->set($fieldName, $fieldValue);
-                }
-            }
-        }
-        $sortableColumns->setOrderBy($sortableColumns->getColumn($sort), strtoupper($sortdir));
-        $sortableColumns->setAdditionalUrlParameters($additionalUrlParameters);
-        
-        if ($showAllEntries == 1) {
-            // retrieve item list without pagination
-            $entities = $selectionHelper->getEntities($objectType, [], $where, $sort . ' ' . $sortdir);
-        } else {
-            // the current offset which is used to calculate the pagination
-            $currentPage = $pos;
-        
-            // retrieve item list with pagination
-            list($entities, $objectCount) = $selectionHelper->getEntitiesPaginated($objectType, $where, $sort . ' ' . $sortdir, $currentPage, $resultsPerPage);
-        
-            $templateParameters['currentPage'] = $currentPage;
-            $templateParameters['pager'] = ['numitems' => $objectCount, 'itemsperpage' => $resultsPerPage];
-        }
+        $templateParameters = $controllerHelper->processViewActionParameters($objectType, $sortableColumns, $templateParameters, true);
         
         $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-            $filteredEntities = [];
-            foreach ($entities as $entity) {
-                if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                    $filteredEntities[] = $entity;
-                }
-            }
-            $entities = $filteredEntities;
+            $templateParameters['items'] = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($templateParameters['items']);
         }
         
-        foreach ($entities as $k => $entity) {
+        foreach ($templateParameters['items'] as $k => $entity) {
             $entity->initWorkflow();
         }
         
-        // build RouteUrl instance for display hooks
-        $currentUrlArgs['_locale'] = $request->getLocale();
-        $currentUrlObject = new RouteUrl('muimagemodule_album_' . /*($isAdmin ? 'admin' : '') . */'view', $currentUrlArgs);
-        
-        $templateParameters['items'] = $entities;
-        $templateParameters['sort'] = $sort;
-        $templateParameters['sortdir'] = $sortdir;
-        $templateParameters['num'] = $resultsPerPage;
-        $templateParameters['currentUrlObject'] = $currentUrlObject;
-        $templateParameters = array_merge($templateParameters, $additionalParameters);
-        
-        $templateParameters['sort'] = $sortableColumns->generateSortableColumns();
-        $templateParameters['quickNavForm'] = $quickNavForm->createView();
-        
-        $templateParameters['showAllEntries'] = $templateParameters['all'];
-        $templateParameters['showOwnEntries'] = $templateParameters['own'];
-        
-        $templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
-        
-        $modelHelper = $this->get('mu_image_module.model_helper');
-        $templateParameters['canBeCreated'] = $modelHelper->canBeCreated($objectType);
-        
         // fetch and return the appropriate template
-        return $viewHelper->processTemplate($this->get('twig'), $objectType, 'view', $request, $templateParameters);
+        return $viewHelper->processTemplate($objectType, 'view', $templateParameters);
     }
     /**
      * This action provides a item detail view in the admin area.
      * @ParamConverter("album", class="MUImageModule:AlbumEntity", options={"id" = "id", "repository_method" = "selectById"})
      * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      *
-     * @param Request  $request      Current request instance
-     * @param AlbumEntity $album      Treated album instance
+     * @param Request $request Current request instance
+     * @param AlbumEntity $album Treated album instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
@@ -326,10 +196,10 @@ abstract class AbstractAlbumController extends AbstractController
      * @ParamConverter("album", class="MUImageModule:AlbumEntity", options={"id" = "id", "repository_method" = "selectById"})
      * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      *
-     * @param Request  $request      Current request instance
-     * @param AlbumEntity $album      Treated album instance
+     * @param Request $request Current request instance
+     * @param AlbumEntity $album Treated album instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
@@ -346,47 +216,34 @@ abstract class AbstractAlbumController extends AbstractController
     {
         // parameter specifying which type of objects we are treating
         $objectType = 'album';
-        $utilArgs = ['controller' => 'album', 'action' => 'display'];
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
-        $repository->setRequest($request);
-        
-        $entity = $album;
-        
-        $entity->initWorkflow();
-        
-        // build RouteUrl instance for display hooks; also create identifier for permission check
-        $currentUrlArgs = $entity->createUrlArgs();
-        $instanceId = $entity->createCompositeIdentifier();
-        $currentUrlArgs['id'] = $instanceId; // TODO remove this
-        $currentUrlArgs['_locale'] = $request->getLocale();
-        $currentUrlObject = new RouteUrl('muimagemodule_album_' . /*($isAdmin ? 'admin' : '') . */'display', $currentUrlArgs);
-        
+        // create identifier for permission check
+        $instanceId = $album->createCompositeIdentifier();
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', $instanceId . '::', $permLevel)) {
             throw new AccessDeniedException();
         }
+        
+        $album->initWorkflow();
+        $templateParameters = [
+            'routeArea' => $isAdmin ? 'admin' : '',
+            $objectType => $album
+        ];
+        
         $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-            if (!$this->get('mu_image_module.category_helper')->hasPermission($entity)) {
+            if (!$this->get('mu_image_module.category_helper')->hasPermission($album)) {
                 throw new AccessDeniedException();
             }
         }
         
-        $viewHelper = $this->get('mu_image_module.view_helper');
-        $templateParameters = [
-            'routeArea' => $isAdmin ? 'admin' : ''
-        ];
-        $templateParameters[$objectType] = $entity;
-        $templateParameters['currentUrlObject'] = $currentUrlObject;
-        $imageHelper = $this->get('mu_image_module.image_helper');
-        $templateParameters = array_merge($templateParameters, $repository->getAdditionalTemplateParameters($imageHelper, 'controllerAction', $utilArgs));
-        $templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
+        $controllerHelper = $this->get('mu_image_module.controller_helper');
+        $templateParameters = $controllerHelper->processDisplayActionParameters($objectType, $templateParameters, true);
         
         // fetch and return the appropriate template
-        $response = $viewHelper->processTemplate($this->get('twig'), $objectType, 'display', $request, $templateParameters);
+        $response = $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'display', $templateParameters);
         
         return $response;
     }
@@ -394,9 +251,9 @@ abstract class AbstractAlbumController extends AbstractController
      * This action provides a handling of edit requests in the admin area.
      * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      *
-     * @param Request  $request      Current request instance
+     * @param Request $request Current request instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
@@ -411,9 +268,9 @@ abstract class AbstractAlbumController extends AbstractController
      * This action provides a handling of edit requests.
      * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      *
-     * @param Request  $request      Current request instance
+     * @param Request $request Current request instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
@@ -431,18 +288,16 @@ abstract class AbstractAlbumController extends AbstractController
     {
         // parameter specifying which type of objects we are treating
         $objectType = 'album';
-        $utilArgs = ['controller' => 'album', 'action' => 'edit'];
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
-        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
-        $imageHelper = $this->get('mu_image_module.image_helper');
-        $templateParameters = array_merge($templateParameters, $repository->getAdditionalTemplateParameters($imageHelper, 'controllerAction', $utilArgs));
+        
+        $controllerHelper = $this->get('mu_image_module.controller_helper');
+        $templateParameters = $controllerHelper->processEditActionParameters($objectType, $templateParameters);
         
         // delegate form processing to the form handler
         $formHandler = $this->get('mu_image_module.form.handler.album');
@@ -451,22 +306,20 @@ abstract class AbstractAlbumController extends AbstractController
             return $result;
         }
         
-        $viewHelper = $this->get('mu_image_module.view_helper');
         $templateParameters = $formHandler->getTemplateParameters();
-        $templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
         
         // fetch and return the appropriate template
-        return $viewHelper->processTemplate($this->get('twig'), $objectType, 'edit', $request, $templateParameters);
+        return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'edit', $templateParameters);
     }
     /**
      * This action provides a handling of simple delete requests in the admin area.
      * @ParamConverter("album", class="MUImageModule:AlbumEntity", options={"id" = "id", "repository_method" = "selectById"})
      * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      *
-     * @param Request  $request      Current request instance
-     * @param AlbumEntity $album      Treated album instance
+     * @param Request $request Current request instance
+     * @param AlbumEntity $album Treated album instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
@@ -482,10 +335,10 @@ abstract class AbstractAlbumController extends AbstractController
      * @ParamConverter("album", class="MUImageModule:AlbumEntity", options={"id" = "id", "repository_method" = "selectById"})
      * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      *
-     * @param Request  $request      Current request instance
-     * @param AlbumEntity $album      Treated album instance
+     * @param Request $request Current request instance
+     * @param AlbumEntity $album Treated album instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
@@ -503,21 +356,18 @@ abstract class AbstractAlbumController extends AbstractController
     {
         // parameter specifying which type of objects we are treating
         $objectType = 'album';
-        $utilArgs = ['controller' => 'album', 'action' => 'delete'];
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_DELETE;
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
-        $entity = $album;
-        
         $logger = $this->get('logger');
-        $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'album', 'id' => $entity->createCompositeIdentifier()];
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'album', 'id' => $album->createCompositeIdentifier()];
         
-        $entity->initWorkflow();
+        $album->initWorkflow();
         
         // determine available workflow actions
         $workflowHelper = $this->get('mu_image_module.workflow_helper');
-        $actions = $workflowHelper->getActionsForObject($entity);
+        $actions = $workflowHelper->getActionsForObject($album);
         if (false === $actions || !is_array($actions)) {
             $this->addFlash('error', $this->__('Error! Could not determine workflow actions.'));
             $logger->error('{app}: User {user} tried to delete the {entity} with id {id}, but failed to determine available workflow actions.', $logArgs);
@@ -544,25 +394,23 @@ abstract class AbstractAlbumController extends AbstractController
             return $this->redirectToRoute($redirectRoute);
         }
         
-        $form = $this->createForm('MU\ImageModule\Form\DeleteEntityType', $entity);
+        $form = $this->createForm('MU\ImageModule\Form\DeleteEntityType', $album);
         
         if ($form->handleRequest($request)->isValid()) {
             if ($form->get('delete')->isClicked()) {
                 $hookHelper = $this->get('mu_image_module.hook_helper');
                 // Let any hooks perform additional validation actions
-                $hookType = 'validate_delete';
-                $validationHooksPassed = $hookHelper->callValidationHooks($entity, $hookType);
+                $validationHooksPassed = $hookHelper->callValidationHooks($album, 'validate_delete');
                 if ($validationHooksPassed) {
                     // execute the workflow action
-                    $success = $workflowHelper->executeAction($entity, $deleteActionId);
+                    $success = $workflowHelper->executeAction($album, $deleteActionId);
                     if ($success) {
                         $this->addFlash('status', $this->__('Done! Item deleted.'));
                         $logger->notice('{app}: User {user} deleted the {entity} with id {id}.', $logArgs);
                     }
                     
                     // Let any hooks know that we have deleted the album
-                    $hookType = 'process_delete';
-                    $hookHelper->callProcessHooks($entity, $hookType, null);
+                    $hookHelper->callProcessHooks($album, 'process_delete', null);
                     
                     return $this->redirectToRoute($redirectRoute);
                 }
@@ -573,20 +421,17 @@ abstract class AbstractAlbumController extends AbstractController
             }
         }
         
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
-        
-        $viewHelper = $this->get('mu_image_module.view_helper');
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : '',
-            'deleteForm' => $form->createView()
+            'deleteForm' => $form->createView(),
+            $objectType => $album
         ];
         
-        $templateParameters[$objectType] = $entity;
-        $imageHelper = $this->get('mu_image_module.image_helper');
-        $templateParameters = array_merge($templateParameters, $repository->getAdditionalTemplateParameters($imageHelper, 'controllerAction', $utilArgs));
+        $controllerHelper = $this->get('mu_image_module.controller_helper');
+        $templateParameters = $controllerHelper->processDeleteActionParameters($objectType, $templateParameters, true);
         
         // fetch and return the appropriate template
-        return $viewHelper->processTemplate($this->get('twig'), $objectType, 'delete', $request, $templateParameters);
+        return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'delete', $templateParameters);
     }
 
     /**
@@ -635,6 +480,7 @@ abstract class AbstractAlbumController extends AbstractController
         
         $action = strtolower($action);
         
+        $selectionHelper = $this->get('mu_image_module.selection_helper');
         $workflowHelper = $this->get('mu_image_module.workflow_helper');
         $hookHelper = $this->get('mu_image_module.hook_helper');
         $logger = $this->get('logger');
@@ -643,9 +489,10 @@ abstract class AbstractAlbumController extends AbstractController
         // process each item
         foreach ($items as $itemid) {
             // check if item exists, and get record instance
-            $selectionHelper = $this->get('mu_image_module.selection_helper');
             $entity = $selectionHelper->getEntity($objectType, $itemid, false);
-        
+            if (null === $entity) {
+                continue;
+            }
             $entity->initWorkflow();
         
             // check if $action can be applied to this entity (may depend on it's current workflow state)

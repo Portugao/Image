@@ -11,7 +11,7 @@
     {{ item.getTitleFromDisplayPattern() }}
 {% if not nolink %}
     </a>
-    <a id="albumItem{{ item.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+    <a id="albumItem{{ item.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': item.id, 'raw': 1 }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
 {% endif %}
 {% endspaceless %}
 </h4>

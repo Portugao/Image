@@ -12,7 +12,7 @@
 
 namespace MU\ImageModule\Helper\Base;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use MU\ImageModule\Entity\Factory\ImageFactory;
 
 /**
  * Helper base class for model layer methods.
@@ -20,18 +20,18 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 abstract class AbstractModelHelper
 {
     /**
-     * @var ContainerBuilder
+     * @var ImageFactory
      */
-    protected $container;
+    protected $entityFactory;
 
     /**
      * ModelHelper constructor.
      *
-     * @param ContainerBuilder $container ContainerBuilder service instance
+     * @param ImageFactory $entityFactory ImageFactory service instance
      */
-    public function __construct(ContainerBuilder $container)
+    public function __construct(ImageFactory $entityFactory)
     {
-        $this->container = $container;
+        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -54,11 +54,6 @@ abstract class AbstractModelHelper
      */
     public function canBeCreated($objectType)
     {
-        $controllerHelper = $this->container->get('mu_image_module.controller_helper');
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('util', ['util' => 'model', 'action' => 'canBeCreated']))) {
-            throw new Exception('Error! Invalid object type received.');
-        }
-    
         $result = false;
     
         switch ($objectType) {
@@ -87,12 +82,10 @@ abstract class AbstractModelHelper
      */
     protected function hasExistingInstances($objectType)
     {
-        $controllerHelper = $this->container->get('mu_image_module.controller_helper');
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('util', ['util' => 'model', 'action' => 'hasExistingInstances']))) {
-            throw new Exception('Error! Invalid object type received.');
+        $repository = $this->entityFactory->getRepository($objectType);
+        if (null === $repository) {
+            return false;
         }
-    
-        $repository = $this->container->get('mu_image_module.' . $objectType . '_factory')->getRepository();
     
         return $repository->selectCount() > 0;
     }

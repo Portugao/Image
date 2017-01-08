@@ -41,7 +41,7 @@ function MUImageModule_needleapi_picture_base($args)
         return $cache[$nid];
     }
 
-    if (!\ModUtil::available('MUImageModule')) {
+    if (!\ServiceUtil::get('kernel')->isBundle('MUImageModule')) {
         $cache[$nid] = '<em>' . \DataUtil::formatForDisplay($translator->__f('Module %s is not available.', ['%s' => MUImageModule'])) . '</em>';
 
         return $cache[$nid];

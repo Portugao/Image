@@ -16,7 +16,8 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
-use ServiceUtil;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\File\File;
 use Zikula\Core\Doctrine\EntityAccess;
 use MU\ImageModule\ImageEvents;
@@ -27,8 +28,18 @@ use MU\ImageModule\Event\FilterAvatarEvent;
 /**
  * Event subscriber base class for entity lifecycle events.
  */
-abstract class AbstractEntityLifecycleListener implements EventSubscriber
+abstract class AbstractEntityLifecycleListener implements EventSubscriber, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
+    /**
+     * EntityLifecycleListener constructor.
+     */
+    public function __construct()
+    {
+        $this->setContainer(\ServiceUtil::getManager());
+    }
+
     /**
      * Returns list of events to subscribe.
      *
@@ -60,23 +71,20 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
             return;
         }
 
-        $serviceManager = ServiceUtil::getManager();
-        $dispatcher = $serviceManager->get('event_dispatcher');
-        
         // create the filter event and dispatch it
         $filterEventClass = '\\MU\\ImageModule\\Event\\Filter' . ucfirst($entity->get_objectType()) . 'Event';
         $event = new $filterEventClass($entity);
-        $dispatcher->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_PRE_REMOVE'), $event);
+        $this->container->get('event_dispatcher')->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_PRE_REMOVE'), $event);
         if ($event->isPropagationStopped()) {
             return false;
         }
         
         // delete workflow for this entity
-        $workflowHelper = $serviceManager->get('mu_image_module.workflow_helper');
+        $workflowHelper = $this->container->get('mu_image_module.workflow_helper');
         $workflowHelper->normaliseWorkflowData($entity);
         $workflow = $entity['__WORKFLOW__'];
         if ($workflow['id'] > 0) {
-            $entityManager = $serviceManager->get('doctrine.orm.default_entity_manager');
+            $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
             $result = true;
             try {
                 $workflow = $entityManager->find('Zikula\Core\Doctrine\Entity\WorkflowEntity', $workflow['id']);
@@ -86,8 +94,8 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
                 $result = false;
             }
             if (false === $result) {
-                $flashBag = $serviceManager->get('session')->getFlashBag();
-                $flashBag->add('error', $serviceManager->get('translator.default')->__('Error! Could not remove stored workflow. Deletion has been aborted.'));
+                $flashBag = $this->container->get('session')->getFlashBag();
+                $flashBag->add('error', $this->container->get('translator.default')->__('Error! Could not remove stored workflow. Deletion has been aborted.'));
         
                 return false;
             }
@@ -111,13 +119,10 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
             return;
         }
 
-        $serviceManager = ServiceUtil::getManager();
-        
         $objectType = $entity->get_objectType();
         $objectId = $entity->createCompositeIdentifier();
         
-        // retrieve the upload handler
-        $uploadManager = $serviceManager->get('mu_image_module.upload_handler');
+        $uploadHelper = $this->container->get('mu_image_module.upload_helper');
         $uploadFields = $this->getUploadFields($objectType);
         
         foreach ($uploadFields as $uploadField) {
@@ -126,19 +131,17 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
             }
         
             // remove upload file
-            $uploadManager->deleteUploadFile($entity, $uploadField);
+            $uploadHelper->deleteUploadFile($entity, $uploadField);
         }
         
-        $logger = $serviceManager->get('logger');
-        $logArgs = ['app' => 'MUImageModule', 'user' => $serviceManager->get('zikula_users_module.current_user')->get('uname'), 'entity' => $objectType, 'id' => $objectId];
+        $logger = $this->container->get('logger');
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->container->get('zikula_users_module.current_user')->get('uname'), 'entity' => $objectType, 'id' => $objectId];
         $logger->debug('{app}: User {user} removed the {entity} with id {id}.', $logArgs);
-        
-        $dispatcher = $serviceManager->get('event_dispatcher');
         
         // create the filter event and dispatch it
         $filterEventClass = '\\MU\\ImageModule\\Event\\Filter' . ucfirst($objectType) . 'Event';
         $event = new $filterEventClass($entity);
-        $dispatcher->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($objectType) . '_POST_REMOVE'), $event);
+        $this->container->get('event_dispatcher')->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($objectType) . '_POST_REMOVE'), $event);
     }
 
     /**
@@ -197,18 +200,15 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
             return;
         }
 
-        $serviceManager = ServiceUtil::getManager();
         $objectId = $entity->createCompositeIdentifier();
-        $logger = $serviceManager->get('logger');
-        $logArgs = ['app' => 'MUImageModule', 'user' => $serviceManager->get('zikula_users_module.current_user')->get('uname'), 'entity' => $entity->get_objectType(), 'id' => $objectId];
+        $logger = $this->container->get('logger');
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->container->get('zikula_users_module.current_user')->get('uname'), 'entity' => $entity->get_objectType(), 'id' => $objectId];
         $logger->debug('{app}: User {user} created the {entity} with id {id}.', $logArgs);
-        
-        $dispatcher = $serviceManager->get('event_dispatcher');
         
         // create the filter event and dispatch it
         $filterEventClass = '\\MU\\ImageModule\\Event\\Filter' . ucfirst($entity->get_objectType()) . 'Event';
         $event = new $filterEventClass($entity);
-        $dispatcher->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_POST_PERSIST'), $event);
+        $this->container->get('event_dispatcher')->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_POST_PERSIST'), $event);
     }
 
     /**
@@ -240,13 +240,11 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
             $entity[$uploadField] = $entity[$uploadField]->getFilename();
         }
         
-        $serviceManager = ServiceUtil::getManager();
-        $dispatcher = $serviceManager->get('event_dispatcher');
         
         // create the filter event and dispatch it
         $filterEventClass = '\\MU\\ImageModule\\Event\\Filter' . ucfirst($entity->get_objectType()) . 'Event';
         $event = new $filterEventClass($entity);
-        $dispatcher->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_PRE_UPDATE'), $event);
+        $this->container->get('event_dispatcher')->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_PRE_UPDATE'), $event);
         if ($event->isPropagationStopped()) {
             return false;
         }
@@ -265,18 +263,15 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
             return;
         }
 
-        $serviceManager = ServiceUtil::getManager();
         $objectId = $entity->createCompositeIdentifier();
-        $logger = $serviceManager->get('logger');
-        $logArgs = ['app' => 'MUImageModule', 'user' => $serviceManager->get('zikula_users_module.current_user')->get('uname'), 'entity' => $entity->get_objectType(), 'id' => $objectId];
+        $logger = $this->container->get('logger');
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->container->get('zikula_users_module.current_user')->get('uname'), 'entity' => $entity->get_objectType(), 'id' => $objectId];
         $logger->debug('{app}: User {user} updated the {entity} with id {id}.', $logArgs);
-        
-        $dispatcher = $serviceManager->get('event_dispatcher');
         
         // create the filter event and dispatch it
         $filterEventClass = '\\MU\\ImageModule\\Event\\Filter' . ucfirst($entity->get_objectType()) . 'Event';
         $event = new $filterEventClass($entity);
-        $dispatcher->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_POST_UPDATE'), $event);
+        $this->container->get('event_dispatcher')->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_POST_UPDATE'), $event);
     }
 
     /**
@@ -299,28 +294,27 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
 
         // prepare helper fields for uploaded files
         $objectType = $entity->get_objectType();
-        $controllerHelper = ServiceUtil::get('mu_image_module.controller_helper');
-        $request = ServiceUtil::get('request_stack')->getCurrentRequest();
-        $baseUrl = $request->getSchemeAndHttpHost() . $request->getBasePath();
-
         $uploadFields = $this->getUploadFields($objectType);
 
         if (count($uploadFields) > 0) {
+            $request = $this->container->get('request_stack')->getCurrentRequest();
+            $baseUrl = $request->getSchemeAndHttpHost() . $request->getBasePath();
+            $uploadHelper = $this->container->get('mu_image_module.upload_helper');
             foreach ($uploadFields as $fieldName) {
                 if (empty($entity[$fieldName])) {
                     continue;
                 }
-                $basePath = $controllerHelper->getFileBaseFolder($objectType, $fieldName);
-                $fullPath = $basePath . $entity[$fieldName];
-                if (file_exists($fullPath)) {
-                    $entity[$fieldName] = new File($fullPath);
-                    $entity[$fieldName . 'Url'] = $baseUrl . '/' . $fullPath;
+                $basePath = $uploadHelper->getFileBaseFolder($objectType, $fieldName);
+                $filePath = $basePath . $entity[$fieldName];
+                if (file_exists($filePath)) {
+                    $fileName = $entity[$fieldName];
+                    $entity[$fieldName] = new File($filePath);
+                    $entity[$fieldName . 'Url'] = $baseUrl . '/' . $filePath;
 
-                    // just some backwards compatibility stuff
-                    /*if (!isset($entity[$fieldName . 'Meta']) || !is_array($entity[$fieldName . 'Meta']) || !count($entity[$fieldName . 'Meta'])) {
-                        // assign new meta data
-                        $entity[$fieldName . 'Meta'] = $uploadManager->readMetaDataForFile($entity[$fieldName], $fullPath);
-                    }*/
+                    // determine meta data if it does not exist
+                    if (!is_array($entity[$fieldName . 'Meta']) || !count($entity[$fieldName . 'Meta'])) {
+                        $entity[$fieldName . 'Meta'] = $uploadHelper->readMetaDataForFile($fileName, $filePath);
+                    }
                 } else {
                     $entity[$fieldName] = null;
                     $entity[$fieldName . 'Url'] = '';
@@ -330,13 +324,10 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber
         }
 
         
-        $serviceManager = ServiceUtil::getManager();
-        $dispatcher = ServiceUtil::get('event_dispatcher');
-        
         // create the filter event and dispatch it
         $filterEventClass = '\\MU\\ImageModule\\Event\\Filter' . ucfirst($entity->get_objectType()) . 'Event';
         $event = new $filterEventClass($entity);
-        $dispatcher->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_POST_LOAD'), $event);
+        $this->container->get('event_dispatcher')->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_POST_LOAD'), $event);
     }
 
     /**

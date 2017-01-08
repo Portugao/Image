@@ -15,8 +15,6 @@ namespace MU\ImageModule\Controller\Base;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
-use PageUtil;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\Core\Response\PlainResponse;
 use MU\ImageModule\Helper\FeatureActivationHelper;
@@ -29,21 +27,19 @@ abstract class AbstractExternalController extends AbstractController
     /**
      * Displays one item of a certain object type using a separate template for external usages.
      *
-     * @param string $ot          The currently treated object type
+     * @param string $objectType  The currently treated object type
      * @param int    $id          Identifier of the entity to be shown
      * @param string $source      Source of this call (contentType or scribite)
      * @param string $displayMode Display mode (link or embed)
      *
      * @return string Desired data output
      */
-    public function displayAction($ot, $id, $source, $displayMode)
+    public function displayAction($objectType, $id, $source, $displayMode)
     {
         $controllerHelper = $this->get('mu_image_module.controller_helper');
-        
-        $objectType = $ot;
-        $utilArgs = ['controller' => 'external', 'action' => 'display'];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $utilArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerType', $utilArgs);
+        $contextArgs = ['controller' => 'external', 'action' => 'display'];
+        if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $contextArgs))) {
+            $objectType = $controllerHelper->getDefaultObjectType('controllerType', $contextArgs);
         }
         
         $component = $this->name . ':' . ucfirst($objectType) . ':';
@@ -51,7 +47,7 @@ abstract class AbstractExternalController extends AbstractController
             return '';
         }
         
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
         $repository->setRequest($this->get('request_stack')->getCurrentRequest());
         $selectionHelper = $this->get('mu_image_module.selection_helper');
         $idFields = $selectionHelper->getIdFields($objectType);
@@ -101,24 +97,25 @@ abstract class AbstractExternalController extends AbstractController
      */
     public function finderAction(Request $request, $objectType, $editor, $sort, $sortdir, $pos = 1, $num = 0)
     {
-        
-        PageUtil::addVar('stylesheet', '@MUImageModule/Resources/public/css/style.css');
+        $assetHelper = $this->get('zikula_core.common.theme.asset_helper');
+        $cssAssetBag = $this->get('zikula_core.common.theme.assets_css');
+        $cssAssetBag->add($assetHelper->resolve('@MUImageModule:css/style.css'));
         
         $controllerHelper = $this->get('mu_image_module.controller_helper');
-        $utilArgs = ['controller' => 'external', 'action' => 'finder'];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $utilArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerType', $utilArgs);
+        $contextArgs = ['controller' => 'external', 'action' => 'finder'];
+        if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $contextArgs))) {
+            $objectType = $controllerHelper->getDefaultObjectType('controllerType', $contextArgs);
         }
         
         if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', ACCESS_COMMENT)) {
             throw new AccessDeniedException();
         }
         
-        if (empty($editor) || !in_array($editor, ['tinymce', 'ckeditor'])) {
+        if (empty($editor) || !in_array($editor, ['ckeditor', 'tinymce'])) {
             return $this->__('Error: Invalid editor context given for external controller action.');
         }
         
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
         $repository->setRequest($request);
         if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
             $sort = $repository->getDefaultSortingField();
@@ -174,13 +171,7 @@ abstract class AbstractExternalController extends AbstractController
         if (in_array($objectType, ['album', 'avatar'])) {
             $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
             if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-                $filteredEntities = [];
-                foreach ($entities as $entity) {
-                    if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                        $filteredEntities[] = $entity;
-                    }
-                }
-                $entities = $filteredEntities;
+                $entities = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($entities);
             }
         }
         

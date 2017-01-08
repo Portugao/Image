@@ -27,22 +27,22 @@ class ExternalController extends AbstractExternalController
     /**
      * Displays one item of a certain object type using a separate template for external usages.
      *
-     * @Route("/display/{ot}/{id}/{source}/{displayMode}",
+     * @Route("/display/{objectType}/{id}/{source}/{displayMode}",
      *        requirements = {"id" = "\d+", "source" = "contentType|scribite", "displayMode" = "link|embed"},
      *        defaults = {"source" = "contentType", "contentType" = "embed"},
      *        methods = {"GET"}
      * )
      *
-     * @param string $ot          The currently treated object type
+     * @param string $objectType  The currently treated object type
      * @param int    $id          Identifier of the entity to be shown
      * @param string $source      Source of this call (contentType or scribite)
      * @param string $displayMode Display mode (link or embed)
      *
      * @return string Desired data output
      */
-    public function displayAction($ot, $id, $source, $displayMode)
+    public function displayAction($objectType, $id, $source, $displayMode)
     {
-        return parent::displayAction($ot, $id, $source, $displayMode);
+        return parent::displayAction($objectType, $id, $source, $displayMode);
     }
 
     /**
@@ -50,7 +50,7 @@ class ExternalController extends AbstractExternalController
      * Finds items of a certain object type.
      *
      * @Route("/finder/{objectType}/{editor}/{sort}/{sortdir}/{pos}/{num}",
-     *        requirements = {"editor" = "tinymce|ckeditor", "sortdir" = "asc|desc", "pos" = "\d+", "num" = "\d+"},
+     *        requirements = {"editor" = "ckeditor|tinymce", "sortdir" = "asc|desc", "pos" = "\d+", "num" = "\d+"},
      *        defaults = {"sort" = "", "sortdir" = "asc", "pos" = 1, "num" = 0},
      *        methods = {"GET"},
      *        options={"expose"=true}

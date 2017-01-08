@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
-use MU\ImageModule\Entity\Factory\AvatarFactory;
+use MU\ImageModule\Entity\Factory\ImageFactory;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
@@ -33,7 +33,7 @@ abstract class AbstractAvatarType extends AbstractType
     use TranslatorTrait;
 
     /**
-     * @var AvatarFactory
+     * @var ImageFactory
      */
     protected $entityFactory;
 
@@ -51,11 +51,11 @@ abstract class AbstractAvatarType extends AbstractType
      * AvatarType constructor.
      *
      * @param TranslatorInterface $translator    Translator service instance
-     * @param AvatarFactory        $entityFactory Entity factory service instance
+     * @param ImageFactory        $entityFactory Entity factory service instance
      * @param ListEntriesHelper   $listHelper    ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, AvatarFactory $entityFactory, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
+    public function __construct(TranslatorInterface $translator, ImageFactory $entityFactory, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
     {
         $this->setTranslator($translator);
         $this->entityFactory = $entityFactory;

@@ -12,10 +12,10 @@
 {% endblock %}
 {% block admin_page_icon 'eye' %}
 {% block content %}
+    {% set isQuickView = app.request.query.getBoolean('raw', false) %}
     <div class="muimagemodule-picture muimagemodule-display">
 
-    <div class="row">
-    <div class="col-md-7">
+
     <dl>
         {% if picture.title is not empty %}
             <dt>{{ __('Title') }}</dt>
@@ -40,7 +40,7 @@
             </dd>
         {% endif %}
         {% if picture.imageView is not empty %}
-            <dt>{{ __('Hits') }}</dt>
+            <dt>{{ __('Image view') }}</dt>
             <dd>{{ picture.imageView }}</dd>
         {% endif %}
         {% if picture.albumImage is not empty %}
@@ -52,20 +52,18 @@
             {% endif %}
             </dd>
         {% endif %}
-        <div class="hidden">
         {% if picture.pos is not empty %}
             <dt>{{ __('Pos') }}</dt>
             <dd>{{ picture.pos }}</dd>
         {% endif %}
-        </div>
         {% if picture.album|default %}
             <dt>{{ __('Album') }}</dt>
             <dd>
-              {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+              {% if not isQuickView %}
                   <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
                     {{ picture.album.getTitleFromDisplayPattern() }}
                   {% endspaceless %}</a>
-                  <a id="albumItem{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                  <a id="albumItem{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id, 'raw': 1 }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
               {% else %}
                   {{ picture.album.getTitleFromDisplayPattern() }}
               {% endif %}
@@ -73,13 +71,9 @@
         {% endif %}
         
     </dl>
-    </div>
-    <div class="col-md-5">
     {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: picture }) }}
-    </div>
-    </div>
 
-    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+    {% if not isQuickView %}
         {# include display hooks #}
         {{ block('display_hooks') }}
     {% endif %}
@@ -87,9 +81,7 @@
 {% endblock %}
 {% block display_hooks %}
     {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', id=picture.id, urlObject=currentUrlObject) %}
-    {% for providerArea, hook in hooks %}
-        {% if providerArea != 'provider.scribite.ui_hooks.editor' %}{# fix for #664 #}
-            {{ hook }}
-        {% endif %}
+    {% for providerArea, hook in hooks if providerArea != 'provider.scribite.ui_hooks.editor' %}
+        {{ hook }}
     {% endfor %}
 {% endblock %}

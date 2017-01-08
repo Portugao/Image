@@ -12,22 +12,24 @@
 
 namespace MU\ImageModule\Form\DataTransformer\Base;
 
-use ServiceUtil;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use MU\ImageModule\Form\Type\Field\UploadType;
-use MU\ImageModule\Helper\ControllerHelper;
-use MU\ImageModule\UploadHandler;
+use MU\ImageModule\Helper\UploadHelper;
 
 /**
  * Upload file transformer base class.
  *
  * This data transformer treats uploaded files.
  */
-abstract class AbstractUploadFileTransformer implements DataTransformerInterface
+abstract class AbstractUploadFileTransformer implements DataTransformerInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * @var UploadType
      */
@@ -39,14 +41,9 @@ abstract class AbstractUploadFileTransformer implements DataTransformerInterface
     protected $request = '';
 
     /**
-     * @var ControllerHelper
+     * @var UploadHelper
      */
-    protected $controllerHelper = '';
-
-    /**
-     * @var UploadHandler
-     */
-    protected $uploadHandler = '';
+    protected $uploadHelper = '';
 
     /**
      * @var string
@@ -62,9 +59,9 @@ abstract class AbstractUploadFileTransformer implements DataTransformerInterface
     public function __construct(UploadType $formType, $fieldName)
     {
         $this->formType = $formType;
-        $this->request = ServiceUtil::get('request_stack')->getMasterRequest();
-        $this->controllerHelper = ServiceUtil::get('mu_image_module.controller_helper');
-        $this->uploadHandler = ServiceUtil::get('mu_image_module.upload_handler');
+        $this->setContainer(\ServiceUtil::getManager());
+        $this->request = $this->container->get('request_stack')->getCurrentRequest();
+        $this->uploadHelper = $this->container->get('mu_image_module.upload_helper');
         $this->fieldName = $fieldName;
     }
 
@@ -121,8 +118,9 @@ abstract class AbstractUploadFileTransformer implements DataTransformerInterface
         if (null === $uploadedFile) {
             // check files array
             $filesKey = 'muimagemodule_' . $objectType;
-            if ($this->request->files->has($filesKey)) {
-                $files = $this->request->files->get($filesKey);
+            $request = $this->requestStack->getCurrentRequest();
+            if ($request->files->has($filesKey)) {
+                $files = $request->files->get($filesKey);
                 if (isset($files[$fieldName]) && isset($files[$fieldName][$fieldName])) {
                     $uploadedFile = $files[$fieldName][$fieldName];
                 }
@@ -139,7 +137,7 @@ abstract class AbstractUploadFileTransformer implements DataTransformerInterface
         $hasBeenDeleted = !$hasOldFile;
         if ($hasOldFile && true === $deleteFile) {
             // remove old upload file
-            $entity = $this->uploadHandler->deleteUploadFile($entity, $fieldName);
+            $entity = $this->uploadHelper->deleteUploadFile($entity, $fieldName);
             $hasBeenDeleted = true;
         }
 
@@ -151,16 +149,16 @@ abstract class AbstractUploadFileTransformer implements DataTransformerInterface
         // new file has been uploaded; check if there is an old one to be deleted
         if ($hasOldFile && true !== $hasBeenDeleted) {
             // remove old upload file (and image thumbnails)
-            $entity = $this->uploadHandler->deleteUploadFile($entity, $fieldName);
+            $entity = $this->uploadHelper->deleteUploadFile($entity, $fieldName);
         }
 
         // do the actual upload (includes validation, physical file processing and reading meta data)
-        $uploadResult = $this->uploadHandler->performFileUpload($objectType, $uploadedFile, $fieldName);
+        $uploadResult = $this->uploadHelper->performFileUpload($objectType, $uploadedFile, $fieldName);
 
         $result = null;
         $metaData = [];
         if ($uploadResult['fileName'] != '') {
-            $result = $this->controllerHelper->getFileBaseFolder($this->formType->getEntity()->get_objectType(), $fieldName) . $uploadResult['fileName'];
+            $result = $this->uploadHelper->getFileBaseFolder($this->formType->getEntity()->get_objectType(), $fieldName) . $uploadResult['fileName'];
             $metaData = $uploadResult['metaData'];
         }
 

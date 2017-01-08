@@ -66,14 +66,14 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         }
     
         $controllerHelper = $this->get('mu_image_module.controller_helper');
-        $utilArgs = ['name' => 'list'];
-        if (!isset($properties['objectType']) || !in_array($properties['objectType'], $controllerHelper->getObjectTypes('block', $utilArgs))) {
-            $properties['objectType'] = $controllerHelper->getDefaultObjectType('block', $utilArgs);
+        $contextArgs = ['name' => 'list'];
+        if (!isset($properties['objectType']) || !in_array($properties['objectType'], $controllerHelper->getObjectTypes('block', $contextArgs))) {
+            $properties['objectType'] = $controllerHelper->getDefaultObjectType('block', $contextArgs);
         }
     
         $objectType = $properties['objectType'];
     
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
     
         // create query
         $where = $properties['filter'];
@@ -100,13 +100,7 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         list($entities, $objectCount) = $repository->retrieveCollectionResult($query, $orderBy, true);
     
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-            $filteredEntities = [];
-            foreach ($entities as $entity) {
-                if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                    $filteredEntities[] = $entity;
-                }
-            }
-            $entities = $filteredEntities;
+            $entities = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($entities);
         }
     
         // set a block title
@@ -145,23 +139,23 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         }
     
         $templateForObjectType = str_replace('itemlist_', 'itemlist_' . $properties['objectType'] . '_', $templateFile);
-        
-        $templateDirectory = str_replace('Block/Base/AbstractItemListBlock.php', 'Resources/views/', __FILE__);
+        $templating = $this->get('templating');
+    
+        $templateOptions = [
+            'ContentType/' . $templateForObjectType,
+            'Block/' . $templateForObjectType,
+            'ContentType/' . $templateFile,
+            'Block/' . $templateFile,
+            'Block/itemlist.html.twig'
+        ];
     
         $template = '';
-        if (file_exists($templateDirectory . 'ContentType/' . $templateForObjectType)) {
-            $template = 'ContentType/' . $templateForObjectType;
-        } elseif (file_exists($templateDirectory . 'Block/' . $templateForObjectType)) {
-            $template = 'Block/' . $templateForObjectType;
-        } elseif (file_exists($templateDirectory . 'ContentType/' . $templateFile)) {
-            $template = 'ContentType/' . $templateFile;
-        } elseif (file_exists($templateDirectory . 'Block/' . $templateFile)) {
-            $template = 'Block/' . $templateFile;
-        } else {
-            $template = 'Block/itemlist.html.twig';
+        foreach ($templateOptions as $templatePath) {
+            if ($templating->exists('@MUImageModule/' . $templatePath)) {
+                $template = '@MUImageModule/' . $templatePath;
+                break;
+            }
         }
-    
-        $template = '@MUImageModule/' . $template;
     
         return $template;
     }

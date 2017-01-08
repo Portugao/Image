@@ -97,7 +97,7 @@
                         <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
                           {{ picture.album.getTitleFromDisplayPattern() }}
                         {% endspaceless %}</a>
-                        <a id="albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                        <a id="albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.id, 'raw': 1 }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
                     {% else %}
                         {{ __('Not set.') }}
                     {% endif %}
@@ -123,7 +123,7 @@
         </div>
         
         {% if showAllEntries != 1 and pager|default %}
-            {{ pager({ rowcount: pager.numitems, limit: pager.itemsperpage, display: 'page', route: 'muimagemodule_picture_' ~ routeArea ~ 'view'}) }}
+            {{ pager({ rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_picture_' ~ routeArea ~ 'view'}) }}
         {% endif %}
     {% if routeArea == 'admin' %}
             <fieldset>

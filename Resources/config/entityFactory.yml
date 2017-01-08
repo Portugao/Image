@@ -1,0 +1,6 @@
+services:
+    # Entity factory class
+    mu_image_module.entity_factory:
+        class: MU\ImageModule\Entity\Factory\ImageFactory
+        arguments:
+            - "@doctrine.orm.default_entity_manager"

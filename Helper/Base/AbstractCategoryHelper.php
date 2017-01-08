@@ -13,8 +13,8 @@
 namespace MU\ImageModule\Helper\Base;
 
 use Doctrine\ORM\QueryBuilder;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zikula\CategoriesModule\Api\CategoryRegistryApi;
@@ -28,11 +28,6 @@ use Zikula\UsersModule\Api\CurrentUserApi;
 abstract class AbstractCategoryHelper
 {
     /**
-     * @var ContainerBuilder
-     */
-    protected $container;
-
-    /**
      * @var TranslatorInterface
      */
     protected $translator;
@@ -43,57 +38,54 @@ abstract class AbstractCategoryHelper
     protected $session;
 
     /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
 
     /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    /**
      * @var CurrentUserApi
      */
-    private $currentUserApi;
+    protected $currentUserApi;
 
     /**
      * @var CategoryRegistryApi
      */
-    private $categoryRegistryApi;
+    protected $categoryRegistryApi;
 
     /**
      * @var CategoryPermissionApi
      */
-    private $categoryPermissionApi;
+    protected $categoryPermissionApi;
 
     /**
      * CategoryHelper constructor.
      *
-     * @param ContainerBuilder      $container             ContainerBuilder service instance
      * @param TranslatorInterface   $translator            Translator service instance
      * @param SessionInterface      $session               Session service instance
-     * @param LoggerInterface       $logger                Logger service instance
      * @param RequestStack          $requestStack          RequestStack service instance
+     * @param LoggerInterface       $logger                Logger service instance
      * @param CurrentUserApi        $currentUserApi        CurrentUserApi service instance
      * @param CategoryRegistryApi   $categoryRegistryApi   CategoryRegistryApi service instance
      * @param CategoryPermissionApi $categoryPermissionApi CategoryPermissionApi service instance
      */
     public function __construct(
-        ContainerBuilder $container,
         TranslatorInterface $translator,
         SessionInterface $session,
-        LoggerInterface $logger,
         RequestStack $requestStack,
+        LoggerInterface $logger,
         CurrentUserApi $currentUserApi,
         CategoryRegistryApi $categoryRegistryApi,
         CategoryPermissionApi $categoryPermissionApi)
     {
-        $this->container = $container;
         $this->translator = $translator;
         $this->session = $session;
+        $this->request = $requestStack->getCurrentRequest();
         $this->logger = $logger;
-        $this->requestStack = $requestStack;
         $this->currentUserApi = $currentUserApi;
         $this->categoryRegistryApi = $categoryRegistryApi;
         $this->categoryPermissionApi = $categoryPermissionApi;
@@ -102,7 +94,7 @@ abstract class AbstractCategoryHelper
     /**
      * Retrieves the main/default category of MUImageModule.
      *
-     * @param string $objectType The object type to retrieve (optional)
+     * @param string $objectType The object type to retrieve
      * @param string $registry   Name of category registry to be used (optional)
      * @deprecated Use the methods getAllProperties, getAllPropertiesWithMainCat, getMainCatForProperty and getPrimaryProperty instead
      *
@@ -110,12 +102,13 @@ abstract class AbstractCategoryHelper
      */
     public function getMainCat($objectType = '', $registry = '')
     {
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+    	}
         if (empty($registry)) {
             // default to the primary registry
             $registry = $this->getPrimaryProperty($objectType);
         }
-    
-        $objectType = $this->determineObjectType($objectType, 'getMainCat');
     
         $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname')];
         $this->logger->warning('{app}: User {user} called CategoryHelper#getMainCat which is deprecated.', $logArgs);
@@ -128,19 +121,20 @@ abstract class AbstractCategoryHelper
      * or not. Subclass can override this method to apply a custom behaviour
      * to certain category registries for example.
      *
-     * @param string $objectType The object type to retrieve (optional)
+     * @param string $objectType The object type to retrieve
      * @param string $registry   Name of category registry to be used (optional)
      *
      * @return boolean true if multiple selection is allowed, else false
      */
     public function hasMultipleSelection($objectType = '', $registry = '')
     {
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+    	}
         if (empty($args['registry'])) {
             // default to the primary registry
             $registry = $this->getPrimaryProperty($objectType);
         }
-    
-        $objectType = $this->determineObjectType($objectType, 'hasMultipleSelection');
     
         // we make no difference between different category registries here
         // if you need a custom behaviour you should override this method
@@ -161,19 +155,20 @@ abstract class AbstractCategoryHelper
     /**
      * Retrieves input data from POST for all registries.
      *
-     * @param string $objectType The object type to retrieve (optional)
+     * @param string $objectType The object type to retrieve
      * @param string $source     Where to retrieve the data from (defaults to POST)
      *
      * @return array The fetched data indexed by the registry id
      */
     public function retrieveCategoriesFromRequest($objectType = '', $source = 'POST')
     {
-        $request = $this->requestStack->getCurrentRequest();
-        $dataSource = $source == 'GET' ? $request->query : $request->request;
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+    	}
     
+        $dataSource = $source == 'GET' ? $this->request->query : $this->request->request;
         $catIdsPerRegistry = [];
     
-        $objectType = $this->determineObjectType($objectType, 'retrieveCategoriesFromRequest');
         $properties = $this->getAllProperties($objectType);
         $inputValues = null;
         $inputName = 'muimagemodule_' . strtolower($objectType) . 'quicknav';
@@ -237,9 +232,12 @@ abstract class AbstractCategoryHelper
                 continue;
             }
     
-            $filterParameters['values'][$propertyName] = $catIds[$propertyName];
+            $filtersPerRegistry[] = '(
+                tblCategories.categoryRegistryId = :propId' . $propertyName . '
+                AND tblCategories.category IN (:categories' . $propertyName . ')
+            )';
             $filterParameters['registries'][$propertyName] = $propertyId;
-            $filtersPerRegistry[] = '(tblCategories.category IN (:propName' . $propertyName . ') AND tblCategories.categoryRegistryId = :propId' . $propertyName . ')';
+            $filterParameters['values'][$propertyName] = $catIds[$propertyName];
         }
     
         if (count($filtersPerRegistry) > 0) {
@@ -249,8 +247,8 @@ abstract class AbstractCategoryHelper
                 $qb->andWhere('(' . implode(' OR ', $filtersPerRegistry) . ')');
             }
             foreach ($filterParameters['values'] as $propertyName => $filterValue) {
-                $qb->setParameter('propName' . $propertyName, $filterValue)
-                   ->setParameter('propId' . $propertyName, $filterParameters['registries'][$propertyName]);
+                $qb->setParameter('propId' . $propertyName, $filterParameters['registries'][$propertyName]);
+                   ->setParameter('categories' . $propertyName, $filterValue)
             }
         }
     
@@ -260,13 +258,15 @@ abstract class AbstractCategoryHelper
     /**
      * Returns a list of all registries / properties for a given object type.
      *
-     * @param string $objectType The object type to retrieve (optional)
+     * @param string $objectType The object type to retrieve
      *
      * @return array list of the registries (property name as key, id as value)
      */
     public function getAllProperties($objectType = '')
     {
-        $objectType = $this->determineObjectType($objectType, 'getAllProperties');
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+    	}
     
         return $this->categoryRegistryApi->getModuleRegistriesIds('MUImageModule', ucfirst($objectType) . 'Entity');
     }
@@ -274,14 +274,16 @@ abstract class AbstractCategoryHelper
     /**
      * Returns a list of all registries with main category for a given object type.
      *
-     * @param string $objectType The object type to retrieve (optional)
+     * @param string $objectType The object type to retrieve
      * @param string $arrayKey   Key for the result array (optional)
      *
      * @return array list of the registries (registry id as key, main category id as value)
      */
     public function getAllPropertiesWithMainCat($objectType = '', $arrayKey = '')
     {
-        $objectType = $this->determineObjectType($objectType, 'getAllPropertiesWithMainCat');
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+    	}
     
         return $this->categoryRegistryApi->getModuleCategoryIds('MUImageModule', ucfirst($objectType) . 'Entity', $arrayKey);
     }
@@ -289,14 +291,16 @@ abstract class AbstractCategoryHelper
     /**
      * Returns the main category id for a given object type and a certain property name.
      *
-     * @param string $objectType The object type to retrieve (optional)
+     * @param string $objectType The object type to retrieve
      * @param string $property   The property name (optional)
      *
      * @return integer The main category id of desired tree
      */
     public function getMainCatForProperty($objectType = '', $property = '')
     {
-        $objectType = $this->determineObjectType($objectType, 'getMainCatForProperty');
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+    	}
     
         return $this->categoryRegistryApi->getModuleCategoryId('MUImageModule', ucfirst($objectType) . 'Entity', $property);
     }
@@ -304,13 +308,32 @@ abstract class AbstractCategoryHelper
     /**
      * Returns the name of the primary registry.
      *
-     * @param string $objectType The object type to retrieve (optional)
+     * @param string $objectType The object type to retrieve
      *
      * @return string name of the main registry
      */
     public function getPrimaryProperty($objectType = '')
     {
         return 'Main';
+    }
+    
+    /**
+     * Filters a given list of entities to these the current user has permissions for.
+     *
+     * @param array $entities The given list of entities
+     *
+     * @return array The filtered list of entities
+     */
+    public function filterEntitiesByPermission($entities)
+    {
+        $filteredEntities = [];
+        foreach ($entities as $entity) {
+            if ($this->hasPermission($entity)) {
+                $filteredEntities[] = $entity;
+            }
+        }
+    
+        return $filteredEntities;
     }
     
     /**
@@ -339,25 +362,5 @@ abstract class AbstractCategoryHelper
         }
     
         return $this->categoryPermissionApi->hasCategoryAccess($categoryInfo, ACCESS_OVERVIEW);
-    }
-    
-    /**
-     * Determine object type using controller util methods.
-     *
-     * @param string $objectType The object type to retrieve (optional)
-     * @param string $methodName Name of calling method
-     *
-     * @return string name of the determined object type
-     */
-    protected function determineObjectType($objectType = '', $methodName = '')
-    {
-        
-        $controllerHelper = new \MU\ImageModule\Helper\ControllerHelper($this->container, $this->translator, $this->session, $this->logger);
-        $utilArgs = ['api' => 'category', 'action' => $methodName];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('api', $utilArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('api', $utilArgs);
-        }
-    
-        return $objectType;
     }
 }

@@ -12,7 +12,6 @@
 
 namespace MU\ImageModule\Helper\Base;
 
-use ServiceUtil;
 use Zikula\Core\RouteUrl;
 use Zikula\SearchModule\AbstractSearchable;
 use MU\ImageModule\Helper\FeatureActivationHelper;
@@ -32,8 +31,7 @@ abstract class AbstractSearchHelper extends AbstractSearchable
      */
     public function getOptions($active, $modVars = null)
     {
-        $serviceManager = ServiceUtil::getManager();
-        $permissionApi = $serviceManager->get('zikula_permissions_module.api.permission');
+        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
     
         if (!$permissionApi->hasPermission($this->name . '::', '::', ACCESS_READ)) {
             return '';
@@ -60,18 +58,16 @@ abstract class AbstractSearchHelper extends AbstractSearchable
      */
     public function getResults(array $words, $searchType = 'AND', $modVars = null)
     {
-        $serviceManager = ServiceUtil::getManager();
-        $permissionApi = $serviceManager->get('zikula_permissions_module.api.permission');
-        $featureActivationHelper = $serviceManager->get('mu_image_module.feature_activation_helper');
-        $request = $serviceManager->get('request_stack')->getMasterRequest();
+        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
+        $featureActivationHelper = $this->container->get('mu_image_module.feature_activation_helper');
+        $request = $this->container->get('request_stack')->getCurrentRequest();
     
         if (!$permissionApi->hasPermission($this->name . '::', '::', ACCESS_READ)) {
             return [];
         }
     
         // save session id as it is used when inserting search results below
-        $session = $serviceManager->get('session');
-        $sessionId = $session->getId();
+        $sessionId = $this->container->get('session')->getId();
     
         // initialise array for results
         $records = [];
@@ -86,9 +82,8 @@ abstract class AbstractSearchHelper extends AbstractSearchable
             }
         }
     
-        $controllerHelper = $serviceManager->get('mu_image_module.controller_helper');
-        $utilArgs = ['helper' => 'search', 'action' => 'getResults'];
-        $allowedTypes = $controllerHelper->getObjectTypes('helper', $utilArgs);
+        $controllerHelper = $this->container->get('mu_image_module.controller_helper');
+        $allowedTypes = $controllerHelper->getObjectTypes('helper', ['helper' => 'search', 'action' => 'getResults']);
     
         foreach ($searchTypes as $objectType) {
             if (!in_array($objectType, $allowedTypes)) {
@@ -121,7 +116,7 @@ abstract class AbstractSearchHelper extends AbstractSearchable
                     break;
             }
     
-            $repository = $serviceManager->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+            $repository = $this->container->get('mu_image_module.entity_factory')->getRepository($objectType);
     
             // build the search query without any joins
             $qb = $repository->genericBaseQuery('', '', false);
@@ -158,7 +153,7 @@ abstract class AbstractSearchHelper extends AbstractSearchable
                 }
                 if (in_array($objectType, ['album', 'avatar'])) {
                     if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-                        if (!$serviceManager->get('mu_image_module.category_helper')->hasPermission($entity)) {
+                        if (!$this->container->get('mu_image_module.category_helper')->hasPermission($entity)) {
                             continue;
                         }
                     }

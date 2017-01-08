@@ -3,11 +3,10 @@ services:
     mu_image_module.category_helper:
         class: MU\ImageModule\Helper\CategoryHelper
         arguments:
-            - "@service_container"
             - "@translator.default"
             - "@session"
-            - "@logger"
             - "@request_stack"
+            - "@logger"
             - "@zikula_users_module.current_user"
             - "@zikula_categories_module.api.category_registry"
             - "@zikula_categories_module.api.category_permission"
@@ -15,10 +14,17 @@ services:
     mu_image_module.controller_helper:
         class: MU\ImageModule\Helper\ControllerHelper
         arguments:
-            - "@service_container"
             - "@translator.default"
+            - "@request_stack"
             - "@session"
             - "@logger"
+            - "@form.factory"
+            - "@zikula_extensions_module.api.variable"
+            - "@mu_image_module.entity_factory"
+            - "@mu_image_module.model_helper"
+            - "@mu_image_module.selection_helper"
+            - "@mu_image_module.image_helper"
+            - "@mu_image_module.feature_activation_helper"
     
     mu_image_module.feature_activation_helper:
         class: MU\ImageModule\Helper\FeatureActivationHelper
@@ -43,37 +49,53 @@ services:
     mu_image_module.model_helper:
         class: MU\ImageModule\Helper\ModelHelper
         arguments:
-            - "@service_container"
+            - "@mu_image_module.entity_factory"
     
     mu_image_module.notification_helper:
         class: MU\ImageModule\Helper\NotificationHelper
         arguments:
+            - "@kernel"
             - "@translator.default"
             - "@session"
             - "@router"
-            - "@kernel"
             - "@request_stack"
             - "@zikula_extensions_module.api.variable"
             - "@twig"
             - "@zikula_mailer_module.api.mailer"
+            - "@zikula_groups_module.group_repository"
+            - "@zikula_users_module.user_repository"
             - "@mu_image_module.workflow_helper"
     
     mu_image_module.selection_helper:
         class: MU\ImageModule\Helper\SelectionHelper
         arguments:
-            - "@service_container"
-            - "@doctrine.orm.default_entity_manager"
             - "@translator.default"
-            - "@mu_image_module.controller_helper"
+            - "@mu_image_module.entity_factory"
+    
+    mu_image_module.upload_helper:
+        class: MU\ImageModule\Helper\UploadHelper
+        arguments:
+            - "@translator.default"
+            - "@session"
+            - "@logger"
+            - "@zikula_users_module.current_user"
+            - "@zikula_extensions_module.api.variable"
+            - "%datadir%"
     
     mu_image_module.view_helper:
         class: MU\ImageModule\Helper\ViewHelper
         arguments:
-            - "@service_container"
-            - "@translator.default"
+            - "@templating"
+            - "@request_stack"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_extensions_module.api.variable"
+            - "@mu_image_module.controller_helper"
     
     mu_image_module.workflow_helper:
         class: MU\ImageModule\Helper\WorkflowHelper
         arguments:
-            - "@service_container"
             - "@translator.default"
+            - "@logger"
+            - "@zikula_permissions_module.api.permission"
+            - "@mu_image_module.entity_factory"
+            - "@mu_image_module.listentries_helper"

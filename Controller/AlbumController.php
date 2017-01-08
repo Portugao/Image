@@ -15,10 +15,10 @@ namespace MU\ImageModule\Controller;
 use MU\ImageModule\Controller\Base\AbstractAlbumController;
 
 use RuntimeException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 use MU\ImageModule\Entity\AlbumEntity;
 
@@ -28,16 +28,16 @@ use MU\ImageModule\Entity\AlbumEntity;
 class AlbumController extends AbstractAlbumController
 {
     /**
-     * This is the default action handling the main admin area called without defining arguments.
+     * {@inheritdoc}
      *
      * @Route("/admin/albums",
      *        methods = {"GET"}
      * )
      * @Theme("admin")
      *
-     * @param Request  $request      Current request instance
+     * @param Request $request Current request instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -47,15 +47,15 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * This is the default action handling the main area called without defining arguments.
+     * {@inheritdoc}
      *
      * @Route("/albums",
      *        methods = {"GET"}
      * )
      *
-     * @param Request  $request      Current request instance
+     * @param Request $request Current request instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -64,7 +64,7 @@ class AlbumController extends AbstractAlbumController
         return parent::indexAction($request);
     }
     /**
-     * This action provides an item list overview in the admin area.
+     * {@inheritdoc}
      *
      * @Route("/admin/albums/view/{sort}/{sortdir}/{pos}/{num}.{_format}",
      *        requirements = {"sortdir" = "asc|desc|ASC|DESC", "pos" = "\d+", "num" = "\d+", "_format" = "html|rss"},
@@ -73,13 +73,13 @@ class AlbumController extends AbstractAlbumController
      * )
      * @Theme("admin")
      *
-     * @param Request  $request      Current request instance
-     * @param string  $sort         Sorting field
-     * @param string  $sortdir      Sorting direction
-     * @param int     $pos          Current pager position
-     * @param int     $num          Amount of entries to display
+     * @param Request $request Current request instance
+     * @param string $sort         Sorting field
+     * @param string $sortdir      Sorting direction
+     * @param int    $pos          Current pager position
+     * @param int    $num          Amount of entries to display
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -89,7 +89,7 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * This action provides an item list overview.
+     * {@inheritdoc}
      *
      * @Route("/albums/view/{sort}/{sortdir}/{pos}/{num}.{_format}",
      *        requirements = {"sortdir" = "asc|desc|ASC|DESC", "pos" = "\d+", "num" = "\d+", "_format" = "html|rss"},
@@ -97,13 +97,13 @@ class AlbumController extends AbstractAlbumController
      *        methods = {"GET"}
      * )
      *
-     * @param Request  $request      Current request instance
-     * @param string  $sort         Sorting field
-     * @param string  $sortdir      Sorting direction
-     * @param int     $pos          Current pager position
-     * @param int     $num          Amount of entries to display
+     * @param Request $request Current request instance
+     * @param string $sort         Sorting field
+     * @param string $sortdir      Sorting direction
+     * @param int    $pos          Current pager position
+     * @param int    $num          Amount of entries to display
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -112,7 +112,7 @@ class AlbumController extends AbstractAlbumController
         return parent::viewAction($request, $sort, $sortdir, $pos, $num);
     }
     /**
-     * This action provides a item detail view in the admin area.
+     * {@inheritdoc}
      *
      * @Route("/admin/album/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -121,10 +121,10 @@ class AlbumController extends AbstractAlbumController
      * )
      * @Theme("admin")
      *
-     * @param Request  $request      Current request instance
-     * @param AlbumEntity $album      Treated album instance
+     * @param Request $request Current request instance
+     * @param AlbumEntity $album Treated album instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
@@ -135,7 +135,7 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * This action provides a item detail view.
+     * {@inheritdoc}
      *
      * @Route("/album/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -143,10 +143,10 @@ class AlbumController extends AbstractAlbumController
      *        methods = {"GET"}
      * )
      *
-     * @param Request  $request      Current request instance
-     * @param AlbumEntity $album      Treated album instance
+     * @param Request $request Current request instance
+     * @param AlbumEntity $album Treated album instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
@@ -156,7 +156,7 @@ class AlbumController extends AbstractAlbumController
         return parent::displayAction($request, $album);
     }
     /**
-     * This action provides a handling of edit requests in the admin area.
+     * {@inheritdoc}
      *
      * @Route("/admin/album/edit/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -165,9 +165,9 @@ class AlbumController extends AbstractAlbumController
      * )
      * @Theme("admin")
      *
-     * @param Request  $request      Current request instance
+     * @param Request $request Current request instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
@@ -179,7 +179,7 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * This action provides a handling of edit requests.
+     * {@inheritdoc}
      *
      * @Route("/album/edit/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -187,9 +187,9 @@ class AlbumController extends AbstractAlbumController
      *        methods = {"GET", "POST"}
      * )
      *
-     * @param Request  $request      Current request instance
+     * @param Request $request Current request instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
@@ -200,7 +200,7 @@ class AlbumController extends AbstractAlbumController
         return parent::editAction($request);
     }
     /**
-     * This action provides a handling of simple delete requests in the admin area.
+     * {@inheritdoc}
      *
      * @Route("/admin/album/delete/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -209,10 +209,10 @@ class AlbumController extends AbstractAlbumController
      * )
      * @Theme("admin")
      *
-     * @param Request  $request      Current request instance
-     * @param AlbumEntity $album      Treated album instance
+     * @param Request $request Current request instance
+     * @param AlbumEntity $album Treated album instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
@@ -224,7 +224,7 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * This action provides a handling of simple delete requests.
+     * {@inheritdoc}
      *
      * @Route("/album/delete/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -232,10 +232,10 @@ class AlbumController extends AbstractAlbumController
      *        methods = {"GET", "POST"}
      * )
      *
-     * @param Request  $request      Current request instance
-     * @param AlbumEntity $album      Treated album instance
+     * @param Request $request Current request instance
+     * @param AlbumEntity $album Treated album instance
      *
-     * @return mixed Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found

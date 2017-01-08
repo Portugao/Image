@@ -12,18 +12,59 @@
 
 namespace MU\ImageModule\Listener\Base;
 
-use ServiceUtil;
+use Psr\Log\LoggerInterface;
+use Zikula\Common\Translator\TranslatorInterface as ZkTranslatorInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use UserUtil;
+use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Event\GenericEvent;
+use Zikula\UsersModule\Api\CurrentUserApi;
 use Zikula\UsersModule\UserEvents;
+use MU\ImageModule\Entity\Factory\ImageFactory;
 
 /**
  * Event handler base class for user-related events.
  */
 abstract class AbstractUserListener implements EventSubscriberInterface
 {
+    /**
+     * @var ZkTranslatorInterface
+     */
+    protected $translator;
+    
+    /**
+     * @var ImageFactory
+     */
+    protected $entityFactory;
+    
+    /**
+     * @var CurrentUserApi
+     */
+    protected $currentUserApi;
+    
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+    
+    /**
+     * UserListener constructor.
+     *
+     * @param ZkTranslatorInterface $translator     Translator service instance
+     * @param ImageFactory $entityFactory ImageFactory service instance
+     * @param CurrentUserApi        $currentUserApi CurrentUserApi service instance
+     * @param LoggerInterface       $logger         Logger service instance
+     *
+     * @return void
+     */
+    public function __construct(ZkTranslatorInterface $translator, ImageFactory $entityFactory, CurrentUserApi $currentUserApi, LoggerInterface $logger)
+    {
+        $this->translator = $translator;
+        $this->entityFactory = $entityFactory;
+        $this->currentUserApi = $currentUserApi;
+        $this->logger = $logger;
+    }
+    
     /**
      * Makes our handlers known to the event system.
      */
@@ -40,7 +81,7 @@ abstract class AbstractUserListener implements EventSubscriberInterface
     /**
      * Listener for the `user.gettheme` event.
      *
-     * Called during UserUtil::getTheme() and is used to filter the results.
+     * Called during \UserUtil::getTheme() and is used to filter the results.
      * Receives arg['type'] with the type of result to be filtered
      * and the $themeName in the $event->data which can be modified.
      * Must $event->stopPropagation() if handler performs filter.
@@ -83,49 +124,44 @@ abstract class AbstractUserListener implements EventSubscriberInterface
     /**
      * Listener for the `user.account.delete` event.
      *
-     * Occurs after the deletion of a user account. Subject is $uid.
+     * Occurs after the deletion of a user account. Subject is $userId.
      * This is a storage-level event, not a UI event. It should not be used for UI-level actions such as redirects.
      *
      * @param GenericEvent $event The event instance
      */
     public function delete(GenericEvent $event)
     {
-        $uid = $event->getSubject();
+        $userId = $event->getSubject();
     
-        $serviceManager = ServiceUtil::getManager();
-        $entityManager = $serviceManager->get('doctrine.orm.default_entity_manager');
-        $translator = $serviceManager->get('translator.default');
-        $logger = $serviceManager->get('logger');
-        $currentUserApi = $serviceManager->get('zikula_users_module.current_user');
         
-        $repo = $entityManager->getRepository('MU\ImageModule\Entity\AlbumEntity');
+        $repo = $this->entityFactory->getRepository('album');
         // set creator to admin (2) for all albums created by this user
-        $repo->updateCreator($uid, 2, $translator, $logger, $currentUserApi);
+        $repo->updateCreator($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
         
         // set last editor to admin (2) for all albums updated by this user
-        $repo->updateLastEditor($uid, 2, $translator, $logger, $currentUserApi);
+        $repo->updateLastEditor($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
         
-        $logArgs = ['app' => 'MUImageModule', 'user' => $serviceManager->get('zikula_users_module.current_user')->get('uname'), 'entities' => 'albums'];
-        $logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entities' => 'albums'];
+        $this->logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);
         
-        $repo = $entityManager->getRepository('MU\ImageModule\Entity\PictureEntity');
+        $repo = $this->entityFactory->getRepository('picture');
         // set creator to admin (2) for all pictures created by this user
-        $repo->updateCreator($uid, 2, $translator, $logger, $currentUserApi);
+        $repo->updateCreator($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
         
         // set last editor to admin (2) for all pictures updated by this user
-        $repo->updateLastEditor($uid, 2, $translator, $logger, $currentUserApi);
+        $repo->updateLastEditor($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
         
-        $logArgs = ['app' => 'MUImageModule', 'user' => $serviceManager->get('zikula_users_module.current_user')->get('uname'), 'entities' => 'pictures'];
-        $logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entities' => 'pictures'];
+        $this->logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);
         
-        $repo = $entityManager->getRepository('MU\ImageModule\Entity\AvatarEntity');
+        $repo = $this->entityFactory->getRepository('avatar');
         // set creator to admin (2) for all avatars created by this user
-        $repo->updateCreator($uid, 2, $translator, $logger, $currentUserApi);
+        $repo->updateCreator($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
         
         // set last editor to admin (2) for all avatars updated by this user
-        $repo->updateLastEditor($uid, 2, $translator, $logger, $currentUserApi);
+        $repo->updateLastEditor($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
         
-        $logArgs = ['app' => 'MUImageModule', 'user' => $serviceManager->get('zikula_users_module.current_user')->get('uname'), 'entities' => 'avatars'];
-        $logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entities' => 'avatars'];
+        $this->logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);
     }
 }

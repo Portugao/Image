@@ -12,7 +12,6 @@
 
 namespace MU\ImageModule\Form\Type\Field\Base;
 
-use ServiceUtil;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -22,6 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Zikula\Common\Translator\TranslatorInterface;
 use MU\ImageModule\Form\DataTransformer\UploadFileTransformer;
+use MU\ImageModule\Helper\ImageHelper;
 
 /**
  * Upload field type base class.
@@ -32,6 +32,11 @@ abstract class AbstractUploadType extends AbstractType
      * @var TranslatorInterface
      */
     protected $translator;
+
+    /**
+     * @var ImageHelper
+     */
+    protected $imageHelper;
 
     /**
      * @var FormBuilderInterface
@@ -46,11 +51,13 @@ abstract class AbstractUploadType extends AbstractType
     /**
      * UploadTypeExtension constructor.
      *
-     * @param TranslatorInterface $translator Translator service instance
+     * @param TranslatorInterface $translator  Translator service instance
+     * @param ImageHelper         $imageHelper ImageHelper service instance
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, ImageHelper $imageHelper)
     {
         $this->translator = $translator;
+        $this->imageHelper = $imageHelper;
     }
 
     /**
@@ -132,8 +139,7 @@ abstract class AbstractUploadType extends AbstractType
         $view->vars['thumbRuntimeOptions'] = null;
 
         if (true === $fileMeta['isImage']) {
-            $imageHelper = ServiceUtil::get('mu_image_module.image_helper');
-            $view->vars['thumbRuntimeOptions'] = $imageHelper->getRuntimeOptions($this->entity->get_objectType(), $fieldName, 'controllerAction', ['action' => 'edit']);
+            $view->vars['thumbRuntimeOptions'] = $this->imageHelper->getRuntimeOptions($this->entity->get_objectType(), $fieldName, 'controllerAction', ['action' => 'edit']);
         }
     }
 

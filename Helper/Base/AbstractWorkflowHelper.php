@@ -12,10 +12,13 @@
 
 namespace MU\ImageModule\Helper\Base;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Psr\Log\LoggerInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Doctrine\EntityAccess;
+use Zikula\PermissionsModule\Api\PermissionApi;
 use Zikula_Workflow_Util;
+use MU\ImageModule\Entity\Factory\ImageFactory;
+use MU\ImageModule\Helper\ListEntriesHelper;
 
 /**
  * Helper base class for workflow methods.
@@ -30,28 +33,49 @@ abstract class AbstractWorkflowHelper
     protected $name;
 
     /**
-     * @var ContainerBuilder
-     */
-    protected $container;
-
-    /**
      * @var TranslatorInterface
      */
     protected $translator;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var PermissionApi
+     */
+    protected $permissionApi;
+
+    /**
+     * @var ImageFactory
+     */
+    protected $entityFactory;
+
+    /**
+     * @var ListEntriesHelper
+     */
+    protected $listEntriesHelper;
+
+    /**
      * WorkflowHelper constructor.
      *
-     * @param ContainerBuilder    $container  ContainerBuilder service instance
-     * @param TranslatorInterface $translator Translator service instance
+     * @param TranslatorInterface $translator        Translator service instance
+     * @param LoggerInterface     $logger            Logger service instance
+     * @param PermissionApi       $permissionApi     PermissionApi service instance
+     * @param ImageFactory $entityFactory ImageFactory service instance
+     * @param ListEntriesHelper   $listEntriesHelper ListEntriesHelper service instance
      *
      * @return void
      */
-    public function __construct(ContainerBuilder $container, TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, PermissionApi $permissionApi, ImageFactory $entityFactory, ListEntriesHelper $listEntriesHelper)
     {
         $this->name = 'MUImageModule';
-        $this->container = $container;
         $this->translator = $translator;
+        $this->logger = $logger;
+        $this->permissionApi = $permissionApi;
+        $this->entityFactory = $entityFactory;
+        $this->listEntriesHelper = $listEntriesHelper;
     }
 
     /**
@@ -169,8 +193,7 @@ abstract class AbstractWorkflowHelper
         $wfActions = Zikula_Workflow_Util::getActionsForObject($entity, $objectType, $idColumn, $this->name);
     
         // as we use the workflows for multiple object types we must maybe filter out some actions
-        $listHelper = $this->container->get('mu_image_module.listentries_helper');
-        $states = $listHelper->getEntries($objectType, 'workflowState');
+        $states = $this->listEntriesHelper->getEntries($objectType, 'workflowState');
         $allowedStates = [];
         foreach ($states as $state) {
             $allowedStates[] = $state['value'];
@@ -301,13 +324,11 @@ abstract class AbstractWorkflowHelper
     {
         $amounts = [];
     
-        $logger = $this->container->get('logger');
     
         // check if objects are waiting for approval
         $state = 'waiting';
         $objectType = 'avatar';
-        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
-        if ($permissionApi->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', ACCESS_ADD)) {
+        if ($this->permissionApi->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', ACCESS_ADD)) {
             $amount = $this->getAmountOfModerationItems($objectType, $state);
             if ($amount > 0) {
                 $amounts[] = [
@@ -319,7 +340,7 @@ abstract class AbstractWorkflowHelper
                     'message' => $this->translator->_fn('One avatar is waiting for approval.', '%s avatars are waiting for approval.', $amount, ['%s' => $amount])
                 ];
         
-                $logger->info('{app}: There are {amount} {entities} waiting for approval.', ['app' => 'MUImageModule', 'amount' => $amount, 'entities' => 'avatars']);
+                $this->logger->info('{app}: There are {amount} {entities} waiting for approval.', ['app' => 'MUImageModule', 'amount' => $amount, 'entities' => 'avatars']);
             }
         }
     
@@ -337,7 +358,7 @@ abstract class AbstractWorkflowHelper
      */
     public function getAmountOfModerationItems($objectType, $state)
     {
-        $repository = $this->container->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        $repository = $this->entityFactory->getRepository($objectType);
     
         $where = 'tbl.workflowState:eq:' . $state;
         $parameters = ['workflowState' => $state];

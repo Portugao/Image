@@ -12,7 +12,6 @@
 
 namespace MU\ImageModule\Traits;
 
-use FormUtil;
 use ServiceUtil;
 use Zikula_Workflow_Util;
 
@@ -73,8 +72,11 @@ trait EntityWorkflowTrait
      */
     public function initWorkflow($forceLoading = false)
     {
-        $currentFunc = FormUtil::getPassedValue('func', 'index', 'GETPOST', FILTER_SANITIZE_STRING);
-        $isReuse = FormUtil::getPassedValue('astemplate', '', 'GETPOST', FILTER_SANITIZE_STRING);
+        $request = ServiceUtil::get('request_stack')->getCurrentRequest();
+        $routeName = $request->get('_route');
+    
+        $loadingRequired = false !== strpos($routeName, 'edit') || false !== strpos($routeName, 'delete');
+        $isReuse = $request->query->getBoolean('astemplate', false);
     
         $serviceManager = ServiceUtil::getManager();
         $translator = $serviceManager->get('translator.default');
@@ -95,7 +97,7 @@ trait EntityWorkflowTrait
         ];
         
         // load the real workflow only when required (e. g. when func is edit or delete)
-        if ((!in_array($currentFunc, ['index', 'view', 'display']) && empty($isReuse)) || $forceLoading) {
+        if (($loadingRequired && !$isReuse) || $forceLoading) {
             $result = Zikula_Workflow_Util::getWorkflowForObject($this, $objectType, $idColumn, 'MUImageModule');
             if (!$result) {
                 $flashBag = $serviceManager->get('session')->getFlashBag();

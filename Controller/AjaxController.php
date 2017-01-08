@@ -36,7 +36,7 @@ class AjaxController extends AbstractAjaxController
      * Retrieve item list for finder selections in Forms, Content type plugin and Scribite.
     *
     * @Route("/getItemListFinder", options={"expose"=true})
-    
+    * @Method("POST")
      *
      * @param string $ot      Name of currently used object type
      * @param string $sort    Sorting field
@@ -53,7 +53,7 @@ class AjaxController extends AbstractAjaxController
      * Searches for entities for auto completion usage.
     *
     * @Route("/getItemListAutoCompletion", options={"expose"=true})
-    
+    * @Method("GET")
      *
      * @param Request $request Current request instance
      *
@@ -68,7 +68,7 @@ class AjaxController extends AbstractAjaxController
      * Checks whether a field value is a duplicate or not.
     *
     * @Route("/checkForDuplicate", options={"expose"=true})
-    
+    * @Method("POST")
      *
      * @param Request $request Current request instance
      *
@@ -79,6 +79,23 @@ class AjaxController extends AbstractAjaxController
     public function checkForDuplicateAction(Request $request)
     {
         return parent::checkForDuplicateAction($request);
+    }
+    
+    /**
+     * Changes a given flag (boolean field) by switching between true and false.
+    *
+    * @Route("/toggleFlag", options={"expose"=true})
+    * @Method("POST")
+     *
+     * @param Request $request Current request instance
+     *
+     * @return AjaxResponse
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     */
+    public function toggleFlagAction(Request $request)
+    {
+        return parent::toggleFlagAction($request);
     }
 
     // feel free to add your own ajax controller methods here

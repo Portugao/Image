@@ -57,6 +57,11 @@ services:
     
     mu_image_module.user_listener:
         class: MU\ImageModule\Listener\UserListener
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.entity_factory"
+            - "@zikula_users_module.current_user"
+            - "@logger"
         tags:
             - { name: kernel.event_subscriber }
     
@@ -77,6 +82,8 @@ services:
     
     mu_image_module.thirdparty_listener:
         class: MU\ImageModule\Listener\ThirdPartyListener
+        arguments:
+            - "@mu_image_module.workflow_helper"
         tags:
             - { name: kernel.event_subscriber }
     

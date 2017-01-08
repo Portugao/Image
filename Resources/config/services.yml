@@ -1,7 +1,6 @@
 imports:
-  - { resource: 'uploadHandler.yml' }
   - { resource: 'linkContainer.yml' }
-  - { resource: 'entityFactories.yml' }
+  - { resource: 'entityFactory.yml' }
   - { resource: 'eventSubscriber.yml' }
   - { resource: 'formFields.yml' }
   - { resource: 'forms.yml' }

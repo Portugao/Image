@@ -12,15 +12,17 @@
 
 namespace MU\ImageModule\ContentType\Base;
 
-use ServiceUtil;
-use ZLanguage;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
  * Generic item list content plugin base class.
  */
-abstract class AbstractItemList extends \Content_AbstractContentType
+abstract class AbstractItemList extends \Content_AbstractContentType implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * The treated object type.
      *
@@ -92,6 +94,14 @@ abstract class AbstractItemList extends \Content_AbstractContentType
     protected $catIds;
     
     /**
+     * ItemList constructor.
+     */
+    public function __construct()
+    {
+        $this->setContainer(\ServiceUtil::getManager());
+    }
+    
+    /**
      * Returns the module providing this content type.
      *
      * @return string The module name
@@ -118,7 +128,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType
      */
     public function getTitle()
     {
-        return ServiceUtil::get('translator.default')->__('MUImageModule list view');
+        return $this->container->get('translator.default')->__('MUImageModule list view');
     }
     
     /**
@@ -128,7 +138,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType
      */
     public function getDescription()
     {
-        return ServiceUtil::get('translator.default')->__('Display list of MUImageModule objects.');
+        return $this->container->get('translator.default')->__('Display list of MUImageModule objects.');
     }
     
     /**
@@ -138,12 +148,11 @@ abstract class AbstractItemList extends \Content_AbstractContentType
      */
     public function loadData(&$data)
     {
-        $serviceManager = ServiceUtil::getManager();
-        $controllerHelper = $serviceManager->get('mu_image_module.controller_helper');
+        $controllerHelper = $this->container->get('mu_image_module.controller_helper');
     
-        $utilArgs = ['name' => 'list'];
-        if (!isset($data['objectType']) || !in_array($data['objectType'], $controllerHelper->getObjectTypes('contentType', $utilArgs))) {
-            $data['objectType'] = $controllerHelper->getDefaultObjectType('contentType', $utilArgs);
+        $contextArgs = ['name' => 'list'];
+        if (!isset($data['objectType']) || !in_array($data['objectType'], $controllerHelper->getObjectTypes('contentType', $contextArgs))) {
+            $data['objectType'] = $controllerHelper->getDefaultObjectType('contentType', $contextArgs);
         }
     
         $this->objectType = $data['objectType'];
@@ -169,16 +178,16 @@ abstract class AbstractItemList extends \Content_AbstractContentType
         $this->template = $data['template'];
         $this->customTemplate = $data['customTemplate'];
         $this->filter = $data['filter'];
-        $featureActivationHelper = $serviceManager->get('mu_image_module.feature_activation_helper');
+        $featureActivationHelper = $this->container->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
             $this->categorisableObjectTypes = ['album', 'avatar'];
-            $categoryHelper = $serviceManager->get('mu_image_module.category_helper');
+            $categoryHelper = $this->container->get('mu_image_module.category_helper');
     
             // fetch category properties
             $this->catRegistries = [];
             $this->catProperties = [];
             if (in_array($this->objectType, $this->categorisableObjectTypes)) {
-                $selectionHelper = $serviceManager->get('mu_image_module.selection_helper');
+                $selectionHelper = $this->container->get('mu_image_module.selection_helper');
                 $idFields = $selectionHelper->getIdFields($this->objectType);
                 $this->catRegistries = $categoryHelper->getAllPropertiesWithMainCat($this->objectType, $idFields[0]);
                 $this->catProperties = $categoryHelper->getAllProperties($this->objectType);
@@ -227,23 +236,20 @@ abstract class AbstractItemList extends \Content_AbstractContentType
      */
     public function display()
     {
-        $dom = ZLanguage::getModuleDomain('MUImageModule');
-    
-        $serviceManager = ServiceUtil::getManager();
-        $repository = $serviceManager->get('mu_image_module.' . $this->objectType . '_factory')->getRepository();
-        $permissionApi = $serviceManager->get('zikula_permissions_module.api.permission');
+        $repository = $this->container->get('mu_image_module.entity_factory')->getRepository($objectType);
+        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
     
         // create query
         $where = $this->filter;
         $orderBy = $this->getSortParam($repository);
         $qb = $repository->genericBaseQuery($where, $orderBy);
     
-        $featureActivationHelper = $serviceManager->get('mu_image_module.feature_activation_helper');
+        $featureActivationHelper = $this->container->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
             // apply category filters
             if (in_array($this->objectType, $this->categorisableObjectTypes)) {
                 if (is_array($this->catIds) && count($this->catIds) > 0) {
-                    $categoryHelper = $serviceManager->get('mu_image_module.category_helper');
+                    $categoryHelper = $this->container->get('mu_image_module.category_helper');
                     $qb = $categoryHelper->buildFilterClauses($qb, $this->objectType, $this->catIds);
                 }
             }
@@ -256,13 +262,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType
         list($entities, $objectCount) = $repository->retrieveCollectionResult($query, $orderBy, true);
     
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
-            $filteredEntities = [];
-            foreach ($entities as $entity) {
-                if ($this->get('mu_image_module.category_helper')->hasPermission($entity)) {
-                    $filteredEntities[] = $entity;
-                }
-            }
-            $entities = $filteredEntities;
+            $entities = $categoryHelper->filterEntitiesByPermission($entities);
         }
     
         $data = [
@@ -280,16 +280,18 @@ abstract class AbstractItemList extends \Content_AbstractContentType
             'objectType' => $this->objectType,
             'items' => $entities
         ];
+    
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
             $templateParameters['registries'] = $this->catRegistries;
             $templateParameters['properties'] = $this->catProperties;
         }
-        $imageHelper = $serviceManager->get('mu_image_module.image_helper');
+    
+        $imageHelper = $this->container->get('mu_image_module.image_helper');
         $templateParameters = array_merge($templateData, $repository->getAdditionalTemplateParameters($imageHelper, 'contentType'));
     
         $template = $this->getDisplayTemplate();
     
-        return $serviceManager->get('twig')->render('@MUImageModule/' . $template, $templateParameters);
+        return $this->container->get('twig')->render('@MUImageModule/' . $template, $templateParameters);
     }
     
     /**
@@ -333,7 +335,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType
     
         $sortParam = '';
         if ($this->sorting == 'newest') {
-            $selectionHelper = ServiceUtil::get('mu_image_module.selection_helper');
+            $selectionHelper = $this->container->get('mu_image_module.selection_helper');
             $idFields = $selectionHelper->getIdFields($this->objectType);
             if (count($idFields) == 1) {
                 $sortParam = $idFields[0] . ' DESC';
@@ -386,20 +388,19 @@ abstract class AbstractItemList extends \Content_AbstractContentType
         $this->view->toplevelmodule = 'MUImageModule';
     
         // ensure our custom plugins are loaded
-        array_push($this->view->plugins_dir, 'modules/MU/Image/Resources/views//plugins');
+        array_push($this->view->plugins_dir, 'modules/MU/ImageModule/Resources/views//plugins');
     
-        $featureActivationHelper = $serviceManager->get('mu_image_module.feature_activation_helper');
+        $featureActivationHelper = $this->container->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
             // assign category data
             $this->view->assign('registries', $this->catRegistries)
                        ->assign('properties', $this->catProperties);
     
             // assign categories lists for simulating category selectors
-            $serviceManager = ServiceUtil::getManager();
-            $translator = $serviceManager->get('translator.default');
-            $locale = $serviceManager->get('request_stack')->getMasterRequest()->getLocale();
+            $translator = $this->container->get('translator.default');
+            $locale = $this->container->get('request_stack')->getCurrentRequest()->getLocale();
             $categories = [];
-            $categoryApi = $serviceManager->get('zikula_categories_module.api.category');
+            $categoryApi = $this->container->get('zikula_categories_module.api.category');
             foreach ($this->catRegistries as $registryId => $registryCid) {
                 $propName = '';
                 foreach ($this->catProperties as $propertyName => $propertyId) {
@@ -422,7 +423,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType
             }
     
             $this->view->assign('categories', $categories)
-                       ->assign('categoryHelper', $serviceManager->get('mu_image_module.category_helper'));
+                       ->assign('categoryHelper', $this->container->get('mu_image_module.category_helper'));
         }
     }
     

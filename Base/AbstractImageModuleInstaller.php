@@ -12,12 +12,8 @@
 
 namespace MU\ImageModule\Base;
 
-use DBUtil;
 use Doctrine\DBAL\Connection;
-use EventUtil;
-use ModUtil;
 use RuntimeException;
-use UserUtil;
 use Zikula\Core\AbstractExtensionInstaller;
 use Zikula_Workflow_Util;
 use Zikula\CategoriesModule\Entity\CategoryRegistryEntity;
@@ -41,8 +37,8 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         // Check if upload directories exist and if needed create them
         try {
             $container = $this->container;
-            $controllerHelper = new \MU\ImageModule\Helper\ControllerHelper($container, $container->get('translator.default'), $container->get('session'), $container->get('logger'));
-            $controllerHelper->checkAndCreateAllUploadFolders();
+            $uploadHelper = new \MU\ImageModule\Helper\UploadHelper($container->get('translator.default'), $container->get('session'), $container->get('logger'), $container->get('zikula_users_module.current_user'), $container->get('zikula_extensions_module.api.variable'), $container->get('%datadir%'));
+            $uploadHelper->checkAndCreateAllUploadFolders();
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
             $logger->error('{app}: User {user} could not create upload folders during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'errorMessage' => $e->getMessage()]);
@@ -108,17 +104,17 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('enableShrinkingForPictureImageUpload', false);
         $this->setVar('shrinkWidthPictureImageUpload', 800);
         $this->setVar('shrinkHeightPictureImageUpload', 600);
-        $this->setVar('enableShrinkingForAvatarAvatarUpload', false);
-        $this->setVar('shrinkWidthAvatarAvatarUpload', 800);
-        $this->setVar('shrinkHeightAvatarAvatarUpload', 600);
-        $this->setVar('thumbnailModePicture',  'inset' );
+        $this->setVar('thumbnailModePictureImageUpload',  'inset' );
         $this->setVar('thumbnailWidthPictureImageUploadView', 32);
         $this->setVar('thumbnailHeightPictureImageUploadView', 24);
         $this->setVar('thumbnailWidthPictureImageUploadDisplay', 240);
         $this->setVar('thumbnailHeightPictureImageUploadDisplay', 180);
         $this->setVar('thumbnailWidthPictureImageUploadEdit', 240);
         $this->setVar('thumbnailHeightPictureImageUploadEdit', 180);
-        $this->setVar('thumbnailModeAvatar',  'inset' );
+        $this->setVar('enableShrinkingForAvatarAvatarUpload', false);
+        $this->setVar('shrinkWidthAvatarAvatarUpload', 800);
+        $this->setVar('shrinkHeightAvatarAvatarUpload', 600);
+        $this->setVar('thumbnailModeAvatarAvatarUpload',  'inset' );
         $this->setVar('thumbnailWidthAvatarAvatarUploadView', 32);
         $this->setVar('thumbnailHeightAvatarAvatarUploadView', 24);
         $this->setVar('thumbnailWidthAvatarAvatarUploadDisplay', 240);
@@ -144,7 +140,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $registry = new CategoryRegistryEntity();
         $registry->setModname('MUImageModule');
         $registry->setEntityname('AlbumEntity');
-        $registry->setProperty($categoryHelper->getPrimaryProperty(['ot' => 'Album']));
+        $registry->setProperty($categoryHelper->getPrimaryProperty('Album'));
         $registry->setCategory_Id($categoryGlobal['id']);
     
         try {
@@ -160,7 +156,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $registry = new CategoryRegistryEntity();
         $registry->setModname('MUImageModule');
         $registry->setEntityname('AvatarEntity');
-        $registry->setProperty($categoryHelper->getPrimaryProperty(['ot' => 'Avatar']));
+        $registry->setProperty($categoryHelper->getPrimaryProperty('Avatar'));
         $registry->setCategory_Id($categoryGlobal['id']);
     
         try {
@@ -351,7 +347,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
      */
     protected function dropEventHandlersFromDatabase()
     {
-        EventUtil::unregisterPersistentModuleHandlers('Image');
+        \EventUtil::unregisterPersistentModuleHandlers('Image');
     }
     
     /**
@@ -481,10 +477,12 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     
         // remove all module vars
         $this->delVars();
-        
         // remove category registry entries
-        ModUtil::dbInfoLoad('ZikulaCategoriesModule');
-        DBUtil::deleteWhere('categories_registry', 'modname = \'MUImageModule\'');
+        $categoryRegistryApi = $this->container->get('zikula_categories_module.api.category_registry');
+        // assume that not more than five registries exist
+        for ($i = 1; $i <= 5; $i++) {
+            $categoryRegistryApi->deleteRegistry('MUImageModule');
+        }
     
         // remove all thumbnails
         $manager = $this->container->get('systemplugin.imagine.manager');
@@ -527,7 +525,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     {
         $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
         $logger = $this->container->get('logger');
-        $request = $this->container->get('request_stack')->getMasterRequest();
+        $request = $this->container->get('request_stack')->getCurrentRequest();
         
         $entityClass = 'MU\ImageModule\Entity\AlbumEntity';
         $entityManager->getRepository($entityClass)->truncateTable($logger);

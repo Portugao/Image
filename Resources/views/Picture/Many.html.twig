@@ -19,7 +19,19 @@
     {% if displayMode == 'choices' %}
         {{ form_row(attribute(form, alias)) }}
     {% elseif displayMode == 'autocomplete' %}
-                
+        {% set createUrl = allowEditing ? path('muimagemodule_picture_' ~ routeArea ~ 'edit') : '' %}
+            {{ form_row(attribute(form, alias)) }}
+            <div class="muimagemodule-relation-leftside">
+                {% if attribute(linkingItem, alias) is defined %}
+                    {{ include(
+                        'Picture/includeSelectEditItemListMany.html.twig',
+                        { items: attribute(linkingItem, alias) }
+                    ) }}
+                {% else %}
+                    {{ include('Picture/includeSelectEditItemListMany.html.twig') }}
+                {% endif %}
+            </div>
+            <br style="clear: both" />
     {% endif %}
 {% if panel|default(false) == true %}
             </div>

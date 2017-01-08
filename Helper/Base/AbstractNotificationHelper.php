@@ -12,9 +12,6 @@
 
 namespace MU\ImageModule\Helper\Base;
 
-use ModUtil;
-use UserUtil;
-
 use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -26,7 +23,9 @@ use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\ExtensionsModule\Api\VariableApi;
+use Zikula\GroupsModule\Entity\RepositoryInterface\GroupRepositoryInterface;
 use Zikula\MailerModule\Api\MailerApi;
+use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
 use MU\ImageModule\Helper\WorkflowHelper;
 
 /**
@@ -72,6 +71,16 @@ abstract class AbstractNotificationHelper
     protected $mailer;
     
     /**
+     * @var GroupRepositoryInterface
+     */
+    protected $groupRepository;
+    
+    /**
+     * @var UserRepositoryInterface
+     */
+    protected $userRepository;
+    
+    /**
      * @var WorkflowHelper
      */
     protected $workflowHelper;
@@ -81,28 +90,28 @@ abstract class AbstractNotificationHelper
      *
      * @var array $recipients
      */
-    private $recipients = [];
+    protected $recipients = [];
     
     /**
      * Which type of recipient is used ("creator", "moderator" or "superModerator").
      *
      * @var string recipientType
      */
-    private $recipientType = '';
+    protected $recipientType = '';
     
     /**
      * The entity which has been changed before.
      *
      * @var EntityAccess entity
      */
-    private $entity = '';
+    protected $entity = '';
     
     /**
      * Name of workflow action which is being performed.
      *
      * @var string action
      */
-    private $action = '';
+    protected $action = '';
     
     /**
      * Name of the application.
@@ -114,35 +123,41 @@ abstract class AbstractNotificationHelper
     /**
      * NotificationHelper constructor.
      *
-     * @param TranslatorInterface $translator     Translator service instance
-     * @param SessionInterface    $session        Session service instance
-     * @param Routerinterface     $router         Router service instance
-     * @param KernelInterface     $kernel         Kernel service instance
-     * @param RequestStack        $requestStack   RequestStack service instance
-     * @param VariableApi         $variableApi    VariableApi service instance
-     * @param Twig_Environment    $twig           Twig service instance
-     * @param MailerApi           $mailerApi      MailerApi service instance
-     * @param WorkflowHelper      $workflowHelper WorkflowHelper service instance
+     * @param KernelInterface          $kernel          Kernel service instance
+     * @param TranslatorInterface      $translator      Translator service instance
+     * @param SessionInterface         $session         Session service instance
+     * @param Routerinterface          $router          Router service instance
+     * @param RequestStack             $requestStack    RequestStack service instance
+     * @param VariableApi              $variableApi     VariableApi service instance
+     * @param Twig_Environment         $twig            Twig service instance
+     * @param MailerApi                $mailerApi       MailerApi service instance
+     * @param GroupRepositoryInterface $groupRepository GroupRepository service instance
+     * @param UserRepositoryInterface  $userRepository  UserRepository service instance
+     * @param WorkflowHelper           $workflowHelper  WorkflowHelper service instance
      */
     public function __construct(
+        KernelInterface $kernel,
         TranslatorInterface $translator,
         SessionInterface $session,
         RouterInterface $router,
-        KernelInterface $kernel,
         RequestStack $requestStack,
         VariableApi $variableApi,
         Twig_Environment $twig,
         MailerApi $mailerApi,
+        GroupRepositoryInterface $groupRepository,
+        UserRepositoryInterface $userRepository,
         WorkflowHelper $workflowHelper)
     {
+        $this->kernel = $kernel;
         $this->setTranslator($translator);
         $this->session = $session;
         $this->router = $router;
-        $this->kernel = $kernel;
-        $this->request = $requestStack->getMasterRequest();
+        $this->request = $requestStack->getCurrentRequest();
         $this->variableApi = $variableApi;
         $this->templating = $twig;
         $this->mailerApi = $mailerApi;
+        $this->groupRepository = $groupRepository;
+        $this->userRepository = $userRepository;
         $this->workflowHelper = $workflowHelper;
         $this->name = 'MUImageModule';
     }
@@ -213,9 +228,11 @@ abstract class AbstractNotificationHelper
                 $moderatorGroupId = $this->variableApi->get('MUImageModule', 'superModerationGroupFor' . $objectType, 2);
             }
     
-            $moderatorGroup = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'get', ['gid' => $moderatorGroupId]);
-            foreach (array_keys($moderatorGroup['members']) as $uid) {
-                $this->addRecipient($uid);
+            $moderatorGroup = $this->groupRepository->find($moderatorGroupId);
+            if (null !== $moderatorGroup) {
+                foreach (array_keys($moderatorGroup['members']) as $uid) {
+                    $this->addRecipient($uid);
+                }
             }
         } elseif ($this->recipientType == 'creator' && method_exists($entity, 'getCreatedBy')) {
             $creatorUid = $this->entity->getCreatedBy()->getUid();
@@ -236,15 +253,17 @@ abstract class AbstractNotificationHelper
      */
     protected function addRecipient($userId)
     {
-        $userVars = UserUtil::getVars($userId);
+        $user = $this->userRepository->find($userId);
+        if (null === $user) {
+            return;
+        }
     
-        $recipient = [
-            'name' => (isset($userVars['name']) && !empty($userVars['name']) ? $userVars['name'] : $userVars['uname']),
-            'email' => $userVars['email']
+        $userAttributes = $user->getAttributes();
+    
+        $this->recipients[] = [
+            'name' => isset($userAttributes['name']) && !empty($userAttributes['name']) ? $userAttributes['name'] : $user->getUname(),
+            'email' => $user->getEmail()
         ];
-        $this->recipients[] = $recipient;
-    
-        return $recipient;
     }
     
     /**
@@ -253,7 +272,7 @@ abstract class AbstractNotificationHelper
     protected function sendMails()
     {
         $objectType = $this->entity['_objectType'];
-        $siteName = $this->variableApi->getSystemVar('sitename_' . $this->request->getLocale(), $this->variableApi->getSystemVar('sitename_en'));
+        $siteName = $this->variableApi->getSystemVar('sitename');
         $adminMail = $this->variableApi->getSystemVar('adminmail');
     
         $templateType = $this->recipientType == 'creator' ? 'Creator' : 'Moderator';

@@ -114,7 +114,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('supportCategories', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Support categories') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['supportCategories'],
+                'data' => (bool)isset($this->modVars['supportCategories']) ? $this->modVars['supportCategories'] : '',
                 'attr' => [
                     'title' => $this->__('The support categories option.')
                 ],
@@ -122,7 +122,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('supportSubAlbums', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Support sub albums') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['supportSubAlbums'],
+                'data' => (bool)isset($this->modVars['supportSubAlbums']) ? $this->modVars['supportSubAlbums'] : '',
                 'attr' => [
                     'title' => $this->__('The support sub albums option.')
                 ],
@@ -130,7 +130,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('userDeletePictures', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('User delete pictures') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['userDeletePictures'],
+                'data' => (bool)isset($this->modVars['userDeletePictures']) ? $this->modVars['userDeletePictures'] : '',
                 'attr' => [
                     'title' => $this->__('The user delete pictures option.')
                 ],
@@ -138,7 +138,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('slideshow1', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Slideshow 1') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['slideshow1'],
+                'data' => (bool)isset($this->modVars['slideshow1']) ? $this->modVars['slideshow1'] : '',
                 'attr' => [
                     'title' => $this->__('The slideshow 1 option.')
                 ],
@@ -146,7 +146,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('useAvatars', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Use avatars') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['useAvatars'],
+                'data' => (bool)isset($this->modVars['useAvatars']) ? $this->modVars['useAvatars'] : '',
                 'attr' => [
                     'title' => $this->__('The use avatars option.')
                 ],
@@ -154,7 +154,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('useWatermark', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Use watermark') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['useWatermark'],
+                'data' => (bool)isset($this->modVars['useWatermark']) ? $this->modVars['useWatermark'] : '',
                 'attr' => [
                     'title' => $this->__('The use watermark option.')
                 ],
@@ -177,7 +177,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 
                 Then you can enable these features here!'),
                 'required' => false,
-                'data' => (bool)$this->modVars['useExtendedFeatures'],
+                'data' => (bool)isset($this->modVars['useExtendedFeatures']) ? $this->modVars['useExtendedFeatures'] : '',
                 'attr' => [
                     'title' => $this->__('The use extended features option.')
                 ],
@@ -197,7 +197,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('slide1Interval', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Slide 1 interval') . ':',
                 'required' => false,
-                'data' => $this->modVars['slide1Interval'],
+                'data' => isset($this->modVars['slide1Interval']) ? $this->modVars['slide1Interval'] : '',
                 'empty_data' => intval('4000'),
                 'attr' => [
                     'title' => $this->__('Enter the slide 1 interval. Only digits are allowed.')
@@ -207,7 +207,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('slide1Speed', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Slide 1 speed') . ':',
                 'required' => false,
-                'data' => $this->modVars['slide1Speed'],
+                'data' => isset($this->modVars['slide1Speed']) ? $this->modVars['slide1Speed'] : '',
                 'empty_data' => intval('1000'),
                 'attr' => [
                     'title' => $this->__('Enter the slide 1 speed. Only digits are allowed.')
@@ -229,7 +229,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('fileSizeForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('File size for pictures') . ':',
                 'required' => false,
-                'data' => $this->modVars['fileSizeForPictures'],
+                'data' => isset($this->modVars['fileSizeForPictures']) ? $this->modVars['fileSizeForPictures'] : '',
                 'empty_data' => intval('102400'),
                 'attr' => [
                     'title' => $this->__('Enter the file size for pictures. Only digits are allowed.')
@@ -239,7 +239,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('fileSizeForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('File size for avatars') . ':',
                 'required' => false,
-                'data' => $this->modVars['fileSizeForAvatars'],
+                'data' => isset($this->modVars['fileSizeForAvatars']) ? $this->modVars['fileSizeForAvatars'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the file size for avatars. Only digits are allowed.')
@@ -249,7 +249,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('minWidthForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Min width for pictures') . ':',
                 'required' => false,
-                'data' => $this->modVars['minWidthForPictures'],
+                'data' => isset($this->modVars['minWidthForPictures']) ? $this->modVars['minWidthForPictures'] : '',
                 'empty_data' => intval('400'),
                 'attr' => [
                     'title' => $this->__('Enter the min width for pictures. Only digits are allowed.')
@@ -259,7 +259,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('maxWidthForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Max width for pictures') . ':',
                 'required' => false,
-                'data' => $this->modVars['maxWidthForPictures'],
+                'data' => isset($this->modVars['maxWidthForPictures']) ? $this->modVars['maxWidthForPictures'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the max width for pictures. Only digits are allowed.')
@@ -269,7 +269,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('maxHeightForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Max height for pictures') . ':',
                 'required' => false,
-                'data' => $this->modVars['maxHeightForPictures'],
+                'data' => isset($this->modVars['maxHeightForPictures']) ? $this->modVars['maxHeightForPictures'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the max height for pictures. Only digits are allowed.')
@@ -279,7 +279,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('minWidthForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Min width for avatars') . ':',
                 'required' => false,
-                'data' => $this->modVars['minWidthForAvatars'],
+                'data' => isset($this->modVars['minWidthForAvatars']) ? $this->modVars['minWidthForAvatars'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the min width for avatars. Only digits are allowed.')
@@ -289,7 +289,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('maxWidthForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Max width for avatars') . ':',
                 'required' => false,
-                'data' => $this->modVars['maxWidthForAvatars'],
+                'data' => isset($this->modVars['maxWidthForAvatars']) ? $this->modVars['maxWidthForAvatars'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the max width for avatars. Only digits are allowed.')
@@ -299,7 +299,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('maxHeightForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Max height for avatars') . ':',
                 'required' => false,
-                'data' => $this->modVars['maxHeightForAvatars'],
+                'data' => isset($this->modVars['maxHeightForAvatars']) ? $this->modVars['maxHeightForAvatars'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the max height for avatars. Only digits are allowed.')
@@ -314,7 +314,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Width for the first additional picure'),
                 'required' => false,
-                'data' => $this->modVars['firstWidth'],
+                'data' => isset($this->modVars['firstWidth']) ? $this->modVars['firstWidth'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the first width. Only digits are allowed.')
@@ -329,7 +329,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Height for the first additional picure'),
                 'required' => false,
-                'data' => $this->modVars['firstHeight'],
+                'data' => isset($this->modVars['firstHeight']) ? $this->modVars['firstHeight'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the first height. Only digits are allowed.')
@@ -344,7 +344,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Width for the second additional picure'),
                 'required' => false,
-                'data' => $this->modVars['secondWidth'],
+                'data' => isset($this->modVars['secondWidth']) ? $this->modVars['secondWidth'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the second width. Only digits are allowed.')
@@ -359,7 +359,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Height for the second additional picure'),
                 'required' => false,
-                'data' => $this->modVars['secondHeight'],
+                'data' => isset($this->modVars['secondHeight']) ? $this->modVars['secondHeight'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the second height. Only digits are allowed.')
@@ -374,7 +374,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Width for the third additional picure'),
                 'required' => false,
-                'data' => $this->modVars['thirdWidth'],
+                'data' => isset($this->modVars['thirdWidth']) ? $this->modVars['thirdWidth'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the third width. Only digits are allowed.')
@@ -389,7 +389,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Height for the third additional picure'),
                 'required' => false,
-                'data' => $this->modVars['thirdHeight'],
+                'data' => isset($this->modVars['thirdHeight']) ? $this->modVars['thirdHeight'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the third height. Only digits are allowed.')
@@ -416,7 +416,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Here you can set, how many avatar sizes with which name you wish.'),
                 'required' => false,
-                'data' => $this->modVars['numberHeightAndNameOfAvatars'],
+                'data' => isset($this->modVars['numberHeightAndNameOfAvatars']) ? $this->modVars['numberHeightAndNameOfAvatars'] : '',
                 'empty_data' => '200,thumb;400,view;600,normal',
                 'attr' => [
                     'title' => $this->__('Enter the number height and name of avatars.')
@@ -425,7 +425,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('shrink', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Shrink') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['shrink'],
+                'data' => (bool)isset($this->modVars['shrink']) ? $this->modVars['shrink'] : '',
                 'attr' => [
                     'title' => $this->__('The shrink option.')
                 ],
@@ -450,7 +450,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The amount of albums shown per page in the backend'),
                 'required' => false,
-                'data' => $this->modVars['albumEntriesPerPageInBackend'],
+                'data' => isset($this->modVars['albumEntriesPerPageInBackend']) ? $this->modVars['albumEntriesPerPageInBackend'] : '',
                 'empty_data' => intval('10'),
                 'attr' => [
                     'title' => $this->__('Enter the album entries per page in backend. Only digits are allowed.')
@@ -465,7 +465,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The amount of pictures shown per page in the backend'),
                 'required' => false,
-                'data' => $this->modVars['pictureEntriesPerPageInBackend'],
+                'data' => isset($this->modVars['pictureEntriesPerPageInBackend']) ? $this->modVars['pictureEntriesPerPageInBackend'] : '',
                 'empty_data' => intval('10'),
                 'attr' => [
                     'title' => $this->__('Enter the picture entries per page in backend. Only digits are allowed.')
@@ -480,7 +480,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The amount of avatars shown per page in the backend'),
                 'required' => false,
-                'data' => $this->modVars['avatarEntriesPerPageInBackend'],
+                'data' => isset($this->modVars['avatarEntriesPerPageInBackend']) ? $this->modVars['avatarEntriesPerPageInBackend'] : '',
                 'empty_data' => intval('10'),
                 'attr' => [
                     'title' => $this->__('Enter the avatar entries per page in backend. Only digits are allowed.')
@@ -490,7 +490,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('countImageView', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Count image view') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['countImageView'],
+                'data' => (bool)isset($this->modVars['countImageView']) ? $this->modVars['countImageView'] : '',
                 'attr' => [
                     'title' => $this->__('The count image view option.')
                 ],
@@ -503,7 +503,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('How many main albums may a user create'),
                 'required' => false,
-                'data' => $this->modVars['numberParentAlbums'],
+                'data' => isset($this->modVars['numberParentAlbums']) ? $this->modVars['numberParentAlbums'] : '',
                 'empty_data' => intval('1'),
                 'attr' => [
                     'title' => $this->__('Enter the number parent albums. Only digits are allowed.')
@@ -518,7 +518,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('How many sub albums may a user create'),
                 'required' => false,
-                'data' => $this->modVars['numberSubAlbums'],
+                'data' => isset($this->modVars['numberSubAlbums']) ? $this->modVars['numberSubAlbums'] : '',
                 'empty_data' => intval('2'),
                 'attr' => [
                     'title' => $this->__('Enter the number sub albums. Only digits are allowed.')
@@ -533,7 +533,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('How many pictures may a user create'),
                 'required' => false,
-                'data' => $this->modVars['numberPictures'],
+                'data' => isset($this->modVars['numberPictures']) ? $this->modVars['numberPictures'] : '',
                 'empty_data' => intval('20'),
                 'attr' => [
                     'title' => $this->__('Enter the number pictures. Only digits are allowed.')
@@ -543,7 +543,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('groupForCommonAlbums', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
                 'label' => $this->__('Group for common albums') . ':',
                 'required' => false,
-                'data' => $this->modVars['groupForCommonAlbums'],
+                'data' => isset($this->modVars['groupForCommonAlbums']) ? $this->modVars['groupForCommonAlbums'] : '',
                 'empty_data' => '',
                 'attr' => [
                     'title' => $this->__('Choose the group for common albums.')
@@ -556,7 +556,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('kindOfShowSubAlbums', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
                 'label' => $this->__('Kind of show sub albums') . ':',
                 'required' => false,
-                'data' => $this->modVars['kindOfShowSubAlbums'],
+                'data' => isset($this->modVars['kindOfShowSubAlbums']) ? $this->modVars['kindOfShowSubAlbums'] : '',
                 'empty_data' => '',
                 'attr' => [
                     'title' => $this->__('Choose the kind of show sub albums.')
@@ -570,7 +570,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('breadcrumbsInFrontend', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
                 'label' => $this->__('Breadcrumbs in frontend') . ':',
                 'required' => false,
-                'data' => (bool)$this->modVars['breadcrumbsInFrontend'],
+                'data' => (bool)isset($this->modVars['breadcrumbsInFrontend']) ? $this->modVars['breadcrumbsInFrontend'] : '',
                 'attr' => [
                     'title' => $this->__('The breadcrumbs in frontend option.')
                 ],
@@ -578,7 +578,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('ending', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
                 'label' => $this->__('Ending') . ':',
                 'required' => false,
-                'data' => $this->modVars['ending'],
+                'data' => isset($this->modVars['ending']) ? $this->modVars['ending'] : '',
                 'empty_data' => 'html',
                 'attr' => [
                     'title' => $this->__('Enter the ending.')
@@ -604,7 +604,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Path to the image that is for the watermark'),
                 'required' => false,
-                'data' => $this->modVars['watermark'],
+                'data' => isset($this->modVars['watermark']) ? $this->modVars['watermark'] : '',
                 'empty_data' => '',
                 'attr' => [
                     'title' => $this->__('Enter the watermark.')
@@ -618,7 +618,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('If top is set, bottom has no effect'),
                 'required' => false,
-                'data' => $this->modVars['bottom'],
+                'data' => isset($this->modVars['bottom']) ? $this->modVars['bottom'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the bottom. Only digits are allowed.')
@@ -633,7 +633,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('If left is set, right has no effect'),
                 'required' => false,
-                'data' => $this->modVars['left'],
+                'data' => isset($this->modVars['left']) ? $this->modVars['left'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the left. Only digits are allowed.')
@@ -643,7 +643,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('right', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Right') . ':',
                 'required' => false,
-                'data' => $this->modVars['right'],
+                'data' => isset($this->modVars['right']) ? $this->modVars['right'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the right. Only digits are allowed.')
@@ -653,7 +653,7 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('top', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label' => $this->__('Top') . ':',
                 'required' => false,
-                'data' => $this->modVars['top'],
+                'data' => isset($this->modVars['top']) ? $this->modVars['top'] : '',
                 'empty_data' => intval(''),
                 'attr' => [
                     'title' => $this->__('Enter the top. Only digits are allowed.')
@@ -679,7 +679,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                     'title' => $this->__('Used to determine moderator user accounts for sending email notifications.')
                 ],
                 'help' => $this->__('Used to determine moderator user accounts for sending email notifications.'),
-                'data' => $this->modVars['moderationGroupForAvatars'],
+                'data' => isset($this->modVars['moderationGroupForAvatars']) ? $this->modVars['moderationGroupForAvatars'] : '',
                 'attr' => [
                     'title' => $this->__('Choose the moderation group for avatars.')
                 ],'max_length' => 255,
@@ -708,7 +708,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The amount of albums shown per page'),
                 'required' => false,
-                'data' => $this->modVars['albumEntriesPerPage'],
+                'data' => isset($this->modVars['albumEntriesPerPage']) ? $this->modVars['albumEntriesPerPage'] : '',
                 'empty_data' => intval('10'),
                 'attr' => [
                     'title' => $this->__('Enter the album entries per page. Only digits are allowed.')
@@ -723,7 +723,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The amount of pictures shown per page'),
                 'required' => false,
-                'data' => $this->modVars['pictureEntriesPerPage'],
+                'data' => isset($this->modVars['pictureEntriesPerPage']) ? $this->modVars['pictureEntriesPerPage'] : '',
                 'empty_data' => intval('10'),
                 'attr' => [
                     'title' => $this->__('Enter the picture entries per page. Only digits are allowed.')
@@ -738,7 +738,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The amount of avatars shown per page'),
                 'required' => false,
-                'data' => $this->modVars['avatarEntriesPerPage'],
+                'data' => isset($this->modVars['avatarEntriesPerPage']) ? $this->modVars['avatarEntriesPerPage'] : '',
                 'empty_data' => intval('10'),
                 'attr' => [
                     'title' => $this->__('Enter the avatar entries per page. Only digits are allowed.')
@@ -765,7 +765,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Whether to enable shrinking huge images to maximum dimensions. Stores downscaled version of the original image.'),
                 'required' => false,
-                'data' => (bool)$this->modVars['enableShrinkingForPictureImageUpload'],
+                'data' => (bool)isset($this->modVars['enableShrinkingForPictureImageUpload']) ? $this->modVars['enableShrinkingForPictureImageUpload'] : '',
                 'attr' => [
                     'title' => $this->__('The enable shrinking for picture image upload option.'),
                     'class' => 'shrink-enabler'
@@ -779,7 +779,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The maximum image width in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['shrinkWidthPictureImageUpload'],
+                'data' => isset($this->modVars['shrinkWidthPictureImageUpload']) ? $this->modVars['shrinkWidthPictureImageUpload'] : '',
                 'empty_data' => intval('800'),
                 'attr' => [
                     'title' => $this->__('Enter the shrink width picture image upload. Only digits are allowed.'),
@@ -796,11 +796,126 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The maximum image height in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['shrinkHeightPictureImageUpload'],
+                'data' => isset($this->modVars['shrinkHeightPictureImageUpload']) ? $this->modVars['shrinkHeightPictureImageUpload'] : '',
                 'empty_data' => intval('600'),
                 'attr' => [
                     'title' => $this->__('Enter the shrink height picture image upload. Only digits are allowed.'),
                     'class' => 'shrinkdimension-shrinkheightpictureimageupload'
+                ],'max_length' => 4,
+                'scale' => 0,
+                'input_group' => ['right' => $this->__('pixels')]
+            ])
+            ->add('thumbnailModePictureImageUpload', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+                'label' => $this->__('Thumbnail mode picture image upload') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Thumbnail mode (inset or outbound).')
+                ],
+                'help' => $this->__('Thumbnail mode (inset or outbound).'),
+                'required' => false,
+                'data' => isset($this->modVars['thumbnailModePictureImageUpload']) ? $this->modVars['thumbnailModePictureImageUpload'] : '',
+                'empty_data' => 'inset',
+                'attr' => [
+                    'title' => $this->__('Choose the thumbnail mode picture image upload.')
+                ],'choices' => [
+                    $this->__('Inset') => 'inset'
+                    ,$this->__('Outbound') => 'outbound'
+                ],
+                'choices_as_values' => true,
+                'multiple' => false
+            ])
+            ->add('thumbnailWidthPictureImageUploadView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Thumbnail width picture image upload view') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Thumbnail width on view pages in pixels.')
+                ],
+                'help' => $this->__('Thumbnail width on view pages in pixels.'),
+                'required' => false,
+                'data' => isset($this->modVars['thumbnailWidthPictureImageUploadView']) ? $this->modVars['thumbnailWidthPictureImageUploadView'] : '',
+                'empty_data' => intval('32'),
+                'attr' => [
+                    'title' => $this->__('Enter the thumbnail width picture image upload view. Only digits are allowed.')
+                ],'max_length' => 4,
+                'scale' => 0,
+                'input_group' => ['right' => $this->__('pixels')]
+            ])
+            ->add('thumbnailHeightPictureImageUploadView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Thumbnail height picture image upload view') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Thumbnail height on view pages in pixels.')
+                ],
+                'help' => $this->__('Thumbnail height on view pages in pixels.'),
+                'required' => false,
+                'data' => isset($this->modVars['thumbnailHeightPictureImageUploadView']) ? $this->modVars['thumbnailHeightPictureImageUploadView'] : '',
+                'empty_data' => intval('24'),
+                'attr' => [
+                    'title' => $this->__('Enter the thumbnail height picture image upload view. Only digits are allowed.')
+                ],'max_length' => 4,
+                'scale' => 0,
+                'input_group' => ['right' => $this->__('pixels')]
+            ])
+            ->add('thumbnailWidthPictureImageUploadDisplay', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Thumbnail width picture image upload display') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Thumbnail width on display pages in pixels.')
+                ],
+                'help' => $this->__('Thumbnail width on display pages in pixels.'),
+                'required' => false,
+                'data' => isset($this->modVars['thumbnailWidthPictureImageUploadDisplay']) ? $this->modVars['thumbnailWidthPictureImageUploadDisplay'] : '',
+                'empty_data' => intval('240'),
+                'attr' => [
+                    'title' => $this->__('Enter the thumbnail width picture image upload display. Only digits are allowed.')
+                ],'max_length' => 4,
+                'scale' => 0,
+                'input_group' => ['right' => $this->__('pixels')]
+            ])
+            ->add('thumbnailHeightPictureImageUploadDisplay', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Thumbnail height picture image upload display') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Thumbnail height on display pages in pixels.')
+                ],
+                'help' => $this->__('Thumbnail height on display pages in pixels.'),
+                'required' => false,
+                'data' => isset($this->modVars['thumbnailHeightPictureImageUploadDisplay']) ? $this->modVars['thumbnailHeightPictureImageUploadDisplay'] : '',
+                'empty_data' => intval('180'),
+                'attr' => [
+                    'title' => $this->__('Enter the thumbnail height picture image upload display. Only digits are allowed.')
+                ],'max_length' => 4,
+                'scale' => 0,
+                'input_group' => ['right' => $this->__('pixels')]
+            ])
+            ->add('thumbnailWidthPictureImageUploadEdit', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Thumbnail width picture image upload edit') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Thumbnail width on edit pages in pixels.')
+                ],
+                'help' => $this->__('Thumbnail width on edit pages in pixels.'),
+                'required' => false,
+                'data' => isset($this->modVars['thumbnailWidthPictureImageUploadEdit']) ? $this->modVars['thumbnailWidthPictureImageUploadEdit'] : '',
+                'empty_data' => intval('240'),
+                'attr' => [
+                    'title' => $this->__('Enter the thumbnail width picture image upload edit. Only digits are allowed.')
+                ],'max_length' => 4,
+                'scale' => 0,
+                'input_group' => ['right' => $this->__('pixels')]
+            ])
+            ->add('thumbnailHeightPictureImageUploadEdit', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+                'label' => $this->__('Thumbnail height picture image upload edit') . ':',
+                'label_attr' => [
+                    'class' => 'tooltips',
+                    'title' => $this->__('Thumbnail height on edit pages in pixels.')
+                ],
+                'help' => $this->__('Thumbnail height on edit pages in pixels.'),
+                'required' => false,
+                'data' => isset($this->modVars['thumbnailHeightPictureImageUploadEdit']) ? $this->modVars['thumbnailHeightPictureImageUploadEdit'] : '',
+                'empty_data' => intval('180'),
+                'attr' => [
+                    'title' => $this->__('Enter the thumbnail height picture image upload edit. Only digits are allowed.')
                 ],'max_length' => 4,
                 'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
@@ -813,7 +928,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Whether to enable shrinking huge images to maximum dimensions. Stores downscaled version of the original image.'),
                 'required' => false,
-                'data' => (bool)$this->modVars['enableShrinkingForAvatarAvatarUpload'],
+                'data' => (bool)isset($this->modVars['enableShrinkingForAvatarAvatarUpload']) ? $this->modVars['enableShrinkingForAvatarAvatarUpload'] : '',
                 'attr' => [
                     'title' => $this->__('The enable shrinking for avatar avatar upload option.'),
                     'class' => 'shrink-enabler'
@@ -827,7 +942,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The maximum image width in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['shrinkWidthAvatarAvatarUpload'],
+                'data' => isset($this->modVars['shrinkWidthAvatarAvatarUpload']) ? $this->modVars['shrinkWidthAvatarAvatarUpload'] : '',
                 'empty_data' => intval('800'),
                 'attr' => [
                     'title' => $this->__('Enter the shrink width avatar avatar upload. Only digits are allowed.'),
@@ -844,7 +959,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('The maximum image height in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['shrinkHeightAvatarAvatarUpload'],
+                'data' => isset($this->modVars['shrinkHeightAvatarAvatarUpload']) ? $this->modVars['shrinkHeightAvatarAvatarUpload'] : '',
                 'empty_data' => intval('600'),
                 'attr' => [
                     'title' => $this->__('Enter the shrink height avatar avatar upload. Only digits are allowed.'),
@@ -853,133 +968,18 @@ abstract class AbstractAppSettingsType extends AbstractType
                 'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailModePicture', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
-                'label' => $this->__('Thumbnail mode picture') . ':',
+            ->add('thumbnailModeAvatarAvatarUpload', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+                'label' => $this->__('Thumbnail mode avatar avatar upload') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
                     'title' => $this->__('Thumbnail mode (inset or outbound).')
                 ],
                 'help' => $this->__('Thumbnail mode (inset or outbound).'),
                 'required' => false,
-                'data' => $this->modVars['thumbnailModePicture'],
+                'data' => isset($this->modVars['thumbnailModeAvatarAvatarUpload']) ? $this->modVars['thumbnailModeAvatarAvatarUpload'] : '',
                 'empty_data' => 'inset',
                 'attr' => [
-                    'title' => $this->__('Choose the thumbnail mode picture.')
-                ],'choices' => [
-                    $this->__('Inset') => 'inset'
-                    ,$this->__('Outbound') => 'outbound'
-                ],
-                'choices_as_values' => true,
-                'multiple' => false
-            ])
-            ->add('thumbnailWidthPictureImageUploadView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Thumbnail width picture image upload view') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Thumbnail width on view pages in pixels.')
-                ],
-                'help' => $this->__('Thumbnail width on view pages in pixels.'),
-                'required' => false,
-                'data' => $this->modVars['thumbnailWidthPictureImageUploadView'],
-                'empty_data' => intval('32'),
-                'attr' => [
-                    'title' => $this->__('Enter the thumbnail width picture image upload view. Only digits are allowed.')
-                ],'max_length' => 4,
-                'scale' => 0,
-                'input_group' => ['right' => $this->__('pixels')]
-            ])
-            ->add('thumbnailHeightPictureImageUploadView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Thumbnail height picture image upload view') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Thumbnail height on view pages in pixels.')
-                ],
-                'help' => $this->__('Thumbnail height on view pages in pixels.'),
-                'required' => false,
-                'data' => $this->modVars['thumbnailHeightPictureImageUploadView'],
-                'empty_data' => intval('24'),
-                'attr' => [
-                    'title' => $this->__('Enter the thumbnail height picture image upload view. Only digits are allowed.')
-                ],'max_length' => 4,
-                'scale' => 0,
-                'input_group' => ['right' => $this->__('pixels')]
-            ])
-            ->add('thumbnailWidthPictureImageUploadDisplay', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Thumbnail width picture image upload display') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Thumbnail width on display pages in pixels.')
-                ],
-                'help' => $this->__('Thumbnail width on display pages in pixels.'),
-                'required' => false,
-                'data' => $this->modVars['thumbnailWidthPictureImageUploadDisplay'],
-                'empty_data' => intval('240'),
-                'attr' => [
-                    'title' => $this->__('Enter the thumbnail width picture image upload display. Only digits are allowed.')
-                ],'max_length' => 4,
-                'scale' => 0,
-                'input_group' => ['right' => $this->__('pixels')]
-            ])
-            ->add('thumbnailHeightPictureImageUploadDisplay', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Thumbnail height picture image upload display') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Thumbnail height on display pages in pixels.')
-                ],
-                'help' => $this->__('Thumbnail height on display pages in pixels.'),
-                'required' => false,
-                'data' => $this->modVars['thumbnailHeightPictureImageUploadDisplay'],
-                'empty_data' => intval('180'),
-                'attr' => [
-                    'title' => $this->__('Enter the thumbnail height picture image upload display. Only digits are allowed.')
-                ],'max_length' => 4,
-                'scale' => 0,
-                'input_group' => ['right' => $this->__('pixels')]
-            ])
-            ->add('thumbnailWidthPictureImageUploadEdit', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Thumbnail width picture image upload edit') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Thumbnail width on edit pages in pixels.')
-                ],
-                'help' => $this->__('Thumbnail width on edit pages in pixels.'),
-                'required' => false,
-                'data' => $this->modVars['thumbnailWidthPictureImageUploadEdit'],
-                'empty_data' => intval('240'),
-                'attr' => [
-                    'title' => $this->__('Enter the thumbnail width picture image upload edit. Only digits are allowed.')
-                ],'max_length' => 4,
-                'scale' => 0,
-                'input_group' => ['right' => $this->__('pixels')]
-            ])
-            ->add('thumbnailHeightPictureImageUploadEdit', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label' => $this->__('Thumbnail height picture image upload edit') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Thumbnail height on edit pages in pixels.')
-                ],
-                'help' => $this->__('Thumbnail height on edit pages in pixels.'),
-                'required' => false,
-                'data' => $this->modVars['thumbnailHeightPictureImageUploadEdit'],
-                'empty_data' => intval('180'),
-                'attr' => [
-                    'title' => $this->__('Enter the thumbnail height picture image upload edit. Only digits are allowed.')
-                ],'max_length' => 4,
-                'scale' => 0,
-                'input_group' => ['right' => $this->__('pixels')]
-            ])
-            ->add('thumbnailModeAvatar', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
-                'label' => $this->__('Thumbnail mode avatar') . ':',
-                'label_attr' => [
-                    'class' => 'tooltips',
-                    'title' => $this->__('Thumbnail mode (inset or outbound).')
-                ],
-                'help' => $this->__('Thumbnail mode (inset or outbound).'),
-                'required' => false,
-                'data' => $this->modVars['thumbnailModeAvatar'],
-                'empty_data' => 'inset',
-                'attr' => [
-                    'title' => $this->__('Choose the thumbnail mode avatar.')
+                    'title' => $this->__('Choose the thumbnail mode avatar avatar upload.')
                 ],'choices' => [
                     $this->__('Inset') => 'inset'
                     ,$this->__('Outbound') => 'outbound'
@@ -995,7 +995,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Thumbnail width on view pages in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['thumbnailWidthAvatarAvatarUploadView'],
+                'data' => isset($this->modVars['thumbnailWidthAvatarAvatarUploadView']) ? $this->modVars['thumbnailWidthAvatarAvatarUploadView'] : '',
                 'empty_data' => intval('32'),
                 'attr' => [
                     'title' => $this->__('Enter the thumbnail width avatar avatar upload view. Only digits are allowed.')
@@ -1011,7 +1011,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Thumbnail height on view pages in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['thumbnailHeightAvatarAvatarUploadView'],
+                'data' => isset($this->modVars['thumbnailHeightAvatarAvatarUploadView']) ? $this->modVars['thumbnailHeightAvatarAvatarUploadView'] : '',
                 'empty_data' => intval('24'),
                 'attr' => [
                     'title' => $this->__('Enter the thumbnail height avatar avatar upload view. Only digits are allowed.')
@@ -1027,7 +1027,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Thumbnail width on display pages in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['thumbnailWidthAvatarAvatarUploadDisplay'],
+                'data' => isset($this->modVars['thumbnailWidthAvatarAvatarUploadDisplay']) ? $this->modVars['thumbnailWidthAvatarAvatarUploadDisplay'] : '',
                 'empty_data' => intval('240'),
                 'attr' => [
                     'title' => $this->__('Enter the thumbnail width avatar avatar upload display. Only digits are allowed.')
@@ -1043,7 +1043,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Thumbnail height on display pages in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['thumbnailHeightAvatarAvatarUploadDisplay'],
+                'data' => isset($this->modVars['thumbnailHeightAvatarAvatarUploadDisplay']) ? $this->modVars['thumbnailHeightAvatarAvatarUploadDisplay'] : '',
                 'empty_data' => intval('180'),
                 'attr' => [
                     'title' => $this->__('Enter the thumbnail height avatar avatar upload display. Only digits are allowed.')
@@ -1059,7 +1059,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Thumbnail width on edit pages in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['thumbnailWidthAvatarAvatarUploadEdit'],
+                'data' => isset($this->modVars['thumbnailWidthAvatarAvatarUploadEdit']) ? $this->modVars['thumbnailWidthAvatarAvatarUploadEdit'] : '',
                 'empty_data' => intval('240'),
                 'attr' => [
                     'title' => $this->__('Enter the thumbnail width avatar avatar upload edit. Only digits are allowed.')
@@ -1075,7 +1075,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 ],
                 'help' => $this->__('Thumbnail height on edit pages in pixels.'),
                 'required' => false,
-                'data' => $this->modVars['thumbnailHeightAvatarAvatarUploadEdit'],
+                'data' => isset($this->modVars['thumbnailHeightAvatarAvatarUploadEdit']) ? $this->modVars['thumbnailHeightAvatarAvatarUploadEdit'] : '',
                 'empty_data' => intval('180'),
                 'attr' => [
                     'title' => $this->__('Enter the thumbnail height avatar avatar upload edit. Only digits are allowed.')

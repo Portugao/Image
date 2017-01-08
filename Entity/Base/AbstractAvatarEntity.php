@@ -20,7 +20,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use MU\ImageModule\Traits\EntityWorkflowTrait;
 use MU\ImageModule\Traits\StandardFieldsTrait;
 
-use DataUtil;
 use RuntimeException;
 use ServiceUtil;
 use Zikula\Core\Doctrine\EntityAccess;
@@ -523,14 +522,11 @@ abstract class AbstractAvatarEntity extends EntityAccess
             return true;
         }
     
-        
-        $serviceManager = ServiceUtil::getManager();
-    
-        $validator = $serviceManager->get('validator');
+        $validator = ServiceUtil::get('validator');
         $errors = $validator->validate($this);
     
         if (count($errors) > 0) {
-            $flashBag = $serviceManager->get('session')->getFlashBag();
+            $flashBag = ServiceUtil::get('session')->getFlashBag();
             foreach ($errors as $error) {
                 $flashBag->add('error', $error->getMessage());
             }
@@ -640,7 +636,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
         $this->resetWorkflow();
     
         // reset upload fields
-        $this->setAvatarUpload('');
+        $this->setAvatarUpload(null);
         $this->setAvatarUploadMeta([]);
         $this->setAvatarUploadUrl('');
     

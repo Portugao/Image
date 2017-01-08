@@ -25,7 +25,6 @@ services:
         class: MU\ImageModule\Form\Type\QuickNavigation\AvatarQuickNavType
         arguments:
             - "@translator.default"
-            - "@request_stack"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags:
@@ -34,10 +33,25 @@ services:
     mu_image_module.form.handler.album:
         class: MU\ImageModule\Form\Handler\Album\EditHandler
         arguments:
-            - "@service_container"
+            - "@kernel"
             - "@translator.default"
+            - "@form.factory"
             - "@request_stack"
             - "@router"
+            - "@logger"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_extensions_module.api.variable"
+            - "@zikula_users_module.current_user"
+            - "@zikula_groups_module.group_application_repository"
+            - "@mu_image_module.entity_factory"
+            - "@mu_image_module.controller_helper"
+            - "@mu_image_module.model_helper"
+            - "@mu_image_module.selection_helper"
+            - "@mu_image_module.workflow_helper"
+            - "@mu_image_module.hook_helper"
+            - "@mu_image_module.feature_activation_helper"
+        calls:
+            - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
         tags:
             - { name: form.type }
     
@@ -45,7 +59,7 @@ services:
         class: MU\ImageModule\Form\Type\AlbumType
         arguments:
             - "@translator.default"
-            - "@mu_image_module.album_factory"
+            - "@mu_image_module.entity_factory"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags:
@@ -54,10 +68,25 @@ services:
     mu_image_module.form.handler.picture:
         class: MU\ImageModule\Form\Handler\Picture\EditHandler
         arguments:
-            - "@service_container"
+            - "@kernel"
             - "@translator.default"
+            - "@form.factory"
             - "@request_stack"
             - "@router"
+            - "@logger"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_extensions_module.api.variable"
+            - "@zikula_users_module.current_user"
+            - "@zikula_groups_module.group_application_repository"
+            - "@mu_image_module.entity_factory"
+            - "@mu_image_module.controller_helper"
+            - "@mu_image_module.model_helper"
+            - "@mu_image_module.selection_helper"
+            - "@mu_image_module.workflow_helper"
+            - "@mu_image_module.hook_helper"
+            - "@mu_image_module.feature_activation_helper"
+        calls:
+            - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
         tags:
             - { name: form.type }
     
@@ -65,7 +94,7 @@ services:
         class: MU\ImageModule\Form\Type\PictureType
         arguments:
             - "@translator.default"
-            - "@mu_image_module.picture_factory"
+            - "@mu_image_module.entity_factory"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags:
@@ -74,10 +103,25 @@ services:
     mu_image_module.form.handler.avatar:
         class: MU\ImageModule\Form\Handler\Avatar\EditHandler
         arguments:
-            - "@service_container"
+            - "@kernel"
             - "@translator.default"
+            - "@form.factory"
             - "@request_stack"
             - "@router"
+            - "@logger"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_extensions_module.api.variable"
+            - "@zikula_users_module.current_user"
+            - "@zikula_groups_module.group_application_repository"
+            - "@mu_image_module.entity_factory"
+            - "@mu_image_module.controller_helper"
+            - "@mu_image_module.model_helper"
+            - "@mu_image_module.selection_helper"
+            - "@mu_image_module.workflow_helper"
+            - "@mu_image_module.hook_helper"
+            - "@mu_image_module.feature_activation_helper"
+        calls:
+            - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
         tags:
             - { name: form.type }
     
@@ -85,7 +129,7 @@ services:
         class: MU\ImageModule\Form\Type\AvatarType
         arguments:
             - "@translator.default"
-            - "@mu_image_module.avatar_factory"
+            - "@mu_image_module.entity_factory"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags:

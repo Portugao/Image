@@ -12,9 +12,8 @@
 
 namespace MU\ImageModule\Form\Plugin\Base;
 
-use FormUtil;
-use PageUtil;
-use ServiceUtil;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Zikula_Form_Plugin_TextInput;
 use Zikula_Form_View;
 use Zikula_View;
@@ -22,8 +21,10 @@ use Zikula_View;
 /**
  * Item selector plugin base class.
  */
-class AbstractItemSelector extends Zikula_Form_Plugin_TextInput
+class AbstractItemSelector extends Zikula_Form_Plugin_TextInput implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * The treated object type.
      *
@@ -37,6 +38,14 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput
      * @var integer
      */
     public $selectedItemId = 0;
+
+    /**
+     * ItemSelector constructor.
+     */
+    public function __construct()
+    {
+        $this->setContainer(\ServiceUtil::getManager());
+    }
 
     /**
      * Get filename of this file.
@@ -93,16 +102,19 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput
     {
         static $firstTime = true;
         if ($firstTime) {
-            PageUtil::addVar('javascript', 'jquery');
-            PageUtil::addVar('javascript', 'web/bootstrap-media-lightbox/bootstrap-media-lightbox.min.js');
-            PageUtil::addVar('stylesheet', 'web/bootstrap-media-lightbox/bootstrap-media-lightbox.css');
-            PageUtil::addVar('javascript', '@MUImageModule/Resources/public/js/MUImageModule.Finder.js');
-            PageUtil::addVar('stylesheet', '@MUImageModule/Resources/public/css/style.css');
+            $assetHelper = $this->container->get('zikula_core.common.theme.asset_helper');
+            $cssAssetBag = $this->container->get('zikula_core.common.theme.assets_css');
+            $jsAssetBag = $this->container->get('zikula_core.common.theme.assets_js');
+            $homePath = $this->container->get('router')->generate('home');
+
+            $jsAssetBag->add($homePath . 'web/bootstrap-media-lightbox/bootstrap-media-lightbox.min.js');
+            $cssAssetBag->add($homePath . 'web/bootstrap-media-lightbox/bootstrap-media-lightbox.css');
+            $jsAssetBag->add($assetHelper->resolve('@MUImageModule:js/MUImageModule.Finder.js'));
+            $cssAssetBag->add($assetHelper->resolve('@MUImageModule:css/style.css'));
         }
         $firstTime = false;
 
-        $serviceManager = ServiceUtil::getManager();
-        $permissionApi = $serviceManager->get('zikula_permissions_module.api.permission');
+        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
 
         if (!$permissionApi->hasPermission('MUImageModule:' . ucfirst($this->objectType) . ':', '::', ACCESS_COMMENT)) {
             return false;
@@ -113,14 +125,13 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput
         if (in_array($this->objectType, $categorisableObjectTypes)) {
             // fetch selected categories to reselect them in the output
             // the actual filtering is done inside the repository class
-            $categoryHelper = $serviceManager->get('mu_image_module.category_helper');
+            $categoryHelper = $this->container->get('mu_image_module.category_helper');
             $catIds = $categoryHelper->retrieveCategoriesFromRequest($this->objectType);
         }
 
         $this->selectedItemId = $this->text;
 
-        $serviceManager = ServiceUtil::getManager();
-        $repository = $serviceManager->get('mu_image_module.' . $this->objectType . '_factory')->getRepository();
+        $repository = $this->container->get('mu_image_module.entity_factory')->getRepository($this->objectType);
 
         $sort = $repository->getDefaultSortingField();
         $sdir = 'asc';
@@ -158,7 +169,7 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput
     public function decode(Zikula_Form_View $view)
     {
         parent::decode($view);
-        $this->objectType = FormUtil::getPassedValue('MUImageModule_objecttype', 'album', 'POST');
+        $this->objectType = $this->container->get('request_stack')->getCurrentRequest()->request->get('MUImageModule_objecttype', 'album');
         $this->selectedItemId = $this->text;
     }
 }

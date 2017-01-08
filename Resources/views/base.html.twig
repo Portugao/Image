@@ -7,13 +7,13 @@
     {{ pageAddAsset('stylesheet', asset('bootstrap-media-lightbox/bootstrap-media-lightbox.css')) }}
     {{ pageAddAsset('stylesheet', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.css')) }}
     {{ pageAddAsset('javascript', asset('bootstrap-jqueryui/bootstrap-jqueryui.min.js')) }}
-    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+    {% if not app.request.query.getBoolean('raw', false) %}
         {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.js')) }}
         {{ polyfill(['forms', 'forms-ext']) }}
     {% endif %}
 {% endblock %}
 
-{% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+{% if not app.request.query.getBoolean('raw', false) %}
     {% block appTitle %}
         {{ moduleHeader('user', '', '', false, true, false, true) }}
     {% endblock %}
@@ -31,8 +31,8 @@
 {% block content %}{% endblock %}
 
 {% block footer %}
-    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
-    {% elseif app.request.query.get('func') == 'edit' %}
+    {% if not app.request.query.getBoolean('raw', false) %}
+    {% elseif 'edit' in app.request.get('_route') %}
         {{ pageAddAsset('stylesheet', 'style/core.css') }}
         {{ pageAddAsset('stylesheet', zasset('@MUImageModule:css/style.css')) }}
         {{ pageAddAsset('stylesheet', zasset('@ZikulaThemeModule:css/form/style.css')) }}

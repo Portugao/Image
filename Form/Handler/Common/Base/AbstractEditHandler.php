@@ -12,22 +12,33 @@
 
 namespace MU\ImageModule\Form\Handler\Common\Base;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\Core\RouteUrl;
-use ModUtil;
-use RuntimeException;
-use UserUtil;
+use Zikula\ExtensionsModule\Api\VariableApi;
+use Zikula\GroupsModule\Entity\Repository\GroupApplicationRepository;
+use Zikula\PageLockModule\Api\LockingApi;
+use Zikula\PermissionsModule\Api\PermissionApi;
+use Zikula\UsersModule\Api\CurrentUserApi;
+use MU\ImageModule\Entity\Factory\ImageFactory;
 use MU\ImageModule\Helper\FeatureActivationHelper;
+use MU\ImageModule\Helper\ControllerHelper;
+use MU\ImageModule\Helper\HookHelper;
+use MU\ImageModule\Helper\ModelHelper;
+use MU\ImageModule\Helper\SelectionHelper;
+use MU\ImageModule\Helper\WorkflowHelper;
 
 /**
  * This handler class handles the page events of editing forms.
@@ -136,30 +147,102 @@ abstract class AbstractEditHandler
     protected $hasPageLockSupport = false;
 
     /**
-     * @var ContainerBuilder
+     * @var KernelInterface
      */
-    protected $container;
+    protected $kernel;
+
+    /**
+     * @var FormFactoryInterface
+     */
+    protected $formFactory;
 
     /**
      * The current request.
      *
      * @var Request
      */
-    protected $request = null;
+    protected $request;
 
     /**
      * The router.
      *
      * @var RouterInterface
      */
-    protected $router = null;
+    protected $router;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var PermissionApi
+     */
+    protected $permissionApi;
+
+    /**
+     * @var VariableApi
+     */
+    protected $variableApi;
+
+    /**
+     * @var CurrentUserApi
+     */
+    protected $currentUserApi;
+
+    /**
+     * @var GroupApplicationRepository
+     */
+    protected $groupApplicationRepository;
+
+    /**
+     * @var ImageFactory
+     */
+    protected $entityFactory;
+
+    /**
+     * @var ControllerHelper
+     */
+    protected $controllerHelper;
+
+    /**
+     * @var HookHelper
+     */
+    protected $hookHelper;
+
+    /**
+     * @var ModelHelper
+     */
+    protected $modelHelper;
+
+    /**
+     * @var SelectionHelper
+     */
+    protected $selectionHelper;
+
+    /**
+     * @var WorkflowHelper
+     */
+    protected $workflowHelper;
+
+    /**
+     * @var FeatureActivationHelper
+     */
+    protected $featureActivationHelper;
+
+    /**
+     * Reference to optional locking api.
+     *
+     * @var LockingApi
+     */
+    protected $lockingApi = null;
 
     /**
      * The handled form type.
      *
      * @var AbstractType
      */
-    protected $form = null;
+    protected $form;
 
     /**
      * Template parameters.
@@ -171,17 +254,60 @@ abstract class AbstractEditHandler
     /**
      * EditHandler constructor.
      *
-     * @param ContainerBuilder    $container    ContainerBuilder service instance
-     * @param TranslatorInterface $translator   Translator service instance
-     * @param RequestStack        $requestStack RequestStack service instance
-     * @param RouterInterface     $router       Router service instance
+     * @param KernelInterface      $kernel           Kernel service instance
+     * @param TranslatorInterface  $translator       Translator service instance
+     * @param FormFactoryInterface $formFactory      FormFactory service instance
+     * @param RequestStack         $requestStack     RequestStack service instance
+     * @param RouterInterface      $router           Router service instance
+     * @param LoggerInterface      $logger           Logger service instance
+     * @param PermissionApi        $permissionApi    PermissionApi service instance
+     * @param VariableApi          $variableApi      VariableApi service instance
+     * @param CurrentUserApi       $currentUserApi   CurrentUserApi service instance
+     * @param GroupApplicationRepository $groupApplicationRepository GroupApplicationRepository service instance.
+     * @param ImageFactory $entityFactory ImageFactory service instance
+     * @param ControllerHelper     $controllerHelper ControllerHelper service instance
+     * @param ModelHelper          $modelHelper      ModelHelper service instance
+     * @param SelectionHelper      $selectionHelper  SelectionHelper service instance
+     * @param WorkflowHelper       $workflowHelper   WorkflowHelper service instance
+     * @param HookHelper           $hookHelper       HookHelper service instance
+     * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(ContainerBuilder $container, TranslatorInterface $translator, RequestStack $requestStack, RouterInterface $router)
+    public function __construct(
+        KernelInterface $kernel,
+        TranslatorInterface $translator,
+        FormFactoryInterface $formFactory,
+        RequestStack $requestStack,
+        RouterInterface $router,
+        LoggerInterface $logger,
+        PermissionApi $permissionApi,
+        VariableApi $variableApi,
+        CurrentUserApi $currentUserApi,
+        GroupApplicationRepository $groupApplicationRepository,
+        ImageFactory $entityFactory,
+        ControllerHelper $controllerHelper,
+        ModelHelper $modelHelper,
+        SelectionHelper $selectionHelper,
+        WorkflowHelper $workflowHelper,
+        HookHelper $hookHelper,
+        FeatureActivationHelper $featureActivationHelper)
     {
-        $this->container = $container;
+        $this->kernel = $kernel;
         $this->setTranslator($translator);
+        $this->formFactory = $formFactory;
         $this->request = $requestStack->getCurrentRequest();
         $this->router = $router;
+        $this->logger = $logger;
+        $this->permissionApi = $permissionApi;
+        $this->variableApi = $variableApi;
+        $this->currentUserApi = $currentUserApi;
+        $this->groupApplicationRepository = $groupApplicationRepository;
+        $this->entityFactory = $entityFactory;
+        $this->controllerHelper = $controllerHelper;
+        $this->modelHelper = $modelHelper;
+        $this->selectionHelper = $selectionHelper;
+        $this->workflowHelper = $workflowHelper;
+        $this->hookHelper = $hookHelper;
+        $this->featureActivationHelper = $featureActivationHelper;
     }
 
     /**
@@ -209,7 +335,7 @@ abstract class AbstractEditHandler
     public function processForm(array $templateParameters)
     {
         $this->templateParameters = $templateParameters;
-        $this->templateParameters['inlineUsage'] = UserUtil::getTheme() == 'ZikulaPrinterTheme' ? true : false;
+        $this->templateParameters['inlineUsage'] = $this->request->query->getBoolean('raw', false);
     
         $this->idPrefix = $this->request->query->getAlnum('idp', '');
     
@@ -232,22 +358,17 @@ abstract class AbstractEditHandler
     
         $this->permissionComponent = 'MUImageModule:' . $this->objectTypeCapital . ':';
     
-        $selectionHelper = $this->container->get('mu_image_module.selection_helper');
-        $this->idFields = $selectionHelper->getIdFields($this->objectType);
+        $this->idFields = $this->selectionHelper->getIdFields($this->objectType);
     
         // retrieve identifier of the object we wish to view
-        $controllerHelper = $this->container->get('mu_image_module.controller_helper');
-    
-        $this->idValues = $controllerHelper->retrieveIdentifier($this->request, [], $this->objectType, $this->idFields);
-        $hasIdentifier = $controllerHelper->isValidIdentifier($this->idValues);
+        $this->idValues = $this->controllerHelper->retrieveIdentifier($this->request, [], $this->objectType, $this->idFields);
+        $hasIdentifier = $this->controllerHelper->isValidIdentifier($this->idValues);
     
         $entity = null;
         $this->templateParameters['mode'] = $hasIdentifier ? 'edit' : 'create';
     
-        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
-    
         if ($this->templateParameters['mode'] == 'edit') {
-            if (!$permissionApi->hasPermission($this->permissionComponent, $this->createCompositeIdentifier() . '::', ACCESS_EDIT)) {
+            if (!$this->permissionApi->hasPermission($this->permissionComponent, $this->createCompositeIdentifier() . '::', ACCESS_EDIT)) {
                 throw new AccessDeniedException();
             }
     
@@ -256,17 +377,15 @@ abstract class AbstractEditHandler
                 return false;
             }
     
-            if (true === $this->hasPageLockSupport && \ModUtil::available('ZikulaPageLockModule')) {
+            if (true === $this->hasPageLockSupport && $this->kernel->isBundle('ZikulaPageLockModule') && null !== $this->lockingApi) {
                 // try to guarantee that only one person at a time can be editing this entity
-                $lockingApi = $this->container->get('zikula_pagelock_module.api.locking');
                 $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->createCompositeIdentifier();
-                $lockingApi->addLock($lockName, $this->getRedirectUrl(null));
+                $this->lockingApi->addLock($lockName, $this->getRedirectUrl(null));
                 // reload entity as the addLock call above has triggered the preUpdate event
-                $entityManager = $this->container->get('doctrine.orm.entity_manager');
-                $entityManager->refresh($entity);
+                $this->entityFactory->getObjectManager()->refresh($entity);
             }
         } else {
-            if (!$permissionApi->hasPermission($this->permissionComponent, '::', ACCESS_EDIT)) {
+            if (!$this->permissionApi->hasPermission($this->permissionComponent, '::', ACCESS_EDIT)) {
                 throw new AccessDeniedException();
             }
     
@@ -276,14 +395,14 @@ abstract class AbstractEditHandler
         // save entity reference for later reuse
         $this->entityRef = $entity;
     
+        
+        $this->initRelationPresets();
     
-        $workflowHelper = $this->container->get('mu_image_module.workflow_helper');
-        $actions = $workflowHelper->getActionsForObject($entity);
+        $actions = $this->workflowHelper->getActionsForObject($entity);
         if (false === $actions || !is_array($actions)) {
             $this->request->getSession()->getFlashBag()->add('error', $this->__('Error! Could not determine workflow actions.'));
-            $logger = $this->container->get('logger');
-            $logArgs = ['app' => 'MUImageModule', 'user' => $this->container->get('zikula_users_module.current_user')->get('uname'), 'entity' => $this->objectType, 'id' => $entity->createCompositeIdentifier()];
-            $logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed to determine available workflow actions.', $logArgs);
+            $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType, 'id' => $entity->createCompositeIdentifier()];
+            $this->logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed to determine available workflow actions.', $logArgs);
             throw new \RuntimeException($this->__('Error! Could not determine workflow actions.'));
         }
     
@@ -324,6 +443,15 @@ abstract class AbstractEditHandler
         return null;
     }
     
+    
+    /**
+     * Initialises relationship presets.
+     */
+    protected function initRelationPresets()
+    {
+        // to be customised in sub classes
+    }
+    
     /**
      * Returns the template parameters.
      *
@@ -361,8 +489,7 @@ abstract class AbstractEditHandler
      */
     protected function initEntityForEditing()
     {
-        $selectionHelper = $this->container->get('mu_image_module.selection_helper');
-        $entity = $selectionHelper->getEntity($this->objectType, $this->idValues);
+        $entity = $this->selectionHelper->getEntity($this->objectType, $this->idValues);
         if (null === $entity) {
             throw new NotFoundHttpException($this->__('No such item.'));
         }
@@ -397,8 +524,7 @@ abstract class AbstractEditHandler
                     $i++;
                 }
                 // reuse existing entity
-                $selectionHelper = $this->container->get('mu_image_module.selection_helper');
-                $entityT = $selectionHelper->getEntity($this->objectType, $templateIdValues);
+                $entityT = $this->selectionHelper->getEntity($this->objectType, $templateIdValues);
                 if (null === $entityT) {
                     throw new NotFoundHttpException($this->__('No such item.'));
                 }
@@ -407,9 +533,8 @@ abstract class AbstractEditHandler
         }
     
         if (null === $entity) {
-            $factory = $this->container->get('mu_image_module.' . $this->objectType . '_factory');
             $createMethod = 'create' . ucfirst($this->objectType);
-            $entity = $factory->$createMethod();
+            $entity = $this->entityFactory->$createMethod();
         }
     
         return $entity;
@@ -458,12 +583,10 @@ abstract class AbstractEditHandler
         // get treated entity reference from persisted member var
         $entity = $this->entityRef;
     
-        $hookHelper = null;
         if ($entity->supportsHookSubscribers() && $action != 'cancel') {
-            $hookHelper = $this->container->get('mu_image_module.hook_helper');
             // Let any hooks perform additional validation actions
             $hookType = $action == 'delete' ? 'validate_delete' : 'validate_edit';
-            $validationHooksPassed = $hookHelper->callValidationHooks($entity, $hookType);
+            $validationHooksPassed = $this->hookHelper->callValidationHooks($entity, $hookType);
             if (!$validationHooksPassed) {
                 return false;
             }
@@ -482,19 +605,16 @@ abstract class AbstractEditHandler
                 $url = null;
                 if ($action != 'delete') {
                     $urlArgs = $entity->createUrlArgs();
-                    $urlArgs['_locale'] = $this->container->get('request_stack')->getMasterRequest()->getLocale();
+                    $urlArgs['_locale'] = $this->request->getLocale();
                     $url = new RouteUrl('muimagemodule_' . $this->objectType . '_display', $urlArgs);
                 }
-                if (null !== $hookHelper) {
-                    $hookHelper->callProcessHooks($entity, $hookType, $url);
-                }
+                $this->hookHelper->callProcessHooks($entity, $hookType, $url);
             }
         }
     
-        if (true === $this->hasPageLockSupport && $this->templateParameters['mode'] == 'edit' && \ModUtil::available('ZikulaPageLockModule')) {
-            $lockingApi = $this->container->get('zikula_pagelock_module.api.locking');
+        if (true === $this->hasPageLockSupport && $this->templateParameters['mode'] == 'edit' && $this->kernel->isBundle('ZikulaPageLockModule') && null !== $this->lockingApi) {
             $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->createCompositeIdentifier();
-            $lockingApi->releaseLock($lockName);
+            $this->lockingApi->releaseLock($lockName);
         }
     
         return new RedirectResponse($this->getRedirectUrl($args), 302);
@@ -555,12 +675,11 @@ abstract class AbstractEditHandler
     
         $flashType = true === $success ? 'status' : 'error';
         $this->request->getSession()->getFlashBag()->add($flashType, $message);
-        $logger = $this->container->get('logger');
-        $logArgs = ['app' => 'MUImageModule', 'user' => $this->container->get('zikula_users_module.current_user')->get('uname'), 'entity' => $this->objectType, 'id' => $this->entityRef->createCompositeIdentifier()];
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType, 'id' => $this->entityRef->createCompositeIdentifier()];
         if (true === $success) {
-            $logger->notice('{app}: User {user} updated the {entity} with id {id}.', $logArgs);
+            $this->logger->notice('{app}: User {user} updated the {entity} with id {id}.', $logArgs);
         } else {
-            $logger->error('{app}: User {user} tried to update the {entity} with id {id}, but failed.', $logArgs);
+            $this->logger->error('{app}: User {user} tried to update the {entity} with id {id}, but failed.', $logArgs);
         }
     }
 
@@ -609,23 +728,30 @@ abstract class AbstractEditHandler
     protected function prepareWorkflowAdditions($enterprise = false)
     {
         $roles = [];
-    
         
-        $currentUserApi = $this->container->get('zikula_users_module.current_user');
-        $isLoggedIn = $currentUserApi->isLoggedIn();
-        $uid = $isLoggedIn ? $currentUserApi->get('uid') : 1;
+        $isLoggedIn = $this->currentUserApi->isLoggedIn();
+        $userId = $isLoggedIn ? $this->currentUserApi->get('uid') : 1;
         $roles['isCreator'] = $this->templateParameters['mode'] == 'create'
-            || (method_exists($this->entityRef, 'getCreatedBy') && $this->entityRef->getCreatedBy()->getUid() == $uid);
-        $variableApi = $this->container->get('zikula_extensions_module.api.variable');
+            || (method_exists($this->entityRef, 'getCreatedBy') && $this->entityRef->getCreatedBy()->getUid() == $userId);
     
-        $groupArgs = ['uid' => $uid, 'gid' => $variableApi->get('MUImageModule', 'moderationGroupFor' . $this->objectTypeCapital, 2)];
-        $roles['isModerator'] = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'isgroupmember', $groupArgs);
+        $groupApplicationArgs = ['user' => $userId, 'group' => $this->variableApi->get('MUImageModule', 'moderationGroupFor' . $this->objectTypeCapital, 2)];
+        $roles['isModerator'] = count($this->groupApplicationRepository->findBy($groupApplicationArgs)) > 0;
     
         if (true === $enterprise) {
-            $groupArgs = ['uid' => $uid, 'gid' => $variableApi->get('MUImageModule', 'superModerationGroupFor' . $this->objectTypeCapital, 2)];
-            $roles['isSuperModerator'] = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'isgroupmember', $groupArgs);
+            $groupApplicationArgs = ['user' => $userId, 'group' => $this->variableApi->get('MUImageModule', 'superModerationGroupFor' . $this->objectTypeCapital, 2)];
+            $roles['isSuperModerator'] = count($this->groupApplicationRepository->findBy($groupApplicationArgs)) > 0;
         }
     
         return $roles;
+    }
+
+    /**
+     * Sets optional locking api reference.
+     *
+     * @param LockingApi $lockingApi
+     */
+    public function setLockingApi(LockingApi $lockingApi)
+    {
+        $this->lockingApi = $lockingApi;
     }
 }

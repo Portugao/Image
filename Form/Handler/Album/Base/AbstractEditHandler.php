@@ -16,9 +16,7 @@ use MU\ImageModule\Form\Handler\Common\EditHandler;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use ModUtil;
 use RuntimeException;
-use System;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
@@ -47,25 +45,36 @@ abstract class AbstractEditHandler extends EditHandler
         $result = parent::processForm($templateParameters);
     
         if ($this->templateParameters['mode'] == 'create') {
-            $modelHelper = $this->container->get('mu_image_module.model_helper');
-            if (!$modelHelper->canBeCreated($this->objectType)) {
+            if (!$this->modelHelper->canBeCreated($this->objectType)) {
                 $this->request->getSession()->getFlashBag()->add('error', $this->__('Sorry, but you can not create the album yet as other items are required which must be created before!'));
-                $logger = $this->container->get('logger');
-                $logArgs = ['app' => 'MUImageModule', 'user' => $this->container->get('zikula_users_module.current_user')->get('uname'), 'entity' => $this->objectType];
-                $logger->notice('{app}: User {user} tried to create a new {entity}, but failed as it other items are required which must be created before.', $logArgs);
+                $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType];
+                $this->logger->notice('{app}: User {user} tried to create a new {entity}, but failed as it other items are required which must be created before.', $logArgs);
     
                 return new RedirectResponse($this->getRedirectUrl(['commandName' => '']), 302);
             }
         }
     
+        $entityData = $this->entityRef->toArray();
+    
+        // assign data to template as array (makes translatable support easier)
+        $this->templateParameters[$this->objectTypeLower] = $entityData;
+    
+        return $result;
+    }
+    
+    /**
+     * Initialises relationship presets.
+     */
+    protected function initRelationPresets()
+    {
         $entity = $this->entityRef;
-        $selectionHelper = $this->container->get('mu_image_module.selection_helper');
+    
         
         // assign identifiers of predefined incoming relationships
         // editable relation, we store the id and assign it now to show it in UI
         $this->relationPresets['album'] = $this->request->get('album', '');
         if (!empty($this->relationPresets['album'])) {
-            $relObj = $selectionHelper->getEntity('album', $this->relationPresets['album']);
+            $relObj = $this->selectionHelper->getEntity('album', $this->relationPresets['album']);
             if (null !== $relObj) {
                 $relObj->addAlbums($entity);
             }
@@ -73,13 +82,6 @@ abstract class AbstractEditHandler extends EditHandler
     
         // save entity reference for later reuse
         $this->entityRef = $entity;
-    
-        $entityData = $entity->toArray();
-    
-        // assign data to template as array (makes translatable support easier)
-        $this->templateParameters[$this->objectTypeLower] = $entityData;
-    
-        return $result;
     }
     
     /**
@@ -93,7 +95,7 @@ abstract class AbstractEditHandler extends EditHandler
             'inlineUsage' => $this->templateParameters['inlineUsage']
         ];
     
-        return $this->container->get('form.factory')->create('MU\ImageModule\Form\Type\AlbumType', $this->entityRef, $options);
+        return $this->formFactory->create('MU\ImageModule\Form\Type\AlbumType', $this->entityRef, $options);
     }
 
 
@@ -235,15 +237,13 @@ abstract class AbstractEditHandler extends EditHandler
     
         $success = false;
         $flashBag = $this->request->getSession()->getFlashBag();
-        $logger = $this->container->get('logger');
         try {
             // execute the workflow action
-            $workflowHelper = $this->container->get('mu_image_module.workflow_helper');
-            $success = $workflowHelper->executeAction($entity, $action);
+            $success = $this->workflowHelper->executeAction($entity, $action);
         } catch(\Exception $e) {
             $flashBag->add('error', $this->__f('Sorry, but an error occured during the %action% action. Please apply the changes again!', ['%action%' => $action]) . ' ' . $e->getMessage());
-            $logArgs = ['app' => 'MUImageModule', 'user' => $this->container->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'album', 'id' => $entity->createCompositeIdentifier(), 'errorMessage' => $e->getMessage()];
-            $logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed. Error details: {errorMessage}.', $logArgs);
+            $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => 'album', 'id' => $entity->createCompositeIdentifier(), 'errorMessage' => $e->getMessage()];
+            $this->logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed. Error details: {errorMessage}.', $logArgs);
         }
     
         $this->addDefaultMessage($args, $success);

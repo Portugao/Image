@@ -24,10 +24,8 @@ use Zikula\Component\FilterUtil\FilterUtil;
 use Zikula\Component\FilterUtil\Config as FilterConfig;
 use Zikula\Component\FilterUtil\PluginManager as FilterPluginManager;
 use Zikula\Core\FilterUtil\CategoryPlugin as CategoryFilter;
-use ModUtil;
 use Psr\Log\LoggerInterface;
 use ServiceUtil;
-use System;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\UsersModule\Api\CurrentUserApi;
 use MU\ImageModule\Entity\AvatarEntity;
@@ -223,7 +221,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
         }
     
         $parameters = [];
-        $categoryHelper = \ServiceUtil::get('mu_image_module.category_helper');
+        $categoryHelper = ServiceUtil::get('mu_image_module.category_helper');
         $parameters['catIdList'] = $categoryHelper->retrieveCategoriesFromRequest('avatar', 'GET');
         $parameters['workflowState'] = $this->getRequest()->query->get('workflowState', '');
         $parameters['supportedModules'] = $this->getRequest()->query->get('supportedModules', '');
@@ -432,7 +430,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      */
     public function selectById($id = 0, $useJoins = true, $slimMode = false)
     {
-        $results = $this->selectByIdList([$id], $useJoins, $slimMode);
+        $results = $this->selectByIdList(is_array($id) ? $id : [$id], $useJoins, $slimMode);
     
         return count($results) > 0 ? $results[0] : null;
     }
@@ -464,7 +462,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * Adds where clauses excluding desired identifiers from selection.
      *
      * @param QueryBuilder $qb        Query builder to be enhanced
-     * @param integer      $excludeId The id (or array of ids) to be excluded from selection
+     * @param integer      $excludeId The id to be excluded from selection
      *
      * @return QueryBuilder Enriched query builder instance
      */
@@ -595,7 +593,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
                 $qb->andWhere('tblCategories.category IN (:categories)')
                    ->setParameter('categories', $v);
                  */
-                $categoryHelper = \ServiceUtil::get('mu_image_module.category_helper');
+                $categoryHelper = ServiceUtil::get('mu_image_module.category_helper');
                 $qb = $categoryHelper->buildFilterClauses($qb, 'avatar', $v);
             } elseif (in_array($k, ['q', 'searchterm'])) {
                 // quick search
@@ -657,7 +655,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * Selects entities by a given search fragment.
      *
      * @param string  $fragment       The fragment to search for
-     * @param array   $exclude        Comma separated list with ids to be excluded from search
+     * @param array   $exclude        List with identifiers to be excluded from search
      * @param string  $orderBy        The order-by clause to use when retrieving the collection (optional) (default='')
      * @param integer $currentPage    Where to start selection
      * @param integer $resultsPerPage Amount of items to select
@@ -669,8 +667,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
     {
         $qb = $this->genericBaseQuery('', $orderBy, $useJoins);
         if (count($exclude) > 0) {
-            $qb->andWhere('tbl.id NOT IN (:excludeList)')
-               ->setParameter('excludeList', $exclude);
+        	$qb = $this->addExclusion($qb, $exclude);
         }
     
         $qb = $this->addSearchFilter($qb, $fragment);
@@ -910,7 +907,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
             // add category plugins dynamically for all existing registry properties
             // we need to create one category plugin instance for each one
-            $categoryHelper = \ServiceUtil::get('mu_image_module.category_helper');
+            $categoryHelper = ServiceUtil::get('mu_image_module.category_helper');
             $categoryProperties = $categoryHelper->getAllProperties('avatar');
             foreach ($categoryProperties as $propertyName => $registryId) {
                 $config['plugins'][] = new CategoryFilter('MUImageModule', $propertyName, 'categories' . ucfirst($propertyName));
@@ -947,9 +944,9 @@ abstract class AbstractAvatarRepository extends EntityRepository
         $showOnlyOwnEntries = $this->getRequest()->query->getInt('own', 0);
         if ($showOnlyOwnEntries == 1) {
             
-            $uid = $this->getRequest()->getSession()->get('uid');
+            $userId = $this->getRequest()->getSession()->get('uid');
             $qb->andWhere('tbl.createdBy = :creator')
-               ->setParameter('creator', $uid);
+               ->setParameter('creator', $userId);
         }
     
         return $qb;
@@ -1016,9 +1013,9 @@ abstract class AbstractAvatarRepository extends EntityRepository
     /**
      * Helper method to add joins to from clause.
      *
-     * @param QueryBuilder $qb query builder instance used to create the query
+     * @param QueryBuilder $qb Query builder instance used to create the query
      *
-     * @return String Enhancement for from clause
+     * @return QueryBuilder The query builder enriched by additional joins
      */
     protected function addJoinsToFrom(QueryBuilder $qb)
     {

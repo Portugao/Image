@@ -12,6 +12,7 @@
 {% endblock %}
 {% block admin_page_icon 'eye' %}
 {% block content %}
+    {% set isQuickView = app.request.query.getBoolean('raw', false) %}
     <div class="muimagemodule-avatar muimagemodule-display">
 
 
@@ -53,7 +54,7 @@
     {% endif %}
     {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: avatar }) }}
 
-    {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
+    {% if not isQuickView %}
     {% endif %}
 </div>
 {% endblock %}

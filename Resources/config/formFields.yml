@@ -5,5 +5,6 @@ services:
         class: MU\ImageModule\Form\Type\Field\UploadType
         arguments:
             - "@translator.default"
+            - "@mu_image_module.image_helper"
         tags:
             - { name: form.type }

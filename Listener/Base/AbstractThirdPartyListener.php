@@ -14,8 +14,8 @@ namespace MU\ImageModule\Listener\Base;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use ServiceUtil;
 use Zikula\Collection\Container;
+use MU\ImageModule\Helper\WorkflowHelper;
 use Zikula\Core\Event\GenericEvent;
 use Zikula\Provider\AggregateItem;
 
@@ -24,6 +24,23 @@ use Zikula\Provider\AggregateItem;
  */
 abstract class AbstractThirdPartyListener implements EventSubscriberInterface
 {
+    /**
+     * @var WorkflowHelper
+     */
+    protected $workflowHelper;
+    
+    /**
+     * ThirdPartyListener constructor.
+     *
+     * @param WorkflowHelper $workflowHelper WorkflowHelper service instance
+     *
+     * @return void
+     */
+    public function __construct(WorkflowHelper $workflowHelper)
+    {
+        $this->workflowHelper = $workflowHelper;
+    }
+    
     /**
      * Makes our handlers known to the event system.
      */
@@ -63,24 +80,20 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
      */
     public function pendingContentListener(GenericEvent $event)
     {
-        $serviceManager = ServiceUtil::getManager();
-        $workflowHelper = $serviceManager->get('mu_image_module.workflow_helper');
-        
         $modname = 'MUImageModule';
         $useJoins = false;
         
         $collection = new Container($modname);
-        $amounts = $workflowHelper->collectAmountOfModerationItems();
+        $amounts = $this->workflowHelper->collectAmountOfModerationItems();
         if (count($amounts) > 0) {
             foreach ($amounts as $amountInfo) {
                 $aggregateType = $amountInfo['aggregateType'];
                 $description = $amountInfo['description'];
                 $amount = $amountInfo['amount'];
                 $viewArgs = [
-                    'ot' => $amountInfo['objectType'],
                     'workflowState' => $amountInfo['state']
                 ];
-                $aggregateItem = new AggregateItem($aggregateType, $description, $amount, 'admin', 'view', $viewArgs);
+                $aggregateItem = new AggregateItem($aggregateType, $description, $amount, $amountInfo['objectType'], 'adminview', $viewArgs);
                 $collection->add($aggregateItem);
             }
         

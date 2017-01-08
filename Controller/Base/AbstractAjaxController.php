@@ -50,12 +50,12 @@ abstract class AbstractAjaxController extends AbstractController
             $objectType = $request->query->getAlnum('ot', 'album');
         }
         $controllerHelper = $this->get('mu_image_module.controller_helper');
-        $utilArgs = ['controller' => 'ajax', 'action' => 'getItemListFinder'];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $utilArgs);
+        $contextArgs = ['controller' => 'ajax', 'action' => 'getItemListFinder'];
+        if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $contextArgs))) {
+            $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $contextArgs);
         }
         
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
         $repository->setRequest($request);
         $selectionHelper = $this->get('mu_image_module.selection_helper');
         $idFields = $selectionHelper->getIdFields($objectType);
@@ -140,12 +140,12 @@ abstract class AbstractAjaxController extends AbstractController
             $objectType = $request->query->getAlnum('ot', 'album');
         }
         $controllerHelper = $this->get('mu_image_module.controller_helper');
-        $utilArgs = ['controller' => 'ajax', 'action' => 'getItemListAutoCompletion'];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $utilArgs);
+        $contextArgs = ['controller' => 'ajax', 'action' => 'getItemListAutoCompletion'];
+        if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $contextArgs))) {
+            $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $contextArgs);
         }
         
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
         $selectionHelper = $this->get('mu_image_module.selection_helper');
         $idFields = $selectionHelper->getIdFields($objectType);
         
@@ -164,7 +164,6 @@ abstract class AbstractAjaxController extends AbstractController
         $sort = $request->query->get('sort', '');
         if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
             $sort = $repository->getDefaultSortingField();
-            System::queryStringSetVar('sort', $sort);
             $request->query->set('sort', $sort);
             // set default sorting in route parameters (e.g. for the pager)
             $routeParams = $request->attributes->get('_route_params');
@@ -186,7 +185,7 @@ abstract class AbstractAjaxController extends AbstractController
             $previewFieldName = $repository->getPreviewFieldName();
             
             //$imageHelper = $this->get('mu_image_module.image_helper');
-            //$imagineManager = $imageHelper->getManager($objectType, $previewFieldName, 'controllerAction', $utilArgs);
+            //$imagineManager = $imageHelper->getManager($objectType, $previewFieldName, 'controllerAction', $contextArgs);
             $imagineManager = $this->get('systemplugin.imagine.manager');
             foreach ($entities as $item) {
                 $itemTitle = $item->getTitleFromDisplayPattern();
@@ -237,9 +236,9 @@ abstract class AbstractAjaxController extends AbstractController
         
         $objectType = $postData->getAlnum('ot', 'album');
         $controllerHelper = $this->get('mu_image_module.controller_helper');
-        $utilArgs = ['controller' => 'ajax', 'action' => 'checkForDuplicate'];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $utilArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $utilArgs);
+        $contextArgs = ['controller' => 'ajax', 'action' => 'checkForDuplicate'];
+        if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $contextArgs))) {
+            $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $contextArgs);
         }
         
         $fieldName = $postData->getAlnum('fn', '');
@@ -263,13 +262,13 @@ abstract class AbstractAjaxController extends AbstractController
         $exclude = $postData->get('ex', '');
         /* can probably be removed
          * $createMethod = 'create' . ucfirst($objectType);
-         * $object = $this->get('mu_image_module.' . $objectType . '_factory')->$createMethod();
+         * $object = $repository = $this->get('mu_image_module.entity_factory')->$createMethod();
          */
         
         $result = false;
         switch ($objectType) {
         case 'album':
-            $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+            $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
             switch ($fieldName) {
             case 'title':
                     $result = $repository->detectUniqueState('title', $value, $exclude);
@@ -280,6 +279,62 @@ abstract class AbstractAjaxController extends AbstractController
         
         // return response
         $result = ['isDuplicate' => $result];
+        
+        return new AjaxResponse($result);
+    }
+    
+    /**
+     * Changes a given flag (boolean field) by switching between true and false.
+     *
+     * @param Request $request Current request instance
+     *
+     * @return AjaxResponse
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     */
+    public function toggleFlagAction(Request $request)
+    {
+        if (!$this->hasPermission($this->name . '::Ajax', '::', ACCESS_EDIT)) {
+            throw new AccessDeniedException();
+        }
+        
+        $postData = $request->request;
+        
+        $objectType = $postData->getAlnum('ot', 'album');
+        $field = $postData->getAlnum('field', '');
+        $id = $postData->getInt('id', 0);
+        
+        if ($id == 0
+            || ($objectType != 'album')
+        || ($objectType == 'album' && !in_array($field, ['notInFrontend']))
+        ) {
+            return new BadDataResponse($this->__('Error: invalid input.'));
+        }
+        
+        // select data from data source
+        $selectionHelper = $this->get('mu_image_module.selection_helper');
+        $entity = $selectionHelper->getEntity($objectType, $id);
+        if (null === $entity) {
+            return new NotFoundResponse($this->__('No such item.'));
+        }
+        
+        // toggle the flag
+        $entity[$field] = !$entity[$field];
+        
+        // save entity back to database
+        $entityManager = $this->get('doctrine.orm.default_entity_manager');
+        $entityManager->flush();
+        
+        // return response
+        $result = [
+            'id' => $id,
+            'state' => $entity[$field],
+            'message' => $this->__('The setting has been successfully changed.')
+        ];
+        
+        $logger = $this->get('logger');
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'field' => $field, 'entity' => $objectType, 'id' => $id];
+        $logger->notice('{app}: User {user} toggled the {field} flag the {entity} with id {id}.', $logArgs);
         
         return new AjaxResponse($result);
     }

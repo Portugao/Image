@@ -12,17 +12,18 @@
 
 namespace MU\ImageModule\TaggedObjectMeta\Base;
 
-use DateUtil;
-use ServiceUtil;
-use UserUtil;
-use Zikula\TagModule\AbstractTaggedObjectMeta;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Zikula\Core\UrlInterface;
+use Zikula\TagModule\AbstractTaggedObjectMeta;
 
 /**
  * This class provides object meta data for the Tag module.
  */
-abstract class AbstractMUImageModule extends AbstractTaggedObjectMeta
+abstract class AbstractMUImageModule extends AbstractTaggedObjectMeta implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * MUImageModule constructor.
      *
@@ -41,21 +42,21 @@ abstract class AbstractMUImageModule extends AbstractTaggedObjectMeta
         $urlArgs = $urlObject->getArgs();
         $objectType = isset($urlArgs['ot']) ? $urlArgs['ot'] : 'album';
     
-        $serviceManager = ServiceUtil::getManager();
+        $this->setContainer(\ServiceUtil::getManager());
     
-        $permissionApi = $serviceManager->get('zikula_permissions_module.api.permission');
+        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
         $component = $module . ':' . ucfirst($objectType) . ':';
         $perm = $permissionApi->hasPermission($component, $objectId . '::', ACCESS_READ);
         if (!$perm) {
             return;
         }
     
-        $repository = $serviceManager->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        $repository = $this->container->get('mu_image_module.entity_factory')->getRepository($objectType);
         $useJoins = false;
     
         
         $entity = $repository->selectById($objectId, $useJoins);
-        if (false === $entity || (!is_array($entity) && !is_object($entity))) {
+        if (null === $entity) {
             return;
         }
     
@@ -92,8 +93,7 @@ abstract class AbstractMUImageModule extends AbstractTaggedObjectMeta
      */
     public function setObjectDate($date)
     {
-    
-        $this->date = DateUtil::formatDatetime($date, 'datetimebrief');
+        $this->date = \DateUtil::formatDatetime($date, 'datetimebrief');
     }
     
     /**

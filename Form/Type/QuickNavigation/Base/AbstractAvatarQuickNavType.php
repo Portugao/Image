@@ -14,7 +14,6 @@ namespace MU\ImageModule\Form\Type\QuickNavigation\Base;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use MU\ImageModule\Helper\FeatureActivationHelper;
@@ -26,11 +25,6 @@ use MU\ImageModule\Helper\ListEntriesHelper;
 abstract class AbstractAvatarQuickNavType extends AbstractType
 {
     use TranslatorTrait;
-
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
 
     /**
      * @var ListEntriesHelper
@@ -46,14 +40,12 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
      * AvatarQuickNavType constructor.
      *
      * @param TranslatorInterface $translator   Translator service instance
-     * @param RequestStack        $requestStack RequestStack service instance
      * @param ListEntriesHelper   $listHelper   ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
+    public function __construct(TranslatorInterface $translator, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
     {
         $this->setTranslator($translator);
-        $this->requestStack = $requestStack;
         $this->listHelper = $listHelper;
         $this->featureActivationHelper = $featureActivationHelper;
     }

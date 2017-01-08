@@ -12,30 +12,35 @@
 
 namespace MU\ImageModule\Helper\Base;
 
-use DataUtil;
-use FileUtil;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zikula\Common\Translator\TranslatorInterface;
+use Zikula\Common\Translator\TranslatorTrait;
+use Zikula\Component\SortableColumns\SortableColumns;
+use Zikula\Core\RouteUrl;
+use Zikula\ExtensionsModule\Api\VariableApi;
+use MU\ImageModule\Entity\Factory\ImageFactory;
+use MU\ImageModule\Helper\FeatureActivationHelper;
+use MU\ImageModule\Helper\ImageHelper;
+use MU\ImageModule\Helper\ModelHelper;
+use MU\ImageModule\Helper\SelectionHelper;
 
 /**
  * Helper base class for controller layer methods.
  */
 abstract class AbstractControllerHelper
 {
-    /**
-     * @var ContainerBuilder
-     */
-    protected $container;
+    use TranslatorTrait;
 
     /**
-     * @var TranslatorInterface
+     * @var Request
      */
-    protected $translator;
+    protected $request;
 
     /**
      * @var SessionInterface
@@ -48,19 +53,91 @@ abstract class AbstractControllerHelper
     protected $logger;
 
     /**
+     * @var FormFactoryInterface
+     */
+    protected $formFactory;
+
+    /**
+     * @var VariableApi
+     */
+    protected $variableApi;
+
+    /**
+     * @var ImageFactory
+     */
+    protected $entityFactory;
+
+    /**
+     * @var ModelHelper
+     */
+    protected $modelHelper;
+
+    /**
+     * @var SelectionHelper
+     */
+    protected $selectionHelper;
+
+    /**
+     * @var ImageHelper
+     */
+    protected $imageHelper;
+
+    /**
+     * @var FeatureActivationHelper
+     */
+    protected $featureActivationHelper;
+
+    /**
      * ControllerHelper constructor.
      *
-     * @param ContainerBuilder    $container  ContainerBuilder service instance
-     * @param TranslatorInterface $translator Translator service instance
-     * @param SessionInterface    $session    Session service instance
-     * @param LoggerInterface     $logger     Logger service instance
+     * @param TranslatorInterface $translator      Translator service instance
+     * @param RequestStack        $requestStack    RequestStack service instance
+     * @param SessionInterface    $session         Session service instance
+     * @param LoggerInterface     $logger          Logger service instance
+     * @param FormFactoryInterface $formFactory    FormFactory service instance
+     * @param VariableApi         $variableApi     VariableApi service instance
+     * @param ImageFactory $entityFactory ImageFactory service instance
+     * @param ModelHelper         $modelHelper     ModelHelper service instance
+     * @param SelectionHelper     $selectionHelper SelectionHelper service instance
+     * @param ImageHelper         $imageHelper     ImageHelper service instance
+     * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(ContainerBuilder $container, TranslatorInterface $translator, SessionInterface $session, LoggerInterface $logger)
+    public function __construct(
+        TranslatorInterface $translator,
+        RequestStack $requestStack,
+        SessionInterface $session,
+        LoggerInterface $logger,
+        FormFactoryInterface $formFactory,
+        VariableApi $variableApi,
+        ImageFactory $entityFactory,
+        ModelHelper $modelHelper,
+        SelectionHelper $selectionHelper,
+        ImageHelper $imageHelper
+        ,
+        FeatureActivationHelper $featureActivationHelper
+        )
     {
-        $this->container = $container;
-        $this->translator = $translator;
+        $this->setTranslator($translator);
+        $this->request = $requestStack->getCurrentRequest();
         $this->session = $session;
         $this->logger = $logger;
+        $this->formFactory = $formFactory;
+        $this->variableApi = $variableApi;
+        $this->entityFactory = $entityFactory;
+        $this->modelHelper = $modelHelper;
+        $this->selectionHelper = $selectionHelper;
+        $this->imageHelper = $imageHelper;
+        $this->featureActivationHelper = $featureActivationHelper;
+    }
+
+    /**
+     * Sets the translator.
+     *
+     * @param TranslatorInterface $translator Translator service instance
+     */
+    public function setTranslator(/*TranslatorInterface */$translator)
+    {
+        $this->translator = $translator;
     }
 
     /**
@@ -105,27 +182,6 @@ abstract class AbstractControllerHelper
     }
 
     /**
-     * Checks whether a certain entity type uses composite keys or not.
-     *
-     * @param string $objectType The object type to retrieve
-     *
-     * @return Boolean Whether composite keys are used or not
-     */
-    public function hasCompositeKeys($objectType)
-    {
-        switch ($objectType) {
-            case 'album':
-                return false;
-            case 'picture':
-                return false;
-            case 'avatar':
-                return false;
-                default:
-                    return false;
-        }
-    }
-
-    /**
      * Retrieve identifier parameters for a given object type.
      *
      * @param Request $request    The current request
@@ -141,7 +197,7 @@ abstract class AbstractControllerHelper
         $routeParams = $request->get('_route_params', []);
         foreach ($idFields as $idField) {
             $defaultValue = isset($args[$idField]) && is_numeric($args[$idField]) ? $args[$idField] : 0;
-            if ($this->hasCompositeKeys($objectType)) {
+            if ($this->selectionHelper->hasCompositeKeys($objectType)) {
                 // composite key may be alphanumeric
                 if (array_key_exists($idField, $routeParams)) {
                     $id = !empty($routeParams[$idField]) ? $routeParams[$idField] : $defaultValue;
@@ -215,122 +271,239 @@ abstract class AbstractControllerHelper
             ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue', 'ss', '', '', '', '-', '-', 'e', 'e', 'a'],
             $name
         );
-        $name = DataUtil::formatPermalink($name);
+        $name = preg_replace("#(\s*\/\s*|\s*\+\s*|\s+)#", '-', strtolower($name));
     
-        return strtolower($name);
+        return $name;
     }
 
     /**
-     * Retrieve the base path for given object type and upload field combination.
+     * Processes the parameters for a view action.
+     * This includes handling pagination, quick navigation forms and other aspects.
      *
-     * @param string  $objectType   Name of treated entity type
-     * @param string  $fieldName    Name of upload field
-     * @param boolean $ignoreCreate Whether to ignore the creation of upload folders on demand or not
+     * @param string          $objectType         Name of treated entity type
+     * @param SortableColumns $sortableColumns    Used SortableColumns instance
+     * @param array           $templateParameters Template data
+     * @param boolean         $supportsHooks      Whether hooks are supported or not
      *
-     * @return mixed Output
-     *
-     * @throws Exception If an invalid object type is used
+     * @return array Enriched template parameters used for creating the response
      */
-    public function getFileBaseFolder($objectType, $fieldName, $ignoreCreate = false)
+    public function processViewActionParameters($objectType, SortableColumns $sortableColumns, array $templateParameters = [], $supportsHooks = false)
     {
-        if (!in_array($objectType, $this->getObjectTypes())) {
-            throw new Exception('Error! Invalid object type received.');
+        $contextArgs = ['controller' => $objectType, 'action' => 'view'];
+        if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
+            throw new Exception($this->__('Error! Invalid object type received.'));
         }
     
-        $basePath = $this->container->getParameter('datadir') . '/MUImageModule/';
+        $request = $this->request;
+        $repository = $this->entityFactory->getRepository($objectType);
+        $repository->setRequest($request);
     
-        switch ($objectType) {
-            case 'picture':
-                $basePath .= 'pictures/imageupload/';
-            break;
-            case 'avatar':
-                $basePath .= 'avatars/avatarupload/';
-            break;
+        // parameter for used sorting field
+        if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
+            $sort = $repository->getDefaultSortingField();
+            $request->query->set('sort', $sort);
+            // set default sorting in route parameters (e.g. for the pager)
+            $routeParams = $request->attributes->get('_route_params');
+            $routeParams['sort'] = $sort;
+            $request->attributes->set('_route_params', $routeParams);
         }
     
-        $result = $basePath;
-        if (substr($result, -1, 1) != '/') {
-            // reappend the removed slash
-            $result .= '/';
+    
+        $showOwnEntries = $request->query->getInt('own', $this->variableApi->get('MUImageModule', 'showOnlyOwnEntries', 0));
+        $showAllEntries = $request->query->getInt('all', 0);
+    
+    
+        if (true === $supportsHooks) {
+            $currentUrlArgs = [];
+            if ($showAllEntries == 1) {
+                $currentUrlArgs['all'] = 1;
+            }
+            if ($showOwnEntries == 1) {
+                $currentUrlArgs['own'] = 1;
+            }
         }
     
-        if (!is_dir($result) && !$ignoreCreate) {
-            $this->checkAndCreateAllUploadFolders();
+        $resultsPerPage = 0;
+        if ($showAllEntries != 1) {
+            // the number of items displayed on a page for pagination
+            $resultsPerPage = $request->query->getInt('num', 0);
+            if (in_array($resultsPerPage, [0, 10])) {
+                $resultsPerPage = $this->variableApi->get('MUImageModule', $objectType . 'EntriesPerPage', 10);
+            }
         }
     
-        return $result;
+        $additionalParameters = $repository->getAdditionalTemplateParameters($this->imageHelper, 'controllerAction', $contextArgs);
+    
+        $additionalUrlParameters = [
+            'all' => $showAllEntries,
+            'own' => $showOwnEntries,
+            'num' => $resultsPerPage
+        ];
+        foreach ($additionalParameters as $parameterName => $parameterValue) {
+            if (false !== stripos($parameterName, 'thumbRuntimeOptions')) {
+                continue;
+            }
+            $additionalUrlParameters[$parameterName] = $parameterValue;
+        }
+    
+        $templateParameters['own'] = $showAllEntries;
+        $templateParameters['all'] = $showOwnEntries;
+        $templateParameters['num'] = $resultsPerPage;
+        $templateParameters['tpl'] = $request->query->getAlnum('tpl', '');
+    
+        $quickNavForm = $this->formFactory->create('MU\ImageModule\Form\Type\QuickNavigation\\' . ucfirst($objectType) . 'QuickNavType', $templateParameters);
+        if ($quickNavForm->handleRequest($request) && $quickNavForm->isSubmitted()) {
+            $quickNavData = $quickNavForm->getData();
+            foreach ($quickNavData as $fieldName => $fieldValue) {
+                if ($fieldName == 'routeArea') {
+                    continue;
+                }
+                if ($fieldName == 'all') {
+                    $showAllEntries = $additionalUrlParameters['all'] = $templateParameters['all'] = $fieldValue;
+                } elseif ($fieldName == 'own') {
+                    $showOwnEntries = $additionalUrlParameters['own'] = $templateParameters['own'] = $fieldValue;
+                } elseif ($fieldName == 'num') {
+                    $resultsPerPage = $additionalUrlParameters['num'] = $fieldValue;
+                } else {
+                    // set filter as query argument, fetched inside repository
+                    $request->query->set($fieldName, $fieldValue);
+                }
+            }
+        }
+        $sort = $request->query->get('sort');
+        $sortdir = $request->query->get('sortdir');
+        $sortableColumns->setOrderBy($sortableColumns->getColumn($sort), strtoupper($sortdir));
+        $sortableColumns->setAdditionalUrlParameters($additionalUrlParameters);
+        $templateParameters['sort'] = $sort;
+        $templateParameters['sortdir'] = $sortdir;
+    
+        $where = '';
+        if ($showAllEntries == 1) {
+            // retrieve item list without pagination
+            $entities = $this->selectionHelper->getEntities($objectType, [], $where, $sort . ' ' . $sortdir);
+        } else {
+            // the current offset which is used to calculate the pagination
+            $currentPage = $request->query->getInt('pos', 1);
+    
+            // retrieve item list with pagination
+            list($entities, $objectCount) = $this->selectionHelper->getEntitiesPaginated($objectType, $where, $sort . ' ' . $sortdir, $currentPage, $resultsPerPage);
+    
+            $templateParameters['currentPage'] = $currentPage;
+            $templateParameters['pager'] = [
+                'amountOfItems' => $objectCount,
+                'itemsPerPage' => $resultsPerPage
+            ];
+        }
+    
+        if (true === $supportsHooks) {
+            // build RouteUrl instance for display hooks
+            $currentUrlArgs['_locale'] = $request->getLocale();
+            $currentUrlObject = new RouteUrl('muimagemodule_' . $objectType . '_' . /*$templateParameters['routeArea'] . */'view', $currentUrlArgs);
+        }
+    
+        $templateParameters['items'] = $entities;
+        $templateParameters['sort'] = $sort;
+        $templateParameters['sortdir'] = $sortdir;
+        $templateParameters['num'] = $resultsPerPage;
+        if (true === $supportsHooks) {
+            $templateParameters['currentUrlObject'] = $currentUrlObject;
+        }
+        $templateParameters = array_merge($templateParameters, $additionalParameters);
+    
+        $templateParameters['sort'] = $sortableColumns->generateSortableColumns();
+        $templateParameters['quickNavForm'] = $quickNavForm->createView();
+    
+        $templateParameters['showAllEntries'] = $templateParameters['all'];
+        $templateParameters['showOwnEntries'] = $templateParameters['own'];
+    
+        $templateParameters['featureActivationHelper'] = $this->featureActivationHelper;
+        $templateParameters['canBeCreated'] = $this->modelHelper->canBeCreated($objectType);
+    
+        return $templateParameters;
     }
 
     /**
-     * Creates all required upload folders for this application.
+     * Processes the parameters for a display action.
      *
-     * @return Boolean Whether everything went okay or not
+     * @param string  $objectType         Name of treated entity type
+     * @param array   $templateParameters Template data
+     * @param boolean $supportsHooks      Whether hooks are supported or not
+     *
+     * @return array Enriched template parameters used for creating the response
      */
-    public function checkAndCreateAllUploadFolders()
+    public function processDisplayActionParameters($objectType, array $templateParameters = [], $supportsHooks = false)
     {
-        $result = true;
+        $contextArgs = ['controller' => $objectType, 'action' => 'display'];
+        if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
+            throw new Exception($this->__('Error! Invalid object type received.'));
+        }
     
-        $result &= $this->checkAndCreateUploadFolder('picture', 'imageUpload', 'gif, jpeg, jpg, png');
+        $repository = $this->entityFactory->getRepository($objectType);
+        $repository->setRequest($this->request);
+        $entity = $templateParameters[$objectType];
     
-        $result &= $this->checkAndCreateUploadFolder('avatar', 'avatarUpload', 'gif, jpeg, jpg, png');
+        if (true === $supportsHooks) {
+            // build RouteUrl instance for display hooks
+            $currentUrlArgs = $entity->createUrlArgs();
+            $currentUrlArgs['_locale'] = $this->request->getLocale();
+            $currentUrlObject = new RouteUrl('muimagemodule_' . $objectType . '_' . /*$templateParameters['routeArea'] . */'display', $currentUrlArgs);
+            $templateParameters['currentUrlObject'] = $currentUrlObject;
+        }
     
-        return $result;
+        $additionalParameters = $repository->getAdditionalTemplateParameters($this->imageHelper, 'controllerAction', $contextArgs);
+        $templateParameters = array_merge($templateParameters, $additionalParameters);
+        $templateParameters['featureActivationHelper'] = $this->featureActivationHelper;
+    
+        return $templateParameters;
     }
 
     /**
-     * Creates upload folder including a subfolder for thumbnail and an .htaccess file within it.
+     * Processes the parameters for an edit action.
      *
-     * @param string $objectType        Name of treated entity type
-     * @param string $fieldName         Name of upload field
-     * @param string $allowedExtensions String with list of allowed file extensions (separated by ", ")
+     * @param string  $objectType         Name of treated entity type
+     * @param array   $templateParameters Template data
      *
-     * @return Boolean Whether everything went okay or not
+     * @return array Enriched template parameters used for creating the response
      */
-    protected function checkAndCreateUploadFolder($objectType, $fieldName, $allowedExtensions = '')
+    public function processEditActionParameters($objectType, array $templateParameters = [])
     {
-        $uploadPath = $this->getFileBaseFolder($objectType, $fieldName, true);
-    
-        $fs = new Filesystem();
-        $flashBag = $this->session->getFlashBag();
-    
-        // Check if directory exist and try to create it if needed
-        if (!$fs->exists($uploadPath)) {
-            try {
-                $fs->mkdir($uploadPath, 0777);
-            } catch (IOExceptionInterface $e) {
-                $flashBag->add('error', $this->translator->__f('The upload directory "%s" does not exist and could not be created. Try to create it yourself and make sure that this folder is accessible via the web and writable by the webserver.', ['%s' => $e->getPath()]));
-                $this->logger->error('{app}: The upload directory {directory} does not exist and could not be created.', ['app' => 'MUImageModule', 'directory' => $uploadPath]);
-    
-                return false;
-            }
+        $contextArgs = ['controller' => $objectType, 'action' => 'edit'];
+        if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
+            throw new Exception($this->__('Error! Invalid object type received.'));
         }
     
-        // Check if directory is writable and change permissions if needed
-        if (!is_writable($uploadPath)) {
-            try {
-                $fs->chmod($uploadPath, 0777);
-            } catch (IOExceptionInterface $e) {
-                $flashBag->add('warning', $this->translator->__f('Warning! The upload directory at "%s" exists but is not writable by the webserver.', ['%s' => $e->getPath()]));
-                $this->logger->error('{app}: The upload directory {directory} exists but is not writable by the webserver.', ['app' => 'MUImageModule', 'directory' => $uploadPath]);
+        $repository = $this->entityFactory->getRepository($objectType);
+        $repository->setRequest($this->request);
     
-                return false;
-            }
+        $additionalParameters = $repository->getAdditionalTemplateParameters($this->imageHelper, 'controllerAction', $contextArgs);
+        $templateParameters = array_merge($templateParameters, $additionalParameters);
+        $templateParameters['featureActivationHelper'] = $this->featureActivationHelper;
+    
+        return $templateParameters;
+    }
+
+    /**
+     * Processes the parameters for a delete action.
+     *
+     * @param string  $objectType         Name of treated entity type
+     * @param array   $templateParameters Template data
+     * @param boolean $supportsHooks      Whether hooks are supported or not
+     *
+     * @return array Enriched template parameters used for creating the response
+     */
+    public function processDeleteActionParameters($objectType, array $templateParameters = [], $supportsHooks = false)
+    {
+        $contextArgs = ['controller' => $objectType, 'action' => 'delete'];
+        if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
+            throw new Exception($this->__('Error! Invalid object type received.'));
         }
     
-        // Write a htaccess file into the upload directory
-        $htaccessFilePath = $uploadPath . '/.htaccess';
-        $htaccessFileTemplate = 'modules/MUImageModule/Resources/docs/htaccessTemplate';
-        if (!$fs->exists($htaccessFilePath) && $fs->exists($htaccessFileTemplate)) {
-            try {
-                $extensions = str_replace(',', '|', str_replace(' ', '', $allowedExtensions));
-                $htaccessContent = str_replace('__EXTENSIONS__', $extensions, file_get_contents($htaccessFileTemplate, false));
-                $fs->dumpFile($htaccessFilePath, $htaccessContent);
-            } catch (IOExceptionInterface $e) {
-                $flashBag->add('error', $this->translator->__f('An error occured during creation of the .htaccess file in directory "%s".', ['%s' => $e->getPath()]));
-                $this->logger->error('{app}: An error occured during creation of the .htaccess file in directory {directory}.', ['app' => 'MUImageModule', 'directory' => $uploadPath]);
-            }
-        }
+        $repository = $this->entityFactory->getRepository($objectType);
+        $repository->setRequest($this->request);
     
-        return true;
+        $additionalParameters = $repository->getAdditionalTemplateParameters($this->imageHelper, 'controllerAction', $contextArgs);
+        $templateParameters = array_merge($templateParameters, $additionalParameters);
+    
+        return $templateParameters;
     }
 }

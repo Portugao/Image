@@ -12,10 +12,9 @@
 
 namespace MU\ImageModule\Helper\Base;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use InvalidArgumentException;
 use Zikula\Common\Translator\TranslatorInterface;
-use MU\ImageModule\Helper\ControllerHelper;
+use MU\ImageModule\Entity\Factory\ImageFactory;
 
 /**
  * Selection helper base class.
@@ -23,54 +22,42 @@ use MU\ImageModule\Helper\ControllerHelper;
 abstract class AbstractSelectionHelper
 {
     /**
-     * @var ContainerBuilder
-     */
-    protected $container;
-
-    /**
-     * @var ObjectManager The object manager to be used for determining the repository
-     */
-    protected $objectManager;
-
-    /**
      * @var TranslatorInterface
      */
     protected $translator;
 
     /**
-     * @var ControllerHelper
+     * @var ImageFactory
      */
-    protected $controllerHelper;
+    protected $entityFactory;
 
     /**
      * SelectionHelper constructor.
      *
-     * @param ContainerBuilder    $container        ContainerBuilder service instance
-     * @param ObjectManager       $objectManager    The object manager to be used for retrieving entity meta data
      * @param TranslatorInterface $translator       Translator service instance
-     * @param ControllerHelper    $controllerHelper ControllerHelper service instance
+     * @param ImageFactory $entityFactory ImageFactory service instance
      */
-    public function __construct(ContainerBuilder $container, ObjectManager $objectManager, TranslatorInterface $translator, ControllerHelper $controllerHelper)
+    public function __construct(TranslatorInterface $translator, ImageFactory $entityFactory)
     {
-        $this->container = $container;
-        $this->objectManager = $objectManager;
         $this->translator = $translator;
-        $this->controllerHelper = $controllerHelper;
+        $this->entityFactory = $entityFactory;
     }
 
     /**
      * Gets the list of identifier fields for a given object type.
      *
-     * @param string $objectType The object type to be treated (optional)
+     * @param string $objectType The object type to be treated
      *
      * @return array List of identifier field names
      */
     public function getIdFields($objectType = '')
     {
-        $objectType = $this->determineObjectType($objectType, 'getIdFields');
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+        }
         $entityClass = 'MUImageModule:' . ucfirst($objectType) . 'Entity';
     
-        $meta = $this->objectManager->getClassMetadata($entityClass);
+        $meta = $this->entityFactory->getObjectManager()->getClassMetadata($entityClass);
     
         if ($this->hasCompositeKeys($objectType)) {
             $idFields = $meta->getIdentifierFieldNames();
@@ -86,17 +73,26 @@ abstract class AbstractSelectionHelper
      *
      * @param string $objectType The object type to retrieve
      *
-     * @return boolean Whether composite keys are used or not
+     * @return Boolean Whether composite keys are used or not
      */
-    protected function hasCompositeKeys($objectType)
+    public function hasCompositeKeys($objectType)
     {
-        return $this->controllerHelper->hasCompositeKeys($objectType);
+        switch ($objectType) {
+            case 'album':
+                return false;
+            case 'picture':
+                return false;
+            case 'avatar':
+                return false;
+        }
+    
+        return false;
     }
     
     /**
      * Selects a single entity.
      *
-     * @param string $objectType The object type to be treated (optional)
+     * @param string $objectType The object type to be treated
      * @param mixed  $id         The id (or array of ids) to use to retrieve the object (default=null)
      * @param boolean $useJoins  Whether to include joining related objects (optional) (default=true)
      * @param boolean $slimMode  If activated only some basic fields are selected without using any joins (optional) (default=false)
@@ -105,11 +101,13 @@ abstract class AbstractSelectionHelper
      */
     public function getEntity($objectType = '', $id = '', $useJoins = true, $slimMode = false)
     {
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+        }
         if (empty($id)) {
-            throw new \InvalidArgumentException($this->translator->__('Invalid identifier received.'));
+            throw new InvalidArgumentException($this->translator->__('Invalid identifier received.'));
         }
     
-        $objectType = $this->determineObjectType($objectType, 'getEntity');
         $repository = $this->getRepository($objectType);
     
         $useJoins = (bool) $useJoins;
@@ -134,7 +132,9 @@ abstract class AbstractSelectionHelper
      */
     public function getEntities($objectType = '', array $idList = [], $where = '', $orderBy = '', $useJoins = true, $slimMode = false)
     {
-        $objectType = $this->determineObjectType($objectType, 'getEntities');
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+        }
         $repository = $this->getRepository($objectType);
     
         $useJoins = (bool) $useJoins;
@@ -162,31 +162,15 @@ abstract class AbstractSelectionHelper
      */
     public function getEntitiesPaginated($objectType = '', $where = '', $orderBy = '', $currentPage = 1, $resultsPerPage = 25, $useJoins = true, $slimMode = false)
     {
-        $objectType = $this->determineObjectType($objectType, 'getEntitiesPaginated');
+        if (empty($objectType)) {
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
+        }
         $repository = $this->getRepository($objectType);
     
         $useJoins = (bool) $useJoins;
         $slimMode = (bool) $slimMode; 
     
         return $repository->selectWherePaginated($where, $orderBy, $currentPage, $resultsPerPage, $useJoins, $slimMode);
-    }
-    
-    /**
-     * Determines object type using controller util methods.
-     *
-     * @param string $objectType The object type to be treated (optional)
-     * @param string $methodName Name of calling method
-     *
-     * @return string the object type
-     */
-    protected function determineObjectType($objectType = '', $methodName = '')
-    {
-        $utilArgs = ['api' => 'selection', 'action' => $methodName];
-        if (!in_array($objectType, $this->controllerHelper->getObjectTypes('api', $utilArgs))) {
-            $objectType = $this->controllerHelper->getDefaultObjectType('api', $utilArgs);
-        }
-    
-        return $objectType;
     }
     
     /**
@@ -199,9 +183,9 @@ abstract class AbstractSelectionHelper
     protected function getRepository($objectType = '')
     {
         if (empty($objectType)) {
-            throw new \InvalidArgumentException($this->translator->__('Invalid object type received.'));
+            throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
         }
     
-        return $this->container->get('mu_image_module.' . $objectType . '_factory')->getRepository();
+        return $this->entityFactory->getRepository($objectType);
     }
 }

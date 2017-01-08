@@ -19,7 +19,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
-use MU\ImageModule\Entity\Factory\AlbumFactory;
+use MU\ImageModule\Entity\Factory\ImageFactory;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
@@ -31,7 +31,7 @@ abstract class AbstractAlbumType extends AbstractType
     use TranslatorTrait;
 
     /**
-     * @var AlbumFactory
+     * @var ImageFactory
      */
     protected $entityFactory;
 
@@ -49,11 +49,11 @@ abstract class AbstractAlbumType extends AbstractType
      * AlbumType constructor.
      *
      * @param TranslatorInterface $translator    Translator service instance
-     * @param AlbumFactory        $entityFactory Entity factory service instance
+     * @param ImageFactory        $entityFactory Entity factory service instance
      * @param ListEntriesHelper   $listHelper    ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, AlbumFactory $entityFactory, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
+    public function __construct(TranslatorInterface $translator, ImageFactory $entityFactory, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
     {
         $this->setTranslator($translator);
         $this->entityFactory = $entityFactory;
@@ -218,8 +218,7 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Album'),
             'attr' => [
                 'title' => $this->__('Choose the album')
-            ],
-            'required' => false
+            ]
         ]);
     }
 
@@ -234,7 +233,7 @@ abstract class AbstractAlbumType extends AbstractType
         $builder->add('albums', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
             'class' => 'MUImageModule:AlbumEntity',
             'choice_label' => 'getTitleFromDisplayPattern',
-            'multiple' => false,
+            'multiple' => true,
             'expanded' => false,
             'query_builder' => function(EntityRepository $er) {
                 // select without joins
@@ -243,8 +242,7 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Albums'),
             'attr' => [
                 'title' => $this->__('Choose the albums')
-            ],
-            'required' => false
+            ]
         ]);
         $builder->add('pictures', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
             'class' => 'MUImageModule:PictureEntity',
@@ -258,8 +256,7 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Pictures'),
             'attr' => [
                 'title' => $this->__('Choose the pictures')
-            ],
-            'required' => false
+            ]
         ]);
     }
 
