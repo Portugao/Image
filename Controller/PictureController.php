@@ -221,10 +221,11 @@ class PictureController extends AbstractPictureController
     {
         return self::multiuploadInternal($request);
     }
+    
     /**
      * This action provides a handling of edit requests.
      *
-     * @Route("/picture/zipupload/{albumid}.{_format}",
+     * @Route("/picture/multiupload/{albumid}.{_format}",
      *        requirements = {"albumid" = "\d+", "_format" = "html"},
      *        defaults = {"albumid" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}
@@ -337,7 +338,7 @@ class PictureController extends AbstractPictureController
     {
         // parameter specifying which type of objects we are treating
         $objectType = 'picture';
-        $utilArgs = ['controller' => 'picture', 'action' => 'multiupload'];
+        $utilArgs = ['controller' => 'picture', 'action' => 'edit'];
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
@@ -366,7 +367,7 @@ class PictureController extends AbstractPictureController
     }
     
     /**
-     * This method includes the common implementation code for zipupload().
+     * This method includes the common implementation code for multiupload().
      */
     protected function zipuploadInternal(Request $request, $isAdmin = false)
     {
@@ -397,6 +398,6 @@ class PictureController extends AbstractPictureController
     	$templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
     
     	// fetch and return the appropriate template
-    	return $viewHelper->processTemplate($this->get('twig'), $objectType, 'zipupload', $request, $templateParameters);
+    	return $viewHelper->processTemplate($this->get('twig'), $objectType, 'multiupload', $request, $templateParameters);
     }
 }
