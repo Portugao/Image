@@ -4,6 +4,55 @@
     {% set nolink = false %}
 {% endif %}
 {% if items|default and items|length > 0 %}
+
+
+	{% if routeArea != 'admin' %}
+	{% if items is defined and items != null %}
+	<ul id="sortable" class="row">
+		{% for picture in items %}
+			<li class="ui-state-default col-xs-4 col-sm-3 col-md-3 col-lg-2">
+				<div class="thumbnail">
+				    {% if extended == 1 %}
+    			        {% set groupMember = muimagemodule_checkGroupMember(createdBy=picture.createdBy.getUid()) %}
+    			    {% else %}
+    				    {% set groupMember = 1 %}
+    		        {% endif %}	        
+					{% if currentUser.uid == 2 or currentUser.uid == picture.createdBy.getUid() or groupMember == 1 %}
+						{% set cursor = '' %}{#% set cursor = movecursor %#}
+					{% else %}
+						{% set cursor = '' %}
+					{% endif %}
+					<a data-placement="top" data-toggle="tooltip" href="{{ picture.imageUploadUrl }}" title="{{ picture.title }}{% if picture.description != '' %} - {{ picture.description }}{% endif %}" data-gallery>
+        				<img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="">
+    				</a>
+    				<div class="caption {{ cursor }}">
+    					<a title="{{ __('Details') }}" href="{#modurl modname='MUImage' type='user' func='display' ot='picture' id=picture.id#}">
+    						<i class="fa fa-eye fa-lg"></i>
+    					</a>
+    					{% if hasPermission('MUImageModule:picture:', '::', 'ACCESS_EDIT') %}
+    						{% if currentUser.uid == 2 or currentUser.uid == picture.createdBy.getUid() == groupMember == 1 %}
+    							<a title="{{ __('Edit') }}" href="{#modurl modname='MUImage' type='user' func='edit' ot='picture' id=picture.id#}">
+    						   		<i class="fa fa-pencil-square-o"></i>
+    							</a>
+    						{% endif %}
+    					{% endif %}	
+    					<input name="pictures[]" type="hidden" value={{ picture.id }} />
+						{% set imageView = getModVar('MUIMageModule', 'countImageView') %}
+						<p class="muimage-picture-invocations">
+							{% if imageView == 1 %}
+								{{ __('Invocations') }}: {{ picture.imageView }}
+							{% endif %}	
+						</p>		
+    				</div>
+    			</div>
+    		</li>
+		{% endfor %}
+	</ul><br />
+    {% endif %}
+    
+    {% else %}
+
+
 <ul class="muimagemodule-related-item-list picture">
 {% for item in items %}
     {% if hasAdminPermission or item.workflowState == 'approved' %}
@@ -27,3 +76,22 @@
 {% endfor %}
 </ul>
 {% endif %}
+{% endif %}
+
+<script type="text/javascript" charset="utf-8">
+/* <![CDATA[ */
+
+    var MU = jQuery.noConflict();
+	MU(document).ready(function(MU) {	
+    {% if currentUser.uid == 2 or currentUser.uid == item.createdBy.getUid() or groupMember == 1 %}
+        MU(function() {
+            MU( "#sortable" ).sortable();
+        });
+    {% endif %}
+    
+    	MU(function () {
+			MU('[data-toggle="tooltip"]').tooltip()
+		})
+		});
+    /* ]]> */
+</script>
