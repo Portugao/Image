@@ -247,8 +247,8 @@ abstract class AbstractCategoryHelper
                 $qb->andWhere('(' . implode(' OR ', $filtersPerRegistry) . ')');
             }
             foreach ($filterParameters['values'] as $propertyName => $filterValue) {
-                $qb->setParameter('propId' . $propertyName, $filterParameters['registries'][$propertyName]);
-                   ->setParameter('categories' . $propertyName, $filterValue)
+                $qb->setParameter('propId' . $propertyName, $filterParameters['registries'][$propertyName])
+                   ->setParameter('categories' . $propertyName, $filterValue);
             }
         }
     

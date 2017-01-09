@@ -193,7 +193,9 @@ abstract class AbstractPictureFinderType extends AbstractType
         $builder->add('q', 'Symfony\Component\Form\Extension\Core\Type\SearchType', [
             'label' => $this->__('Search for') . ':',
             'required' => false,
-            'max_length' => 255
+            'attr' => [
+                'max_length' => 255
+            ]
         ]);
     }
 

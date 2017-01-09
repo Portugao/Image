@@ -117,10 +117,10 @@ abstract class AbstractAvatarType extends AbstractType
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
             'attr' => [
+                'max_length' => 255,
                 'class' => '',
                 'title' => $this->__('Enter the title of the avatar')
             ],'required' => true,
-            'max_length' => 255,
         ]);
         
         $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
@@ -132,10 +132,10 @@ abstract class AbstractAvatarType extends AbstractType
             'help' => $this->__('Here you can enter, for which use cases this avatar is.'),
             'empty_data' => '',
             'attr' => [
+                'max_length' => 2000,
                 'class' => '',
                 'title' => $this->__('Enter the description of the avatar')
-            ],'required' => false,
-            'max_length' => 2000,
+            ],'required' => false
         ]);
         
         $builder->add('avatarUpload', 'MU\ImageModule\Form\Type\Field\UploadType', [

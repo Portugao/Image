@@ -8,3 +8,5 @@ phpunit.xml
 *generated.php
 *generated.json
 *generated.html.twig
+*twig.generated.yml
+*generated.css

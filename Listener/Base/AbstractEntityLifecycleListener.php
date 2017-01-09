@@ -18,6 +18,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Zikula\Core\Doctrine\EntityAccess;
 use MU\ImageModule\ImageEvents;
@@ -35,9 +36,9 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber, Conta
     /**
      * EntityLifecycleListener constructor.
      */
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
-        $this->setContainer(\ServiceUtil::getManager());
+        $this->setContainer($container);
     }
 
     /**
@@ -84,7 +85,7 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber, Conta
         $workflowHelper->normaliseWorkflowData($entity);
         $workflow = $entity['__WORKFLOW__'];
         if ($workflow['id'] > 0) {
-            $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
+            $entityManager = $this->container->get('doctrine.orm.default_entity_manager'); // @todo maybe $args->getObjectManager()
             $result = true;
             try {
                 $workflow = $entityManager->find('Zikula\Core\Doctrine\Entity\WorkflowEntity', $workflow['id']);

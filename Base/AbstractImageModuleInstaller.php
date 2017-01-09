@@ -33,6 +33,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     public function install()
     {
         $logger = $this->container->get('logger');
+        $userName = $container->get('zikula_users_module.current_user')->get('uname');
     
         // Check if upload directories exist and if needed create them
         try {

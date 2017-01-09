@@ -115,20 +115,20 @@ abstract class AbstractPictureType extends AbstractType
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
             'attr' => [
+                'max_length' => 255,
                 'class' => '',
                 'title' => $this->__('Enter the title of the picture')
             ],'required' => false,
-            'max_length' => 255,
         ]);
         
         $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
             'label' => $this->__('Description') . ':',
             'empty_data' => '',
             'attr' => [
+                'max_length' => 2000,
                 'class' => '',
                 'title' => $this->__('Enter the description of the picture')
-            ],'required' => false,
-            'max_length' => 2000,
+            ],'required' => false
         ]);
         
         $builder->add('imageUpload', 'MU\ImageModule\Form\Type\Field\UploadType', [
@@ -146,10 +146,10 @@ abstract class AbstractPictureType extends AbstractType
             'label' => $this->__('Image view') . ':',
             'empty_data' => '',
             'attr' => [
+                'max_length' => 11,
                 'class' => ' validate-digits',
                 'title' => $this->__('Enter the image view of the picture. Only digits are allowed.')
             ],'required' => false,
-            'max_length' => 11,
             'scale' => 0
         ]);
         
@@ -165,10 +165,10 @@ abstract class AbstractPictureType extends AbstractType
             'label' => $this->__('Pos') . ':',
             'empty_data' => '0',
             'attr' => [
+                'max_length' => 11,
                 'class' => ' validate-digits',
                 'title' => $this->__('Enter the pos of the picture. Only digits are allowed.')
             ],'required' => true,
-            'max_length' => 11,
             'scale' => 0
         ]);
     }

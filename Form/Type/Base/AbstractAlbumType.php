@@ -99,20 +99,20 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
             'attr' => [
+                'max_length' => 255,
                 'class' => 'validate-unique',
                 'title' => $this->__('Enter the title of the album')
             ],'required' => true,
-            'max_length' => 255,
         ]);
         
         $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
             'label' => $this->__('Description') . ':',
             'empty_data' => '',
             'attr' => [
+                'max_length' => 2000,
                 'class' => '',
                 'title' => $this->__('Enter the description of the album')
-            ],'required' => false,
-            'max_length' => 2000,
+            ],'required' => false
         ]);
         
         
@@ -140,20 +140,20 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Password access') . ':',
             'empty_data' => '',
             'attr' => [
+                'max_length' => 255,
                 'class' => '',
                 'title' => $this->__('Enter the password access of the album')
             ],'required' => false,
-            'max_length' => 255,
         ]);
         
         $builder->add('myFriends', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
             'label' => $this->__('My friends') . ':',
             'empty_data' => '',
             'attr' => [
+                'max_length' => 255,
                 'class' => '',
                 'title' => $this->__('Enter the my friends of the album')
             ],'required' => false,
-            'max_length' => 255,
         ]);
         
         $builder->add('notInFrontend', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
@@ -168,10 +168,10 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Pos') . ':',
             'empty_data' => '0',
             'attr' => [
+                'max_length' => 11,
                 'class' => ' validate-digits',
                 'title' => $this->__('Enter the pos of the album. Only digits are allowed.')
             ],'required' => true,
-            'max_length' => 11,
             'scale' => 0
         ]);
     }
