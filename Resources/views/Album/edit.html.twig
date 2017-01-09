@@ -54,10 +54,16 @@
             </div>
         </div>
     </div>
-    
+    {% set cats = getModVar('MUImageModule', 'supportCategories') %}
+    {% if cats != 1 %}
+    <div class="hidden">
+    {% endif %}
     {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
         {{ include('@MUImageModule/Helper/includeCategoriesEdit.html.twig', { obj: album, panel: true }) }}
+    {% if cats != 1 %}   
+    </div>
     {% endif %}
+    {% endif %}    
     {{ include(
         '@MUImageModule/Album/includeSelectOne.html.twig',
         { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: false }
