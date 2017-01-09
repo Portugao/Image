@@ -13,13 +13,12 @@
 namespace MU\ImageModule\Container\Base;
 
 use Symfony\Component\Routing\RouterInterface;
-use UserUtil;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\Core\LinkContainer\LinkContainerInterface;
-use Zikula\PermissionsModule\Api\PermissionApi;
 use Zikula\ExtensionsModule\Api\VariableApi;
+use Zikula\PermissionsModule\Api\PermissionApi;
 use Zikula\UsersModule\Api\CurrentUserApi;
 use MU\ImageModule\Helper\ControllerHelper;
 
@@ -41,11 +40,6 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
     protected $permissionApi;
 
     /**
-     * @var ControllerHelper
-     */
-    protected $controllerHelper;
-
-    /**
      * @var VariableApi
      */
     protected $variableApi;
@@ -56,23 +50,28 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
     private $currentUserApi;
 
     /**
+     * @var ControllerHelper
+     */
+    protected $controllerHelper;
+
+    /**
      * LinkContainer constructor.
      *
      * @param TranslatorInterface $translator       Translator service instance
      * @param Routerinterface     $router           Router service instance
      * @param PermissionApi       $permissionApi    PermissionApi service instance
-     * @param ControllerHelper    $controllerHelper ControllerHelper service instance
      * @param VariableApi         $variableApi      VariableApi service instance
      * @param CurrentUserApi      $currentUserApi   CurrentUserApi service instance
+     * @param ControllerHelper    $controllerHelper ControllerHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, RouterInterface $router, PermissionApi $permissionApi, ControllerHelper $controllerHelper, VariableApi $variableApi, CurrentUserApi $currentUserApi)
+    public function __construct(TranslatorInterface $translator, RouterInterface $router, PermissionApi $permissionApi, VariableApi $variableApi, CurrentUserApi $currentUserApi, ControllerHelper $controllerHelper)
     {
         $this->setTranslator($translator);
         $this->router = $router;
         $this->permissionApi = $permissionApi;
-        $this->controllerHelper = $controllerHelper;
         $this->variableApi = $variableApi;
         $this->currentUserApi = $currentUserApi;
+        $this->controllerHelper = $controllerHelper;
     }
 
     /**
@@ -94,8 +93,8 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
      */
     public function getLinks($type = LinkContainerInterface::TYPE_ADMIN)
     {
-        $utilArgs = ['api' => 'linkContainer', 'action' => 'getLinks'];
-        $allowedObjectTypes = $this->controllerHelper->getObjectTypes('api', $utilArgs);
+        $contextArgs = ['api' => 'linkContainer', 'action' => 'getLinks'];
+        $allowedObjectTypes = $this->controllerHelper->getObjectTypes('api', $contextArgs);
 
         $permLevel = LinkContainerInterface::TYPE_ADMIN == $type ? ACCESS_ADMIN : ACCESS_READ;
 
@@ -108,29 +107,21 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
                 return $links;
             }
 
-            $userName = isset($args['uname']) ? $args['uname'] : $this->currentUserApi->get('uname');
-            // does this user exist?
-            if (false === UserUtil::getIdFromName($userName)) {
-                // user does not exist
-                return $links;
-            }
-
             if (!$this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_OVERVIEW)) {
                 return $links;
             }
             
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_READ)) {
+            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_EDIT)) {
             	$links[] = [
             			'url' => $this->router->generate('muimagemodule_avatar_index'),
             			'text' => $this->__('Avatars'),
-            			'title' => $this->__('Manage your avatars'),
-            			'icon' => 'user'
+            			'icon' => 'wrench'
             	];
             }
 
             if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
                 $links[] = [
-                    'url' => $this->router->generate('muimagemodule_admin_index'),
+                    'url' => $this->router->generate('muimagemodule_album_adminindex'),
                     'text' => $this->__('Image Backend'),
                     'icon' => 'wrench'
                 ];
@@ -139,100 +130,59 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
             return $links;
         }
 
-        
+
+        $routeArea = LinkContainerInterface::TYPE_ADMIN == $type ? 'admin' : '';
         if (LinkContainerInterface::TYPE_ADMIN == $type) {
             if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_READ)) {
                 $links[] = [
-                    'url' => $this->router->generate('muimagemodule_user_index'),
+                    'url' => $this->router->generate('muimagemodule_album_index'),
                     'text' => $this->__('Frontend'),
                     'title' => $this->__('Switch to user area.'),
                     'icon' => 'home'
                 ];
             }
-            
-            if (in_array('album', $allowedObjectTypes)
-                && $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', $permLevel)) {
-                $links[] = [
-                    'url' => $this->router->generate('muimagemodule_album_adminview'),
-                    'text' => $this->__('Albums'),
-                    'title' => $this->__('Album list')
-                ];
-            }
-            if (in_array('picture', $allowedObjectTypes)
-                && $this->permissionApi->hasPermission($this->getBundleName() . ':Picture:', '::', $permLevel)) {
-                $links[] = [
-                    'url' => $this->router->generate('muimagemodule_picture_adminview'),
-                    'text' => $this->__('Pictures'),
-                    'title' => $this->__('Picture list')
-                ];
-            }
-            if (in_array('avatar', $allowedObjectTypes)
-                && $this->permissionApi->hasPermission($this->getBundleName() . ':Avatar:', '::', $permLevel)) {
-                $links[] = [
-                    'url' => $this->router->generate('muimagemodule_avatar_adminview'),
-                    'text' => $this->__('Avatars'),
-                    'title' => $this->__('Avatar list')
-                ];
-            }
+        } else {
             if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
                 $links[] = [
-                    'url' => $this->router->generate('muimagemodule_config_config'),
-                    'text' => $this->__('Configuration'),
-                    'title' => $this->__('Manage settings for this application'),
-                    'icon' => 'wrench'
-                ];
-            }
-        }
-        if (LinkContainerInterface::TYPE_USER == $type) {
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
-                $links[] = [
-                    'url' => $this->router->generate('muimagemodule_admin_index'),
+                    'url' => $this->router->generate('muimagemodule_album_adminindex'),
                     'text' => $this->__('Backend'),
                     'title' => $this->__('Switch to administration area.'),
                     'icon' => 'wrench'
                 ];
             }
-            
-            if (in_array('album', $allowedObjectTypes)
-                && $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', $permLevel)) {
-                $links[] = [
-                    'url' => $this->router->generate('muimagemodule_album_view'),
-                    'text' => $this->__('Albums'),
-                    'title' => $this->__('Album list')
-                ];
-            }
-            if (in_array('album', $allowedObjectTypes)
-            		&& $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', $permLevel)) {
-            			$links[] = [
-            					'url' => $this->router->generate('muimagemodule_album_edit'),
-            					'text' => $this->__('Album erstellen'),
-            					'title' => $this->__('Create new album')
-            			];
-            		}
-            /*if (in_array('picture', $allowedObjectTypes)
-                && $this->permissionApi->hasPermission($this->getBundleName() . ':Picture:', '::', $permLevel)) {
-                $links[] = [
-                    'url' => $this->router->generate('muimagemodule_picture_view'),
-                    'text' => $this->__('Pictures'),
-                    'title' => $this->__('Picture list')
-                ];
-            }
-            if (in_array('avatar', $allowedObjectTypes)
-                && $this->permissionApi->hasPermission($this->getBundleName() . ':Avatar:', '::', $permLevel)) {
-                $links[] = [
-                    'url' => $this->router->generate('muimagemodule_avatar_view'),
-                    'text' => $this->__('Avatars'),
-                    'title' => $this->__('Avatar list')
-                ];
-            }*/
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
-                $links[] = [
-                    'url' => $this->router->generate('muimagemodule_config_config'),
-                    'text' => $this->__('Configuration'),
-                    'title' => $this->__('Manage settings for this application'),
-                    'icon' => 'wrench'
-                ];
-            }
+        }
+        
+        if (in_array('album', $allowedObjectTypes)
+            && $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', $permLevel)) {
+            $links[] = [
+                'url' => $this->router->generate('muimagemodule_album_' . $routeArea . 'view'),
+                'text' => $this->__('Albums'),
+                'title' => $this->__('Album list')
+            ];
+        }
+        if (in_array('picture', $allowedObjectTypes)
+            && $this->permissionApi->hasPermission($this->getBundleName() . ':Picture:', '::', $permLevel)) {
+            $links[] = [
+                'url' => $this->router->generate('muimagemodule_picture_' . $routeArea . 'view'),
+                'text' => $this->__('Pictures'),
+                'title' => $this->__('Picture list')
+            ];
+        }
+        /*if (in_array('avatar', $allowedObjectTypes)
+            && $this->permissionApi->hasPermission($this->getBundleName() . ':Avatar:', '::', $permLevel)) {
+            $links[] = [
+                'url' => $this->router->generate('muimagemodule_avatar_' . $routeArea . 'view'),
+                'text' => $this->__('Avatars'),
+                'title' => $this->__('Avatar list')
+            ];
+        }*/
+        if ($routeArea == 'admin' && $this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
+            $links[] = [
+                'url' => $this->router->generate('muimagemodule_config_config'),
+                'text' => $this->__('Configuration'),
+                'title' => $this->__('Manage settings for this application'),
+                'icon' => 'wrench'
+            ];
         }
 
         return $links;
