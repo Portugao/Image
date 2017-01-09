@@ -419,7 +419,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 'data' => isset($this->modVars['numberHeightAndNameOfAvatars']) ? $this->modVars['numberHeightAndNameOfAvatars'] : '',
                 'empty_data' => '200,thumb;400,view;600,normal',
                 'attr' => [
-                    'max_length' => 255
+                    'max_length' => 255,
                     'title' => $this->__('Enter the number height and name of avatars.')
                 ],
             ])
@@ -582,7 +582,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 'data' => isset($this->modVars['ending']) ? $this->modVars['ending'] : '',
                 'empty_data' => 'html',
                 'attr' => [
-                    'max_length' => 255
+                    'max_length' => 255,
                     'title' => $this->__('Enter the ending.')
                 ],
             ])
@@ -609,7 +609,7 @@ abstract class AbstractAppSettingsType extends AbstractType
                 'data' => isset($this->modVars['watermark']) ? $this->modVars['watermark'] : '',
                 'empty_data' => '',
                 'attr' => [
-                    'max_length' => 255
+                    'max_length' => 255,
                     'title' => $this->__('Enter the watermark.')
                 ],
             ])

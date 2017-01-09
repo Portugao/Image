@@ -223,7 +223,7 @@
         </div>
         
         {% if showAllEntries != 1 and pager|default %}
-            {{ pager({ rowcount: pager.numitems, limit: pager.itemsperpage, display: 'page', route: 'muimagemodule_album_' ~ routeArea ~ 'view'}) }}
+            {{ pager({ rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_album_' ~ routeArea ~ 'view'}) }}
         {% endif %}
     {% if routeArea == 'admin' %}
             <fieldset>
