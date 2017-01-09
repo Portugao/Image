@@ -14,7 +14,7 @@
 	{% if items is defined and items|length > 0 %}
 	<ul class="row">
 		{% for album in items %}
-			{% if album.parent == NULL %}
+			{% if album.album == NULL %}
 			{% if extended == 1 %}
 		    	{% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %}
 		    {% else %}
@@ -50,8 +50,8 @@
     					{% endif %}
     				{% endif %}	
     				<div>		
-					{% if album.children is defined and album.children != null and album.children|length > 0 %}			    
-			    		{{ __('SubAlbums') }}: {#include file='bootstrap/album/include_displayItemListMany.tpl' items=album.children#}    
+					{% if album.albums is defined and album.albums != null and album.albums|length > 0 %}			    
+			    		{{ __('SubAlbums') }}: : {{ album.albums|length }}    
 					{% else %}
 						{{ __('No SubAlbums') }}
 					{% endif %}
