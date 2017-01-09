@@ -26,12 +26,12 @@
         				<img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="">
     				</a>
     				<div class="caption {{ cursor }}">
-    					<a title="{{ __('Details') }}" href="{#modurl modname='MUImage' type='user' func='display' ot='picture' id=picture.id#}">
+    					<a title="{{ __('Details') }}" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}">
     						<i class="fa fa-eye fa-lg"></i>
     					</a>
     					{% if hasPermission('MUImageModule:picture:', '::', 'ACCESS_EDIT') %}
     						{% if currentUser.uid == 2 or currentUser.uid == picture.createdBy.getUid() == groupMember == 1 %}
-    							<a title="{{ __('Edit') }}" href="{#modurl modname='MUImage' type='user' func='edit' ot='picture' id=picture.id#}">
+    							<a title="{{ __('Edit') }}" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit', { 'id': picture.id }) }}">
     						   		<i class="fa fa-pencil-square-o"></i>
     							</a>
     						{% endif %}
