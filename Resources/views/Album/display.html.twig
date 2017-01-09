@@ -2,9 +2,10 @@
 {% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
 {% block pageTitle %}{{ album.getTitleFromDisplayPattern()|default(__('Album')) }}{% endblock %}
 {% block title %}
+    {% if routeArea == 'admin' %}
     {% set templateTitle = album.getTitleFromDisplayPattern()|default(__('Album')) %}
     {{ templateTitle|notifyFilters('muimagemodule.filter_hooks.albums.filter') }}
-    {% if routeArea == 'admin' %}
+    
     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: album, area: routeArea, context: 'display' }) %}
     <div class="dropdown">
         <a id="itemActions{{ album.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
@@ -12,10 +13,10 @@
     </div>
     {% else %}
     	<div id="album_breadcrump">
-    	{% set breadcrumbs = getModVar('MUImageModule', 'breadcrumbInFrontend') %}
+    	{% set breadcrumbs = getModVar('MUImageModule', 'breadcrumbsInFrontend') %}
 		{% if breadcrumbs == 1 %}
 		    {% set breadcrumb = muimagemodule_breadcrumb(albumId=album.id) %}
-		    {{ breadcrumb }}		    	
+		    {{ breadcrumb|raw }}		    	
 		{% endif %}
 	</div>
     {% endif %}
