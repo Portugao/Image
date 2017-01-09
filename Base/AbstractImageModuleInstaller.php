@@ -33,12 +33,12 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     public function install()
     {
         $logger = $this->container->get('logger');
-        $userName = $container->get('zikula_users_module.current_user')->get('uname');
+        $userName = $this->container->get('zikula_users_module.current_user')->get('uname');
     
         // Check if upload directories exist and if needed create them
         try {
             $container = $this->container;
-            $uploadHelper = new \MU\ImageModule\Helper\UploadHelper($container->get('translator.default'), $container->get('session'), $container->get('logger'), $container->get('zikula_users_module.current_user'), $container->get('zikula_extensions_module.api.variable'), $container->get('%datadir%'));
+            $uploadHelper = new \MU\ImageModule\Helper\UploadHelper($container->get('translator.default'), $container->get('session'), $container->get('logger'), $container->get('zikula_users_module.current_user'), $container->get('zikula_extensions_module.api.variable'), $container->getParameter('datadir'));
             $uploadHelper->checkAndCreateAllUploadFolders();
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
@@ -127,11 +127,10 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     
         // add default entry for category registry (property named Main)
         $categoryHelper = new \MU\ImageModule\Helper\CategoryHelper(
-            $this->container,
             $this->container->get('translator.default'),
             $this->container->get('session'),
-            $logger,
             $this->container->get('request_stack'),
+            $logger,
             $this->container->get('zikula_users_module.current_user'),
             $this->container->get('zikula_categories_module.api.category_registry'),
             $this->container->get('zikula_categories_module.api.category_permission')
