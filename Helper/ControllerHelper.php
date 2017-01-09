@@ -43,7 +43,7 @@ class ControllerHelper extends AbstractControllerHelper {
 		$createdUserIdGroups = \UserUtil::getGroupListForUser ($created);
 		$createdUserIdGroups = explode ( ',', $createdUserIdGroups );
 		
-		$commonGroup = \ModUtil::getVar ( 'MUImage', 'groupForCommonAlbums' );
+		$commonGroup = \ModUtil::getVar ( 'MUImageModule', 'groupForCommonAlbums' );
 		
 		if ($commonGroup != 'notset') {
 			foreach ( $uidGroups as $uidGroup ) {
@@ -93,7 +93,7 @@ class ControllerHelper extends AbstractControllerHelper {
 		}
 		if ($thisAlbum['albumAccess'] == 'friends') {
 			 
-			if ($thisAlbum['createdBy'] == $userid) {
+			if ($thisAlbum['createdBy_id'] == $userid) {
 				return 1;
 			}
 			$friends = explode(',', $thisAlbum['myFriends']);
@@ -139,17 +139,19 @@ class ControllerHelper extends AbstractControllerHelper {
 	public function giveImageOfAlbum($albumId)
 	{
 		$pictures = '';
-		$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
+		$where = 'tbl.album_id = ' . \DataUtil::formatForStore($albumId);
 		$where .= ' AND ';
 		$where .= 'tbl.albumImage = 1';
-		$pictures = $this->selectionHelper->getEntities('picture', [], $where);
+		$albumpicture = $this->selectionHelper->getEntities('picture', [], $where);
 		
 		
-		if (count($pictures) == 0) {
-			$where2 = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
+		if (is_array($albumpicture)) {
+			$where2 = 'tbl.album_id = ' . \DataUtil::formatForStore($albumId);
 			$pictures = $this->selectionHelper->getEntities('picture', [], $where2);
+		} else {
+			return $albumpicture[0];
 		}
-		if (count($pictures) > 0) {
+		if (is_array($pictures)) {
 		return $pictures[0];
 		} else {
 			return '';
@@ -158,9 +160,9 @@ class ControllerHelper extends AbstractControllerHelper {
 	
 	public function breadcrumb($albumId, $params = array())
 	{
-		$dom = ZLanguage::getModuleDomain('MUImage');
+		//$dom = ZLanguage::getModuleDomain('MUImage');
 		
-		$repository = MUImage_Util_Model::getAlbumRepository();
+		$repository = $this->entityFactory->getRepository('album');
 		$album = $repository->selectById($albumId);
 		if (!isset($params['out'])) {
 			$out = '';
@@ -179,24 +181,19 @@ class ControllerHelper extends AbstractControllerHelper {
 		}
 		
 		if ($album) {
-			$albumParent = $album->getParent();
+			$albumParent = $album['album'];
 			if ($albumParent) {
 				$url = ModUtil::url('MUImage', 'user', 'display', array('ot' => 'album', 'id' => $albumParent['id']));
 				$out = '<li><a href="' . $url . '">' . $albumParent['title'] . '</a></li>' . $out;
 		
-				$params['albumId'] = $albumParent['id'];
+				$parentAlbumId = $albumParent['id'];
 				$params['out'] = $out;
 				$params['loop'] = $loop + 1;
 				$params['thisAlbum'] = $thisAlbum;
-				smarty_function_muimageBreadcrumb($params, $view);
+				self::breadcrumb($parentAlbumId, $params);
 			} else {
 				$url = ModUtil::url('MUImage', 'user', 'main');
-				if (ModUtil::getVar('MUImage', 'layout') == 'bootstrap') {
-					$out = '<ol class="breadcrumb">' . '<li><a href="' . $url . '">' . __('Albums', $dom) . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol>';
-				} else {
-					$out = '<ol class="breadcrumb-normal">' . '<li><a href="' . $url . '">' . __('Albums', $dom) . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol><br style="clear: both;" />';
-		
-				}
+				$out = '<ol class="breadcrumb">' . '<li><a href="' . $url . '">' . __('Albums') . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol>';
 
 				return $out;
 			}
