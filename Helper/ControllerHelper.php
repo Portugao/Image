@@ -73,7 +73,7 @@ class ControllerHelper extends AbstractControllerHelper {
 		// we get the actual user id
 		$userid = \UserUtil::getVar('uid');
 		
-		$albumrepository = $this->container->get('mu_image_module.album_factory')->getRepository();
+		$albumrepository = $this->entityFactory->getRepository('album');
 		
 		$thisAlbum = $albumrepository->selectById($albumid);
 		
@@ -138,19 +138,18 @@ class ControllerHelper extends AbstractControllerHelper {
 	 */
 	public function giveImageOfAlbum($albumId)
 	{
-		//$repository = $this->container->get('mu_image_module.picture_factory')->getRepository();
-		$selectionHelper = $this->container->get('mu_image_module.selection_helper');
+		$pictures = '';
 		$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
 		$where .= ' AND ';
 		$where .= 'tbl.albumImage = 1';
-		$pictures = $selectionHelper->getEntities('picture', [], $where);
+		$pictures = $this->selectionHelper->getEntities('picture', [], $where);
 		
 		
 		if (count($pictures) == 0) {
-			$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
-			$pictures = $selectionHelper->getEntities('picture', [], $where);
+			$where2 = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
+			$pictures = $this->selectionHelper->getEntities('picture', [], $where2);
 		}
-		if (count($pictures) >= 0) {
+		if (count($pictures) > 0) {
 		return $pictures[0];
 		} else {
 			return '';
