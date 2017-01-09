@@ -16,9 +16,7 @@ use Twig_Extension;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\ExtensionsModule\Api\VariableApi;
-use MU\ImageModule\Helper\ControllerHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
-use MU\ImageModule\Helper\ViewHelper;
 use MU\ImageModule\Helper\WorkflowHelper;
 
 /**
@@ -39,19 +37,9 @@ abstract class AbstractTwigExtension extends Twig_Extension
     protected $workflowHelper;
     
     /**
-     * @var ViewHelper
-     */
-    protected $viewHelper;
-    
-    /**
      * @var ListEntriesHelper
      */
     protected $listHelper;
-    
-    /**
-     * @var ControllerHelper
-     */
-    protected $controllerHelper;
     
     /**
      * TwigExtension constructor.
@@ -59,17 +47,14 @@ abstract class AbstractTwigExtension extends Twig_Extension
      * @param TranslatorInterface $translator     Translator service instance
      * @param VariableApi         $variableApi    VariableApi service instance
      * @param WorkflowHelper      $workflowHelper WorkflowHelper service instance
-     * @param ViewHelper          $viewHelper     ViewHelper service instance
      * @param ListEntriesHelper   $listHelper     ListEntriesHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, VariableApi $variableApi, WorkflowHelper $workflowHelper, ViewHelper $viewHelper, ListEntriesHelper $listHelper, ControllerHelper $controllerHelper)
+    public function __construct(TranslatorInterface $translator, VariableApi $variableApi, WorkflowHelper $workflowHelper, ListEntriesHelper $listHelper)
     {
         $this->setTranslator($translator);
         $this->variableApi = $variableApi;
         $this->workflowHelper = $workflowHelper;
-        $this->viewHelper = $viewHelper;
         $this->listHelper = $listHelper;
-        $this->controllerHelper = $controllerHelper;
     }
     
     /**
@@ -137,33 +122,49 @@ abstract class AbstractTwigExtension extends Twig_Extension
     
     
     /**
-     * The muimagemodule_fileSize filter displays the size of a given file in a readable way.
-     * Example:
-     *     {{ 12345|muimagemodule_fileSize }}
+     * Display a given file size in a readable format
      *
-     * @param integer $size     File size in bytes
-     * @param string  $filepath The input file path including file name (if file size is not known)
+     * @param string  $size     File size in bytes
      * @param boolean $nodesc   If set to true the description will not be appended
      * @param boolean $onlydesc If set to true only the description will be returned
      *
      * @return string File size in a readable form
      */
-    public function getFileSize($size = 0, $filepath = '', $nodesc = false, $onlydesc = false)
+    private function getReadableFileSize($size, $nodesc = false, $onlydesc = false)
     {
-        if (!is_numeric($size)) {
-            $size = (int) $size;
+        $sizeDesc = $this->__('Bytes');
+        if ($size >= 1024) {
+            $size /= 1024;
+            $sizeDesc = $this->__('KB');
         }
-        if (!$size) {
-            if (empty($filepath) || !file_exists($filepath)) {
-                return '';
-            }
-            $size = filesize($filepath);
+        if ($size >= 1024) {
+            $size /= 1024;
+            $sizeDesc = $this->__('MB');
         }
-        if (!$size) {
-            return '';
+        if ($size >= 1024) {
+            $size /= 1024;
+            $sizeDesc = $this->__('GB');
+        }
+        $sizeDesc = '&nbsp;' . $sizeDesc;
+    
+        // format number
+        $dec_point = ',';
+        $thousands_separator = '.';
+        if ($size - number_format($size, 0) >= 0.005) {
+            $size = number_format($size, 2, $dec_point, $thousands_separator);
+        } else {
+            $size = number_format($size, 0, '', $thousands_separator);
         }
     
-        return $this->viewHelper->getReadableFileSize($size, $nodesc, $onlydesc);
+        // append size descriptor if desired
+        if (!$nodesc) {
+            $size .= $sizeDesc;
+        }
+    
+        // return either only the description or the complete string
+        $result = ($onlydesc) ? $sizeDesc : $size;
+    
+        return $result;
     }
     
     
