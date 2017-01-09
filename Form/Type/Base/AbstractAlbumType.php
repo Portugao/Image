@@ -218,7 +218,8 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Album'),
             'attr' => [
                 'title' => $this->__('Choose the album')
-            ]
+            ],
+            'required' => false
         ]);
     }
 
@@ -242,7 +243,8 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Albums'),
             'attr' => [
                 'title' => $this->__('Choose the albums')
-            ]
+            ],
+            'required' => false
         ]);
         $builder->add('pictures', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
             'class' => 'MUImageModule:PictureEntity',
@@ -256,7 +258,8 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Pictures'),
             'attr' => [
                 'title' => $this->__('Choose the pictures')
-            ]
+            ],
+            'required' => false
         ]);
     }
 
