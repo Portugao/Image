@@ -23,8 +23,8 @@ application "Image" {
         generatePoweredByBacklinksIntoFooterTemplates false
         generateTests false
         writeModelToDocs true
-        skipFiles "README.md"
-        markFiles "composer.json,\r\nImageModuleInstaller.php,\r\nContainer/Base/AbstractLinkContainer.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nHelper/ControllerHelper.php,\r\nNeedles/Base/Abstractentry.php,\r\nForm/AppSettingsType.php,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/images/admin.png,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,\r\nTwig/Base/AbstractTwigExtension.php,\r\nTwig/TwigExtension.php\r\n"
+        skipFiles "README.md,\r\n.gitignore,\r\nResources/public/images/admin.png"
+        markFiles "composer.json,\r\nImageModuleInstaller.php,\r\nContainer/Base/AbstractLinkContainer.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nHelper/ControllerHelper.php,\r\nNeedles/Base/Abstractentry.php,\r\nForm/AppSettingsType.php,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,\r\nTwig/Base/AbstractTwigExtension.php,\r\nTwig/TwigExtension.php\r\n"
     }
     entities {
         entity "album" leading categorisable {
