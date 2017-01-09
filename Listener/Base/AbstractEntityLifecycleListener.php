@@ -25,6 +25,7 @@ use MU\ImageModule\ImageEvents;
 use MU\ImageModule\Event\FilterAlbumEvent;
 use MU\ImageModule\Event\FilterPictureEvent;
 use MU\ImageModule\Event\FilterAvatarEvent;
+use ServiceUtil;
 
 /**
  * Event subscriber base class for entity lifecycle events.
@@ -38,6 +39,9 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber, Conta
      */
     public function __construct(ContainerInterface $container)
     {
+    	if (null === $container) {
+    		$container = \ServiceUtil::getManager();
+    	}
         $this->setContainer($container);
     }
 
