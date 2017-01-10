@@ -83,7 +83,7 @@
 
     var MU = jQuery.noConflict();
 	MU(document).ready(function(MU) {	
-    {% if currentUser.uid == 2 or currentUser.uid == item.createdBy.getUid() or groupMember == 1 %}
+    {% if currentUser.uid == 2 or currentUser.uid == album.createdBy.getUid() or groupMember == 1 %}
         MU(function() {
             MU( "#sortable" ).sortable();
         });
