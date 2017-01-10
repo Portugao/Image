@@ -13,11 +13,325 @@
 namespace MU\ImageModule;
 
 use MU\ImageModule\Base\AbstractUploadHandler;
+use SystemPlugin_Imagine_Image;
 
 /**
  * Upload handler implementation class.
  */
 class UploadHandler extends AbstractUploadHandler
 {
-    // feel free to add your upload handler enhancements here
+    /**
+     * Process a file upload.
+     *
+     * @param string       $objectType Currently treated entity type
+     * @param UploadedFile $file       The uploaded file
+     * @param string       $fieldName  Name of upload field
+     *
+     * @return array Resulting file name and collected meta data
+     */
+    public function performFileUpload($objectType, $file, $fieldName)
+    {
+    	$request = new Zikula_Request_Http();
+    	$func = $request->query->filter('func', 'edit', FILTER_SANITIZE_STRING);
+    	$dom = ZLanguage::getModuleDomain('MUImage');
+    	
+        $result = [
+            'fileName' => '',
+            'metaData' => []
+        ];
+    
+        // check whether uploads are allowed for the given object type
+        if (!in_array($objectType, $this->allowedObjectTypes)) {
+            return $result;
+        }
+    
+        // perform validation
+        try {
+            $this->validateFileUpload($objectType, $file, $fieldName);
+        } catch (\Exception $e) {
+            // skip this upload field
+            return $result;
+        }
+    
+        // build the file name
+        $fileName = $file->getClientOriginalName();
+        $fileNameParts = explode('.', $fileName);
+        $extension = null !== $file->guessExtension() ? $file->guessExtension() : $file->guessClientExtension();
+        if (null === $extension) {
+            $extension = strtolower($fileNameParts[count($fileNameParts) - 1]);
+        }
+        $extension = str_replace('jpeg', 'jpg', $extension);
+        $fileNameParts[count($fileNameParts) - 1] = $extension;
+        $fileName = implode('.', $fileNameParts);
+    
+        $serviceManager = ServiceUtil::getManager();
+        $controllerHelper = $serviceManager->get('mu_image_module.controller_helper');
+        $flashBag = $serviceManager->get('session')->getFlashBag();
+        $logger = $serviceManager->get('logger');
+    
+        // retrieve the final file name
+        try {
+            $basePath = $controllerHelper->getFileBaseFolder($objectType, $fieldName);
+        } catch (\Exception $e) {
+            $flashBag->add('error', $e->getMessage());
+            $logger->error('{app}: User {user} could not detect upload destination path for entity {entity} and field {field}.', ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $objectType, 'field' => $fieldName]);
+    
+            return false;
+        }
+        $fileName = $this->determineFileName($objectType, $fieldName, $basePath, $fileName, $extension);
+    
+        $destinationFilePath = $basePath . $fileName;
+        $targetFile = $file->move($basePath, $fileName);
+    
+        // validate image file
+        $isImage = in_array($extension, $this->imageFileTypes);
+        if ($isImage) {
+            $imgInfo = getimagesize($destinationFilePath);
+            if (!is_array($imgInfo) || !$imgInfo[0] || !$imgInfo[1]) {
+                $flashBag->add('error', $this->__('Error! This file type seems not to be a valid image.'));
+                $logger->error('{app}: User {user} tried to upload a file which is seems not to be a valid image.', ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname')]);
+        
+                return false;
+            }
+        }
+    
+        $isImage = in_array($extension, $this->imageFileTypes);
+        if ($isImage) {
+            // check if shrinking functionality is enabled
+            $fieldSuffix = ucfirst($objectType) . ucfirst($fieldName);
+            if (true === $this->variableApi->get('MUImageModule', 'enableShrinkingFor' . $fieldSuffix, false)) {
+                // check for maximum size
+                $maxWidth = $this->variableApi->get('MUImageModule', 'shrinkWidth' . $fieldSuffix, 800);
+                $maxHeight = $this->variableApi->get('MUImageModule', 'shrinkHeight' . $fieldSuffix, 600);
+    
+                $imgInfo = getimagesize($destinationFilePath);
+                if ($imgInfo[0] > $maxWidth || $imgInfo[1] > $maxHeight) {
+                    // resize to allowed maximum size
+                    $thumbManager = $serviceManager->get('systemplugin.imagine.manager');
+                    $preset = new \SystemPlugin_Imagine_Preset('MUImageModule_Shrinker', [
+                        'width' => $maxWidth,
+                        'height' => $maxHeight,
+                        'mode' => 'inset'
+                    ]);
+                    $thumbManager->setPreset($preset);
+    
+                    // create thumbnail image
+                    $thumbFilePath = $thumbManager->getThumb($destinationFilePath, $maxWidth, $maxHeight);
+    
+                    // remove original image
+                    unlink($destinationFilePath);
+    
+                    // rename thumbnail image to original image
+                    rename($thumbFilePath, $destinationFilePath);
+                }
+            }
+        }
+        
+        $maxWidth = ModUtil::getVar('MUImage', 'maxWidth');
+        $maxHeight = ModUtil::getVar('MUImage', 'maxHeight');
+        
+        /*if (ModUtil::getVar('MUImage', 'shrinkPictures') == 1 && ModUtil::getVar('MUImage', 'createSeveralPictureSizes') === false && ($maxHeight > 0 && $maxHeight != '' && $maxHeight > 0 && $maxHeight != '')) {
+        	$imagine = new Imagine();
+        	$image = $imagine->open($basePath . $fileName);
+        	$size = $image->getSize();
+        	$imageWidth = $size->getWidth();
+        	$imageHeight = $size->getHeight();
+        	$ratio = $imageHeight / $imageWidth;
+        	$ratio = round($ratio, 2);
+        	if ($imageWidth >= $imageHeight) {
+        		if ($imageWidth > $maxWidth) {
+        			$newWidth = $maxWidth;
+        			$newHeight = $newWidth * $ratio;
+        		} else {
+        			$newWidth = $imageWidth;
+        			$newHeight = $imageHeight;
+        		}
+        	}
+        	if ($imageHeight > $imageWidth) {
+        		if ($imageHeight > $maxHeight) {
+        			$newHeight = $maxHeight;
+        			$newWidth = $newHeight / $ratio;
+        		} else {
+        			$newHeight = $imageHeight;
+        			$newWidth = $imageWidth;
+        		}
+        	}
+        	if ($newWidth != $imageWidth || $newHeight != $imageHeight) {
+        		$image->resize(new Box($newWidth, $newHeight));
+        		//$image->crop(new Point(0, 0), new Box($newWidth, $newHeight));
+        		$image->save($basePath . $fileName);
+        	}
+        }*/
+        
+        if ($func != 'zipUpload') {
+        
+        	// retrieve the final file name
+        	$fileNameParts = explode('.', $fileName);
+        	$fileNamePartsWithoutExtension = array_slice($fileNameParts, 0, count($fileNameParts) - 1);
+        	$fileNameWithoutExtension = implode('.', $fileNamePartsWithoutExtension);
+        
+        	$imagine = new \SystemPlugin_Imagine_Image();
+        
+        	// we create the thumnail
+        	$widthFirst = ModUtil::getVar('MUImageModule', 'widthFirst');
+        	$heightFirst = ModUtil::getVar('MUImageModule', 'heightFirst');
+        	if ($widthFirst > 0 && $heightFirst > 0) {
+        		$nameForThumb = $fileNameWithoutExtension . '_tmb.jpg';
+        		$imagine->open($basePath . $fileName)->thumbnail(new Box($widthFirst, $heightFirst), 'inset')->save($basePath . $nameForThumb);
+        	}
+        	// we create the preview
+        	$widthSecond = ModUtil::getVar('MUImageModule', 'widthSecond');
+        	$heightSecond = ModUtil::getVar('MUImageModule', 'heightSecond');
+        	if ($widthSecond > 0 && $heightSecond > 0) {
+        		$nameForThumb = $fileNameWithoutExtension . '_pre.jpg';
+        		$imagine->open($basePath . $fileName)->thumbnail(new Box($widthSecond, $heightSecond), 'inset')->save($basePath . $nameForThumb);
+        	}
+        	// we create the full image
+        	$widthThird = ModUtil::getVar('MUImageModule', 'widthThird');
+        	$heightThird = ModUtil::getVar('MUImageModule', 'heightThird');
+        	if ($widthThird > 0 && $heightThird > 0) {
+        		$nameForThumb = $fileNameWithoutExtension . '_full.jpg';
+        		$imagine->open($basePath . $fileName)->thumbnail(new Box($widthThird, $heightThird), 'inset')->save($basePath . $nameForThumb);
+        	}
+        }
+    
+        // collect data to return
+        $result['fileName'] = $fileName;
+        $result['metaData'] = $this->readMetaDataForFile($fileName, $destinationFilePath);
+    
+        return $result;
+    }
+    
+    /**
+     * Check if an upload file meets all validation criteria.
+     *
+     * @param string       $objectType Currently treated entity type
+     * @param UploadedFile $file       Reference to data of uploaded file
+     * @param string       $fieldName  Name of upload field
+     *
+     * @return boolean true if file is valid else false
+     */
+    protected function validateFileUpload($objectType, $file, $fieldName)
+    {
+    	$serviceManager = ServiceUtil::getManager();
+    	$flashBag = $serviceManager->get('session')->getFlashBag();
+    	$logger = $serviceManager->get('logger');
+    
+    	// check if a file has been uploaded properly without errors
+    	if ($file->getError() != UPLOAD_ERR_OK) {
+    		$flashBag->add('error', $file->getErrorMessage());
+    		$logger->error('{app}: User {user} tried to upload a file with errors: ' . $file->getErrorMessage(), ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname')]);
+    
+    		return false;
+    	}
+    
+    	// extract file extension
+    	$fileName = $file->getClientOriginalName();
+    	$extension = null !== $file->guessExtension() ? $file->guessExtension() : $file->guessClientExtension();
+    	if (null === $extension) {
+    		$fileNameParts = explode('.', $fileName);
+    		$extension = strtolower($fileNameParts[count($fileNameParts) - 1]);
+    	}
+    	$extension = str_replace('jpeg', 'jpg', $extension);
+    
+    	// validate extension
+    	$isValidExtension = $this->isAllowedFileExtension($objectType, $fieldName, $extension);
+    	if (false === $isValidExtension) {
+    		$flashBag->add('error', $this->__('Error! This file type is not allowed. Please choose another file format.'));
+    		$logger->error('{app}: User {user} tried to upload a file with a forbidden extension ("{extension}").', ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'extension' => $extension]);
+    
+    		return false;
+    	}
+    
+    	return true;
+    }
+    
+    /**
+     * Read meta data from a certain file.
+     *
+     * @param string $fileName  Name of file to be processed
+     * @param string $filePath  Path to file to be processed
+     *
+     * @return array collected meta data
+     */
+    public function readMetaDataForFile($fileName, $filePath)
+    {
+    	$meta = [];
+    	if (empty($fileName)) {
+    		return $meta;
+    	}
+    
+    	$extensionarr = explode('.', $fileName);
+    	$meta['extension'] = strtolower($extensionarr[count($extensionarr) - 1]);
+    	$meta['size'] = filesize($filePath);
+    	$meta['isImage'] = in_array($meta['extension'], $this->imageFileTypes) ? true : false;
+    
+    	if (!$meta['isImage']) {
+    		return $meta;
+    	}
+    
+    	if ($meta['extension'] == 'swf') {
+    		$meta['isImage'] = false;
+    	}
+    
+    	$imgInfo = getimagesize($filePath);
+    	if (!is_array($imgInfo)) {
+    		return $meta;
+    	}
+    
+    	$meta['width'] = $imgInfo[0];
+    	$meta['height'] = $imgInfo[1];
+    
+    	if ($imgInfo[1] < $imgInfo[0]) {
+    		$meta['format'] = 'landscape';
+    	} elseif ($imgInfo[1] > $imgInfo[0]) {
+    		$meta['format'] = 'portrait';
+    	} else {
+    		$meta['format'] = 'square';
+    	}
+    	
+    	if (ModUtil::getVar('MUImage', 'createSeveralPictureSizes') === true) {
+    		$fileNameParts = explode('.', $fileName);
+    		$fileNamePartsWithoutExtension = array_slice($fileNameParts, 0, count($fileNameParts) - 1);
+    		$fileNameWithoutExtension = implode('.', $fileNamePartsWithoutExtension);
+    		$meta['filename'] = $fileNameWithoutExtension;
+    	}
+    
+    	return $meta;
+    }
+    
+    /**
+     * Determines the allowed file extensions for a given object type.
+     *
+     * @param string $objectType Currently treated entity type
+     * @param string $fieldName  Name of upload field
+     * @param string $extension  Input file extension
+     *
+     * @return array the list of allowed file extensions
+     */
+    protected function isAllowedFileExtension($objectType, $fieldName, $extension)
+    {
+    	// determine the allowed extensions
+    	$allowedExtensions = [];
+    	switch ($objectType) {
+    		case 'picture':
+    			$allowedExtensions = ['gif', 'jpeg', 'jpg', 'png'];
+    			break;
+    		case 'avatar':
+    			$allowedExtensions = ['gif', 'jpeg', 'jpg', 'png'];
+    			break;
+    	}
+    
+    	if (count($allowedExtensions) > 0) {
+    		if (!in_array($extension, $allowedExtensions)) {
+    			return false;
+    		}
+    	}
+    
+    	if (in_array($extension, $this->forbiddenFileTypes)) {
+    		return false;
+    	}
+    
+    	return true;
+    }
 }
