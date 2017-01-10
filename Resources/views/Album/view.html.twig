@@ -21,12 +21,12 @@
 		        {% set accessThisAlbum = 1 %}
 		    {% endif %}
 		    	{% if accessThisAlbum == 1 %}
-		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-3">
 		    		<div class="thumbnail album-view-container">
 					{% set albumpicture = muimagemodule_giveImageOfAlbum(albumId=album.id) %}
 					{% if albumpicture != '' %}
 					<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
-       				<img src="{{ albumpicture.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="">
+       				<img src="{{ albumpicture.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ album.title }}">
     				</a>
     				{% else %}
     				<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
