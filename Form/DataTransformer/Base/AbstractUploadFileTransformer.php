@@ -118,9 +118,8 @@ abstract class AbstractUploadFileTransformer implements DataTransformerInterface
         if (null === $uploadedFile) {
             // check files array
             $filesKey = 'muimagemodule_' . $objectType;
-            $request = $this->requestStack->getCurrentRequest();
-            if ($request->files->has($filesKey)) {
-                $files = $request->files->get($filesKey);
+            if ($this->request->files->has($filesKey)) {
+                $files = $this->request->files->get($filesKey);
                 if (isset($files[$fieldName]) && isset($files[$fieldName][$fieldName])) {
                     $uploadedFile = $files[$fieldName][$fieldName];
                 }
