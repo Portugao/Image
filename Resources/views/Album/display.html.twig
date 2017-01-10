@@ -88,8 +88,11 @@
         {% endif %}
         
     </dl>
+    {% set cats = getModVar('MUImageModule', 'supportCategories') %}
+    {% if cats == 1 %}
     {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
         {{ include('@MUImageModule/Helper/includeCategoriesDisplay.html.twig', { obj: album }) }}
+    {% endif %}
     {% endif %}
     {% if routeArea != 'admin' %}
     {% if extended == 1 %}
