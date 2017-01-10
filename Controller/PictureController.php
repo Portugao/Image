@@ -347,18 +347,16 @@ class PictureController extends AbstractPictureController
     {
         // parameter specifying which type of objects we are treating
         $objectType = 'picture';
-        $utilArgs = ['controller' => 'picture', 'action' => 'edit'];
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
         if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
-        $repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
-        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
-        $imageHelper = $this->get('mu_image_module.image_helper');
-        $templateParameters = array_merge($templateParameters, $repository->getAdditionalTemplateParameters($imageHelper, 'controllerAction', $utilArgs));
+        
+        $controllerHelper = $this->get('mu_image_module.controller_helper');
+        $templateParameters = $controllerHelper->processEditActionParameters($objectType, $templateParameters);
         
         // delegate form processing to the form handler
         $formHandler = $this->get('mu_image_module.form.handler.picture');
@@ -367,12 +365,10 @@ class PictureController extends AbstractPictureController
             return $result;
         }
         
-        $viewHelper = $this->get('mu_image_module.view_helper');
         $templateParameters = $formHandler->getTemplateParameters();
-        $templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
         
         // fetch and return the appropriate template
-        return $viewHelper->processTemplate($this->get('twig'), $objectType, 'multiupload', $request, $templateParameters);
+        return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'multiupload', $templateParameters);
     }
     
     /**
@@ -380,33 +376,29 @@ class PictureController extends AbstractPictureController
      */
     protected function zipuploadInternal(Request $request, $isAdmin = false)
     {
-    	// parameter specifying which type of objects we are treating
-    	$objectType = 'picture';
-    	$utilArgs = ['controller' => 'picture', 'action' => 'zipupload'];
-    	$permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
-    	if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
-    		throw new AccessDeniedException();
-    	}
-    	$repository = $this->get('mu_image_module.' . $objectType . '_factory')->getRepository();
-    
-    	$templateParameters = [
-    			'routeArea' => $isAdmin ? 'admin' : ''
-    	];
-    	$imageHelper = $this->get('mu_image_module.image_helper');
-    	$templateParameters = array_merge($templateParameters, $repository->getAdditionalTemplateParameters($imageHelper, 'controllerAction', $utilArgs));
-    
-    	// delegate form processing to the form handler
-    	$formHandler = $this->get('mu_image_module.form.handler.picture');
-    	$result = $formHandler->processForm($templateParameters);
-    	if ($result instanceof RedirectResponse) {
-    		return $result;
-    	}
-    
-    	$viewHelper = $this->get('mu_image_module.view_helper');
-    	$templateParameters = $formHandler->getTemplateParameters();
-    	$templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
-    
-    	// fetch and return the appropriate template
-    	return $viewHelper->processTemplate($this->get('twig'), $objectType, 'multiupload', $request, $templateParameters);
+        // parameter specifying which type of objects we are treating
+        $objectType = 'picture';
+        $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
+        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+            throw new AccessDeniedException();
+        }
+        $templateParameters = [
+            'routeArea' => $isAdmin ? 'admin' : ''
+        ];
+        
+        $controllerHelper = $this->get('mu_image_module.controller_helper');
+        $templateParameters = $controllerHelper->processEditActionParameters($objectType, $templateParameters);
+        
+        // delegate form processing to the form handler
+        $formHandler = $this->get('mu_image_module.form.handler.picture');
+        $result = $formHandler->processForm($templateParameters);
+        if ($result instanceof RedirectResponse) {
+            return $result;
+        }
+        
+        $templateParameters = $formHandler->getTemplateParameters();
+        
+        // fetch and return the appropriate template
+        return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'zipupload', $templateParameters);
     }
 }
