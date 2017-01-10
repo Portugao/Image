@@ -109,7 +109,6 @@ class AvatarController extends AbstractAvatarController
      */
     public function viewAction(Request $request, $sort, $sortdir, $pos, $num)
     {
-    	$num = $this->getVar('avatarEntriesPerPage');
         return parent::viewAction($request, $sort, $sortdir, $pos, $num);
     }
     /**
@@ -288,5 +287,12 @@ class AvatarController extends AbstractAvatarController
         return parent::handleSelectedEntriesAction($request);
     }
 
-    // feel free to add your own controller methods here
+    /**
+     * This method includes the common implementation code for adminView() and view().
+     */
+    protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
+    {
+    	$num = $isAdmin ? $this->getVar('MUImageModule', 'avatarsEntriesPerPageInBackend') : $this->getVar('MUImageModule', 'avatarsEntriesPerPage');
+        return parent::viewInternal($request, $sort, $sortdir, $pos, $num, $isAdmin);
+    }
 }

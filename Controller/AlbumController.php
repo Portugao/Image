@@ -134,6 +134,7 @@ class AlbumController extends AbstractAlbumController
         return parent::adminDisplayAction($request, $album);
     }
     
+    
     /**
      * {@inheritdoc}
      *
@@ -287,5 +288,12 @@ class AlbumController extends AbstractAlbumController
         return parent::handleSelectedEntriesAction($request);
     }
 
-    // feel free to add your own controller methods here
+    /**
+     * This method includes the common implementation code for adminView() and view().
+     */
+    protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
+    {
+    	$num = $isAdmin ? $this->getVar('MUImageModule', 'albumEntriesPerPageInBackend') : $this->getVar('MUImageModule', 'albumEntriesPerPage');
+        return parent::viewInternal($request, $sort, $sortdir, $pos, $num, $isAdmin);
+    }
 }

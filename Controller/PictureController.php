@@ -330,6 +330,15 @@ class PictureController extends AbstractPictureController
     {
         return parent::handleSelectedEntriesAction($request);
     }
+    
+    /**
+     * This method includes the common implementation code for adminView() and view().
+     */
+    protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
+    {
+    	$num = $isAdmin ? $this->getVar('MUImageModule', 'pictureEntriesPerPageInBackend') : $this->getVar('MUImageModule', 'pictureEntriesPerPage');
+    	return parent::viewInternal($request, $sort, $sortdir, $pos, $num, $isAdmin);
+    }
 
     /**
      * This method includes the common implementation code for multiupload().
