@@ -160,23 +160,24 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
                 'title' => $this->__('Album list')
             ];
         }
-        if (in_array('album', $allowedObjectTypes)
-        		&& $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', ACCESS_EDIT)) {
-        			$links[] = [
-        					'url' => $this->router->generate('muimagemodule_album_' . $routeArea . 'edit'),
-        					'text' => $this->__('New album'),
-        					'title' => $this->__('Create new album')
-        			];
-        		}
-        /*if (in_array('picture', $allowedObjectTypes)
-            && $this->permissionApi->hasPermission($this->getBundleName() . ':Picture:', '::', $permLevel)) {
+
+        if (in_array('picture', $allowedObjectTypes)
+            && $this->permissionApi->hasPermission($this->getBundleName() . ':Picture:', '::', $permLevel) && $routeArea == 'admin') {
             $links[] = [
                 'url' => $this->router->generate('muimagemodule_picture_' . $routeArea . 'view'),
                 'text' => $this->__('Pictures'),
                 'title' => $this->__('Picture list')
             ];
         }
-        if (in_array('avatar', $allowedObjectTypes)
+        if (in_array('album', $allowedObjectTypes)
+        		&& $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', ACCESS_EDIT) && $routeArea != 'admin') {
+        			$links[] = [
+        					'url' => $this->router->generate('muimagemodule_album_' . $routeArea . 'edit'),
+        					'text' => $this->__('New album'),
+        					'title' => $this->__('Create new album')
+        			];
+        		}
+        /*if (in_array('avatar', $allowedObjectTypes)
             && $this->permissionApi->hasPermission($this->getBundleName() . ':Avatar:', '::', $permLevel)) {
             $links[] = [
                 'url' => $this->router->generate('muimagemodule_avatar_' . $routeArea . 'view'),
