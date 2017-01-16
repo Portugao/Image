@@ -6,6 +6,7 @@
 {% set avatars = getModVar('MUImageModule', 'useAvatars') %}
 {% set slideshow1 = getModVar('MUImageModule', 'slideshow1') %}
 {% set watermark = getModVar('MUImageModule', 'useWatermark') %}
+{% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
 
 {% block content %}
     <div class="muimagemodule-config">
@@ -27,19 +28,19 @@
         <li role="presentation">
             <a id="vars3Tab" href="#tab3" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
         </li>
-        {% if slideshow1 == 1 %}
+        {% if slideshow1 == 1 and extended == 1 %}
         {% set tabTitle = __('Slideshows') %}
         <li role="presentation">
             <a id="vars4Tab" href="#tab4" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
         </li>
         {% endif %}
-        {% if avatars == 1 %}
+        {% if avatars == 1 and extended == 1 %}
         {% set tabTitle = __('Avatars') %}
         <li role="presentation">
             <a id="vars5Tab" href="#tab5" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
         </li>
         {% endif %}
-        {% if watermark == 1 %}
+        {% if watermark == 1 and extended == 1 %}
         {% set tabTitle = __('Watermark') %}
         <li role="presentation">
             <a id="vars6Tab" href="#tab6" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
@@ -76,12 +77,24 @@
                 
                     <p class="alert alert-info">{{ __('Here you can manage all basic settings for this application.') }}</p>
                 
+                    {% if extended == 0 %}
+                        <div class="hidden">
+                    {% endif %}
                     {{ form_row(form.supportCategories) }}
                     {{ form_row(form.supportSubAlbums) }}
+                    {% if extended == 0 %}
+                        </div>
+                    {% endif %}
                     {{ form_row(form.userDeletePictures) }}
+                    {% if extended == 0 %}
+                        <div class="hidden">
+                    {% endif %}
                     {{ form_row(form.slideshow1) }}
                     {{ form_row(form.useAvatars) }}
                     {{ form_row(form.useWatermark) }}
+                    {% if extended == 0 %}
+                        </div>
+                    {% endif %}
                     {{ form_row(form.useExtendedFeatures) }}
                 </fieldset>
             </div>
