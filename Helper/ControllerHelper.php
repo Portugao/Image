@@ -14,6 +14,7 @@ namespace MU\ImageModule\Helper;
 
 use MU\ImageModule\Helper\Base\AbstractControllerHelper;
 use DataUtil;
+use LogUtil;
 use ModUtil;
 use UserUtil;
 
@@ -138,15 +139,17 @@ class ControllerHelper extends AbstractControllerHelper {
 	 */
 	public function giveImageOfAlbum($albumId)
 	{
+		$where = '';
 		$pictures = '';
-		$where = 'tbl.album_id = ' . \DataUtil::formatForStore($albumId);
+		$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
 		$where .= ' AND ';
 		$where .= 'tbl.albumImage = 1';
-		$albumpicture = $this->selectionHelper->getEntities('picture', [], $where);
+		$albumRespository = $this->entityFactory->getRepository('album');
+		$albumpicture = $albumRespository->selectWhere($where);	
 		
-		
-		if (is_array($albumpicture)) {
-			$where2 = 'tbl.album_id = ' . \DataUtil::formatForStore($albumId);
+		if (!is_array($albumpicture)) {
+			$where2 = '';
+			$where2 = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
 			$pictures = $this->selectionHelper->getEntities('picture', [], $where2);
 		} else {
 			return $albumpicture[0];
