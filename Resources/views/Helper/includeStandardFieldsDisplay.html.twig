@@ -11,13 +11,13 @@
         <h3 class="standard-fields">{{ __('Creation and update') }}</h3>
     {% endif %}
     <dl class="propertylist">
-    {% if obj.createdBy|default %}
+    {% if obj.createdBy|default and obj.createdBy > 0 %}
         <dt>{{ __('Creation') }}</dt>
         {% set profileLink = obj.createdBy.getUid()|profileLinkByUserId() %}
         <dd class="avatar">{{ muimagemodule_userAvatar(uid=obj.createdBy.getUid(), rating='g') }}</dd>
         <dd>{{ __f('Created by %user on %date', {'%user': profileLink, '%date': obj.createdDate|localizeddate('medium', 'short')})|raw }}</dd>
     {% endif %}
-    {% if obj.updatedBy|default %}
+    {% if obj.updatedBy|default and obj.updatedBy > 0 %}
         <dt>{{ __('Last update') }}</dt>
         {% set profileLink = obj.updatedBy.getUid()|profileLinkByUserId() %}
         <dd class="avatar">{{ muimagemodule_userAvatar(uid=obj.updatedBy.getUid(), rating='g') }}</dd>
