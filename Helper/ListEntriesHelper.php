@@ -19,5 +19,31 @@ use MU\ImageModule\Helper\Base\AbstractListEntriesHelper;
  */
 class ListEntriesHelper extends AbstractListEntriesHelper
 {
-    // feel free to add your own convenience methods here
+    /**
+     * Get 'supported modules' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getSupportedModulesEntriesForAvatar()
+    {
+    	$states = parent::getSupportedModulesEntriesForAvatar();
+
+    	$availableModules = \ModUtil::getModulesByState(3, 'name');
+    	
+    	$supported = array('MUEternizerModule', 'MUImageModule', 'ZikulaFormiculaModule', 'ZikulaPagesModule');
+    	
+    	foreach ($availableModules as $module) {
+    	if (in_array($module['name'], $supported))
+        $states[] = [
+            'value'   => $module['name'],
+            'text'    => ucfirst($module['name']),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+    	}
+
+    
+        return $states;
+    }
 }
