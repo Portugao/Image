@@ -25,9 +25,10 @@
 		    		<div class="thumbnail album-view-container">
 					{% set albumpicture = muimagemodule_giveImageOfAlbum(albumId=album.id) %}
 					{% if albumpicture != '' %}
-					<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
-       				<img src="{{ albumpicture.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ album.title }}">
-    				</a>
+					{#% set thumbOptions = attribute(thumbOptions, 'pictureImageUpload') %}
+					{<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
+       				<img src="{{ albumpicture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ album.title }}">
+    				</a>#}
     				{% else %}
     				<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
    					<img src="/modules/MU/ImageModule/Resources/public/images/placeholder.png" width="300" height="200" />
@@ -87,6 +88,9 @@
 				{% endif %}	    
 	    {% endfor %}
 	</ul>
+    {% if showAllEntries != 1 and pager|default %}
+        {{ pager({ rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_album_' ~ routeArea ~ 'view'}) }}
+    {% endif %}
 	{% else %}
 	    {{ __('No albums') }}
 	{% endif %}
