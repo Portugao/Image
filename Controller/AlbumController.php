@@ -21,6 +21,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 use MU\ImageModule\Entity\AlbumEntity;
+use SessionUtil;
 
 /**
  * Album controller class providing navigation and interaction functionality.
@@ -156,6 +157,30 @@ class AlbumController extends AbstractAlbumController
     {
         return parent::displayAction($request, $album);
     }
+    
+    /**
+     * {@inheritdoc}
+     *
+     * @Route("/albums/template",
+     *        methods = {"POST"}
+     * )
+     *
+     * @param Request $request Current request instance
+     *
+     * @return bool true on sucess, false on failure
+     *
+     * @throws RuntimeException Thrown if executing the workflow action fails
+     */
+    public function templateAction(Request $request)
+    {
+    	$template = $request->request->get('template', '');
+    	SessionUtil::setVar('useTemplate', $template);
+    	//$returnUrl = $request->request->get('returntourl', $this->get('router')->generate('muimagemodule_album_display', ['id' => 6]));
+    	$parameter = array('id' => 6);
+    	//return $this->redirectToRoute('muimagemodule_album_display', $parameter);
+    	return $this->redirectToRoute('muimagemodule_album_display', $parameter);
+    }
+    
     /**
      * {@inheritdoc}
      *
@@ -293,7 +318,11 @@ class AlbumController extends AbstractAlbumController
      */
     protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
     {
-    	$num = $isAdmin ? $this->getVar('MUImageModule', 'albumEntriesPerPageInBackend') : $this->getVar('MUImageModule', 'albumEntriesPerPage');
+    	if ($isAdmin == 1) {
+    	    $num = $this->getVar('MUImageModule', 'albumEntriesPerPageInBackend');
+    	} else {
+    		$num = $this->getVar('MUImageModule', 'albumEntriesPerPage');
+    	}
         return parent::viewInternal($request, $sort, $sortdir, $pos, $num, $isAdmin);
     }
 }
