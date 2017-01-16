@@ -101,7 +101,7 @@
     	{% set groupMember = 1 %}
     {% endif %}
 	{% if groupMember == 1 %}
-		<div id="action-for-albums">
+		<div id="action-for-albums" class="col-md-5">
 			<div class="btn-group">
   				<a class="btn btn-default" href="#"><i class="fa fa-user fa-fw"></i>{{ __('Actions for this album') }}</a>
   				<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
@@ -112,12 +112,29 @@
   					{#% if otherPictures == true %#}
     					<li><a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit') }}"><i class="fa fa-upload fa-fw"></i> {{ __('Add') }}</a></li>  				
     					<li><a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'multiupload') }}"><i class="fa fa-upload fa-fw"></i> {{ __('Multi-Add') }}</a></li>
-    					<li><a href="{#{ path('muimagemodule_picture_' ~ routeArea ~ 'zipupload') }#}"><i class="fa fa-file-archive-o fa-fw"></i> {{ __('Zip-Add') }}</a></li>
+    					<li><a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'zipupload') }}"><i class="fa fa-file-archive-o fa-fw"></i> {{ __('Zip-Add') }}</a></li>
   					{#% endif %#}
   				</ul>
 			</div>
 	  	</div>
 	{% endif %}
+    {% if slideshow1 == 1 %}
+	    <div id="select-view-album" class="col-md-7">
+			<form class="form-inline" style="display:inline" action="{{ path('muimagemodule_album_' ~ routeArea ~ 'template') }}" method="post">
+		    	<label>{{ __('View as:') }}</label>
+		    	<select id="template" class="form-control" name="template">
+				<option value="1"{% if useTemplate == 1 %} selected{% endif %}>Normal</option>
+				{% if slideshow1 %}
+			    	<option value="2"{% if useTemplate == 2 %} selected{% endif %}>Slideshow</option>
+				{% endif %}
+				{#% if slideshow2 %}
+			    	<option value="3">Slideshow2</option>
+				{% endif %#}
+		    	</select>
+		   		<button type="submit" class="btn btn-default">{{ __('Change view') }}</button>
+			</form>
+		</div>
+	{% endif %}<br style="clear: both;" />
 	{% endif %}<br /><br style="clear: both;" />
 	
 	{% if routeArea != 'admin' %}
@@ -135,10 +152,17 @@
                 </div>
                 <div id="collapseEins" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="überschriftEins">
                     <div class="panel-body">
+                    {% if useTemplate == 1 %}
                         {{ include(
                         '@MUImageModule/Picture/includeDisplayItemListMany.html.twig',
                         { items: album.pictures }
-                        ) }}          
+                    ) }}
+                    {% else %}
+                        {{ include(
+                        '@MUImageModule/Picture/includeDisplayItemListManySlide1.html.twig',
+                        { items: album.pictures }
+                    ) }}        
+                    {% endif %}        
                     </div>
                 </div>
             </div>
@@ -167,7 +191,7 @@
         {{ include(
             '@MUImageModule/Picture/includeDisplayItemListMany.html.twig',
              { items: album.pictures }
-        ) }}    
+        ) }} 
         
         {{ include(
             '@MUImageModule/Album/includeDisplayItemListMany.html.twig',
