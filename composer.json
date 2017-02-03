@@ -1,0 +1,16 @@
+{
+    "name": "portugao/muimage-module",
+    "description": "MUImage will handle images ",
+    "type": "zikula-module",
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "Michael Ueberschaer",
+            "role": "owner",
+            "homepage": "http://www.webdesign-in-bremen.com"
+        }
+    ],
+    "require": {
+        "php": ">5.3.3"
+    }
+}

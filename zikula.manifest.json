@@ -1,0 +1,20 @@
+{
+    "extension": {
+        "title": "MUImage",
+        "url": "https://github.com/Portugao/MUImage/releases/tag/v1.2.0"
+    },
+    "version": {
+        "keywords": [
+            "module"
+        ],
+        "semver": "1.2.0",
+        "dependencies": {
+            "zikula/core": ">=1.3.5 <1.4"
+        },
+        "composerpath": "composer.json",
+        "description": "MUImage will handle images ",
+        "urls": {
+            "issues": "https://github.com/Portugao/MUImage/issues"
+        }
+    }
+}
