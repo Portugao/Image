@@ -183,9 +183,9 @@ class ControllerHelper extends AbstractControllerHelper {
 			$thisAlbum = $params['thisAlbum'];
 		}
 		
-		if ($album) {
-			$albumParent = $album['album'];
-			if ($albumParent) {
+		if ($thisAlbum['parent_id'] != NULL) {
+			$albumParent = $repository->selectById($album['parent_id']);
+			\LogUtil::registerStatus($album['album']['id']);
 				$url = ModUtil::url('MUImage', 'user', 'display', array('ot' => 'album', 'id' => $albumParent['id']));
 				$out = '<li><a href="' . $url . '">' . $albumParent['title'] . '</a></li>' . $out;
 		
@@ -193,6 +193,8 @@ class ControllerHelper extends AbstractControllerHelper {
 				$params['out'] = $out;
 				$params['loop'] = $loop + 1;
 				$params['thisAlbum'] = $thisAlbum;
+				\LogUtil::registerStatus('Out: ' . $out);
+				\LogUtil::registerStatus('ParentId: ' . $parentAlbumId);
 				self::breadcrumb($parentAlbumId, $params);
 			} else {
 				$url = ModUtil::url('MUImage', 'user', 'main');
@@ -201,5 +203,4 @@ class ControllerHelper extends AbstractControllerHelper {
 				return $out;
 			}
 		}		
-	}
 }

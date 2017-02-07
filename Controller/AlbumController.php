@@ -174,6 +174,7 @@ class AlbumController extends AbstractAlbumController
     public function templateAction(Request $request)
     {
     	$template = $request->request->get('template', '');
+    	$ablumId = $request->request->get('albumid', 0);
     	SessionUtil::setVar('useTemplate', $template);
     	//$returnUrl = $request->request->get('returntourl', $this->get('router')->generate('muimagemodule_album_display', ['id' => 6]));
     	$parameter = array('id' => 6);

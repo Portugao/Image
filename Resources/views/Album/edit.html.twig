@@ -33,6 +33,7 @@
                     {{ form_row(form.description) }}
                     
                     {% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
+                    {% set subAlbums = getModVar('MUImageModule', 'supportSubAlbums') %}
                     {% if extended == 0 %}
                     <div class="hidden">
                     {% endif %}
@@ -64,10 +65,19 @@
     </div>
     {% endif %}
     {% endif %}    
+    {% if extended == 1 and subAlbums == 1 %}
     {{ include(
         '@MUImageModule/Album/includeSelectOne.html.twig',
         { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: false }
     ) }}
+    {% else %}
+        <div class="hidden">       
+            {{ include(
+            '@MUImageModule/Album/includeSelectOne.html.twig',
+            { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: false }
+            ) }}
+        </div>
+    {% endif %}
     {#{ include(
         '@MUImageModule/Album/Many.html.twig',
         { group: 'album', alias: 'albums', aliasReverse: 'album', mandatory: false, idPrefix: 'muimageAlbum_Albums', linkingItem: album, panel: true, displayMode: 'choices', allowEditing: true }

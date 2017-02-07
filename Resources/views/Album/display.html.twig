@@ -22,6 +22,7 @@
     {% endif %}
 {% endblock %}
 {% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
+{% set subAlbums = getModVar('MUImageModule', 'supportSubAlbums') %}
 {% block admin_page_icon 'eye' %}
 {% block content %}
     <div class="muimagemodule-album muimagemodule-display">
@@ -120,7 +121,7 @@
 	{% endif %}
     {% if slideshow1 == 1 %}
 	    <div id="select-view-album" class="col-md-7">
-			<form class="form-inline" style="display:inline" action="{{ path('muimagemodule_album_' ~ routeArea ~ 'template') }}" method="post">
+			<form class="form-inline" style="display:inline" action="{{ path('muimagemodule_album_' ~ routeArea ~ 'template', { 'albumid': album.id }) }}" method="post">
 		    	<label>{{ __('View as:') }}</label>
 		    	<select id="template" class="form-control" name="template">
 				<option value="1"{% if useTemplate == 1 %} selected{% endif %}>Normal</option>
@@ -131,6 +132,7 @@
 			    	<option value="3">Slideshow2</option>
 				{% endif %#}
 		    	</select>
+		    	<input type="hidden" name="albumid" value={{ album.id }} />
 		   		<button type="submit" class="btn btn-default">{{ __('Change view') }}</button>
 			</form>
 		</div>
@@ -167,7 +169,7 @@
                 </div>
             </div>
         {% endif %}
-        {% if album.albums|default %}
+        {% if album.albums|default and extended == 1 and subAlbums == 1 %}
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="überschriftZwei">
                 <h4 class="panel-title">
