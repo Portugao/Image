@@ -69,7 +69,7 @@ abstract class AbstractHookHelper
     {
         $hookAreaPrefix = $entity->getHookAreaPrefix();
     
-        $hook = new ProcessHook($entity->createCompositeIdentifier(), $url);
+        $hook = new ProcessHook($entity->getKey(), $url);
         $this->dispatchHooks($hookAreaPrefix . '.' . $hookType, $hook);
     }
 

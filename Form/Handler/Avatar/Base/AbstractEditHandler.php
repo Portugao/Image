@@ -43,6 +43,9 @@ abstract class AbstractEditHandler extends EditHandler
         $this->hasPageLockSupport = true;
     
         $result = parent::processForm($templateParameters);
+        if ($result instanceof RedirectResponse) {
+            return $result;
+        }
     
         if ($this->templateParameters['mode'] == 'create') {
             if (!$this->modelHelper->canBeCreated($this->objectType)) {
@@ -56,7 +59,7 @@ abstract class AbstractEditHandler extends EditHandler
     
         $entityData = $this->entityRef->toArray();
     
-        // assign data to template as array (makes translatable support easier)
+        // assign data to template as array (for additions like standard fields)
         $this->templateParameters[$this->objectTypeLower] = $entityData;
     
         return $result;
@@ -71,10 +74,8 @@ abstract class AbstractEditHandler extends EditHandler
             'entity' => $this->entityRef,
             'mode' => $this->templateParameters['mode'],
             'actions' => $this->templateParameters['actions'],
+            'has_moderate_permission' => $this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_MODERATE),
         ];
-    
-        $workflowRoles = $this->prepareWorkflowAdditions(false);
-        $options = array_merge($options, $workflowRoles);
     
         return $this->formFactory->create('MU\ImageModule\Form\Type\AvatarType', $this->entityRef, $options);
     }
@@ -97,6 +98,10 @@ abstract class AbstractEditHandler extends EditHandler
         $codes[] = 'userView';
         // admin list of avatars
         $codes[] = 'adminView';
+        // user list of own avatars
+        $codes[] = 'userOwnView';
+        // admin list of own avatars
+        $codes[] = 'adminOwnView';
         // user detail page of treated avatar
         $codes[] = 'userDisplay';
         // admin detail page of treated avatar
@@ -119,7 +124,6 @@ abstract class AbstractEditHandler extends EditHandler
         $objectIsPersisted = $args['commandName'] != 'delete' && !($this->templateParameters['mode'] == 'create' && $args['commandName'] == 'cancel');
     
         if (null !== $this->returnTo) {
-            
             $isDisplayOrEditPage = substr($this->returnTo, -7) == 'display' || substr($this->returnTo, -4) == 'edit';
             if (!$isDisplayOrEditPage || $objectIsPersisted) {
                 // return to referer
@@ -131,8 +135,7 @@ abstract class AbstractEditHandler extends EditHandler
         $routePrefix = 'muimagemodule_' . $this->objectTypeLower . '_' . $routeArea;
     
         // redirect to the list of avatars
-        $viewArgs = [];
-        $url = $this->router->generate($routePrefix . 'view', $viewArgs);
+        $url = $this->router->generate($routePrefix . 'view');
     
         return $url;
     }
@@ -221,9 +224,9 @@ abstract class AbstractEditHandler extends EditHandler
         try {
             // execute the workflow action
             $success = $this->workflowHelper->executeAction($entity, $action);
-        } catch(\Exception $e) {
-            $flashBag->add('error', $this->__f('Sorry, but an error occured during the %action% action. Please apply the changes again!', ['%action%' => $action]) . ' ' . $e->getMessage());
-            $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => 'avatar', 'id' => $entity->createCompositeIdentifier(), 'errorMessage' => $e->getMessage()];
+        } catch(\Exception $exception) {
+            $flashBag->add('error', $this->__f('Sorry, but an error occured during the %action% action. Please apply the changes again!', ['%action%' => $action]) . ' ' . $exception->getMessage());
+            $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => 'avatar', 'id' => $entity->getKey(), 'errorMessage' => $exception->getMessage()];
             $this->logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed. Error details: {errorMessage}.', $logArgs);
         }
     
@@ -231,9 +234,7 @@ abstract class AbstractEditHandler extends EditHandler
     
         if ($success && $this->templateParameters['mode'] == 'create') {
             // store new identifier
-            foreach ($this->idFields as $idField) {
-                $this->idValues[$idField] = $entity[$idField];
-            }
+            $this->idValue = $entity->getKey();
         }
     
         return $success;
@@ -252,8 +253,8 @@ abstract class AbstractEditHandler extends EditHandler
             return $this->repeatReturnUrl;
         }
     
-        if ($this->request->getSession()->has('muimagemoduleReferer')) {
-            $this->request->getSession()->del('muimagemoduleReferer');
+        if ($this->request->getSession()->has('muimagemodule' . $this->objectTypeCapital . 'Referer')) {
+            $this->request->getSession()->del('muimagemodule' . $this->objectTypeCapital . 'Referer');
         }
     
         // normal usage, compute return url from given redirect code
@@ -273,14 +274,13 @@ abstract class AbstractEditHandler extends EditHandler
             case 'userView':
             case 'adminView':
                 return $this->router->generate($routePrefix . 'view');
+            case 'userOwnView':
+            case 'adminOwnView':
+                return $this->router->generate($routePrefix . 'view', [ 'own' => 1 ]);
             case 'userDisplay':
             case 'adminDisplay':
                 if ($args['commandName'] != 'delete' && !($this->templateParameters['mode'] == 'create' && $args['commandName'] == 'cancel')) {
-                    foreach ($this->idFields as $idField) {
-                        $urlArgs[$idField] = $this->idValues[$idField];
-                    }
-    
-                    return $this->router->generate($routePrefix . 'display', $urlArgs);
+                    return $this->router->generate($routePrefix . 'display', $this->entityRef->createUrlArgs());
                 }
     
                 return $this->getDefaultReturnUrl($args);

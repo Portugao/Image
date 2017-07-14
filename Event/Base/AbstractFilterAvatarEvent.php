@@ -25,13 +25,40 @@ class AbstractFilterAvatarEvent extends Event
      */
     protected $avatar;
 
-    public function __construct(AvatarEntity $avatar)
+    /**
+     * @var array Entity change set for preUpdate events.
+     */
+    protected $entityChangeSet = [];
+
+    /**
+     * FilterAvatarEvent constructor.
+     *
+     * @param AvatarEntity $avatar Processed entity
+     * @param array $entityChangeSet Change set for preUpdate events
+     */
+    public function __construct(AvatarEntity $avatar, $entityChangeSet = [])
     {
         $this->avatar = $avatar;
+        $this->entityChangeSet = $entityChangeSet;
     }
 
+    /**
+     * Returns the entity.
+     *
+     * @return AvatarEntity
+     */
     public function getAvatar()
     {
         return $this->avatar;
+    }
+
+    /**
+     * Returns the change set.
+     *
+     * @return array
+     */
+    public function getEntityChangeSet()
+    {
+        return $this->entityChangeSet;
     }
 }

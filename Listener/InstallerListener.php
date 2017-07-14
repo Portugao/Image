@@ -22,7 +22,7 @@ use Zikula\Core\Event\ModuleStateEvent;
 class InstallerListener extends AbstractInstallerListener
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public static function getSubscribedEvents()
     {
@@ -30,7 +30,7 @@ class InstallerListener extends AbstractInstallerListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function moduleInstalled(ModuleStateEvent $event)
     {
@@ -57,7 +57,7 @@ class InstallerListener extends AbstractInstallerListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function modulePostInstalled(ModuleStateEvent $event)
     {
@@ -84,7 +84,7 @@ class InstallerListener extends AbstractInstallerListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function moduleUpgraded(ModuleStateEvent $event)
     {
@@ -111,7 +111,7 @@ class InstallerListener extends AbstractInstallerListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function moduleEnabled(ModuleStateEvent $event)
     {
@@ -138,7 +138,7 @@ class InstallerListener extends AbstractInstallerListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function moduleDisabled(ModuleStateEvent $event)
     {
@@ -165,7 +165,7 @@ class InstallerListener extends AbstractInstallerListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function moduleRemoved(ModuleStateEvent $event)
     {
@@ -192,7 +192,7 @@ class InstallerListener extends AbstractInstallerListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function subscriberAreaUninstalled(GenericEvent $event)
     {

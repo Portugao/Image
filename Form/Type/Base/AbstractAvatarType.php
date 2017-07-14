@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
-use MU\ImageModule\Entity\Factory\ImageFactory;
+use MU\ImageModule\Entity\Factory\EntityFactory;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
@@ -33,7 +33,7 @@ abstract class AbstractAvatarType extends AbstractType
     use TranslatorTrait;
 
     /**
-     * @var ImageFactory
+     * @var EntityFactory
      */
     protected $entityFactory;
 
@@ -51,12 +51,16 @@ abstract class AbstractAvatarType extends AbstractType
      * AvatarType constructor.
      *
      * @param TranslatorInterface $translator    Translator service instance
-     * @param ImageFactory        $entityFactory Entity factory service instance
+     * @param EntityFactory       $entityFactory EntityFactory service instance
      * @param ListEntriesHelper   $listHelper    ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, ImageFactory $entityFactory, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        EntityFactory $entityFactory,
+        ListEntriesHelper $listHelper,
+        FeatureActivationHelper $featureActivationHelper
+    ) {
         $this->setTranslator($translator);
         $this->entityFactory = $entityFactory;
         $this->listHelper = $listHelper;
@@ -74,7 +78,7 @@ abstract class AbstractAvatarType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -82,16 +86,16 @@ abstract class AbstractAvatarType extends AbstractType
         if ($this->featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, 'avatar')) {
             $this->addCategoriesField($builder, $options);
         }
-        $this->addAdditionalNotificationRemarksField($builder, $options);
+        $this->addModerationFields($builder, $options);
         $this->addReturnControlField($builder, $options);
         $this->addSubmitButtons($builder, $options);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $entity = $event->getData();
             foreach (['avatarUpload'] as $uploadFieldName) {
-                if ($entity[$uploadFieldName] instanceof File) {
-                    $entity[$uploadFieldName] = [$uploadFieldName => $entity[$uploadFieldName]->getPathname()];
-                }
+                $entity[$uploadFieldName] = [
+                    $uploadFieldName => $entity[$uploadFieldName] instanceof File ? $entity[$uploadFieldName]->getPathname() : null
+                ];
             }
         });
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
@@ -117,10 +121,11 @@ abstract class AbstractAvatarType extends AbstractType
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
             'attr' => [
-                'max_length' => 255,
+                'maxlength' => 255,
                 'class' => '',
                 'title' => $this->__('Enter the title of the avatar')
-            ],'required' => true,
+            ],
+            'required' => true,
         ]);
         
         $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
@@ -129,13 +134,14 @@ abstract class AbstractAvatarType extends AbstractType
                 'class' => 'tooltips',
                 'title' => $this->__('Here you can enter, for which use cases this avatar is.')
             ],
-            'help' => $this->__('Here you can enter, for which use cases this avatar is.'),
+            'help' => [$this->__('Here you can enter, for which use cases this avatar is.'), $this->__f('Note: this value must not exceed %amount% characters.', ['%amount%' => 2000])],
             'empty_data' => '',
             'attr' => [
-                'max_length' => 2000,
+                'maxlength' => 2000,
                 'class' => '',
                 'title' => $this->__('Enter the description of the avatar')
-            ],'required' => false
+            ],
+            'required' => false,
         ]);
         
         $builder->add('avatarUpload', 'MU\ImageModule\Form\Type\Field\UploadType', [
@@ -143,10 +149,11 @@ abstract class AbstractAvatarType extends AbstractType
             'attr' => [
                 'class' => ' validate-upload',
                 'title' => $this->__('Enter the avatar upload of the avatar')
-            ],'required' => true && $options['mode'] == 'create',
+            ],
+            'required' => true && $options['mode'] == 'create',
             'entity' => $options['entity'],
             'allowed_extensions' => 'gif, jpeg, jpg, png',
-            'allowed_size' => 0
+            'allowed_size' => '100k'
         ]);
         
         $listEntries = $this->listHelper->getEntries('avatar', 'supportedModules');
@@ -158,11 +165,18 @@ abstract class AbstractAvatarType extends AbstractType
         }
         $builder->add('supportedModules', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
             'label' => $this->__('Supported modules') . ':',
+            'label_attr' => [
+                'class' => 'tooltips',
+                'title' => $this->__('Be sure that you set the supported module in a logic way!')
+            ],
+            'help' => $this->__('Be sure that you set the supported module in a logic way!'),
             'empty_data' => '',
             'attr' => [
                 'class' => '',
                 'title' => $this->__('Choose the supported modules')
-            ],'choices' => $choices,
+            ],
+            'required' => true,
+            'choices' => $choices,
             'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
@@ -180,7 +194,7 @@ abstract class AbstractAvatarType extends AbstractType
     {
         $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
             'label' => $this->__('Category') . ':',
-            'empty_data' => [],
+            'empty_data' => null,
             'attr' => [
                 'class' => 'category-selector'
             ],
@@ -193,32 +207,42 @@ abstract class AbstractAvatarType extends AbstractType
     }
 
     /**
-     * Adds a field for additional notification remarks.
+     * Adds special fields for moderators.
      *
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addAdditionalNotificationRemarksField(FormBuilderInterface $builder, array $options)
+    public function addModerationFields(FormBuilderInterface $builder, array $options)
     {
-        $helpText = '';
-        if ($options['isModerator']) {
-            $helpText = $this->__('These remarks (like a reason for deny) are not stored, but added to any notification emails send to the creator.');
-        } elseif ($options['isCreator']) {
-            $helpText = $this->__('These remarks (like questions about conformance) are not stored, but added to any notification emails send to our moderators.');
+        if (!$options['has_moderate_permission']) {
+            return;
         }
     
-        $builder->add('additionalNotificationRemarks', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
+        $builder->add('moderationSpecificCreator', 'MU\ImageModule\Form\Type\Field\UserType', [
             'mapped' => false,
-            'label' => $this->__('Additional remarks'),
-            'label_attr' => [
-                'class' => 'tooltips',
-                'title' => $helpText
-            ],
+            'label' => $this->__('Creator') . ':',
             'attr' => [
-                'title' => $options['mode'] == 'create' ? $this->__('Enter any additions about your content') : $this->__('Enter any additions about your changes')
+                'maxlength' => 11,
+                'class' => ' validate-digits',
+                'title' => $this->__('Here you can choose a user which will be set as creator')
             ],
+            'empty_data' => 0,
             'required' => false,
-            'help' => $helpText
+            'help' => $this->__('Here you can choose a user which will be set as creator')
+        ]);
+        $builder->add('moderationSpecificCreationDate', 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', [
+            'mapped' => false,
+            'label' => $this->__('Creation date') . ':',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('Here you can choose a custom creation date')
+            ],
+            'empty_data' => '',
+            'required' => false,
+            'with_seconds' => true,
+            'date_widget' => 'single_text',
+            'time_widget' => 'single_text',
+            'help' => $this->__('Here you can choose a custom creation date')
         ]);
     }
 
@@ -277,7 +301,7 @@ abstract class AbstractAvatarType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBlockPrefix()
     {
@@ -285,7 +309,7 @@ abstract class AbstractAvatarType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -300,22 +324,14 @@ abstract class AbstractAvatarType extends AbstractType
                     'avatarUpload' => 'avatarUpload.avatarUpload',
                 ],
                 'mode' => 'create',
-                'isModerator' => false,
-                'isCreator' => false,
                 'actions' => [],
-                'inlineUsage' => false
+                'has_moderate_permission' => false,
             ])
             ->setRequired(['entity', 'mode', 'actions'])
-            ->setAllowedTypes([
-                'mode' => 'string',
-                'isModerator' => 'bool',
-                'isCreator' => 'bool',
-                'actions' => 'array',
-                'inlineUsage' => 'bool'
-            ])
-            ->setAllowedValues([
-                'mode' => ['create', 'edit']
-            ])
+            ->setAllowedTypes('mode', 'string')
+            ->setAllowedTypes('actions', 'array')
+            ->setAllowedTypes('has_moderate_permission', 'bool')
+            ->setAllowedValues('mode', ['create', 'edit'])
         ;
     }
 }

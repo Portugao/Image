@@ -14,6 +14,7 @@ namespace MU\ImageModule\ContentType\Base;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 /**
  * Generic single item display content plugin base class.
@@ -101,15 +102,8 @@ abstract class AbstractItem extends \Content_AbstractContentType implements Cont
     
         $this->objectType = $data['objectType'];
     
-        if (!isset($data['id'])) {
-            $data['id'] = null;
-        }
-        if (!isset($data['displayMode'])) {
-            $data['displayMode'] = 'embed';
-        }
-    
-        $this->id = $data['id'];
-        $this->displayMode = $data['displayMode'];
+        $this->id = isset($data['id']) ? $data['id'] : null;
+        $this->displayMode = isset($data['displayMode']) ? $data['displayMode'] : 'embed';
     }
     
     /**
@@ -119,11 +113,13 @@ abstract class AbstractItem extends \Content_AbstractContentType implements Cont
      */
     public function display()
     {
-        if (null !== $this->id && !empty($this->displayMode)) {
-            return $this->container->get('router')->generate('muimagemodule_external_display', $this->getDisplayArguments());
+        if (null === $this->id || empty($this->id) || empty($this->displayMode)) {
+            return '';
         }
     
-        return '';
+        $controllerReference = new ControllerReference('MUImageModule:External:display', $this->getDisplayArguments());
+    
+        return $this->container->get('fragment.handler')->render($controllerReference, 'inline', []);
     }
     
     /**
@@ -131,11 +127,11 @@ abstract class AbstractItem extends \Content_AbstractContentType implements Cont
      */
     public function displayEditing()
     {
-        if (null !== $this->id && !empty($this->displayMode)) {
-            return $this->container->get('router')->generate('muimagemodule_external_display', $this->getDisplayArguments());
+        if (null === $this->id || empty($this->id) || empty($this->displayMode)) {
+            return $this->container->get('translator.default')->__('No item selected.');
         }
     
-        return $this->container->get('translator.default')->__('No item selected.');
+        return $this->display();
     }
     
     /**
@@ -147,9 +143,9 @@ abstract class AbstractItem extends \Content_AbstractContentType implements Cont
     {
         return [
             'objectType' => $this->objectType,
+            'id' => $this->id,
             'source' => 'contentType',
-            'displayMode' => $this->displayMode,
-            'id' => $this->id
+            'displayMode' => $this->displayMode
         ];
     }
     
@@ -162,9 +158,9 @@ abstract class AbstractItem extends \Content_AbstractContentType implements Cont
     {
         return [
             'objectType' => 'album',
-             'id' => null,
-             'displayMode' => 'embed'
-         ];
+            'id' => null,
+            'displayMode' => 'embed'
+        ];
     }
     
     /**
@@ -172,8 +168,11 @@ abstract class AbstractItem extends \Content_AbstractContentType implements Cont
      */
     public function startEditing()
     {
+        // ensure that the view does not look for templates in the Content module (#218)
+        $this->view->toplevelmodule = 'MUImageModule';
+    
         // ensure our custom plugins are loaded
-        array_push($this->view->plugins_dir, 'modules/MU/ImageModule/Resources/views//plugins');
+        array_push($this->view->plugins_dir, 'modules/MU/ImageModule/Resources/views/plugins');
     
         // required as parameter for the item selector plugin
         $this->view->assign('objectType', $this->objectType);

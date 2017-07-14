@@ -19,17 +19,11 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\Request;
-use Zikula\Component\FilterUtil\FilterUtil;
-use Zikula\Component\FilterUtil\Config as FilterConfig;
-use Zikula\Component\FilterUtil\PluginManager as FilterPluginManager;
-use Zikula\Core\FilterUtil\CategoryPlugin as CategoryFilter;
 use Psr\Log\LoggerInterface;
-use ServiceUtil;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\UsersModule\Api\CurrentUserApi;
 use MU\ImageModule\Entity\AvatarEntity;
-use MU\ImageModule\Helper\ImageHelper;
+use MU\ImageModule\Helper\CollectionFilterHelper;
 
 /**
  * Repository class used to implement own convenience methods for performing certain DQL queries.
@@ -38,17 +32,15 @@ use MU\ImageModule\Helper\ImageHelper;
  */
 abstract class AbstractAvatarRepository extends EntityRepository
 {
-    
     /**
      * @var string The default sorting field/expression
      */
-    protected $defaultSortingField = 'workflowState';
+    protected $defaultSortingField = 'title';
 
     /**
-     * @var Request The request object given by the calling controller
+     * @var CollectionFilterHelper
      */
-    protected $request;
-    
+    protected $collectionFilterHelper = null;
 
     /**
      * Retrieves an array with all fields which can be used for sorting instances.
@@ -58,7 +50,6 @@ abstract class AbstractAvatarRepository extends EntityRepository
     public function getAllowedSortingFields()
     {
         return [
-            'workflowState',
             'title',
             'description',
             'avatarUpload',
@@ -89,160 +80,41 @@ abstract class AbstractAvatarRepository extends EntityRepository
      */
     public function setDefaultSortingField($defaultSortingField)
     {
-        $this->defaultSortingField = $defaultSortingField;
+        if ($this->defaultSortingField != $defaultSortingField) {
+            $this->defaultSortingField = $defaultSortingField;
+        }
     }
     
     /**
-     * Returns the request.
+     * Returns the collection filter helper.
      *
-     * @return Request
+     * @return CollectionFilterHelper
      */
-    public function getRequest()
+    public function getCollectionFilterHelper()
     {
-        return $this->request;
+        return $this->collectionFilterHelper;
     }
     
     /**
-     * Sets the request.
+     * Sets the collection filter helper.
      *
-     * @param Request $request
+     * @param CollectionFilterHelper $collectionFilterHelper
      *
      * @return void
      */
-    public function setRequest($request)
+    public function setCollectionFilterHelper($collectionFilterHelper)
     {
-        $this->request = $request;
-    }
-    
-
-    /**
-     * Returns name of the field used as title / name for entities of this repository.
-     *
-     * @return string Name of field to be used as title
-     */
-    public function getTitleFieldName()
-    {
-        $fieldName = 'title';
-    
-        return $fieldName;
-    }
-    
-    /**
-     * Returns name of the field used for describing entities of this repository.
-     *
-     * @return string Name of field to be used as description
-     */
-    public function getDescriptionFieldName()
-    {
-        $fieldName = 'description';
-    
-        return $fieldName;
-    }
-    
-    /**
-     * Returns name of first upload field which is capable for handling images.
-     *
-     * @return string Name of field to be used for preview images
-     */
-    public function getPreviewFieldName()
-    {
-        $fieldName = 'avatarUpload';
-    
-        return $fieldName;
-    }
-    
-    /**
-     * Returns name of the date(time) field to be used for representing the start
-     * of this object. Used for providing meta data to the tag module.
-     *
-     * @return string Name of field to be used as date
-     */
-    public function getStartDateFieldName()
-    {
-        $fieldName = 'createdDate';
-    
-        return $fieldName;
-    }
-
-    /**
-     * Returns an array of additional template variables which are specific to the object type treated by this repository.
-     *
-     * @param string $context Usage context (allowed values: controllerAction, api, actionHandler, block, contentType)
-     * @param array  $args    Additional arguments
-     *
-     * @return array List of template variables to be assigned
-     */
-    public function getAdditionalTemplateParameters(ImageHelper $imageHelper, $context = '', $args = [])
-    {
-        if (!in_array($context, ['controllerAction', 'api', 'actionHandler', 'block', 'contentType'])) {
-            $context = 'controllerAction';
+        if ($this->collectionFilterHelper != $collectionFilterHelper) {
+            $this->collectionFilterHelper = $collectionFilterHelper;
         }
-    
-        $templateParameters = [];
-    
-        if ($context == 'controllerAction') {
-            if (!isset($args['action'])) {
-                $args['action'] = $this->getRequest()->query->getAlpha('func', 'index');
-            }
-            if (in_array($args['action'], ['index', 'view'])) {
-                $templateParameters = $this->getViewQuickNavParameters($context, $args);
-            }
-    
-            // initialise Imagine runtime options
-            $objectType = 'avatar';
-            $thumbRuntimeOptions = [];
-            $thumbRuntimeOptions[$objectType . 'AvatarUpload'] = $imageHelper->getRuntimeOptions($objectType, 'avatarUpload', $context, $args);
-            $templateParameters['thumbRuntimeOptions'] = $thumbRuntimeOptions;
-            if (in_array($args['action'], ['display', 'view'])) {
-                // use separate preset for images in related items
-                $templateParameters['relationThumbRuntimeOptions'] = $imageHelper->getCustomRuntimeOptions('', '', 'MUImageModule_relateditem', $context, $args);
-            }
-        }
-    
-        // in the concrete child class you could do something like
-        // $parameters = parent::getAdditionalTemplateParameters($imageHelper, $context, $args);
-        // $parameters['myvar'] = 'myvalue';
-        // return $parameters;
-    
-        return $templateParameters;
     }
-    /**
-     * Returns an array of additional template variables for view quick navigation forms.
-     *
-     * @param string $context Usage context (allowed values: controllerAction, api, actionHandler, block, contentType)
-     * @param array  $args    Additional arguments
-     *
-     * @return array List of template variables to be assigned
-     */
-    protected function getViewQuickNavParameters($context = '', $args = [])
-    {
-        if (!in_array($context, ['controllerAction', 'api', 'actionHandler', 'block', 'contentType'])) {
-            $context = 'controllerAction';
-        }
     
-        $parameters = [];
-        $categoryHelper = ServiceUtil::get('mu_image_module.category_helper');
-        $parameters['catIdList'] = $categoryHelper->retrieveCategoriesFromRequest('avatar', 'GET');
-        $parameters['workflowState'] = $this->getRequest()->query->get('workflowState', '');
-        $parameters['supportedModules'] = $this->getRequest()->query->get('supportedModules', '');
-        $parameters['q'] = $this->getRequest()->query->get('q', '');
-        
-    
-        // in the concrete child class you could do something like
-        // $parameters = parent::getViewQuickNavParameters($context, $args);
-        // $parameters['myvar'] = 'myvalue';
-        // return $parameters;
-    
-        return $parameters;
-    }
 
     /**
      * Helper method for truncating the table.
      * Used during installation when inserting default data.
      *
      * @param LoggerInterface $logger Logger service instance
-     *
-     * @return void
      */
     public function truncateTable(LoggerInterface $logger)
     {
@@ -279,7 +151,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->update('MU\ImageModule\Entity\AvatarEntity', 'tbl')
            ->set('tbl.createdBy', $newUserId)
-           ->where('tbl.createdBy= :creator')
+           ->where('tbl.createdBy = :creator')
            ->setParameter('creator', $userId);
         $query = $qb->getQuery();
         $query->execute();
@@ -345,7 +217,6 @@ abstract class AbstractAvatarRepository extends EntityRepository
            ->where('tbl.createdBy = :creator')
            ->setParameter('creator', $userId);
         $query = $qb->getQuery();
-    
         $query->execute();
     
         $logArgs = ['app' => 'MUImageModule', 'user' => $currentUserApi->get('uname'), 'entities' => 'avatars', 'userid' => $userId];
@@ -376,7 +247,6 @@ abstract class AbstractAvatarRepository extends EntityRepository
            ->where('tbl.updatedBy = :editor')
            ->setParameter('editor', $userId);
         $query = $qb->getQuery();
-    
         $query->execute();
     
         $logArgs = ['app' => 'MUImageModule', 'user' => $currentUserApi->get('uname'), 'entities' => 'avatars', 'userid' => $userId];
@@ -386,10 +256,12 @@ abstract class AbstractAvatarRepository extends EntityRepository
     /**
      * Adds an array of id filters to given query instance.
      *
-     * @param mixed        $idList The array of ids to use to retrieve the object
+     * @param array        $idList The array of ids to use to retrieve the object
      * @param QueryBuilder $qb     Query builder to be enhanced
      *
      * @return QueryBuilder Enriched query builder instance
+     *
+     * @throws InvalidArgumentException Thrown if invalid parameters are received
      */
     protected function addIdListFilter($idList, QueryBuilder $qb)
     {
@@ -401,15 +273,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
                 throw new InvalidArgumentException('Invalid identifier received.');
             }
     
-            if (is_array($id)) {
-                $andX = $qb->expr()->andX();
-                foreach ($id as $fieldName => $fieldValue) {
-                    $andX->add($qb->expr()->eq('tbl.' . $fieldName, $fieldValue));
-                }
-                $orX->add($andX);
-            } else {
-                $orX->add($qb->expr()->eq('tbl.id', $id));
-            }
+            $orX->add($qb->expr()->eq('tbl.id', $id));
         }
     
         $qb->andWhere($orX);
@@ -424,9 +288,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param boolean $useJoins Whether to include joining related objects (optional) (default=true)
      * @param boolean $slimMode If activated only some basic fields are selected without using any joins (optional) (default=false)
      *
-     * @return array|avatarEntity retrieved data array or avatarEntity instance
-     *
-     * @throws InvalidArgumentException Thrown if invalid parameters are received
+     * @return array|avatarEntity Retrieved data array or avatarEntity instance
      */
     public function selectById($id = 0, $useJoins = true, $slimMode = false)
     {
@@ -442,9 +304,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param boolean $useJoins Whether to include joining related objects (optional) (default=true)
      * @param boolean $slimMode If activated only some basic fields are selected without using any joins (optional) (default=false)
      *
-     * @return ArrayCollection collection containing retrieved avatarEntity instances
-     *
-     * @throws InvalidArgumentException Thrown if invalid parameters are received
+     * @return ArrayCollection Collection containing retrieved avatarEntity instances
      */
     public function selectByIdList($idList = [0], $useJoins = true, $slimMode = false)
     {
@@ -455,22 +315,22 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $results = $query->getResult();
     
-        return (count($results) > 0) ? $results : null;
+        return count($results) > 0 ? $results : null;
     }
 
     /**
      * Adds where clauses excluding desired identifiers from selection.
      *
-     * @param QueryBuilder $qb        Query builder to be enhanced
-     * @param integer      $excludeId The id to be excluded from selection
+     * @param QueryBuilder $qb           Query builder to be enhanced
+     * @param array        $excludesions Array of ids to be excluded from selection
      *
      * @return QueryBuilder Enriched query builder instance
      */
-    protected function addExclusion(QueryBuilder $qb, $excludeId)
+    protected function addExclusion(QueryBuilder $qb, array $exclusions = [])
     {
-        if ($excludeId > 0) {
-            $qb->andWhere('tbl.id != :excludeId')
-               ->setParameter('excludeId', $excludeId);
+        if (count($exclusions) > 0) {
+            $qb->andWhere('tbl.id NOT IN (:excludedIdentifiers)')
+               ->setParameter('excludedIdentifiers', $exclusions);
         }
     
         return $qb;
@@ -484,13 +344,13 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param boolean $useJoins Whether to include joining related objects (optional) (default=true)
      * @param boolean $slimMode If activated only some basic fields are selected without using any joins (optional) (default=false)
      *
-     * @return QueryBuilder query builder for the given arguments
+     * @return QueryBuilder Query builder for the given arguments
      */
     public function getListQueryBuilder($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
     {
         $qb = $this->genericBaseQuery($where, $orderBy, $useJoins, $slimMode);
-        if (!$useJoins || !$slimMode) {
-            $qb = $this->addCommonViewFilters($qb);
+        if ((!$useJoins || !$slimMode) && null !== $this->collectionFilterHelper) {
+            $qb = $this->collectionFilterHelper->addCommonViewFilters('avatar', $qb);
         }
     
         return $qb;
@@ -504,7 +364,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param boolean $useJoins Whether to include joining related objects (optional) (default=true)
      * @param boolean $slimMode If activated only some basic fields are selected without using any joins (optional) (default=false)
      *
-     * @return ArrayCollection collection containing retrieved avatarEntity instances
+     * @return ArrayCollection Collection containing retrieved avatarEntity instances
      */
     public function selectWhere($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
     {
@@ -512,7 +372,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
     
         $query = $this->getQueryFromBuilder($qb);
     
-        return $this->retrieveCollectionResult($query, $orderBy, false);
+        return $this->retrieveCollectionResult($query, false);
     }
 
     /**
@@ -526,8 +386,6 @@ abstract class AbstractAvatarRepository extends EntityRepository
      */
     public function getSelectWherePaginatedQuery(QueryBuilder $qb, $currentPage = 1, $resultsPerPage = 25)
     {
-        $qb = $this->addCommonViewFilters($qb);
-    
         $query = $this->getQueryFromBuilder($qb);
         $offset = ($currentPage-1) * $resultsPerPage;
     
@@ -547,108 +405,14 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param boolean $useJoins       Whether to include joining related objects (optional) (default=true)
      * @param boolean $slimMode       If activated only some basic fields are selected without using any joins (optional) (default=false)
      *
-     * @return array with retrieved collection and amount of total records affected by this query
+     * @return array Retrieved collection and amount of total records affected by this query
      */
     public function selectWherePaginated($where = '', $orderBy = '', $currentPage = 1, $resultsPerPage = 25, $useJoins = true, $slimMode = false)
     {
-        $qb = $this->genericBaseQuery($where, $orderBy, $useJoins, $slimMode);
+        $qb = $this->getListQueryBuilder($where, $orderBy, $useJoins, $slimMode);
+        $query = $this->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
     
-        $page = $currentPage;
-        
-        $query = $this->getSelectWherePaginatedQuery($qb, $page, $resultsPerPage);
-    
-        return $this->retrieveCollectionResult($query, $orderBy, true);
-    }
-    
-    /**
-     * Adds quick navigation related filter options as where clauses.
-     *
-     * @param QueryBuilder $qb Query builder to be enhanced
-     *
-     * @return QueryBuilder Enriched query builder instance
-     */
-    public function addCommonViewFilters(QueryBuilder $qb)
-    {
-        if (null === $this->getRequest()) {
-            // if no request is set we return (#433)
-            return $qb;
-        }
-    
-        $currentFunc = $this->getRequest()->query->getAlpha('func', 'index');
-        if ($currentFunc == 'edit') {
-            return $qb;
-        }
-    
-        $parameters = $this->getViewQuickNavParameters('', []);
-        foreach ($parameters as $k => $v) {
-            if ($k == 'catId') {
-                // single category filter
-                if ($v > 0) {
-                    $qb->andWhere('tblCategories.category = :category')
-                       ->setParameter('category', $v);
-                }
-            } elseif ($k == 'catIdList') {
-                // multi category filter
-                /* old
-                $qb->andWhere('tblCategories.category IN (:categories)')
-                   ->setParameter('categories', $v);
-                 */
-                $categoryHelper = ServiceUtil::get('mu_image_module.category_helper');
-                $qb = $categoryHelper->buildFilterClauses($qb, 'avatar', $v);
-            } elseif (in_array($k, ['q', 'searchterm'])) {
-                // quick search
-                if (!empty($v)) {
-                    $qb = $this->addSearchFilter($qb, $v);
-                }
-            } else if (!is_array($v)) {
-                // field filter
-                if ((!is_numeric($v) && $v != '') || (is_numeric($v) && $v > 0)) {
-                    if ($k == 'workflowState' && substr($v, 0, 1) == '!') {
-                        $qb->andWhere('tbl.' . $k . ' != :' . $k)
-                           ->setParameter($k, substr($v, 1, strlen($v)-1));
-                    } elseif (substr($v, 0, 1) == '%') {
-                        $qb->andWhere('tbl.' . $k . ' LIKE :' . $k)
-                           ->setParameter($k, '%' . $v . '%');
-                    } else {
-                        $qb->andWhere('tbl.' . $k . ' = :' . $k)
-                           ->setParameter($k, $v);
-                   }
-                }
-            }
-        }
-    
-        $qb = $this->applyDefaultFilters($qb, $parameters);
-    
-        return $qb;
-    }
-    
-    /**
-     * Adds default filters as where clauses.
-     *
-     * @param QueryBuilder $qb         Query builder to be enhanced
-     * @param array        $parameters List of determined filter options
-     *
-     * @return QueryBuilder Enriched query builder instance
-     */
-    protected function applyDefaultFilters(QueryBuilder $qb, $parameters = [])
-    {
-        if (null === $this->getRequest()) {
-            $this->request = ServiceUtil::get('request');
-        }
-        $routeName = $this->request->get('_route');
-        $isAdminArea = false !== strpos($routeName, 'muimagemodule_avatar_admin');
-        if ($isAdminArea) {
-            return $qb;
-        }
-    
-        if (!in_array('workflowState', array_keys($parameters)) || empty($parameters['workflowState'])) {
-            // per default we show approved avatars only
-            $onlineStates = ['approved'];
-            $qb->andWhere('tbl.workflowState IN (:onlineStates)')
-               ->setParameter('onlineStates', $onlineStates);
-        }
-    
-        return $qb;
+        return $this->retrieveCollectionResult($query, true);
     }
 
     /**
@@ -661,80 +425,33 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param integer $resultsPerPage Amount of items to select
      * @param boolean $useJoins       Whether to include joining related objects (optional) (default=true)
      *
-     * @return array with retrieved collection and amount of total records affected by this query
+     * @return array Retrieved collection and amount of total records affected by this query
      */
     public function selectSearch($fragment = '', $exclude = [], $orderBy = '', $currentPage = 1, $resultsPerPage = 25, $useJoins = true)
     {
-        $qb = $this->genericBaseQuery('', $orderBy, $useJoins);
+        $qb = $this->getListQueryBuilder('', $orderBy, $useJoins);
         if (count($exclude) > 0) {
-        	$qb = $this->addExclusion($qb, $exclude);
+            $qb = $this->addExclusion($qb, $exclude);
         }
     
-        $qb = $this->addSearchFilter($qb, $fragment);
+        if (null !== $this->collectionFilterHelper) {
+            $qb = $this->collectionFilterHelper->addSearchFilter('avatar', $qb, $fragment);
+        }
     
         $query = $this->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
     
-        return $this->retrieveCollectionResult($query, $orderBy, true);
-    }
-    
-    /**
-     * Adds where clause for search query.
-     *
-     * @param QueryBuilder $qb       Query builder to be enhanced
-     * @param string       $fragment The fragment to search for
-     *
-     * @return QueryBuilder Enriched query builder instance
-     */
-    protected function addSearchFilter(QueryBuilder $qb, $fragment = '')
-    {
-        if ($fragment == '') {
-            return $qb;
-        }
-    
-        $fragment = str_replace('\'', '', \DataUtil::formatForStore($fragment));
-        $fragmentIsNumeric = is_numeric($fragment);
-    
-        $where = '';
-        if (!$fragmentIsNumeric) {
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.workflowState = \'' . $fragment . '\'';
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.title LIKE \'%' . $fragment . '%\'';
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.description LIKE \'%' . $fragment . '%\'';
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.avatarUpload = \'' . $fragment . '\'';
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.supportedModules = \'' . $fragment . '\'';
-        } else {
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.workflowState = \'' . $fragment . '\'';
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.title LIKE \'%' . $fragment . '%\'';
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.description LIKE \'%' . $fragment . '%\'';
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.avatarUpload = \'' . $fragment . '\'';
-            $where .= ((!empty($where)) ? ' OR ' : '');
-            $where .= 'tbl.supportedModules = \'' . $fragment . '\'';
-        }
-        $where = '(' . $where . ')';
-    
-        $qb->andWhere($where);
-    
-        return $qb;
+        return $this->retrieveCollectionResult($query, true);
     }
 
     /**
      * Performs a given database selection and post-processed the results.
      *
      * @param Query   $query       The Query instance to be executed
-     * @param string  $orderBy     The order-by clause to use when retrieving the collection (optional) (default='')
      * @param boolean $isPaginated Whether the given query uses a paginator or not (optional) (default=false)
      *
-     * @return array with retrieved collection and (for paginated queries) the amount of total records affected
+     * @return array Retrieved collection and (for paginated queries) the amount of total records affected
      */
-    public function retrieveCollectionResult(Query $query, $orderBy = '', $isPaginated = false)
+    public function retrieveCollectionResult(Query $query, $isPaginated = false)
     {
         $count = 0;
         if (!$isPaginated) {
@@ -757,15 +474,12 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * Returns query builder instance for a count query.
      *
      * @param string  $where    The where clause to use when retrieving the object count (optional) (default='')
-     * @param boolean $useJoins Whether to include joining related objects (optional) (default=true)
+     * @param boolean $useJoins Whether to include joining related objects (optional) (default=false)
      *
      * @return QueryBuilder Created query builder instance
-     * @TODO fix usage of joins; please remove the first line and test
      */
-    protected function getCountQuery($where = '', $useJoins = true)
+    public function getCountQuery($where = '', $useJoins = false)
     {
-        $useJoins = false;
-    
         $selection = 'COUNT(tbl.id) AS numAvatars';
         if (true === $useJoins) {
             $selection .= $this->addJoinsToSelection();
@@ -775,29 +489,33 @@ abstract class AbstractAvatarRepository extends EntityRepository
         $qb->select($selection)
            ->from('MU\ImageModule\Entity\AvatarEntity', 'tbl');
     
+        if (!empty($where)) {
+            $qb->andWhere($where);
+        }
+    
         if (true === $useJoins) {
             $this->addJoinsToFrom($qb);
         }
     
-        $this->genericBaseQueryAddWhere($qb, $where);
-    
         return $qb;
     }
-    
+
     /**
      * Selects entity count with a given where clause.
      *
      * @param string  $where      The where clause to use when retrieving the object count (optional) (default='')
-     * @param boolean $useJoins   Whether to include joining related objects (optional) (default=true)
+     * @param boolean $useJoins   Whether to include joining related objects (optional) (default=false)
      * @param array   $parameters List of determined filter options
      *
-     * @return integer amount of affected records
+     * @return integer Amount of affected records
      */
-    public function selectCount($where = '', $useJoins = true, $parameters = [])
+    public function selectCount($where = '', $useJoins = false, $parameters = [])
     {
         $qb = $this->getCountQuery($where, $useJoins);
     
-        $qb = $this->applyDefaultFilters($qb, $parameters);
+        if (null !== $this->collectionFilterHelper) {
+            $qb = $this->collectionFilterHelper->applyDefaultFilters('avatar', $qb, $parameters);
+        }
     
         $query = $qb->getQuery();
     
@@ -808,11 +526,11 @@ abstract class AbstractAvatarRepository extends EntityRepository
     /**
      * Checks for unique values.
      *
-     * @param string $fieldName  The name of the property to be checked
-     * @param string $fieldValue The value of the property to be checked
-     * @param int    $excludeId  Id of avatars to exclude (optional)
+     * @param string  $fieldName  The name of the property to be checked
+     * @param string  $fieldValue The value of the property to be checked
+     * @param integer $excludeId  Id of avatars to exclude (optional)
      *
-     * @return boolean result of this check, true if the given avatar does not already exist
+     * @return boolean Result of this check, true if the given avatar does not already exist
      */
     public function detectUniqueState($fieldName, $fieldValue, $excludeId = 0)
     {
@@ -820,7 +538,9 @@ abstract class AbstractAvatarRepository extends EntityRepository
         $qb->andWhere('tbl.' . $fieldName . ' = :' . $fieldName)
            ->setParameter($fieldName, $fieldValue);
     
-        $qb = $this->addExclusion($qb, $excludeId);
+        if ($excludeId > 0) {
+            $qb = $this->addExclusion($qb, [$excludeId]);
+        }
     
         $query = $qb->getQuery();
     
@@ -837,7 +557,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param boolean $useJoins Whether to include joining related objects (optional) (default=true)
      * @param boolean $slimMode If activated only some basic fields are selected without using any joins (optional) (default=false)
      *
-     * @return QueryBuilder query builder instance to be further processed
+     * @return QueryBuilder Query builder instance to be further processed
      */
     public function genericBaseQuery($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
     {
@@ -866,88 +586,11 @@ abstract class AbstractAvatarRepository extends EntityRepository
             $this->addJoinsToFrom($qb);
         }
     
-        $this->genericBaseQueryAddWhere($qb, $where);
-        $this->genericBaseQueryAddOrderBy($qb, $orderBy);
-    
-        return $qb;
-    }
-
-    /**
-     * Adds WHERE clause to given query builder.
-     *
-     * @param QueryBuilder $qb    Given query builder instance
-     * @param string       $where The where clause to use when retrieving the collection (optional) (default='')
-     *
-     * @return QueryBuilder query builder instance to be further processed
-     */
-    protected function genericBaseQueryAddWhere(QueryBuilder $qb, $where = '')
-    {
         if (!empty($where)) {
-            // Use FilterUtil to support generic filtering.
-            //$qb->where($where);
-    
-            // Create filter configuration.
-            $filterConfig = new FilterConfig($qb);
-    
-            // Define plugins to be used during filtering.
-            $filterPluginManager = new FilterPluginManager(
-                $filterConfig,
-    
-                // Array of plugins to load.
-                // If no plugin with default = true given the compare plugin is loaded and used for unconfigured fields.
-                // Multiple objects of the same plugin with different configurations are possible.
-                [
-                ],
-    
-                // Allowed operators per field.
-                // Array in the form "field name => operator array".
-                // If a field is not set in this array all operators are allowed.
-                []
-            );
-    
-            // add category plugins dynamically for all existing registry properties
-            // we need to create one category plugin instance for each one
-            $categoryHelper = ServiceUtil::get('mu_image_module.category_helper');
-            $categoryProperties = $categoryHelper->getAllProperties('avatar');
-            foreach ($categoryProperties as $propertyName => $registryId) {
-                $config['plugins'][] = new CategoryFilter('MUImageModule', $propertyName, 'categories' . ucfirst($propertyName));
-            }
-    
-            // Request object to obtain the filter string (only needed if the filter is set via GET or it reads values from GET).
-            // We do this not per default (for now) to prevent problems with explicite filters set by blocks or content types.
-            // TODO readd automatic request processing (basically replacing applyDefaultFilters() and addCommonViewFilters()).
-            $request = null;
-    
-            // Name of filter variable(s) (filterX).
-            $filterKey = 'filter';
-    
-            // initialise FilterUtil and assign both query builder and configuration
-            $filterUtil = new FilterUtil($filterPluginManager, $request, $filterKey);
-    
-            // set our given filter
-            $filterUtil->setFilter($where);
-    
-            // you could add explicit filters at this point, something like
-            // $filterUtil->addFilter('foo:eq:something,bar:gt:100');
-            // read more at https://github.com/zikula/core/tree/1.4/src/docs/Core-2.0/FilterUtil
-    
-            // now enrich the query builder
-            $filterUtil->enrichQuery();
+            $qb->andWhere($where);
         }
     
-        if (null === $this->getRequest()) {
-            // if no request is set we return (#783)
-            return $qb;
-        }
-    
-        
-        $showOnlyOwnEntries = $this->getRequest()->query->getInt('own', 0);
-        if ($showOnlyOwnEntries == 1) {
-            
-            $userId = $this->getRequest()->getSession()->get('uid');
-            $qb->andWhere('tbl.createdBy = :creator')
-               ->setParameter('creator', $userId);
-        }
+        $this->genericBaseQueryAddOrderBy($qb, $orderBy);
     
         return $qb;
     }
@@ -958,7 +601,7 @@ abstract class AbstractAvatarRepository extends EntityRepository
      * @param QueryBuilder $qb      Given query builder instance
      * @param string       $orderBy The order-by clause to use when retrieving the collection (optional) (default='')
      *
-     * @return QueryBuilder query builder instance to be further processed
+     * @return QueryBuilder Query builder instance to be further processed
      */
     protected function genericBaseQueryAddOrderBy(QueryBuilder $qb, $orderBy = '')
     {
@@ -966,28 +609,43 @@ abstract class AbstractAvatarRepository extends EntityRepository
             // random selection
             $qb->addSelect('MOD(tbl.id, ' . mt_rand(2, 15) . ') AS HIDDEN randomIdentifiers')
                ->add('orderBy', 'randomIdentifiers');
-            $orderBy = '';
-        } elseif (empty($orderBy)) {
+    
+            return $qb;
+        }
+    
+        if (empty($orderBy)) {
             $orderBy = $this->defaultSortingField;
         }
     
-        // add order by clause
-        if (!empty($orderBy)) {
-            if (false === strpos($orderBy, '.')) {
-                $orderBy = 'tbl.' . $orderBy;
-            }
-            $qb->add('orderBy', $orderBy);
+        if (empty($orderBy)) {
+            return $qb;
         }
+    
+        // add order by clause
+        if (false === strpos($orderBy, '.')) {
+            $orderBy = 'tbl.' . $orderBy;
+        }
+        if (false !== strpos($orderBy, 'tbl.createdBy')) {
+            $qb->addSelect('tblCreator')
+               ->leftJoin('tbl.createdBy', 'tblCreator');
+            $orderBy = str_replace('tbl.createdBy', 'tblCreator.uname', $orderBy);
+        }
+        if (false !== strpos($orderBy, 'tbl.updatedBy')) {
+            $qb->addSelect('tblUpdater')
+               ->leftJoin('tbl.updatedBy', 'tblUpdater');
+            $orderBy = str_replace('tbl.updatedBy', 'tblUpdater.uname', $orderBy);
+        }
+        $qb->add('orderBy', $orderBy);
     
         return $qb;
     }
 
     /**
-     * Retrieves Doctrine query from query builder, applying FilterUtil and other common actions.
+     * Retrieves Doctrine query from query builder.
      *
      * @param QueryBuilder $qb Query builder instance
      *
-     * @return Query query instance to be further processed
+     * @return Query Query instance to be further processed
      */
     public function getQueryFromBuilder(QueryBuilder $qb)
     {

@@ -4,7 +4,7 @@
 {% block admin_page_icon 'trash-o' %}
 {% block content %}
     <div class="muimagemodule-avatar muimagemodule-delete">
-        <p class="alert alert-warning">{{ __f('Do you really want to delete this avatar: "%name%" ?', {'%name%': avatar.getTitleFromDisplayPattern()}) }}</p>
+        <p class="alert alert-warning">{{ __f('Do you really want to delete this avatar: "%name%" ?', { '%name%': avatar|muimagemodule_formattedTitle }) }}</p>
 
         {% form_theme deleteForm with [
             '@MUImageModule/Form/bootstrap_3.html.twig',

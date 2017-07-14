@@ -13,20 +13,14 @@
 namespace MU\ImageModule\Entity;
 
 use MU\ImageModule\Entity\Base\AbstractAlbumEntity as BaseEntity;
-
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use MU\ImageModule\Traits\EntityWorkflowTrait;
-use MU\ImageModule\Traits\StandardFieldsTrait;
 
 /**
  * Entity class that defines the entity structure and behaviours.
  *
  * This is the concrete entity class for album entities.
- * @ORM\Entity(repositoryClass="\MU\ImageModule\Entity\Repository\AlbumRepository")
+ * @ORM\Entity(repositoryClass="MU\ImageModule\Entity\Repository\AlbumRepository")
  * @ORM\Table(name="mu_muimage_album",
  *     indexes={
  *         @ORM\Index(name="workflowstateindex", columns={"workflowState"})

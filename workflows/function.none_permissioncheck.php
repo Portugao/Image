@@ -24,15 +24,8 @@
  */
 function MUImageModule_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
-    // calculate the permission component
-    $objectType = $obj['_objectType'];
-    $component = 'MUImageModule:' . ucfirst($objectType) . ':';
-
-    // calculate the permission instance
-    $instance = $obj->createCompositeIdentifier() . '::';
-
-    // now perform the permission check
-    $result = SecurityUtil::checkPermission($component, $instance, $permLevel, $currentUser);
+    // perform the permission check
+    $result = SecurityUtil::checkPermission('MUImageModule:' . ucfirst($obj->get_objectType()) . ':', $obj->getKey() . '::', $permLevel, $currentUser);
 
     return $result;
 }
@@ -42,8 +35,8 @@ function MUImageModule_workflow_none_permissioncheck($obj, $permLevel, $currentU
  */
 function MUImageModule_workflow_none_gettextstrings()
 {
-    $serviceManager = \ServiceUtil::getManager();
-    $translator = $serviceManager->get('translator.default');
+    $translator = \ServiceUtil::get('translator.default');
+
     return [
         'title' => $translator->__('None workflow (no approval)'),
         'description' => $translator->__('This is like a non-existing workflow. Everything is online immediately after creation.'),

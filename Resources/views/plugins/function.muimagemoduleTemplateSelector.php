@@ -23,11 +23,21 @@
  */
 function smarty_function_muimagemoduleTemplateSelector($params, $view)
 {
+    $dom = ZLanguage::getModuleDomain('MUImageModule');
     $result = [];
 
-    $result[] = ['text' => $this->__('Only item titles'), 'value' => 'itemlist_display.html.twig'];
-    $result[] = ['text' => $this->__('With description'), 'value' => 'itemlist_display_description.html.twig'];
-    $result[] = ['text' => $this->__('Custom template'), 'value' => 'custom'];
+    $result[] = [
+        'text' => __('Only item titles', $dom),
+        'value' => 'itemlist_display.html.twig'
+    ];
+    $result[] = [
+        'text' => __('With description', $dom),
+        'value' => 'itemlist_display_description.html.twig'
+    ];
+    $result[] = [
+        'text' => __('Custom template', $dom),
+        'value' => 'custom'
+    ];
 
     if (array_key_exists('assign', $params)) {
         $view->assign($params['assign'], $result);

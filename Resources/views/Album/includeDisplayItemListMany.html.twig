@@ -1,7 +1,7 @@
 {# purpose of this template: inclusion template for display of related albums #}
 {% set hasAdminPermission = hasPermission('MUImageModule:Album:', '::', 'ACCESS_EDIT') %}
-{% if nolink is not defined %}
-    {% set nolink = false %}
+{% if noLink is not defined %}
+    {% set noLink = false %}
 {% endif %}
 {% if items|default and items|length > 0 %}
 <ul class="list-group muimagemodule-related-item-list album">
@@ -10,13 +10,13 @@
     <li class="list-group-item">
 <h4 class="list-group-item-heading">
 {% spaceless %}
-{% if not nolink %}
-    <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': item.id }) }}" title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}">
+{% if not noLink %}
+    <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': item.getId() }) }}" title="{{ item|muimagemodule_formattedTitle|e('html_attr') }}">
 {% endif %}
-    {{ item.getTitleFromDisplayPattern() }}
-{% if not nolink %}
+    {{ item|muimagemodule_formattedTitle }}
+{% if not noLink %}
     </a>
-    <a id="albumItem{{ item.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': item.id, 'raw': 1 }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+    <a id="albumItem{{ item.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': item.getId(), 'raw': 1 }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
 {% endif %}
 {% endspaceless %}
 </h4>

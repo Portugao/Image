@@ -17,11 +17,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Zikula\Common\Translator\TranslatorInterface;
 use MU\ImageModule\Form\DataTransformer\UploadFileTransformer;
 use MU\ImageModule\Helper\ImageHelper;
+use MU\ImageModule\Helper\UploadHelper;
 
 /**
  * Upload field type base class.
@@ -34,9 +36,19 @@ abstract class AbstractUploadType extends AbstractType
     protected $translator;
 
     /**
+     * @var RequestStack
+     */
+    protected $requestStack = '';
+
+    /**
      * @var ImageHelper
      */
     protected $imageHelper;
+
+    /**
+     * @var UploadHelper
+     */
+    protected $uploadHelper = '';
 
     /**
      * @var FormBuilderInterface
@@ -51,17 +63,21 @@ abstract class AbstractUploadType extends AbstractType
     /**
      * UploadTypeExtension constructor.
      *
-     * @param TranslatorInterface $translator  Translator service instance
-     * @param ImageHelper         $imageHelper ImageHelper service instance
+     * @param TranslatorInterface $translator   Translator service instance
+     * @param RequestStack        $requestStack RequestStack service instance
+     * @param ImageHelper         $imageHelper  ImageHelper service instance
+     * @param UploadHelper        $uploadHelper UploadHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, ImageHelper $imageHelper)
+    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, ImageHelper $imageHelper, UploadHelper $uploadHelper)
     {
         $this->translator = $translator;
+        $this->requestStack = $requestStack;
         $this->imageHelper = $imageHelper;
+        $this->uploadHelper = $uploadHelper;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -81,7 +97,7 @@ abstract class AbstractUploadType extends AbstractType
         $fileOptions['attr']['class'] = 'validate-upload';
 
         $builder->add($fieldName, 'Symfony\Component\Form\Extension\Core\Type\FileType', $fileOptions);
-        $uploadFileTransformer = new UploadFileTransformer($this, $fieldName);
+        $uploadFileTransformer = new UploadFileTransformer($this, $this->requestStack, $this->uploadHelper, $fieldName);
         $builder->get($fieldName)->addModelTransformer($uploadFileTransformer);
 
         if ($options['required']) {
@@ -99,15 +115,15 @@ abstract class AbstractUploadType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $fieldName = $form->getConfig()->getName();
 
         $view->vars['object_type'] = $this->entity->get_objectType();
-        $view->vars['fieldName'] = $fieldName;
-        $view->vars['formattedEntityTitle'] = $this->entity->getTitleFromDisplayPattern();
+        $view->vars['field_name'] = $fieldName;
+        $view->vars['edited_entity'] = $this->entity;
 
         $parentData = $form->getParent()->getData();
         $accessor = PropertyAccess::createPropertyAccessor();
@@ -119,6 +135,9 @@ abstract class AbstractUploadType extends AbstractType
             $file = $file[$fieldName];
         }
         if (null !== $file && is_string($file)) {
+            if (false === strpos($file, '/')) {
+                $file = $this->uploadHelper->getFileBaseFolder($this->entity->get_objectType(), $fieldName) . $file;
+            }
             $file = new File($file);
         }
         $hasFile = null !== $file;
@@ -136,15 +155,15 @@ abstract class AbstractUploadType extends AbstractType
         // assign other custom options
         $view->vars['allowed_extensions'] = array_key_exists('allowed_extensions', $options) ? $options['allowed_extensions'] : '';
         $view->vars['allowed_size'] = array_key_exists('allowed_size', $options) ? $options['allowed_size'] : 0;
-        $view->vars['thumbRuntimeOptions'] = null;
+        $view->vars['thumb_runtime_options'] = null;
 
         if (true === $fileMeta['isImage']) {
-            $view->vars['thumbRuntimeOptions'] = $this->imageHelper->getRuntimeOptions($this->entity->get_objectType(), $fieldName, 'controllerAction', ['action' => 'edit']);
+            $view->vars['thumb_runtime_options'] = $this->imageHelper->getRuntimeOptions($this->entity->get_objectType(), $fieldName, 'controllerAction', ['action' => 'edit']);
         }
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -156,13 +175,11 @@ abstract class AbstractUploadType extends AbstractType
                     'class' => 'file-selector'
                 ],
                 'allowed_extensions' => '',
-                'allowed_size' => 0,
+                'allowed_size' => '',
                 'error_bubbling' => false
             ])
-            ->setAllowedTypes([
-                'allowed_extensions' => 'string',
-                'allowed_size' => 'int'
-            ])
+            ->setAllowedTypes('allowed_extensions', 'string')
+            ->setAllowedTypes('allowed_size', 'string')
         ;
     }
 
@@ -187,7 +204,7 @@ abstract class AbstractUploadType extends AbstractType
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBlockPrefix()
     {

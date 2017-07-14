@@ -5,52 +5,57 @@
     ] %}
     {{ form_start(quickNavForm, {attr: {id: 'mUImageModulePictureQuickNavForm', class: 'muimagemodule-quicknav navbar-form', role: 'navigation'}}) }}
     {{ form_errors(quickNavForm) }}
-    <fieldset>
-        <h3>{{ __('Quick navigation') }}</h3>
-        {% if albumFilter is defined and albumFilter != true %}
-            <div class="hidden">
-        {% endif %}
-            {{ form_row(quickNavForm.album) }}
-        {% if albumFilter is defined and albumFilter != true %}
-            </div>
-        {% endif %}
-        {% if workflowStateFilter is defined and workflowStateFilter != true %}
-            <div class="hidden">
-        {% endif %}
-            {{ form_row(quickNavForm.workflowState) }}
-        {% if workflowStateFilter is defined and workflowStateFilter != true %}
-            </div>
-        {% endif %}
-        {% if searchFilter is defined and searchFilter != true %}
-            <div class="hidden">
-        {% endif %}
-            {{ form_row(quickNavForm.q) }}
-        {% if searchFilter is defined and searchFilter != true %}
-            </div>
-        {% endif %}
-        {% if sorting is defined and sorting != true %}
-            <div class="hidden">
-        {% endif %}
-            {{ form_row(quickNavForm.sort) }}
-            {{ form_row(quickNavForm.sortdir) }}
-        {% if sorting is defined and sorting != true %}
-            </div>
-        {% endif %}
-        {% if pageSizeSelector is defined and pageSizeSelector != true %}
-            <div class="hidden">
-        {% endif %}
-            {{ form_row(quickNavForm.num) }}
-        {% if pageSizeSelector is defined and pageSizeSelector != true %}
-            </div>
-        {% endif %}
-        {% if albumImageFilter is defined and albumImageFilter != true %}
-            <div class="hidden">
-        {% endif %}
-            {{ form_row(quickNavForm.albumImage) }}
-        {% if albumImageFilter is defined and albumImageFilter != true %}
-            </div>
-        {% endif %}
-        {{ form_widget(quickNavForm.updateview) }}
-    </fieldset>
+    <a href="#collapsePictureQuickNav" role="button" data-toggle="collapse" class="btn btn-default" aria-expanded="false" aria-controls="collapsePictureQuickNav">
+        <i class="fa fa-filter" aria-hidden="true"></i> {{ __('Filter') }}
+    </a>
+    <div id="collapsePictureQuickNav" class="collapse">
+        <fieldset>
+            <h3>{{ __('Quick navigation') }}</h3>
+            {% if albumFilter is defined and albumFilter != true %}
+                <div class="hidden">
+            {% endif %}
+                {{ form_row(quickNavForm.album) }}
+            {% if albumFilter is defined and albumFilter != true %}
+                </div>
+            {% endif %}
+            {% if workflowStateFilter is defined and workflowStateFilter != true %}
+                <div class="hidden">
+            {% endif %}
+                {{ form_row(quickNavForm.workflowState) }}
+            {% if workflowStateFilter is defined and workflowStateFilter != true %}
+                </div>
+            {% endif %}
+            {% if searchFilter is defined and searchFilter != true %}
+                <div class="hidden">
+            {% endif %}
+                {{ form_row(quickNavForm.q) }}
+            {% if searchFilter is defined and searchFilter != true %}
+                </div>
+            {% endif %}
+            {% if sorting is defined and sorting != true %}
+                <div class="hidden">
+            {% endif %}
+                {{ form_row(quickNavForm.sort) }}
+                {{ form_row(quickNavForm.sortdir) }}
+            {% if sorting is defined and sorting != true %}
+                </div>
+            {% endif %}
+            {% if pageSizeSelector is defined and pageSizeSelector != true %}
+                <div class="hidden">
+            {% endif %}
+                {{ form_row(quickNavForm.num) }}
+            {% if pageSizeSelector is defined and pageSizeSelector != true %}
+                </div>
+            {% endif %}
+            {% if albumImageFilter is defined and albumImageFilter != true %}
+                <div class="hidden">
+            {% endif %}
+                {{ form_row(quickNavForm.albumImage) }}
+            {% if albumImageFilter is defined and albumImageFilter != true %}
+                </div>
+            {% endif %}
+            {{ form_widget(quickNavForm.updateview) }}
+        </fieldset>
+    </div>
     {{ form_end(quickNavForm) }}
 {% endif %}

@@ -57,18 +57,20 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         }
     
         // set up all our vars with initial values
-        $this->setVar('supportCategories', false);
+        $this->setVar('supportCategoriesForPictures', false);
+        $this->setVar('supportCategoriesForAvatars', false);
         $this->setVar('supportSubAlbums', false);
         $this->setVar('userDeletePictures', false);
         $this->setVar('slideshow1', false);
         $this->setVar('useAvatars', false);
         $this->setVar('useWatermark', false);
         $this->setVar('useExtendedFeatures', false);
-        $this->setVar('slide1Interval', 4000);
-        $this->setVar('slide1Speed', 1000);
-        $this->setVar('fileSizeForPictures', 102400);
+        $this->setVar('slide1Interval', '4000');
+        $this->setVar('slide1Speed', '1000');
+        $this->setVar('fileSizeForPictures', '102400');
         $this->setVar('fileSizeForAvatars', 0);
-        $this->setVar('minWidthForPictures', 400);
+        $this->setVar('fileSizesForZip', 0);
+        $this->setVar('minWidthForPictures', '400');
         $this->setVar('maxWidthForPictures', 0);
         $this->setVar('maxHeightForPictures', 0);
         $this->setVar('minWidthForAvatars', 0);
@@ -82,13 +84,13 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('thirdHeight', 0);
         $this->setVar('numberHeightAndNameOfAvatars', '200,thumb;400,view;600,normal');
         $this->setVar('shrink', false);
-        $this->setVar('albumEntriesPerPageInBackend', 10);
-        $this->setVar('pictureEntriesPerPageInBackend', 10);
-        $this->setVar('avatarEntriesPerPageInBackend', 10);
+        $this->setVar('albumEntriesPerPageInBackend', '10');
+        $this->setVar('pictureEntriesPerPageInBackend', '10');
+        $this->setVar('avatarEntriesPerPageInBackend', '10');
         $this->setVar('countImageView', false);
-        $this->setVar('numberParentAlbums', 1);
-        $this->setVar('numberSubAlbums', 2);
-        $this->setVar('numberPictures', 20);
+        $this->setVar('numberParentAlbums', '1');
+        $this->setVar('numberSubAlbums', '2');
+        $this->setVar('numberPictures', '20');
         $this->setVar('groupForCommonAlbums',  'none' );
         $this->setVar('kindOfShowSubAlbums',  'panel' );
         $this->setVar('breadcrumbsInFrontend', false);
@@ -98,37 +100,39 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('left', 0);
         $this->setVar('right', 0);
         $this->setVar('top', 0);
-        $this->setVar('moderationGroupForAvatars', 2);
-        $this->setVar('albumEntriesPerPage', 10);
-        $this->setVar('pictureEntriesPerPage', 10);
-        $this->setVar('avatarEntriesPerPage', 10);
+        $this->setVar('albumEntriesPerPage', '10');
+        $this->setVar('linkOwnAlbumsOnAccountPage', true);
+        $this->setVar('pictureEntriesPerPage', '10');
+        $this->setVar('linkOwnPicturesOnAccountPage', true);
+        $this->setVar('avatarEntriesPerPage', '10');
+        $this->setVar('linkOwnAvatarsOnAccountPage', true);
         $this->setVar('enableShrinkingForPictureImageUpload', false);
-        $this->setVar('shrinkWidthPictureImageUpload', 800);
-        $this->setVar('shrinkHeightPictureImageUpload', 600);
+        $this->setVar('shrinkWidthPictureImageUpload', '800');
+        $this->setVar('shrinkHeightPictureImageUpload', '600');
         $this->setVar('thumbnailModePictureImageUpload',  'inset' );
-        $this->setVar('thumbnailWidthPictureImageUploadView', 32);
-        $this->setVar('thumbnailHeightPictureImageUploadView', 24);
-        $this->setVar('thumbnailWidthPictureImageUploadDisplay', 240);
-        $this->setVar('thumbnailHeightPictureImageUploadDisplay', 180);
-        $this->setVar('thumbnailWidthPictureImageUploadEdit', 240);
-        $this->setVar('thumbnailHeightPictureImageUploadEdit', 180);
+        $this->setVar('thumbnailWidthPictureImageUploadView', '32');
+        $this->setVar('thumbnailHeightPictureImageUploadView', '24');
+        $this->setVar('thumbnailWidthPictureImageUploadDisplay', '240');
+        $this->setVar('thumbnailHeightPictureImageUploadDisplay', '180');
+        $this->setVar('thumbnailWidthPictureImageUploadEdit', '240');
+        $this->setVar('thumbnailHeightPictureImageUploadEdit', '180');
         $this->setVar('enableShrinkingForAvatarAvatarUpload', false);
-        $this->setVar('shrinkWidthAvatarAvatarUpload', 800);
-        $this->setVar('shrinkHeightAvatarAvatarUpload', 600);
+        $this->setVar('shrinkWidthAvatarAvatarUpload', '800');
+        $this->setVar('shrinkHeightAvatarAvatarUpload', '600');
         $this->setVar('thumbnailModeAvatarAvatarUpload',  'inset' );
-        $this->setVar('thumbnailWidthAvatarAvatarUploadView', 32);
-        $this->setVar('thumbnailHeightAvatarAvatarUploadView', 24);
-        $this->setVar('thumbnailWidthAvatarAvatarUploadDisplay', 240);
-        $this->setVar('thumbnailHeightAvatarAvatarUploadDisplay', 180);
-        $this->setVar('thumbnailWidthAvatarAvatarUploadEdit', 240);
-        $this->setVar('thumbnailHeightAvatarAvatarUploadEdit', 180);
+        $this->setVar('thumbnailWidthAvatarAvatarUploadView', '32');
+        $this->setVar('thumbnailHeightAvatarAvatarUploadView', '24');
+        $this->setVar('thumbnailWidthAvatarAvatarUploadDisplay', '240');
+        $this->setVar('thumbnailHeightAvatarAvatarUploadDisplay', '180');
+        $this->setVar('thumbnailWidthAvatarAvatarUploadEdit', '240');
+        $this->setVar('thumbnailHeightAvatarAvatarUploadEdit', '180');
+        $this->setVar('enabledFinderTypes', [ 'album' ,  'picture' ,  'avatar' ]);
     
         $categoryRegistryIdsPerEntity = [];
     
         // add default entry for category registry (property named Main)
         $categoryHelper = new \MU\ImageModule\Helper\CategoryHelper(
             $this->container->get('translator.default'),
-            $this->container->get('session'),
             $this->container->get('request_stack'),
             $logger,
             $this->container->get('zikula_users_module.current_user'),
@@ -148,7 +152,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
             $entityManager->persist($registry);
             $entityManager->flush();
         } catch (\Exception $e) {
-            $this->addFlash('error', $this->__f('Error! Could not create a category registry for the %s entity.', ['%s' => 'album']));
+            $this->addFlash('error', $this->__f('Error! Could not create a category registry for the %entity% entity.', ['%entity%' => 'album']));
             $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'albums', 'errorMessage' => $e->getMessage()]);
         }
         $categoryRegistryIdsPerEntity['album'] = $registry->getId();
@@ -164,7 +168,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
             $entityManager->persist($registry);
             $entityManager->flush();
         } catch (\Exception $e) {
-            $this->addFlash('error', $this->__f('Error! Could not create a category registry for the %s entity.', ['%s' => 'avatar']));
+            $this->addFlash('error', $this->__f('Error! Could not create a category registry for the %entity% entity.', ['%entity%' => 'avatar']));
             $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'avatars', 'errorMessage' => $e->getMessage()]);
         }
         $categoryRegistryIdsPerEntity['avatar'] = $registry->getId();
@@ -174,7 +178,6 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     
         // install subscriber hooks
         $this->hookApi->installSubscriberHooks($this->bundle->getMetaData());
-        
     
         // initialisation successful
         return true;
@@ -456,7 +459,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         // delete stored object workflows
         $result = Zikula_Workflow_Util::deleteWorkflowsForModule('MUImageModule');
         if (false === $result) {
-            $this->addFlash('error', $this->__f('An error was encountered while removing stored object workflows for the %s extension.', ['%s' => 'MUImageModule']));
+            $this->addFlash('error', $this->__f('An error was encountered while removing stored object workflows for the %extension% extension.', ['%extension%' => 'MUImageModule']));
             $logger->error('{app}: Could not remove stored object workflows during uninstallation.', ['app' => 'MUImageModule']);
     
             return false;
@@ -473,10 +476,10 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     
         // uninstall subscriber hooks
         $this->hookApi->uninstallSubscriberHooks($this->bundle->getMetaData());
-        
     
         // remove all module vars
         $this->delVars();
+    
         // remove category registry entries
         $categoryRegistryApi = $this->container->get('zikula_categories_module.api.category_registry');
         // assume that not more than five registries exist
@@ -491,7 +494,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     
         // remind user about upload folders not being deleted
         $uploadPath = $this->container->getParameter('datadir') . '/MUImageModule/';
-        $this->addFlash('status', $this->__f('The upload directories at [%s] can be removed manually.', ['%s' => $uploadPath]));
+        $this->addFlash('status', $this->__f('The upload directories at "%path%" can be removed manually.', ['%path%' => $uploadPath]));
     
         // uninstallation successful
         return true;

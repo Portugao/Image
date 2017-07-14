@@ -13,7 +13,6 @@
 namespace MU\ImageModule\Listener\Base;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Zikula\MailerModule\MailerEvents;
 use Zikula\Core\Event\GenericEvent;
 
@@ -28,7 +27,7 @@ abstract class AbstractMailerListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            MailerEvents::SEND_MESSAGE_START => ['sendMessageStart', 5],
+            MailerEvents::SEND_MESSAGE_START   => ['sendMessageStart', 5],
             MailerEvents::SEND_MESSAGE_PERFORM => ['sendMessagePerform', 5],
             MailerEvents::SEND_MESSAGE_SUCCESS => ['sendMessageSuccess', 5],
             MailerEvents::SEND_MESSAGE_FAILURE => ['sendMessageFailure', 5]

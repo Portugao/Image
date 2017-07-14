@@ -12,9 +12,6 @@
 </div>
 
 {{ form_row(form.filter) }}
-<p class="col-sm-offset-3 help-block small"><a class="fa fa-filter" data-toggle="modal" data-target="#filterSyntaxModal">{{ __('Show syntax examples') }}</a></p>
-
-{{ include('@MUImageModule/includeFilterSyntaxDialog.html.twig') }}
 {{ pageAddAsset('stylesheet', asset('bootstrap/css/bootstrap.min.css')) }}
 {{ pageAddAsset('stylesheet', asset('bootstrap/css/bootstrap-theme.min.css')) }}
 {{ pageAddAsset('javascript', asset('bootstrap/js/bootstrap.min.js')) }}

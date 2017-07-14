@@ -6,6 +6,7 @@ services:
         arguments:
             - "@translator.default"
             - "@request_stack"
+            - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags:
@@ -16,6 +17,7 @@ services:
         arguments:
             - "@translator.default"
             - "@request_stack"
+            - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags:
@@ -40,13 +42,10 @@ services:
             - "@router"
             - "@logger"
             - "@zikula_permissions_module.api.permission"
-            - "@zikula_extensions_module.api.variable"
             - "@zikula_users_module.current_user"
-            - "@zikula_groups_module.group_application_repository"
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.controller_helper"
             - "@mu_image_module.model_helper"
-            - "@mu_image_module.selection_helper"
             - "@mu_image_module.workflow_helper"
             - "@mu_image_module.hook_helper"
             - "@mu_image_module.feature_activation_helper"
@@ -60,6 +59,8 @@ services:
         arguments:
             - "@translator.default"
             - "@mu_image_module.entity_factory"
+            - "@mu_image_module.collection_filter_helper"
+            - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags:
@@ -75,13 +76,10 @@ services:
             - "@router"
             - "@logger"
             - "@zikula_permissions_module.api.permission"
-            - "@zikula_extensions_module.api.variable"
             - "@zikula_users_module.current_user"
-            - "@zikula_groups_module.group_application_repository"
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.controller_helper"
             - "@mu_image_module.model_helper"
-            - "@mu_image_module.selection_helper"
             - "@mu_image_module.workflow_helper"
             - "@mu_image_module.hook_helper"
             - "@mu_image_module.feature_activation_helper"
@@ -95,6 +93,8 @@ services:
         arguments:
             - "@translator.default"
             - "@mu_image_module.entity_factory"
+            - "@mu_image_module.collection_filter_helper"
+            - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags:
@@ -110,13 +110,10 @@ services:
             - "@router"
             - "@logger"
             - "@zikula_permissions_module.api.permission"
-            - "@zikula_extensions_module.api.variable"
             - "@zikula_users_module.current_user"
-            - "@zikula_groups_module.group_application_repository"
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.controller_helper"
             - "@mu_image_module.model_helper"
-            - "@mu_image_module.selection_helper"
             - "@mu_image_module.workflow_helper"
             - "@mu_image_module.hook_helper"
             - "@mu_image_module.feature_activation_helper"
@@ -173,11 +170,10 @@ services:
         tags:
             - { name: form.type }
     
-    mu_image_module.form.type.appsettings:
-        class: MU\ImageModule\Form\AppSettingsType
+    mu_image_module.form.type.config:
+        class: MU\ImageModule\Form\Type\ConfigType
         arguments:
             - "@translator.default"
-            - "@zikula_extensions_module.api.variable"
-            - "@zikula_groups_module.group_repository"
+            - "@=service('zikula_extensions_module.api.variable').getAll('MUImageModule')"
         tags:
             - { name: form.type }

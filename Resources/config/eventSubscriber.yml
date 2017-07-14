@@ -1,16 +1,14 @@
 services:
-    # Event subscriber and listener classes
+    # Event subscribers and listeners
     mu_image_module.entity_lifecycle_listener:
         class: MU\ImageModule\Listener\EntityLifecycleListener
         arguments:
             - "@service_container"
+            - "@event_dispatcher"
+            - "@logger"
+            - "@translator.default"
         tags:
             - { name: doctrine.event_subscriber }
-    
-    mu_image_module.core_listener:
-        class: MU\ImageModule\Listener\CoreListener
-        tags:
-            - { name: kernel.event_subscriber }
     
     mu_image_module.kernel_listener:
         class: MU\ImageModule\Listener\KernelListener
@@ -32,18 +30,8 @@ services:
         tags:
             - { name: kernel.event_subscriber }
     
-    mu_image_module.page_listener:
-        class: MU\ImageModule\Listener\PageListener
-        tags:
-            - { name: kernel.event_subscriber }
-    
     mu_image_module.theme_listener:
         class: MU\ImageModule\Listener\ThemeListener
-        tags:
-            - { name: kernel.event_subscriber }
-    
-    mu_image_module.view_listener:
-        class: MU\ImageModule\Listener\ViewListener
         tags:
             - { name: kernel.event_subscriber }
     
@@ -84,8 +72,6 @@ services:
     
     mu_image_module.thirdparty_listener:
         class: MU\ImageModule\Listener\ThirdPartyListener
-        arguments:
-            - "@mu_image_module.workflow_helper"
         tags:
             - { name: kernel.event_subscriber }
     

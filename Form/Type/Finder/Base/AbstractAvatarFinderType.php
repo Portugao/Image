@@ -54,23 +54,24 @@ abstract class AbstractAvatarFinderType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->setMethod('GET')
             ->add('objectType', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', [
-                'data' => $options['objectType']
+                'data' => $options['object_type']
             ])
             ->add('editor', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', [
-                'data' => $options['editorName']
+                'data' => $options['editor_name']
             ])
         ;
 
-        if ($this->featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $options['objectType'])) {
+        if ($this->featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $options['object_type'])) {
             $this->addCategoriesField($builder, $options);
         }
+        $this->addImageFields($builder, $options);
         $this->addPasteAsField($builder, $options);
         $this->addSortingFields($builder, $options);
         $this->addAmountField($builder, $options);
@@ -105,7 +106,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
     {
         $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
             'label' => $this->__('Category') . ':',
-            'empty_data' => [],
+            'empty_data' => null,
             'attr' => [
                 'class' => 'category-selector',
                 'title' => $this->__('This is an optional filter.')
@@ -114,8 +115,27 @@ abstract class AbstractAvatarFinderType extends AbstractType
             'required' => false,
             'multiple' => false,
             'module' => 'MUImageModule',
-            'entity' => ucfirst($options['objectType']) . 'Entity',
-            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['objectType']) . 'CategoryEntity'
+            'entity' => ucfirst($options['object_type']) . 'Entity',
+            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['object_type']) . 'CategoryEntity'
+        ]);
+    }
+
+    /**
+     * Adds fields for image insertion options.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addImageFields(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('onlyImages', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            'label' => $this->__('Only images'),
+            'empty_data' => false,
+            'help' => $this->__('Enable this option to insert images'),
+            'required' => false
+        ]);
+        $builder->add('imageField', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', [
+            'data' => 'avatarUpload'
         ]);
     }
 
@@ -127,12 +147,17 @@ abstract class AbstractAvatarFinderType extends AbstractType
      */
     public function addPasteAsField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('pasteas', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('pasteAs', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
             'label' => $this->__('Paste as') . ':',
             'empty_data' => 1,
             'choices' => [
-                $this->__('Link to the avatar') => 1,
-                $this->__('ID of avatar') => 2
+                $this->__('Relative link to the avatar') => 1,
+                $this->__('Absolute url to the avatar') => 2,
+                $this->__('ID of avatar') => 3,
+                $this->__('Relative link to the image') => 6,
+                $this->__('Image') => 7,
+                $this->__('Image with relative link to the avatar') => 8,
+                $this->__('Image with absolute url to the avatar') => 9
             ],
             'choices_as_values' => true,
             'multiple' => false,
@@ -153,14 +178,14 @@ abstract class AbstractAvatarFinderType extends AbstractType
                 'label' => $this->__('Sort by') . ':',
                 'empty_data' => '',
                 'choices' => [
-                    $this->__('Workflow state') => 'workflowState',
                     $this->__('Title') => 'title',
                     $this->__('Description') => 'description',
                     $this->__('Avatar upload') => 'avatarUpload',
                     $this->__('Supported modules') => 'supportedModules',
                     $this->__('Creation date') => 'createdDate',
                     $this->__('Creator') => 'createdBy',
-                    $this->__('Update date') => 'updatedDate'
+                    $this->__('Update date') => 'updatedDate',
+                    $this->__('Updater') => 'updatedBy'
                 ],
                 'choices_as_values' => true,
                 'multiple' => false,
@@ -195,13 +220,13 @@ abstract class AbstractAvatarFinderType extends AbstractType
                 'class' => 'text-right'
             ],
             'choices' => [
-                5 => 5,
-                10 => 10,
-                15 => 15,
-                20 => 20,
-                30 => 30,
-                50 => 50,
-                100 => 100
+                $this->__('5') => 5,
+                $this->__('10') => 10,
+                $this->__('15') => 15,
+                $this->__('20') => 20,
+                $this->__('30') => 30,
+                $this->__('50') => 50,
+                $this->__('100') => 100
             ],
             'choices_as_values' => true,
             'multiple' => false,
@@ -221,13 +246,13 @@ abstract class AbstractAvatarFinderType extends AbstractType
             'label' => $this->__('Search for') . ':',
             'required' => false,
             'attr' => [
-                'max_length' => 255
+                'maxlength' => 255
             ]
         ]);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBlockPrefix()
     {
@@ -235,23 +260,19 @@ abstract class AbstractAvatarFinderType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
-                'objectType' => 'album',
-                'editorName' => 'ckeditor'
+                'object_type' => 'album',
+                'editor_name' => 'ckeditor'
             ])
-            ->setRequired(['objectType', 'editorName'])
-            ->setAllowedTypes([
-                'objectType' => 'string',
-                'editorName' => 'string'
-            ])
-            ->setAllowedValues([
-                'editorName' => ['tinymce', 'ckeditor']
-            ])
+            ->setRequired(['object_type', 'editor_name'])
+            ->setAllowedTypes('object_type', 'string')
+            ->setAllowedTypes('editor_name', 'string')
+            ->setAllowedValues('editor_name', ['tinymce', 'ckeditor'])
         ;
     }
 }

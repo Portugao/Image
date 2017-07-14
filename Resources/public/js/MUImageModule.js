@@ -6,7 +6,7 @@ function mUImageCapitaliseFirstLetter(string)
 }
 
 /**
- * Initialise the quick navigation panel in list views.
+ * Initialise the quick navigation form in list views.
  */
 function mUImageInitQuickNavigation()
 {
@@ -37,29 +37,27 @@ function mUImageInitQuickNavigation()
 function mUImageToggleFlag(objectType, fieldName, itemId)
 {
     jQuery.ajax({
-        type: 'POST',
+        method: 'POST',
         url: Routing.generate('muimagemodule_ajax_toggleflag'),
         data: {
             ot: objectType,
             field: fieldName,
             id: itemId
+        },
+        success: function(data) {
+            var idSuffix;
+            var toggleLink;
+
+            idSuffix = mUImageCapitaliseFirstLetter(fieldName) + itemId;
+            toggleLink = jQuery('#toggle' + idSuffix);
+
+            if (data.message) {
+                mUImageSimpleAlert(toggleLink, Translator.__('Success'), data.message, 'toggle' + idSuffix + 'DoneAlert', 'success');
+            }
+
+            toggleLink.find('.fa-check').toggleClass('hidden', true !== data.state);
+            toggleLink.find('.fa-times').toggleClass('hidden', true === data.state);
         }
-    }).done(function(res) {
-        // get data returned by the ajax response
-        var idSuffix;
-        var toggleLink;
-        var data;
-
-        idSuffix = mUImageCapitaliseFirstLetter(fieldName) + itemId;
-        toggleLink = jQuery('#toggle' + idSuffix);
-        data = res.data;
-
-        if (data.message) {
-            mUImageSimpleAlert(toggleLink, Translator.__('Success'), data.message, 'toggle' + idSuffix + 'DoneAlert', 'success');
-        }
-
-        toggleLink.find('.fa-check').toggleClass('hidden', true !== data.state);
-        toggleLink.find('.fa-times').toggleClass('hidden', true === data.state);
     });
 }
 
@@ -110,10 +108,47 @@ function mUImageSimpleAlert(beforeElem, title, content, alertId, cssClass)
 function mUImageInitMassToggle()
 {
     if (jQuery('.muimage-mass-toggle').length > 0) {
-        jQuery('.muimage-mass-toggle').click(function (event) {
-            jQuery('.muimage-toggle-checkbox').prop('checked', jQuery(this).prop('checked'));
+        jQuery('.muimage-mass-toggle').unbind('click').click(function (event) {
+            if (jQuery('.table.fixed-columns').length > 0) {
+                jQuery('.muimage-toggle-checkbox').prop('checked', false);
+                jQuery('.table.fixed-columns .muimage-toggle-checkbox').prop('checked', jQuery(this).prop('checked'));
+            } else {
+                jQuery('.muimage-toggle-checkbox').prop('checked', jQuery(this).prop('checked'));
+            }
         });
     }
+}
+
+/**
+ * Initialises fixed table columns.
+ */
+function mUImageInitFixedColumns()
+{
+    jQuery('.table.fixed-columns').remove();
+    jQuery('.table').each(function() {
+        var originalTable, fixedColumnsTable, fixedTableWidth;
+
+        originalTable = jQuery(this);
+        fixedTableWidth = 0;
+        if (originalTable.find('.fixed-column').length > 0) {
+            fixedColumnsTable = originalTable.clone().insertBefore(originalTable).addClass('fixed-columns').removeAttr('id');
+            originalTable.find('.dropdown').addClass('hidden');
+            fixedColumnsTable.find('.dropdown').removeClass('hidden');
+            fixedColumnsTable.css('left', originalTable.parent().position().left);
+
+            fixedColumnsTable.find('th, td').not('.fixed-column').remove();
+            fixedColumnsTable.find('th').each(function (i, elem) {
+                jQuery(this).css('width', originalTable.find('th').eq(i).css('width'));
+                fixedTableWidth += originalTable.find('th').eq(i).width();
+            });
+            fixedColumnsTable.css('width', fixedTableWidth + 'px');
+
+            fixedColumnsTable.find('tr').each(function (i, elem) {
+                jQuery(this).height(originalTable.find('tr:eq(' + i + ')').height());
+            });
+        }
+    });
+    mUImageInitMassToggle();
 }
 
 /**
@@ -128,7 +163,7 @@ function mUImageInitItemActions(context)
     containerSelector = '';
     if (context == 'view') {
         containerSelector = '.muimagemodule-view';
-        listClasses = 'list-unstyled dropdown-menu dropdown-menu-right';
+        listClasses = 'list-unstyled dropdown-menu';
     } else if (context == 'display') {
         containerSelector = 'h2, h3';
         listClasses = 'list-unstyled dropdown-menu';
@@ -145,7 +180,7 @@ function mUImageInitItemActions(context)
 
     containers.find('.dropdown > ul').removeClass('list-inline').addClass(listClasses);
     containers.find('.dropdown > ul a').each(function (index) {
-        jQuery(this).html(jQuery(this).html() + jQuery(this).find('i').first().data('original-title'));
+        jQuery(this).html(jQuery(this).html() + jQuery(this).find('i').first().attr('title'));
     });
     containers.find('.dropdown > ul a i').addClass('fa-fw');
     containers.find('.dropdown-toggle').removeClass('hidden').dropdown();
@@ -165,8 +200,8 @@ function mUImageInitInlineWindow(containerElem)
     // define name of window
     newWindowId = containerElem.attr('id') + 'Dialog';
 
-    containerElem.unbind('click').click(function(e) {
-        e.preventDefault();
+    containerElem.unbind('click').click(function(event) {
+        event.preventDefault();
 
         // check if window exists already
         if (jQuery('#' + newWindowId).length < 1) {
@@ -211,6 +246,34 @@ function mUImageInitQuickViewModals()
     });
 }
 
+/**
+ * Initialises image viewing behaviour.
+ */
+function mUImageInitImageViewer()
+{
+    jQuery('a.image-link').magnificPopup({
+        type: 'image',
+        closeOnContentClick: true,
+        image: {
+            titleSrc: 'title',
+            verticalFit: true
+        },
+        gallery: {
+            enabled: true,
+            navigateByImgClick: true,
+            arrowMarkup: '<button title="%title%" type="button" class="mfp-arrow mfp-arrow-%dir%"></button>',
+            tPrev: Translator.__('Previous (Left arrow key)'),
+            tNext: Translator.__('Next (Right arrow key)'),
+            tCounter: '<span class="mfp-counter">%curr% ' + Translator.__('of') + ' %total%</span>'
+        },
+        zoom: {
+            enabled: true,
+            duration: 300,
+            easing: 'ease-in-out'
+        }
+    });
+}
+
 jQuery(document).ready(function() {
     var isViewPage;
     var isDisplayPage;
@@ -218,11 +281,14 @@ jQuery(document).ready(function() {
     isViewPage = jQuery('.muimagemodule-view').length > 0;
     isDisplayPage = jQuery('.muimagemodule-display').length > 0;
 
-    jQuery('a.lightbox').lightbox();
+    mUImageInitImageViewer();
 
     if (isViewPage) {
         mUImageInitQuickNavigation();
         mUImageInitMassToggle();
+        jQuery(window).resize(mUImageInitFixedColumns);
+        mUImageInitFixedColumns();
+        window.setTimeout(mUImageInitFixedColumns, 1000);
         mUImageInitItemActions('view');
         mUImageInitAjaxToggles();
     } else if (isDisplayPage) {

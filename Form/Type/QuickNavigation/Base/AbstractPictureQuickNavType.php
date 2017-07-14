@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
+use MU\ImageModule\Helper\EntityDisplayHelper;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
@@ -34,6 +35,11 @@ abstract class AbstractPictureQuickNavType extends AbstractType
     protected $request;
 
     /**
+     * @var EntityDisplayHelper
+     */
+    protected $entityDisplayHelper;
+
+    /**
      * @var ListEntriesHelper
      */
     protected $listHelper;
@@ -48,13 +54,20 @@ abstract class AbstractPictureQuickNavType extends AbstractType
      *
      * @param TranslatorInterface $translator   Translator service instance
     * @param RequestStack        $requestStack RequestStack service instance
+    * @param EntityDisplayHelper $entityDisplayHelper EntityDisplayHelper service instance
      * @param ListEntriesHelper   $listHelper   ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, RequestStack $requestStack, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        RequestStack $requestStack,
+        EntityDisplayHelper $entityDisplayHelper,
+        ListEntriesHelper $listHelper,
+        FeatureActivationHelper $featureActivationHelper
+    ) {
         $this->setTranslator($translator);
         $this->request = $requestStack->getCurrentRequest();
+        $this->entityDisplayHelper = $entityDisplayHelper;
         $this->listHelper = $listHelper;
         $this->featureActivationHelper = $featureActivationHelper;
     }
@@ -70,7 +83,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -110,9 +123,13 @@ abstract class AbstractPictureQuickNavType extends AbstractType
             $this->request->query->remove('q');
         }
     
+        $entityDisplayHelper = $this->entityDisplayHelper;
+        $choiceLabelClosure = function ($entity) use ($entityDisplayHelper) {
+            return $entityDisplayHelper->getFormattedTitle($entity);
+        };
         $builder->add('album', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
             'class' => 'MUImageModule:AlbumEntity',
-            'choice_label' => 'getTitleFromDisplayPattern',
+            'choice_label' => $choiceLabelClosure,
             'placeholder' => $this->__('All'),
             'required' => false,
             'label' => $this->__('Album'),
@@ -168,7 +185,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
         $builder->add('q', 'Symfony\Component\Form\Extension\Core\Type\SearchType', [
             'label' => $this->__('Search'),
             'attr' => [
-                'max_length' => 255,
+                'maxlength' => 255,
                 'class' => 'input-sm'
             ],
             'required' => false
@@ -198,10 +215,11 @@ abstract class AbstractPictureQuickNavType extends AbstractType
                     $this->__('Pos') => 'pos',
                     $this->__('Creation date') => 'createdDate',
                     $this->__('Creator') => 'createdBy',
-                    $this->__('Update date') => 'updatedDate'
+                    $this->__('Update date') => 'updatedDate',
+                    $this->__('Updater') => 'updatedBy'
                 ],
                 'choices_as_values' => true,
-                'required' => false,
+                'required' => true,
                 'expanded' => false
             ])
             ->add('sortdir', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
@@ -215,7 +233,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
                     $this->__('Descending') => 'desc'
                 ],
                 'choices_as_values' => true,
-                'required' => false,
+                'required' => true,
                 'expanded' => false
             ])
         ;
@@ -236,13 +254,13 @@ abstract class AbstractPictureQuickNavType extends AbstractType
                 'class' => 'input-sm text-right'
             ],
             'choices' => [
-                5 => 5,
-                10 => 10,
-                15 => 15,
-                20 => 20,
-                30 => 30,
-                50 => 50,
-                100 => 100
+                $this->__('5') => 5,
+                $this->__('10') => 10,
+                $this->__('15') => 15,
+                $this->__('20') => 20,
+                $this->__('30') => 30,
+                $this->__('50') => 50,
+                $this->__('100') => 100
             ],
             'choices_as_values' => true,
             'required' => false,
@@ -274,7 +292,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBlockPrefix()
     {

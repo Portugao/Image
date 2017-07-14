@@ -1,28 +1,23 @@
 {# Purpose of this template: Display a popup selector of avatars for scribite integration #}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ app.request.locale }}" lang="{{ app.request.locale }}">
-<head>
-    <title>{{ __('Search and select avatar') }}</title>
-    {{ pageAddAsset('stylesheet', pagevars.homepath ~ 'style/core.css') }}
-    {{ pageAddAsset('stylesheet', zasset('@MUImageModule:css/style.css')) }}
-    {{ pageAddAsset('stylesheet', zasset('@MUImageModule:css/finder.css')) }}
-    <script type="text/javascript">/* <![CDATA[ */
-        if (typeof(Zikula) == 'undefined') {var Zikula = {};}
-        Zikula.Config = {'entrypoint': '{{ getModVar('ZConfig', 'entrypoint', 'index.php') }}', 'baseURL': '{{ app.request.getSchemeAndHttpHost() ~ '/' }}', 'baseURI': '{{ app.request.getBasePath() }}'}; /* ]]> */
-    </script>
-    {{ pageAddAsset('stylesheet', asset('bootstrap/css/bootstrap.min.css')) }}
-    {{ pageAddAsset('stylesheet', asset('bootstrap/css/bootstrap-theme.min.css')) }}
-    {{ pageAddAsset('javascript', asset('jquery/jquery.min.js')) }}
-    {{ pageAddAsset('javascript', asset('bootstrap/js/bootstrap.min.js')) }}
-    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Finder.js')) }}
-</head>
-<body>
+{% set useFinder = true %}
+{% extends 'MUImageModule::raw.html.twig' %}
+{% block title __('Search and select avatar') %}
+{% block content %}
     <div class="container">
-        <ul class="nav nav-tabs">
-        <li{{ objectType == 'album' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'album', 'editor': editorName}) }}" title="{{ __('Search and select album') }}">{{ __('Albums') }}</a></li>
-        <li{{ objectType == 'picture' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'picture', 'editor': editorName}) }}" title="{{ __('Search and select picture') }}">{{ __('Pictures') }}</a></li>
-        <li{{ objectType == 'avatar' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'avatar', 'editor': editorName}) }}" title="{{ __('Search and select avatar') }}">{{ __('Avatars') }}</a></li>
-        </ul>
+        <div class="zikula-bootstrap-tab-container">
+            <ul class="nav nav-tabs">
+            {% set activatedObjectTypes = getModVar('MUImageModule', 'enabledFinderTypes', []) %}
+            {% if 'album' in activatedObjectTypes %}
+                <li{{ objectType == 'album' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'album', 'editor': editorName}) }}" title="{{ __('Search and select album') }}">{{ __('Albums') }}</a></li>
+            {% endif %}
+            {% if 'picture' in activatedObjectTypes %}
+                <li{{ objectType == 'picture' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'picture', 'editor': editorName}) }}" title="{{ __('Search and select picture') }}">{{ __('Pictures') }}</a></li>
+            {% endif %}
+            {% if 'avatar' in activatedObjectTypes %}
+                <li{{ objectType == 'avatar' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'avatar', 'editor': editorName}) }}" title="{{ __('Search and select avatar') }}">{{ __('Avatars') }}</a></li>
+            {% endif %}
+            </ul>
+        </div>
         {% form_theme finderForm with [
             '@MUImageModule/Form/bootstrap_3.html.twig',
             'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
@@ -34,26 +29,51 @@
             {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'avatar') %}
                 {{ form_row(finderForm.categories) }}
             {% endif %}
-            {{ form_row(finderForm.pasteas) }}
+            {{ form_row(finderForm.onlyImages) }}
+            <div id="imageFieldRow">
+                {{ form_row(finderForm.imageField) }}
+            </div>
+            {{ form_row(finderForm.pasteAs) }}
             <br />
             <div class="form-group">
-                <label for="mUImageModuleObjectId" class="col-sm-3 control-label">{{ __('Avatar') }}:</label>
+                <label class="col-sm-3 control-label">{{ __('Avatar') }}:</label>
                 <div class="col-sm-9">
                     <div id="muimagemoduleItemContainer">
-                        <ul>
+                        {% if not onlyImages %}
+                            <ul>
+                        {% endif %}
                             {% for avatar in items %}
-                                <li>
-                                    {% set itemId = avatar.createCompositeIdentifier() %}
-                                    <a href="#" data-itemid="{{ itemId }}">{{ avatar.getTitleFromDisplayPattern() }}</a>
-                                    <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_avatar_display', { 'id': avatar.id }) }}" />
-                                    <input type="hidden" id="title{{ itemId }}" value="{{ avatar.getTitleFromDisplayPattern()|e('html_attr') }}" />
+                                {% if not onlyImages or (attribute(avatar, imageField) is not empty and attribute(avatar, imageField ~ 'Meta').isImage) %}
+                                {% if not onlyImages %}
+                                    <li>
+                                {% endif %}
+                                    {% set itemId = avatar.getKey() %}
+                                    <a href="#" data-itemid="{{ itemId }}">
+                                        {% if onlyImages %}
+                                            {% set thumbOptions = attribute(thumbRuntimeOptions, 'avatar' ~ imageField[:1]|upper ~ imageField[1:]) %}
+                                            <img src="{{ attribute(avatar, imageField).getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ avatar|muimagemodule_formattedTitle|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-rounded" />
+                                        {% else %}
+                                            {{ avatar|muimagemodule_formattedTitle }}
+                                        {% endif %}
+                                    </a>
+                                    <input type="hidden" id="path{{ itemId }}" value="{{ path('muimagemodule_avatar_display', { 'id': avatar.getId() }) }}" />
+                                    <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_avatar_display', { 'id': avatar.getId() }) }}" />
+                                    <input type="hidden" id="title{{ itemId }}" value="{{ avatar|muimagemodule_formattedTitle|e('html_attr') }}" />
                                     <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if avatar.description is not empty %}{{ avatar.description }}{% endif %}
                                     {% endset %}{{ description|striptags|e('html_attr') }}" />
-                                </li>
+                                    {% if onlyImages %}
+                                        <input type="hidden" id="imagePath{{ itemId }}" value="/{{ attribute(avatar, imageField).getPathname() }}" />
+                                    {% endif %}
+                                {% if not onlyImages %}
+                                    </li>
+                                {% endif %}
+                                {% endif %}
                             {% else %}
-                                <li>{{ __('No entries found.') }}</li>
+                                {% if not onlyImages %}<li>{% endif %}{{ __('No avatars found.') }}{% if not onlyImages %}</li>{% endif %}
                             {% endfor %}
-                        </ul>
+                        {% if not onlyImages %}
+                            </ul>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -61,7 +81,9 @@
             {{ form_row(finderForm.sort) }}
             {{ form_row(finderForm.sortdir) }}
             {{ form_row(finderForm.num) }}
-            {{ form_row(finderForm.q) }}
+            <div id="searchTermRow">
+                {{ form_row(finderForm.q) }}
+            </div>
             <div>
                 {{ pager({ display: 'page', rowcount: pager.numitems, limit: pager.itemsperpage, posvar: 'pos', maxpages: 10, route: 'muimagemodule_external_finder'}) }}
             </div>
@@ -78,22 +100,18 @@
     {#
     <div class="muimagemodule-finderform">
         <fieldset>
-            {{ render(controller('MUImageModule:Admin:edit')) }}
+            {{ render(controller('MUImageModule:Avatar:edit')) }}
         </fieldset>
     </div>
     #}
 
-    {% set customJsInit %}
-        <script type="text/javascript">
-        /* <![CDATA[ */
-            ( function($) {
-                $(document).ready(function() {
-                    mUImageModule.finder.onLoad();
-                });
-            })(jQuery);
-        /* ]]> */
-        </script>
-    {% endset %}
-    {{ pageAddAsset('footer', customJsInit) }}
-</body>
-</html>
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        ( function($) {
+            $(document).ready(function() {
+                mUImageModule.finder.onLoad();
+            });
+        })(jQuery);
+    /* ]]> */
+    </script>
+{% endblock %}

@@ -18,11 +18,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use RuntimeException;
-use Zikula\Core\Response\Ajax\AjaxResponse;
-use Zikula\Core\Response\Ajax\BadDataResponse;
-use Zikula\Core\Response\Ajax\FatalResponse;
-use Zikula\Core\Response\Ajax\NotFoundResponse;
 
 /**
  * Ajax controller implementation class.
@@ -33,16 +28,31 @@ class AjaxController extends AbstractAjaxController
 {
     
     /**
+     * Retrieves a general purpose list of users.
+     *
+     * @Route("/searchUsers", options={"expose"=true})
+     * @Method("GET")
+     *
+     * @param Request $request Current request instance
+     *
+     * @return JsonResponse
+     */
+    public function searchUsersAction(Request $request)
+    {
+        return parent::searchUsersAction($request);
+    }
+    
+    /**
      * Retrieve item list for finder selections in Forms, Content type plugin and Scribite.
-    *
-    * @Route("/getItemListFinder", options={"expose"=true})
-    * @Method("POST")
+     *
+     * @Route("/getItemListFinder", options={"expose"=true})
+     * @Method("GET")
      *
      * @param string $ot      Name of currently used object type
      * @param string $sort    Sorting field
      * @param string $sortdir Sorting direction
      *
-     * @return AjaxResponse
+     * @return JsonResponse
      */
     public function getItemListFinderAction(Request $request)
     {
@@ -50,29 +60,14 @@ class AjaxController extends AbstractAjaxController
     }
     
     /**
-     * Searches for entities for auto completion usage.
-    *
-    * @Route("/getItemListAutoCompletion", options={"expose"=true})
-    * @Method("GET")
+     * Checks whether a field value is a duplicate or not.
+     *
+     * @Route("/checkForDuplicate", options={"expose"=true})
+     * @Method("GET")
      *
      * @param Request $request Current request instance
      *
      * @return JsonResponse
-     */
-    public function getItemListAutoCompletionAction(Request $request)
-    {
-        return parent::getItemListAutoCompletionAction($request);
-    }
-    
-    /**
-     * Checks whether a field value is a duplicate or not.
-    *
-    * @Route("/checkForDuplicate", options={"expose"=true})
-    * @Method("POST")
-     *
-     * @param Request $request Current request instance
-     *
-     * @return AjaxResponse
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -83,13 +78,13 @@ class AjaxController extends AbstractAjaxController
     
     /**
      * Changes a given flag (boolean field) by switching between true and false.
-    *
-    * @Route("/toggleFlag", options={"expose"=true})
-    * @Method("POST")
+     *
+     * @Route("/toggleFlag", options={"expose"=true})
+     * @Method("POST")
      *
      * @param Request $request Current request instance
      *
-     * @return AjaxResponse
+     * @return JsonResponse
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */

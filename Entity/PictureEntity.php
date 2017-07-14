@@ -13,19 +13,13 @@
 namespace MU\ImageModule\Entity;
 
 use MU\ImageModule\Entity\Base\AbstractPictureEntity as BaseEntity;
-
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
-use MU\ImageModule\Traits\EntityWorkflowTrait;
-use MU\ImageModule\Traits\StandardFieldsTrait;
 
 /**
  * Entity class that defines the entity structure and behaviours.
  *
  * This is the concrete entity class for picture entities.
- * @ORM\Entity(repositoryClass="\MU\ImageModule\Entity\Repository\PictureRepository")
+ * @ORM\Entity(repositoryClass="MU\ImageModule\Entity\Repository\PictureRepository")
  * @ORM\Table(name="mu_muimage_picture",
  *     indexes={
  *         @ORM\Index(name="workflowstateindex", columns={"workflowState"})

@@ -22,7 +22,9 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
-use MU\ImageModule\Entity\Factory\ImageFactory;
+use MU\ImageModule\Entity\Factory\EntityFactory;
+use MU\ImageModule\Helper\CollectionFilterHelper;
+use MU\ImageModule\Helper\EntityDisplayHelper;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
@@ -34,9 +36,19 @@ abstract class AbstractPictureType extends AbstractType
     use TranslatorTrait;
 
     /**
-     * @var ImageFactory
+     * @var EntityFactory
      */
     protected $entityFactory;
+
+    /**
+     * @var CollectionFilterHelper
+     */
+    protected $collectionFilterHelper;
+
+    /**
+     * @var EntityDisplayHelper
+     */
+    protected $entityDisplayHelper;
 
     /**
      * @var ListEntriesHelper
@@ -52,14 +64,24 @@ abstract class AbstractPictureType extends AbstractType
      * PictureType constructor.
      *
      * @param TranslatorInterface $translator    Translator service instance
-     * @param ImageFactory        $entityFactory Entity factory service instance
+     * @param EntityFactory       $entityFactory EntityFactory service instance
+     * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
+     * @param EntityDisplayHelper $entityDisplayHelper EntityDisplayHelper service instance
      * @param ListEntriesHelper   $listHelper    ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, ImageFactory $entityFactory, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        EntityFactory $entityFactory,
+        CollectionFilterHelper $collectionFilterHelper,
+        EntityDisplayHelper $entityDisplayHelper,
+        ListEntriesHelper $listHelper,
+        FeatureActivationHelper $featureActivationHelper
+    ) {
         $this->setTranslator($translator);
         $this->entityFactory = $entityFactory;
+        $this->collectionFilterHelper = $collectionFilterHelper;
+        $this->entityDisplayHelper = $entityDisplayHelper;
         $this->listHelper = $listHelper;
         $this->featureActivationHelper = $featureActivationHelper;
     }
@@ -75,21 +97,22 @@ abstract class AbstractPictureType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->addEntityFields($builder, $options);
         $this->addIncomingRelationshipFields($builder, $options);
+        $this->addModerationFields($builder, $options);
         $this->addReturnControlField($builder, $options);
         $this->addSubmitButtons($builder, $options);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $entity = $event->getData();
             foreach (['imageUpload'] as $uploadFieldName) {
-                if ($entity[$uploadFieldName] instanceof File) {
-                    $entity[$uploadFieldName] = [$uploadFieldName => $entity[$uploadFieldName]->getPathname()];
-                }
+                $entity[$uploadFieldName] = [
+                    $uploadFieldName => $entity[$uploadFieldName] instanceof File ? $entity[$uploadFieldName]->getPathname() : null
+                ];
             }
         });
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
@@ -115,20 +138,23 @@ abstract class AbstractPictureType extends AbstractType
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
             'attr' => [
-                'max_length' => 255,
+                'maxlength' => 255,
                 'class' => '',
                 'title' => $this->__('Enter the title of the picture')
-            ],'required' => false,
+            ],
+            'required' => false,
         ]);
         
         $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
             'label' => $this->__('Description') . ':',
+            'help' => $this->__f('Note: this value must not exceed %amount% characters.', ['%amount%' => 2000]),
             'empty_data' => '',
             'attr' => [
-                'max_length' => 2000,
+                'maxlength' => 2000,
                 'class' => '',
                 'title' => $this->__('Enter the description of the picture')
-            ],'required' => false
+            ],
+            'required' => false,
         ]);
         
         $builder->add('imageUpload', 'MU\ImageModule\Form\Type\Field\UploadType', [
@@ -136,20 +162,22 @@ abstract class AbstractPictureType extends AbstractType
             'attr' => [
                 'class' => ' validate-upload',
                 'title' => $this->__('Enter the image upload of the picture')
-            ],'required' => true && $options['mode'] == 'create',
+            ],
+            'required' => true && $options['mode'] == 'create',
             'entity' => $options['entity'],
             'allowed_extensions' => 'gif, jpeg, jpg, png',
-            'allowed_size' => 0
+            'allowed_size' => '200k'
         ]);
         
         $builder->add('imageView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
             'label' => $this->__('Image view') . ':',
             'empty_data' => '',
             'attr' => [
-                'max_length' => 11,
+                'maxlength' => 11,
                 'class' => ' validate-digits',
-                'title' => $this->__('Enter the image view of the picture. Only digits are allowed.')
-            ],'required' => false,
+                'title' => $this->__('Enter the image view of the picture.') . ' ' . $this->__('Only digits are allowed.')
+            ],
+            'required' => false,
             'scale' => 0
         ]);
         
@@ -158,17 +186,19 @@ abstract class AbstractPictureType extends AbstractType
             'attr' => [
                 'class' => '',
                 'title' => $this->__('album image ?')
-            ],'required' => false,
+            ],
+            'required' => false,
         ]);
         
         $builder->add('pos', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
             'label' => $this->__('Pos') . ':',
             'empty_data' => '0',
             'attr' => [
-                'max_length' => 11,
+                'maxlength' => 11,
                 'class' => ' validate-digits',
-                'title' => $this->__('Enter the pos of the picture. Only digits are allowed.')
-            ],'required' => true,
+                'title' => $this->__('Enter the pos of the picture.') . ' ' . $this->__('Only digits are allowed.')
+            ],
+            'required' => true,
             'scale' => 0
         ]);
     }
@@ -181,19 +211,66 @@ abstract class AbstractPictureType extends AbstractType
      */
     public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options)
     {
+        $queryBuilder = function(EntityRepository $er) {
+            // select without joins
+            return $er->getListQueryBuilder('', '', false);
+        };
+        $entityDisplayHelper = $this->entityDisplayHelper;
+        $choiceLabelClosure = function ($entity) use ($entityDisplayHelper) {
+            return $entityDisplayHelper->getFormattedTitle($entity);
+        };
         $builder->add('album', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
             'class' => 'MUImageModule:AlbumEntity',
-            'choice_label' => 'getTitleFromDisplayPattern',
+            'choice_label' => $choiceLabelClosure,
             'multiple' => false,
             'expanded' => false,
-            'query_builder' => function(EntityRepository $er) {
-                // select without joins
-                return $er->getListQueryBuilder('', '', false);
-            },
+            'query_builder' => $queryBuilder,
+            'placeholder' => $this->__('Please choose an option'),
+            'required' => false,
             'label' => $this->__('Album'),
             'attr' => [
                 'title' => $this->__('Choose the album')
             ]
+        ]);
+    }
+
+    /**
+     * Adds special fields for moderators.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addModerationFields(FormBuilderInterface $builder, array $options)
+    {
+        if (!$options['has_moderate_permission']) {
+            return;
+        }
+    
+        $builder->add('moderationSpecificCreator', 'MU\ImageModule\Form\Type\Field\UserType', [
+            'mapped' => false,
+            'label' => $this->__('Creator') . ':',
+            'attr' => [
+                'maxlength' => 11,
+                'class' => ' validate-digits',
+                'title' => $this->__('Here you can choose a user which will be set as creator')
+            ],
+            'empty_data' => 0,
+            'required' => false,
+            'help' => $this->__('Here you can choose a user which will be set as creator')
+        ]);
+        $builder->add('moderationSpecificCreationDate', 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', [
+            'mapped' => false,
+            'label' => $this->__('Creation date') . ':',
+            'attr' => [
+                'class' => '',
+                'title' => $this->__('Here you can choose a custom creation date')
+            ],
+            'empty_data' => '',
+            'required' => false,
+            'with_seconds' => true,
+            'date_widget' => 'single_text',
+            'time_widget' => 'single_text',
+            'help' => $this->__('Here you can choose a custom creation date')
         ]);
     }
 
@@ -252,7 +329,7 @@ abstract class AbstractPictureType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBlockPrefix()
     {
@@ -260,7 +337,7 @@ abstract class AbstractPictureType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -276,17 +353,17 @@ abstract class AbstractPictureType extends AbstractType
                 ],
                 'mode' => 'create',
                 'actions' => [],
-                'inlineUsage' => false
+                'has_moderate_permission' => false,
+                'filter_by_ownership' => true,
+                'inline_usage' => false
             ])
             ->setRequired(['entity', 'mode', 'actions'])
-            ->setAllowedTypes([
-                'mode' => 'string',
-                'actions' => 'array',
-                'inlineUsage' => 'bool'
-            ])
-            ->setAllowedValues([
-                'mode' => ['create', 'edit']
-            ])
+            ->setAllowedTypes('mode', 'string')
+            ->setAllowedTypes('actions', 'array')
+            ->setAllowedTypes('has_moderate_permission', 'bool')
+            ->setAllowedTypes('filter_by_ownership', 'bool')
+            ->setAllowedTypes('inline_usage', 'bool')
+            ->setAllowedValues('mode', ['create', 'edit'])
         ;
     }
 }

@@ -1,11 +1,11 @@
 {# Purpose of this template: Display avatars within an external context #}
 <dl>
     {% for avatar in items %}
-        <dt>{{ avatar.getTitleFromDisplayPattern() }}</dt>
+        <dt>{{ avatar|muimagemodule_formattedTitle }}</dt>
         {% if avatar.description %}
             <dd>{{ avatar.description|striptags|truncate(200, true, '&hellip;') }}</dd>
         {% endif %}
-        <dd><a href="{{ path('muimagemodule_avatar_display', { 'id': avatar.id }) }}">{{ __('Read more') }}</a>
+        <dd><a href="{{ path('muimagemodule_avatar_display', { 'id': avatar.getId() }) }}">{{ __('Read more') }}</a>
         </dd>
     {% else %}
         <dt>{{ __('No entries found.') }}</dt>

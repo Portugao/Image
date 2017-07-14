@@ -43,8 +43,11 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
      * @param ListEntriesHelper   $listHelper   ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
-    public function __construct(TranslatorInterface $translator, ListEntriesHelper $listHelper, FeatureActivationHelper $featureActivationHelper)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        ListEntriesHelper $listHelper,
+        FeatureActivationHelper $featureActivationHelper
+    ) {
         $this->setTranslator($translator);
         $this->listHelper = $listHelper;
         $this->featureActivationHelper = $featureActivationHelper;
@@ -61,7 +64,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -99,7 +102,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
     
         $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
             'label' => $this->__('Category'),
-            'empty_data' => [],
+            'empty_data' => null,
             'attr' => [
                 'class' => 'input-sm category-selector',
                 'title' => $this->__('This is an optional filter.')
@@ -174,7 +177,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
         $builder->add('q', 'Symfony\Component\Form\Extension\Core\Type\SearchType', [
             'label' => $this->__('Search'),
             'attr' => [
-                'max_length' => 255,
+                'maxlength' => 255,
                 'class' => 'input-sm'
             ],
             'required' => false
@@ -197,17 +200,17 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
                     'class' => 'input-sm'
                 ],
                 'choices' =>             [
-                    $this->__('Workflow state') => 'workflowState',
                     $this->__('Title') => 'title',
                     $this->__('Description') => 'description',
                     $this->__('Avatar upload') => 'avatarUpload',
                     $this->__('Supported modules') => 'supportedModules',
                     $this->__('Creation date') => 'createdDate',
                     $this->__('Creator') => 'createdBy',
-                    $this->__('Update date') => 'updatedDate'
+                    $this->__('Update date') => 'updatedDate',
+                    $this->__('Updater') => 'updatedBy'
                 ],
                 'choices_as_values' => true,
-                'required' => false,
+                'required' => true,
                 'expanded' => false
             ])
             ->add('sortdir', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
@@ -221,7 +224,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
                     $this->__('Descending') => 'desc'
                 ],
                 'choices_as_values' => true,
-                'required' => false,
+                'required' => true,
                 'expanded' => false
             ])
         ;
@@ -242,13 +245,13 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
                 'class' => 'input-sm text-right'
             ],
             'choices' => [
-                5 => 5,
-                10 => 10,
-                15 => 15,
-                20 => 20,
-                30 => 30,
-                50 => 50,
-                100 => 100
+                $this->__('5') => 5,
+                $this->__('10') => 10,
+                $this->__('15') => 15,
+                $this->__('20') => 20,
+                $this->__('30') => 30,
+                $this->__('50') => 50,
+                $this->__('100') => 100
             ],
             'choices_as_values' => true,
             'required' => false,
@@ -257,7 +260,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBlockPrefix()
     {

@@ -44,12 +44,13 @@ trait EntityWorkflowTrait
      */
     public function set__WORKFLOW__($__WORKFLOW__ = [])
     {
-        $this->__WORKFLOW__ = $__WORKFLOW__;
+        if ($this->__WORKFLOW__ != $__WORKFLOW__) {
+            $this->__WORKFLOW__ = $__WORKFLOW__;
+        }
     }
     
     /**
      * Returns the name of the primary identifier field.
-     * For entities with composite keys the first identifier field is used.
      *
      * @return string Identifier field name
      */
@@ -78,9 +79,9 @@ trait EntityWorkflowTrait
         $loadingRequired = false !== strpos($routeName, 'edit') || false !== strpos($routeName, 'delete');
         $isReuse = $request->query->getBoolean('astemplate', false);
     
-        $serviceManager = ServiceUtil::getManager();
-        $translator = $serviceManager->get('translator.default');
-        $workflowHelper = $serviceManager->get('mu_image_module.workflow_helper');
+        $container = ServiceUtil::get('service_container');
+        $translator = $container->get('translator.default');
+        $workflowHelper = $container->get('mu_image_module.workflow_helper');
         
         $objectType = $this->get_objectType();
         $idColumn = $this->getWorkflowIdColumn();
@@ -100,7 +101,7 @@ trait EntityWorkflowTrait
         if (($loadingRequired && !$isReuse) || $forceLoading) {
             $result = Zikula_Workflow_Util::getWorkflowForObject($this, $objectType, $idColumn, 'MUImageModule');
             if (!$result) {
-                $flashBag = $serviceManager->get('session')->getFlashBag();
+                $flashBag = $container->get('session')->getFlashBag();
                 $flashBag->add('error', $translator->__('Error! Could not load the associated workflow.'));
             }
         }

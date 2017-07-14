@@ -16,12 +16,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Zikula\Core\Doctrine\EntityAccess;
 use MU\ImageModule\Traits\EntityWorkflowTrait;
 use MU\ImageModule\Traits\StandardFieldsTrait;
-
-use RuntimeException;
-use ServiceUtil;
-use Zikula\Core\Doctrine\EntityAccess;
+use MU\ImageModule\Validator\Constraints as ImageAssert;
 
 /**
  * Entity class that defines the entity structure and behaviours.
@@ -52,12 +50,6 @@ abstract class AbstractPictureEntity extends EntityAccess
     protected $_objectType = 'picture';
     
     /**
-     * @Assert\Type(type="bool")
-     * @var boolean Option to bypass validation if needed
-     */
-    protected $_bypassValidation = false;
-    
-    /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer", unique=true)
@@ -69,7 +61,7 @@ abstract class AbstractPictureEntity extends EntityAccess
      * the current workflow state
      * @ORM\Column(length=20)
      * @Assert\NotBlank()
-     * @Assert\Choice(callback="getWorkflowStateAllowedValues", multiple=false)
+     * @ImageAssert\ListEntry(entityName="picture", propertyName="workflowState", multiple=false)
      * @var string $workflowState
      */
     protected $workflowState = 'initial';
@@ -104,14 +96,14 @@ abstract class AbstractPictureEntity extends EntityAccess
      * @Assert\NotBlank()
      * @Assert\Length(min="0", max="255")
      * @Assert\File(
-        maxSize = "200k",
-        mimeTypes = {"image/*"}
+     *    maxSize = "200k",
+     *    mimeTypes = {"image/*"}
      * )
      * @Assert\Image(
-        minWidth = 400,
-        maxWidth = 1000,
-        minHeight = 400,
-        maxHeight = 1000
+     *    minWidth = 400,
+     *    maxWidth = 1000,
+     *    minHeight = 400,
+     *    maxHeight = 1000
      * )
      * @var string $imageUpload
      */
@@ -121,15 +113,15 @@ abstract class AbstractPictureEntity extends EntityAccess
      * Full image upload path as url.
      *
      * @Assert\Type(type="string")
-     * @Assert\Url()
      * @var string $imageUploadUrl
      */
     protected $imageUploadUrl = '';
+    
     /**
      * @ORM\Column(type="integer")
      * @Assert\Type(type="integer")
      * @Assert\NotNull()
-     * @Assert\LessThan(value=2147483647, message="Length of field value must not be higher than 11.")) {
+     * @Assert\LessThan(value=100000000000)
      * @var integer $imageView
      */
     protected $imageView = 0;
@@ -147,7 +139,7 @@ abstract class AbstractPictureEntity extends EntityAccess
      * @Assert\Type(type="integer")
      * @Assert\NotBlank()
      * @Assert\NotEqualTo(value=0)
-     * @Assert\LessThan(value=2147483647, message="Length of field value must not be higher than 11.")) {
+     * @Assert\LessThan(value=100000000000)
      * @var integer $pos
      */
     protected $pos = 0;
@@ -159,7 +151,6 @@ abstract class AbstractPictureEntity extends EntityAccess
      * @ORM\ManyToOne(targetEntity="MU\ImageModule\Entity\AlbumEntity", inversedBy="pictures")
      * @ORM\JoinTable(name="mu_muimage_album")
      * @Assert\Type(type="MU\ImageModule\Entity\AlbumEntity")
-     * @Assert\Valid()
      * @var \MU\ImageModule\Entity\AlbumEntity $album
      */
     protected $album;
@@ -171,12 +162,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      * Will not be called by Doctrine and can therefore be used
      * for own implementation purposes. It is also possible to add
      * arbitrary arguments as with every other class method.
-     *
-     * @param TODO
      */
     public function __construct()
     {
-        $this->pos = 1;
         $this->initWorkflow();
     }
     
@@ -199,29 +187,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function set_objectType($_objectType)
     {
-        $this->_objectType = $_objectType;
-    }
-    
-    /**
-     * Returns the _bypass validation.
-     *
-     * @return boolean
-     */
-    public function get_bypassValidation()
-    {
-        return $this->_bypassValidation;
-    }
-    
-    /**
-     * Sets the _bypass validation.
-     *
-     * @param boolean $_bypassValidation
-     *
-     * @return void
-     */
-    public function set_bypassValidation($_bypassValidation)
-    {
-        $this->_bypassValidation = $_bypassValidation;
+        if ($this->_objectType != $_objectType) {
+            $this->_objectType = $_objectType;
+        }
     }
     
     
@@ -244,7 +212,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setId($id)
     {
-        $this->id = intval($id);
+        if (intval($this->id) !== intval($id)) {
+            $this->id = intval($id);
+        }
     }
     
     /**
@@ -266,7 +236,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setWorkflowState($workflowState)
     {
-        $this->workflowState = isset($workflowState) ? $workflowState : '';
+        if ($this->workflowState !== $workflowState) {
+            $this->workflowState = isset($workflowState) ? $workflowState : '';
+        }
     }
     
     /**
@@ -288,7 +260,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setTitle($title)
     {
-        $this->title = isset($title) ? $title : '';
+        if ($this->title !== $title) {
+            $this->title = isset($title) ? $title : '';
+        }
     }
     
     /**
@@ -310,7 +284,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setDescription($description)
     {
-        $this->description = isset($description) ? $description : '';
+        if ($this->description !== $description) {
+            $this->description = isset($description) ? $description : '';
+        }
     }
     
     /**
@@ -332,7 +308,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setImageUpload($imageUpload)
     {
-        $this->imageUpload = isset($imageUpload) ? $imageUpload : '';
+        if ($this->imageUpload !== $imageUpload) {
+            $this->imageUpload = isset($imageUpload) ? $imageUpload : '';
+        }
     }
     
     /**
@@ -354,7 +332,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setImageUploadUrl($imageUploadUrl)
     {
-        $this->imageUploadUrl = isset($imageUploadUrl) ? $imageUploadUrl : '';
+        if ($this->imageUploadUrl !== $imageUploadUrl) {
+            $this->imageUploadUrl = isset($imageUploadUrl) ? $imageUploadUrl : '';
+        }
     }
     
     /**
@@ -376,7 +356,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setImageUploadMeta($imageUploadMeta = [])
     {
-        $this->imageUploadMeta = isset($imageUploadMeta) ? $imageUploadMeta : '';
+        if ($this->imageUploadMeta !== $imageUploadMeta) {
+            $this->imageUploadMeta = isset($imageUploadMeta) ? $imageUploadMeta : '';
+        }
     }
     
     /**
@@ -398,7 +380,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setImageView($imageView)
     {
-        $this->imageView = intval($imageView);
+        if (intval($this->imageView) !== intval($imageView)) {
+            $this->imageView = intval($imageView);
+        }
     }
     
     /**
@@ -420,8 +404,8 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setAlbumImage($albumImage)
     {
-        if ($albumImage !== $this->albumImage) {
-            $this->albumImage = (bool)$albumImage;
+        if (boolval($this->albumImage) !== boolval($albumImage)) {
+            $this->albumImage = boolval($albumImage);
         }
     }
     
@@ -444,7 +428,9 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function setPos($pos)
     {
-        $this->pos = intval($pos);
+        if (intval($this->pos) !== intval($pos)) {
+            $this->pos = intval($pos);
+        }
     }
     
     
@@ -473,69 +459,6 @@ abstract class AbstractPictureEntity extends EntityAccess
     
     
     /**
-     * Returns the formatted title conforming to the display pattern
-     * specified for this entity.
-     *
-     * @return string The display title
-     */
-    public function getTitleFromDisplayPattern()
-    {
-        $listHelper = ServiceUtil::get('mu_image_module.listentries_helper');
-    
-        $formattedTitle = ''
-                . $this->getTitle();
-    
-        return $formattedTitle;
-    }
-    
-    
-    /**
-     * Returns a list of possible choices for the workflowState list field.
-     * This method is used for validation.
-     *
-     * @return array List of allowed choices
-     */
-    public static function getWorkflowStateAllowedValues()
-    {
-        $serviceManager = ServiceUtil::getManager();
-        $helper = $serviceManager->get('mu_image_module.listentries_helper');
-        $listEntries = $helper->getWorkflowStateEntriesForPicture();
-    
-        $allowedValues = ['initial'];
-        foreach ($listEntries as $entry) {
-            $allowedValues[] = $entry['value'];
-        }
-    
-        return $allowedValues;
-    }
-    
-    /**
-     * Start validation and raise exception if invalid data is found.
-     *
-     * @return boolean Whether everything is valid or not
-     */
-    public function validate()
-    {
-        if (true === $this->_bypassValidation) {
-            return true;
-        }
-    
-        $validator = ServiceUtil::get('validator');
-        $errors = $validator->validate($this);
-    
-        if (count($errors) > 0) {
-            $flashBag = ServiceUtil::get('session')->getFlashBag();
-            foreach ($errors as $error) {
-                $flashBag->add('error', $error->getMessage());
-            }
-    
-            return false;
-        }
-    
-        return true;
-    }
-    
-    /**
      * Return entity data in JSON format.
      *
      * @return string JSON-encoded data
@@ -552,27 +475,19 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function createUrlArgs()
     {
-        $args = [];
-    
-        $args['id'] = $this['id'];
-    
-        if (property_exists($this, 'slug')) {
-            $args['slug'] = $this['slug'];
-        }
-    
-        return $args;
+        return [
+            'id' => $this->getId()
+        ];
     }
     
     /**
-     * Create concatenated identifier string (for composite keys).
+     * Returns the primary key.
      *
-     * @return String concatenated identifiers
+     * @return integer The identifier
      */
-    public function createCompositeIdentifier()
+    public function getKey()
     {
-        $itemId = $this['id'];
-    
-        return $itemId;
+        return $this->getId();
     }
     
     /**
@@ -615,7 +530,7 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function __toString()
     {
-        return 'Picture ' . $this->createCompositeIdentifier() . ': ' . $this->getTitleFromDisplayPattern();
+        return 'Picture ' . $this->getKey() . ': ' . $this->getTitle();
     }
     
     /**
@@ -631,13 +546,13 @@ abstract class AbstractPictureEntity extends EntityAccess
     public function __clone()
     {
         // if the entity has no identity do nothing, do NOT throw an exception
-        if (!($this->id)) {
+        if (!$this->id) {
             return;
         }
     
         // otherwise proceed
     
-        // unset identifiers
+        // unset identifier
         $this->setId(0);
     
         // reset workflow

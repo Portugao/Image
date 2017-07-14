@@ -15,12 +15,8 @@ namespace MU\ImageModule\Controller\Base;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use RuntimeException;
 use Zikula\Core\Controller\AbstractController;
-use Zikula\Core\Response\Ajax\AjaxResponse;
-use Zikula\Core\Response\Ajax\BadDataResponse;
-use Zikula\Core\Response\Ajax\FatalResponse;
-use Zikula\Core\Response\Ajax\NotFoundResponse;
+use Zikula\UsersModule\Constant as UsersConstant;
 
 /**
  * Ajax controller base class.
@@ -29,26 +25,65 @@ abstract class AbstractAjaxController extends AbstractController
 {
     
     /**
+     * Retrieves a general purpose list of users.
+     *
+     * @param Request $request Current request instance
+     *
+     * @return JsonResponse
+     */
+    public function searchUsersAction(Request $request)
+    {
+        if (!$this->hasPermission('MUImageModule::Ajax', '::', ACCESS_EDIT)) {
+            return true;
+        }
+        
+        $fragment = $request->query->get('fragment', '');
+        $userRepository = $this->get('zikula_users_module.user_repository');
+        $limit = 50;
+        $filter = [
+            'activated' => ['operator' => 'notIn', 'operand' => [
+                UsersConstant::ACTIVATED_PENDING_REG,
+                UsersConstant::ACTIVATED_PENDING_DELETE
+            ]],
+            'uname' => ['operator' => 'like', 'operand' => '%' . $fragment . '%']
+        ];
+        $results = $userRepository->query($filter, ['uname' => 'asc'], $limit);
+        
+        // load avatar plugin
+        include_once 'lib/legacy/viewplugins/function.useravatar.php';
+        $view = \Zikula_View::getInstance('MUImageModule', false);
+        
+        $resultItems = [];
+        if (count($results) > 0) {
+            foreach ($results as $result) {
+                $resultItems[] = [
+                    'uid' => $result->getUid(),
+                    'uname' => $result->getUname(),
+                    'avatar' => $profileModule->getAvatar(['uid' => $result->getUid(), ['rating' => 'g']])
+                ];
+            }
+        }
+        
+        // return response
+        return new JsonResponse($resultItems);
+    }
+    
+    /**
      * Retrieve item list for finder selections in Forms, Content type plugin and Scribite.
      *
      * @param string $ot      Name of currently used object type
      * @param string $sort    Sorting field
      * @param string $sortdir Sorting direction
      *
-     * @return AjaxResponse
+     * @return JsonResponse
      */
     public function getItemListFinderAction(Request $request)
     {
-        if (!$this->hasPermission($this->name . '::Ajax', '::', ACCESS_EDIT)) {
+        if (!$this->hasPermission('MUImageModule::Ajax', '::', ACCESS_EDIT)) {
             return true;
         }
         
-        $objectType = 'album';
-        if ($request->isMethod('POST') && $request->request->has('ot')) {
-            $objectType = $request->request->getAlnum('ot', 'album');
-        } elseif ($request->isMethod('GET') && $request->query->has('ot')) {
-            $objectType = $request->query->getAlnum('ot', 'album');
-        }
+        $objectType = $request->query->getAlnum('ot', 'album');
         $controllerHelper = $this->get('mu_image_module.controller_helper');
         $contextArgs = ['controller' => 'ajax', 'action' => 'getItemListFinder'];
         if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $contextArgs))) {
@@ -56,60 +91,66 @@ abstract class AbstractAjaxController extends AbstractController
         }
         
         $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
-        $repository->setRequest($request);
-        $selectionHelper = $this->get('mu_image_module.selection_helper');
-        $idFields = $selectionHelper->getIdFields($objectType);
+        $entityDisplayHelper = $this->get('mu_image_module.entity_display_helper');
+        $descriptionFieldName = $entityDisplayHelper->getDescriptionFieldName($objectType);
         
-        $descriptionField = $repository->getDescriptionFieldName();
-        
-        $sort = $request->request->getAlnum('sort', '');
+        $sort = $request->query->getAlnum('sort', '');
         if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
             $sort = $repository->getDefaultSortingField();
         }
         
-        $sdir = strtolower($request->request->getAlpha('sortdir', ''));
+        $sdir = strtolower($request->query->getAlpha('sortdir', ''));
         if ($sdir != 'asc' && $sdir != 'desc') {
             $sdir = 'asc';
         }
         
         $where = ''; // filters are processed inside the repository class
+        $searchTerm = $request->query->get('q', '');
         $sortParam = $sort . ' ' . $sdir;
         
-        $entities = $repository->selectWhere($where, $sortParam);
+        $entities = [];
+        if ($searchTerm != '') {
+            list ($entities, $totalAmount) = $repository->selectSearch($searchTerm, [], $sortParam, 1, 50);
+        } else {
+            $entities = $repository->selectWhere($where, $sortParam);
+        }
         
         $slimItems = [];
-        $component = $this->name . ':' . ucfirst($objectType) . ':';
+        $component = 'MUImageModule:' . ucfirst($objectType) . ':';
         foreach ($entities as $item) {
-            $itemId = '';
-            foreach ($idFields as $idField) {
-                $itemId .= ((!empty($itemId)) ? '_' : '') . $item[$idField];
-            }
+            $itemId = $item->getKey();
             if (!$this->hasPermission($component, $itemId . '::', ACCESS_READ)) {
                 continue;
             }
-            $slimItems[] = $this->prepareSlimItem($objectType, $item, $itemId, $descriptionField);
+            $slimItems[] = $this->prepareSlimItem($repository, $objectType, $item, $itemId, $descriptionFieldName);
         }
         
-        return new AjaxResponse($slimItems);
+        // return response
+        return new JsonResponse($slimItems);
     }
     
     /**
      * Builds and returns a slim data array from a given entity.
      *
-     * @param string $objectType       The currently treated object type
-     * @param object $item             The currently treated entity
-     * @param string $itemid           Data item identifier(s)
-     * @param string $descriptionField Name of item description field
+     * @param EntityRepository $repository       Repository for the treated object type
+     * @param string           $objectType       The currently treated object type
+     * @param object           $item             The currently treated entity
+     * @param string           $itemId           Data item identifier(s)
+     * @param string           $descriptionField Name of item description field
      *
      * @return array The slim data representation
      */
-    protected function prepareSlimItem($objectType, $item, $itemId, $descriptionField)
+    protected function prepareSlimItem($repository, $objectType, $item, $itemId, $descriptionField)
     {
-        $view = Zikula_View::getInstance('MUImageModule', false);
-        $view->assign($objectType, $item);
-        $previewInfo = base64_encode($view->fetch('External/' . ucfirst($objectType) . '/info.html.twig'));
+        $previewParameters = [
+            $objectType => $item
+        ];
+        $contextArgs = ['controller' => $objectType, 'action' => 'display'];
+        $previewParameters = $this->get('mu_image_module.controller_helper')->addTemplateParameters($objectType, $previewParameters, 'controllerAction', $contextArgs);
     
-        $title = $item->getTitleFromDisplayPattern();
+        $previewInfo = base64_encode($this->get('twig')->render('@MUImageModule/External/' . ucfirst($objectType) . '/info.html.twig', $previewParameters));
+    
+        $title = $this->get('mu_image_module.entity_display_helper')->getFormattedTitle($item);
         $description = $descriptionField != '' ? $item[$descriptionField] : '';
     
         return [
@@ -121,131 +162,32 @@ abstract class AbstractAjaxController extends AbstractController
     }
     
     /**
-     * Searches for entities for auto completion usage.
-     *
-     * @param Request $request Current request instance
-     *
-     * @return JsonResponse
-     */
-    public function getItemListAutoCompletionAction(Request $request)
-    {
-        if (!$this->hasPermission($this->name . '::Ajax', '::', ACCESS_EDIT)) {
-            return true;
-        }
-        
-        $objectType = 'album';
-        if ($request->isMethod('POST') && $request->request->has('ot')) {
-            $objectType = $request->request->getAlnum('ot', 'album');
-        } elseif ($request->isMethod('GET') && $request->query->has('ot')) {
-            $objectType = $request->query->getAlnum('ot', 'album');
-        }
-        $controllerHelper = $this->get('mu_image_module.controller_helper');
-        $contextArgs = ['controller' => 'ajax', 'action' => 'getItemListAutoCompletion'];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $contextArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $contextArgs);
-        }
-        
-        $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
-        $selectionHelper = $this->get('mu_image_module.selection_helper');
-        $idFields = $selectionHelper->getIdFields($objectType);
-        
-        $fragment = '';
-        $exclude = '';
-        if ($request->isMethod('POST') && $request->request->has('fragment')) {
-            $fragment = $request->request->get('fragment', '');
-            $exclude = $request->request->get('exclude', '');
-        } elseif ($request->isMethod('GET') && $request->query->has('fragment')) {
-            $fragment = $request->query->get('fragment', '');
-            $exclude = $request->query->get('exclude', '');
-        }
-        $exclude = !empty($exclude) ? explode(',', $exclude) : [];
-        
-        // parameter for used sorting field
-        $sort = $request->query->get('sort', '');
-        if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
-            $sort = $repository->getDefaultSortingField();
-            $request->query->set('sort', $sort);
-            // set default sorting in route parameters (e.g. for the pager)
-            $routeParams = $request->attributes->get('_route_params');
-            $routeParams['sort'] = $sort;
-            $request->attributes->set('_route_params', $routeParams);
-        }
-        $sortParam = $sort . ' asc';
-        
-        $currentPage = 1;
-        $resultsPerPage = 20;
-        
-        // get objects from database
-        list($entities, $objectCount) = $repository->selectSearch($fragment, $exclude, $sortParam, $currentPage, $resultsPerPage);
-        
-        $resultItems = [];
-        
-        if ((is_array($entities) || is_object($entities)) && count($entities) > 0) {
-            $descriptionFieldName = $repository->getDescriptionFieldName();
-            $previewFieldName = $repository->getPreviewFieldName();
-            
-            //$imageHelper = $this->get('mu_image_module.image_helper');
-            //$imagineManager = $imageHelper->getManager($objectType, $previewFieldName, 'controllerAction', $contextArgs);
-            $imagineManager = $this->get('systemplugin.imagine.manager');
-            foreach ($entities as $item) {
-                $itemTitle = $item->getTitleFromDisplayPattern();
-                $itemTitleStripped = str_replace('"', '', $itemTitle);
-                $itemDescription = isset($item[$descriptionFieldName]) && !empty($item[$descriptionFieldName]) ? $item[$descriptionFieldName] : '';//$this->__('No description yet.')
-                if (!empty($itemDescription)) {
-                    $itemDescription = substr($itemDescription, 0, 50) . '&hellip;';
-                }
-        
-                $resultItem = [
-                    'id' => $item->createCompositeIdentifier(),
-                    'title' => $item->getTitleFromDisplayPattern(),
-                    'description' => $itemDescription,
-                    'image' => ''
-                ];
-        
-                // check for preview image
-                if (!empty($previewFieldName) && !empty($item[$previewFieldName])) {
-                    $fullObjectId = $objectType . '-' . $resultItem['id'];
-                    $thumbImagePath = $imagineManager->getThumb($item[$previewFieldName], $fullObjectId);
-                    $preview = '<img src="' . $thumbImagePath . '" width="50" height="50" alt="' . $itemTitleStripped . '" />';
-                    $resultItem['image'] = $preview;
-                }
-        
-                $resultItems[] = $resultItem;
-            }
-        }
-        
-        return new JsonResponse($resultItems);
-    }
-    
-    /**
      * Checks whether a field value is a duplicate or not.
      *
      * @param Request $request Current request instance
      *
-     * @return AjaxResponse
+     * @return JsonResponse
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
     public function checkForDuplicateAction(Request $request)
     {
-        if (!$this->hasPermission($this->name . '::Ajax', '::', ACCESS_EDIT)) {
+        if (!$this->hasPermission('MUImageModule::Ajax', '::', ACCESS_EDIT)) {
             throw new AccessDeniedException();
         }
         
-        $postData = $request->request;
-        
-        $objectType = $postData->getAlnum('ot', 'album');
+        $objectType = $request->query->getAlnum('ot', 'album');
         $controllerHelper = $this->get('mu_image_module.controller_helper');
         $contextArgs = ['controller' => 'ajax', 'action' => 'checkForDuplicate'];
         if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $contextArgs))) {
             $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $contextArgs);
         }
         
-        $fieldName = $postData->getAlnum('fn', '');
-        $value = $postData->get('v', '');
+        $fieldName = $request->query->getAlnum('fn', '');
+        $value = $request->query->get('v', '');
         
         if (empty($fieldName) || empty($value)) {
-            return new BadDataResponse($this->__('Error: invalid input.'));
+            return new JsonResponse($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
         }
         
         // check if the given field is existing and unique
@@ -256,14 +198,10 @@ abstract class AbstractAjaxController extends AbstractController
                     break;
         }
         if (!count($uniqueFields) || !in_array($fieldName, $uniqueFields)) {
-            return new BadDataResponse($this->__('Error: invalid input.'));
+            return new JsonResponse($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
         }
         
-        $exclude = $postData->get('ex', '');
-        /* can probably be removed
-         * $createMethod = 'create' . ucfirst($objectType);
-         * $object = $repository = $this->get('mu_image_module.entity_factory')->$createMethod();
-         */
+        $exclude = $request->query->getInt('ex', '');
         
         $result = false;
         switch ($objectType) {
@@ -278,9 +216,7 @@ abstract class AbstractAjaxController extends AbstractController
         }
         
         // return response
-        $result = ['isDuplicate' => $result];
-        
-        return new AjaxResponse($result);
+        return new JsonResponse(['isDuplicate' => $result]);
     }
     
     /**
@@ -288,54 +224,50 @@ abstract class AbstractAjaxController extends AbstractController
      *
      * @param Request $request Current request instance
      *
-     * @return AjaxResponse
+     * @return JsonResponse
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
     public function toggleFlagAction(Request $request)
     {
-        if (!$this->hasPermission($this->name . '::Ajax', '::', ACCESS_EDIT)) {
+        if (!$this->hasPermission('MUImageModule::Ajax', '::', ACCESS_EDIT)) {
             throw new AccessDeniedException();
         }
         
-        $postData = $request->request;
-        
-        $objectType = $postData->getAlnum('ot', 'album');
-        $field = $postData->getAlnum('field', '');
-        $id = $postData->getInt('id', 0);
+        $objectType = $request->request->getAlnum('ot', 'album');
+        $field = $request->request->getAlnum('field', '');
+        $id = $request->request->getInt('id', 0);
         
         if ($id == 0
             || ($objectType != 'album')
         || ($objectType == 'album' && !in_array($field, ['notInFrontend']))
         ) {
-            return new BadDataResponse($this->__('Error: invalid input.'));
+            return new JsonResponse($this->__('Error: invalid input.'), JsonResponse::HTTP_BAD_REQUEST);
         }
         
         // select data from data source
-        $selectionHelper = $this->get('mu_image_module.selection_helper');
-        $entity = $selectionHelper->getEntity($objectType, $id);
+        $entityFactory = $this->get('mu_image_module.entity_factory');
+        $repository = $entityFactory->getRepository($objectType);
+        $entity = $repository->selectById($id, false);
         if (null === $entity) {
-            return new NotFoundResponse($this->__('No such item.'));
+            return new JsonResponse($this->__('No such item.'), JsonResponse::HTTP_NOT_FOUND);
         }
         
         // toggle the flag
         $entity[$field] = !$entity[$field];
         
         // save entity back to database
-        $entityManager = $this->get('doctrine.orm.default_entity_manager');
-        $entityManager->flush();
-        
-        // return response
-        $result = [
-            'id' => $id,
-            'state' => $entity[$field],
-            'message' => $this->__('The setting has been successfully changed.')
-        ];
+        $entityFactory->getObjectManager()->flush();
         
         $logger = $this->get('logger');
         $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'field' => $field, 'entity' => $objectType, 'id' => $id];
         $logger->notice('{app}: User {user} toggled the {field} flag the {entity} with id {id}.', $logArgs);
         
-        return new AjaxResponse($result);
+        // return response
+        return new JsonResponse([
+            'id' => $id,
+            'state' => $entity[$field],
+            'message' => $this->__('The setting has been successfully changed.')
+        ]);
     }
 }

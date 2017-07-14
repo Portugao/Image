@@ -43,6 +43,9 @@ abstract class AbstractEditHandler extends EditHandler
         $this->hasPageLockSupport = true;
     
         $result = parent::processForm($templateParameters);
+        if ($result instanceof RedirectResponse) {
+            return $result;
+        }
     
         if ($this->templateParameters['mode'] == 'create') {
             if (!$this->modelHelper->canBeCreated($this->objectType)) {
@@ -56,7 +59,7 @@ abstract class AbstractEditHandler extends EditHandler
     
         $entityData = $this->entityRef->toArray();
     
-        // assign data to template as array (makes translatable support easier)
+        // assign data to template as array (for additions like standard fields)
         $this->templateParameters[$this->objectTypeLower] = $entityData;
     
         return $result;
@@ -74,7 +77,7 @@ abstract class AbstractEditHandler extends EditHandler
         // editable relation, we store the id and assign it now to show it in UI
         $this->relationPresets['album'] = $this->request->get('album', '');
         if (!empty($this->relationPresets['album'])) {
-            $relObj = $this->selectionHelper->getEntity('album', $this->relationPresets['album']);
+            $relObj = $this->entityFactory->getRepository('album')->selectById($this->relationPresets['album']);
             if (null !== $relObj) {
                 $relObj->addPictures($entity);
             }
@@ -93,7 +96,8 @@ abstract class AbstractEditHandler extends EditHandler
             'entity' => $this->entityRef,
             'mode' => $this->templateParameters['mode'],
             'actions' => $this->templateParameters['actions'],
-            'inlineUsage' => $this->templateParameters['inlineUsage']
+            'has_moderate_permission' => $this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_MODERATE),
+            'filter_by_ownership' => !$this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_ADD)
         ];
     
         return $this->formFactory->create('MU\ImageModule\Form\Type\PictureType', $this->entityRef, $options);
@@ -117,15 +121,23 @@ abstract class AbstractEditHandler extends EditHandler
         $codes[] = 'userView';
         // admin list of pictures
         $codes[] = 'adminView';
+        // user list of own pictures
+        $codes[] = 'userOwnView';
+        // admin list of own pictures
+        $codes[] = 'adminOwnView';
         // user detail page of treated picture
         $codes[] = 'userDisplay';
         // admin detail page of treated picture
         $codes[] = 'adminDisplay';
     
         // user list of albums
-        $codes[] = 'userViewAlbum';
+        $codes[] = 'userViewAlbums';
         // admin list of albums
-        $codes[] = 'adminViewAlbum';
+        $codes[] = 'adminViewAlbums';
+        // user list of own albums
+        $codes[] = 'userOwnViewAlbums';
+        // admin list of own albums
+        $codes[] = 'adminOwnViewAlbums';
         // user detail page of related album
         $codes[] = 'userDisplayAlbum';
         // admin detail page of related album
@@ -147,7 +159,6 @@ abstract class AbstractEditHandler extends EditHandler
         $objectIsPersisted = $args['commandName'] != 'delete' && !($this->templateParameters['mode'] == 'create' && $args['commandName'] == 'cancel');
     
         if (null !== $this->returnTo) {
-            
             $isDisplayOrEditPage = substr($this->returnTo, -7) == 'display' || substr($this->returnTo, -4) == 'edit';
             if (!$isDisplayOrEditPage || $objectIsPersisted) {
                 // return to referer
@@ -159,8 +170,7 @@ abstract class AbstractEditHandler extends EditHandler
         $routePrefix = 'muimagemodule_' . $this->objectTypeLower . '_' . $routeArea;
     
         // redirect to the list of pictures
-        $viewArgs = [];
-        $url = $this->router->generate($routePrefix . 'view', $viewArgs);
+        $url = $this->router->generate($routePrefix . 'view');
     
         return $url;
     }
@@ -249,9 +259,9 @@ abstract class AbstractEditHandler extends EditHandler
         try {
             // execute the workflow action
             $success = $this->workflowHelper->executeAction($entity, $action);
-        } catch(\Exception $e) {
-            $flashBag->add('error', $this->__f('Sorry, but an error occured during the %action% action. Please apply the changes again!', ['%action%' => $action]) . ' ' . $e->getMessage());
-            $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => 'picture', 'id' => $entity->createCompositeIdentifier(), 'errorMessage' => $e->getMessage()];
+        } catch(\Exception $exception) {
+            $flashBag->add('error', $this->__f('Sorry, but an error occured during the %action% action. Please apply the changes again!', ['%action%' => $action]) . ' ' . $exception->getMessage());
+            $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => 'picture', 'id' => $entity->getKey(), 'errorMessage' => $exception->getMessage()];
             $this->logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed. Error details: {errorMessage}.', $logArgs);
         }
     
@@ -259,9 +269,7 @@ abstract class AbstractEditHandler extends EditHandler
     
         if ($success && $this->templateParameters['mode'] == 'create') {
             // store new identifier
-            foreach ($this->idFields as $idField) {
-                $this->idValues[$idField] = $entity[$idField];
-            }
+            $this->idValue = $entity->getKey();
         }
     
         return $success;
@@ -276,25 +284,12 @@ abstract class AbstractEditHandler extends EditHandler
      */
     protected function getRedirectUrl($args)
     {
-        if (true === $this->templateParameters['inlineUsage']) {
-            $urlArgs = [
-                'idPrefix' => $this->idPrefix,
-                'commandName' => $args['commandName']
-            ];
-            foreach ($this->idFields as $idField) {
-                $urlArgs[$idField] = $this->idValues[$idField];
-            }
-    
-            // inline usage, return to special function for closing the modal window instance
-            return $this->router->generate('muimagemodule_' . $this->objectTypeLower . '_handleinlineredirect', $urlArgs);
-        }
-    
         if ($this->repeatCreateAction) {
             return $this->repeatReturnUrl;
         }
     
-        if ($this->request->getSession()->has('muimagemoduleReferer')) {
-            $this->request->getSession()->del('muimagemoduleReferer');
+        if ($this->request->getSession()->has('muimagemodule' . $this->objectTypeCapital . 'Referer')) {
+            $this->request->getSession()->del('muimagemodule' . $this->objectTypeCapital . 'Referer');
         }
     
         // normal usage, compute return url from given redirect code
@@ -314,20 +309,22 @@ abstract class AbstractEditHandler extends EditHandler
             case 'userView':
             case 'adminView':
                 return $this->router->generate($routePrefix . 'view');
+            case 'userOwnView':
+            case 'adminOwnView':
+                return $this->router->generate($routePrefix . 'view', [ 'own' => 1 ]);
             case 'userDisplay':
             case 'adminDisplay':
                 if ($args['commandName'] != 'delete' && !($this->templateParameters['mode'] == 'create' && $args['commandName'] == 'cancel')) {
-                    foreach ($this->idFields as $idField) {
-                        $urlArgs[$idField] = $this->idValues[$idField];
-                    }
-    
-                    return $this->router->generate($routePrefix . 'display', $urlArgs);
+                    return $this->router->generate($routePrefix . 'display', $this->entityRef->createUrlArgs());
                 }
     
                 return $this->getDefaultReturnUrl($args);
-            case 'userViewAlbum':
-            case 'adminViewAlbum':
+            case 'userViewAlbums':
+            case 'adminViewAlbums':
                 return $this->router->generate('muimagemodule_album_' . $routeArea . 'view');
+            case 'userOwnViewAlbums':
+            case 'adminOwnViewAlbums':
+                return $this->router->generate('muimagemodule_album_' . $routeArea . 'view', ['own' => 1]);
             case 'userDisplayAlbum':
             case 'adminDisplayAlbum':
                 if (!empty($this->relationPresets['album'])) {

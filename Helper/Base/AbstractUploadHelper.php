@@ -12,14 +12,16 @@
 
 namespace MU\ImageModule\Helper\Base;
 
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
-use Zikula\ExtensionsModule\Api\VariableApi;
 use Zikula\UsersModule\Api\CurrentUserApi;
 
 /**
@@ -45,9 +47,9 @@ abstract class AbstractUploadHelper
     protected $currentUserApi;
 
     /**
-     * @var VariableApi
+     * @var array
      */
-    protected $variableApi;
+    protected $moduleVars;
 
     /**
      * @var String
@@ -76,7 +78,7 @@ abstract class AbstractUploadHelper
      * @param SessionInterface    $session        Session service instance
      * @param LoggerInterface     $logger         Logger service instance
      * @param CurrentUserApi      $currentUserApi CurrentUserApi service instance
-     * @param VariableApi         $variableApi    VariableApi service instance
+     * @param object              $moduleVars     Existing module vars
      * @param String              $dataDirectory  The data directory name
      */
     public function __construct(
@@ -84,14 +86,14 @@ abstract class AbstractUploadHelper
         SessionInterface $session,
         LoggerInterface $logger,
         CurrentUserApi $currentUserApi,
-        VariableApi $variableApi,
-        $dataDirectory)
-    {
+        $moduleVars,
+        $dataDirectory
+    ) {
         $this->setTranslator($translator);
         $this->session = $session;
         $this->logger = $logger;
         $this->currentUserApi = $currentUserApi;
-        $this->variableApi = $variableApi;
+        $this->moduleVars = $moduleVars;
         $this->dataDirectory = $dataDirectory;
 
         $this->allowedObjectTypes = ['picture', 'avatar'];
@@ -131,10 +133,7 @@ abstract class AbstractUploadHelper
         }
     
         // perform validation
-        try {
-            $this->validateFileUpload($objectType, $file, $fieldName);
-        } catch (\Exception $e) {
-            // skip this upload field
+        if (!$this->validateFileUpload($objectType, $file, $fieldName)) {
             return $result;
         }
     
@@ -154,11 +153,11 @@ abstract class AbstractUploadHelper
         // retrieve the final file name
         try {
             $basePath = $this->getFileBaseFolder($objectType, $fieldName);
-        } catch (\Exception $e) {
-            $flashBag->add('error', $e->getMessage());
-            $this->logger->error('{app}: User {user} could not detect upload destination path for entity {entity} and field {field}.', ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $objectType, 'field' => $fieldName]);
+        } catch (\Exception $exception) {
+            $flashBag->add('error', $exception->getMessage());
+            $this->logger->error('{app}: User {user} could not detect upload destination path for entity {entity} and field {field}. ' . $exception->getMessage(), ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $objectType, 'field' => $fieldName]);
     
-            return false;
+            return $result;
         }
         $fileName = $this->determineFileName($objectType, $fieldName, $basePath, $fileName, $extension);
     
@@ -181,30 +180,18 @@ abstract class AbstractUploadHelper
         if ($isImage) {
             // check if shrinking functionality is enabled
             $fieldSuffix = ucfirst($objectType) . ucfirst($fieldName);
-            if (true === $this->variableApi->get('MUImageModule', 'enableShrinkingFor' . $fieldSuffix, false)) {
+            if (isset($this->moduleVars['enableShrinkingFor' . $fieldSuffix]) && true === (bool)$this->moduleVars['enableShrinkingFor' . $fieldSuffix]) {
                 // check for maximum size
-                $maxWidth = $this->variableApi->get('MUImageModule', 'shrinkWidth' . $fieldSuffix, 800);
-                $maxHeight = $this->variableApi->get('MUImageModule', 'shrinkHeight' . $fieldSuffix, 600);
+                $maxWidth = isset($this->moduleVars['shrinkWidth' . $fieldSuffix]) ? $this->moduleVars['shrinkWidth' . $fieldSuffix] : 800;
+                $maxHeight = isset($this->moduleVars['shrinkHeight' . $fieldSuffix]) ? $this->moduleVars['shrinkHeight' . $fieldSuffix] : 600;
     
                 $imgInfo = getimagesize($destinationFilePath);
                 if ($imgInfo[0] > $maxWidth || $imgInfo[1] > $maxHeight) {
                     // resize to allowed maximum size
-                    $thumbManager = $serviceManager->get('systemplugin.imagine.manager');
-                    $preset = new \SystemPlugin_Imagine_Preset('MUImageModule_Shrinker', [
-                        'width' => $maxWidth,
-                        'height' => $maxHeight,
-                        'mode' => 'inset'
-                    ]);
-                    $thumbManager->setPreset($preset);
-    
-                    // create thumbnail image
-                    $thumbFilePath = $thumbManager->getThumb($destinationFilePath, $maxWidth, $maxHeight);
-    
-                    // remove original image
-                    unlink($destinationFilePath);
-    
-                    // rename thumbnail image to original image
-                    rename($thumbFilePath, $destinationFilePath);
+                    $imagine = new Imagine();
+                    $image = $imagine->open($destinationFilePath);
+                    $image->resize(new Box($maxWidth, $maxHeight))
+                          ->save($destinationFilePath);
                 }
             }
         }
@@ -461,8 +448,6 @@ abstract class AbstractUploadHelper
             case 'picture':
                 $basePath .= 'pictures/imageupload/';
                 break;
-            default:
-                throw new Exception($this->__('Error! Invalid object type received.'));
             case 'avatar':
                 $basePath .= 'avatars/avatarupload/';
                 break;
@@ -481,6 +466,35 @@ abstract class AbstractUploadHelper
         }
     
         return $result;
+    }
+
+    /**
+     * Prepares an upload field by transforming the file name into a File object.
+     *
+     * @param EntityAccess $entity    The entity object
+     * @param string       $fieldName Name of upload field
+     * @param string       $baseUrl   The base url to prepend
+     */
+    public function initialiseUploadField($entity, $fieldName, $baseUrl)
+    {
+        if (empty($fieldName)) {
+            return;
+        }
+        $fileName = $entity[$fieldName];
+        $filePath = $this->getFileBaseFolder($entity->get_objectType(), $fieldName) . $fileName;
+        if (!empty($fileName) && file_exists($filePath)) {
+            $entity[$fieldName] = new File($filePath);
+            $entity[$fieldName . 'Url'] = $baseUrl . '/' . $filePath;
+    
+            // determine meta data if it does not exist
+            if (!is_array($entity[$fieldName . 'Meta']) || !count($entity[$fieldName . 'Meta'])) {
+                $entity[$fieldName . 'Meta'] = $this->readMetaDataForFile($fileName, $filePath);
+            }
+        } else {
+            $entity[$fieldName] = null;
+            $entity[$fieldName . 'Url'] = '';
+            $entity[$fieldName . 'Meta'] = [];
+        }
     }
 
     /**
@@ -519,8 +533,8 @@ abstract class AbstractUploadHelper
         if (!$fs->exists($uploadPath)) {
             try {
                 $fs->mkdir($uploadPath, 0777);
-            } catch (IOExceptionInterface $e) {
-                $flashBag->add('error', $this->__f('The upload directory "%s" does not exist and could not be created. Try to create it yourself and make sure that this folder is accessible via the web and writable by the webserver.', ['%s' => $e->getPath()]));
+            } catch (IOExceptionInterface $exception) {
+                $flashBag->add('error', $this->__f('The upload directory "%path%" does not exist and could not be created. Try to create it yourself and make sure that this folder is accessible via the web and writable by the webserver.', ['%path%' => $exception->getPath()]));
                 $this->logger->error('{app}: The upload directory {directory} does not exist and could not be created.', ['app' => 'MUImageModule', 'directory' => $uploadPath]);
     
                 return false;
@@ -531,8 +545,8 @@ abstract class AbstractUploadHelper
         if (!is_writable($uploadPath)) {
             try {
                 $fs->chmod($uploadPath, 0777);
-            } catch (IOExceptionInterface $e) {
-                $flashBag->add('warning', $this->__f('Warning! The upload directory at "%s" exists but is not writable by the webserver.', ['%s' => $e->getPath()]));
+            } catch (IOExceptionInterface $exception) {
+                $flashBag->add('warning', $this->__f('Warning! The upload directory at "%path%" exists but is not writable by the webserver.', ['%path%' => $exception->getPath()]));
                 $this->logger->error('{app}: The upload directory {directory} exists but is not writable by the webserver.', ['app' => 'MUImageModule', 'directory' => $uploadPath]);
     
                 return false;
@@ -547,9 +561,12 @@ abstract class AbstractUploadHelper
                 $extensions = str_replace(',', '|', str_replace(' ', '', $allowedExtensions));
                 $htaccessContent = str_replace('__EXTENSIONS__', $extensions, file_get_contents($htaccessFileTemplate, false));
                 $fs->dumpFile($htaccessFilePath, $htaccessContent);
-            } catch (IOExceptionInterface $e) {
-                $flashBag->add('error', $this->__f('An error occured during creation of the .htaccess file in directory "%s".', ['%s' => $e->getPath()]));
+            } catch (IOExceptionInterface $exception) {
+                $flashBag->add('error', $this->__f('An error occured during creation of the .htaccess file in directory "%path%".', ['%path%' => $exception->getPath()]));
+    
                 $this->logger->error('{app}: An error occured during creation of the .htaccess file in directory {directory}.', ['app' => 'MUImageModule', 'directory' => $uploadPath]);
+    
+                return false;
             }
         }
     

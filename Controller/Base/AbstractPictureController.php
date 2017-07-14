@@ -70,7 +70,7 @@ abstract class AbstractPictureController extends AbstractController
         // parameter specifying which type of objects we are treating
         $objectType = 'picture';
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_OVERVIEW;
-        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
         $templateParameters = [
@@ -78,9 +78,6 @@ abstract class AbstractPictureController extends AbstractController
         ];
         
         return $this->redirectToRoute('muimagemodule_picture_' . $templateParameters['routeArea'] . 'view');
-        
-        // return index template
-        return $this->render('@MUImageModule/Picture/index.html.twig', $templateParameters);
     }
     /**
      * This action provides an item list overview in the admin area.
@@ -128,7 +125,7 @@ abstract class AbstractPictureController extends AbstractController
         // parameter specifying which type of objects we are treating
         $objectType = 'picture';
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
-        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
         $templateParameters = [
@@ -137,12 +134,10 @@ abstract class AbstractPictureController extends AbstractController
         $controllerHelper = $this->get('mu_image_module.controller_helper');
         $viewHelper = $this->get('mu_image_module.view_helper');
         
-        // parameter for used sort order
-        $sortdir = strtolower($sortdir);
-        $request->query->set('sort', $sort);
-        $request->query->set('sortdir', $sortdir);
+        $request->query->set('pos', $pos);
         
         $sortableColumns = new SortableColumns($this->get('router'), 'muimagemodule_picture_' . ($isAdmin ? 'admin' : '') . 'view', 'sort', 'sortdir');
+        
         $sortableColumns->addColumns([
             new Column('title'),
             new Column('description'),
@@ -167,7 +162,7 @@ abstract class AbstractPictureController extends AbstractController
     }
     /**
      * This action provides a item detail view in the admin area.
-     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options={"id" = "id", "repository_method" = "selectById"})
+     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      * @Cache(lastModified="picture.getUpdatedDate()", ETag="'Picture' ~ picture.getid() ~ picture.getUpdatedDate().format('U')")
      *
      * @param Request $request Current request instance
@@ -176,7 +171,7 @@ abstract class AbstractPictureController extends AbstractController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
+     * @throws NotFoundHttpException Thrown by param converter if picture to be displayed isn't found
      */
     public function adminDisplayAction(Request $request, PictureEntity $picture)
     {
@@ -185,7 +180,7 @@ abstract class AbstractPictureController extends AbstractController
     
     /**
      * This action provides a item detail view.
-     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options={"id" = "id", "repository_method" = "selectById"})
+     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      * @Cache(lastModified="picture.getUpdatedDate()", ETag="'Picture' ~ picture.getid() ~ picture.getUpdatedDate().format('U')")
      *
      * @param Request $request Current request instance
@@ -194,7 +189,7 @@ abstract class AbstractPictureController extends AbstractController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
+     * @throws NotFoundHttpException Thrown by param converter if picture to be displayed isn't found
      */
     public function displayAction(Request $request, PictureEntity $picture)
     {
@@ -209,12 +204,12 @@ abstract class AbstractPictureController extends AbstractController
         // parameter specifying which type of objects we are treating
         $objectType = 'picture';
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
-        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
         // create identifier for permission check
-        $instanceId = $picture->createCompositeIdentifier();
-        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', $instanceId . '::', $permLevel)) {
+        $instanceId = $picture->getKey();
+        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', $instanceId . '::', $permLevel)) {
             throw new AccessDeniedException();
         }
         
@@ -241,7 +236,7 @@ abstract class AbstractPictureController extends AbstractController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws NotFoundHttpException Thrown by form handler if picture to be edited isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function adminEditAction(Request $request)
@@ -258,7 +253,7 @@ abstract class AbstractPictureController extends AbstractController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws NotFoundHttpException Thrown by form handler if picture to be edited isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function editAction(Request $request)
@@ -274,7 +269,7 @@ abstract class AbstractPictureController extends AbstractController
         // parameter specifying which type of objects we are treating
         $objectType = 'picture';
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
-        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
         $templateParameters = [
@@ -298,7 +293,7 @@ abstract class AbstractPictureController extends AbstractController
     }
     /**
      * This action provides a handling of simple delete requests in the admin area.
-     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options={"id" = "id", "repository_method" = "selectById"})
+     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      * @Cache(lastModified="picture.getUpdatedDate()", ETag="'Picture' ~ picture.getid() ~ picture.getUpdatedDate().format('U')")
      *
      * @param Request $request Current request instance
@@ -307,7 +302,7 @@ abstract class AbstractPictureController extends AbstractController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
+     * @throws NotFoundHttpException Thrown by param converter if picture to be deleted isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function adminDeleteAction(Request $request, PictureEntity $picture)
@@ -317,7 +312,7 @@ abstract class AbstractPictureController extends AbstractController
     
     /**
      * This action provides a handling of simple delete requests.
-     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options={"id" = "id", "repository_method" = "selectById"})
+     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      * @Cache(lastModified="picture.getUpdatedDate()", ETag="'Picture' ~ picture.getid() ~ picture.getUpdatedDate().format('U')")
      *
      * @param Request $request Current request instance
@@ -326,7 +321,7 @@ abstract class AbstractPictureController extends AbstractController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
+     * @throws NotFoundHttpException Thrown by param converter if picture to be deleted isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function deleteAction(Request $request, PictureEntity $picture)
@@ -342,11 +337,11 @@ abstract class AbstractPictureController extends AbstractController
         // parameter specifying which type of objects we are treating
         $objectType = 'picture';
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_DELETE;
-        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
             throw new AccessDeniedException();
         }
         $logger = $this->get('logger');
-        $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'picture', 'id' => $picture->createCompositeIdentifier()];
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'picture', 'id' => $picture->getKey()];
         
         $picture->initWorkflow();
         
@@ -427,7 +422,7 @@ abstract class AbstractPictureController extends AbstractController
      *
      * @param Request $request Current request instance
      *
-     * @return bool true on sucess, false on failure
+     * @return RedirectResponse
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
@@ -435,6 +430,7 @@ abstract class AbstractPictureController extends AbstractController
     {
         return $this->handleSelectedEntriesActionInternal($request, true);
     }
+    
     /**
      * Process status changes for multiple items.
      *
@@ -443,7 +439,7 @@ abstract class AbstractPictureController extends AbstractController
      *
      * @param Request $request Current request instance
      *
-     * @return bool true on sucess, false on failure
+     * @return RedirectResponse
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
@@ -454,6 +450,9 @@ abstract class AbstractPictureController extends AbstractController
     
     /**
      * This method includes the common implementation code for adminHandleSelectedEntriesAction() and handleSelectedEntriesAction().
+     *
+     * @param Request $request Current request instance
+     * @param Boolean $isAdmin Whether the admin area is used or not
      */
     protected function handleSelectedEntriesActionInternal(Request $request, $isAdmin = false)
     {
@@ -465,16 +464,16 @@ abstract class AbstractPictureController extends AbstractController
         
         $action = strtolower($action);
         
-        $selectionHelper = $this->get('mu_image_module.selection_helper');
+        $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
         $workflowHelper = $this->get('mu_image_module.workflow_helper');
         $hookHelper = $this->get('mu_image_module.hook_helper');
         $logger = $this->get('logger');
         $userName = $this->get('zikula_users_module.current_user')->get('uname');
         
         // process each item
-        foreach ($items as $itemid) {
+        foreach ($items as $itemId) {
             // check if item exists, and get record instance
-            $entity = $selectionHelper->getEntity($objectType, $itemid, false);
+            $entity = $repository->selectById($itemId, false);
             if (null === $entity) {
                 continue;
             }
@@ -497,14 +496,11 @@ abstract class AbstractPictureController extends AbstractController
         
             $success = false;
             try {
-                if ($action != 'delete' && !$entity->validate()) {
-                    continue;
-                }
                 // execute the workflow action
                 $success = $workflowHelper->executeAction($entity, $action);
             } catch(\Exception $e) {
-                $this->addFlash('error', $this->__f('Sorry, but an error occured during the %s action.', ['%s' => $action]) . '  ' . $e->getMessage());
-                $logger->error('{app}: User {user} tried to execute the {action} workflow action for the {entity} with id {id}, but failed. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'picture', 'id' => $itemid, 'errorMessage' => $e->getMessage()]);
+                $this->addFlash('error', $this->__f('Sorry, but an error occured during the %action% action.', ['%action%' => $action]) . '  ' . $e->getMessage());
+                $logger->error('{app}: User {user} tried to execute the {action} workflow action for the {entity} with id {id}, but failed. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'picture', 'id' => $itemId, 'errorMessage' => $e->getMessage()]);
             }
         
             if (!$success) {
@@ -513,10 +509,10 @@ abstract class AbstractPictureController extends AbstractController
         
             if ($action == 'delete') {
                 $this->addFlash('status', $this->__('Done! Item deleted.'));
-                $logger->notice('{app}: User {user} deleted the {entity} with id {id}.', ['app' => 'MUImageModule', 'user' => $userName, 'entity' => 'picture', 'id' => $itemid]);
+                $logger->notice('{app}: User {user} deleted the {entity} with id {id}.', ['app' => 'MUImageModule', 'user' => $userName, 'entity' => 'picture', 'id' => $itemId]);
             } else {
                 $this->addFlash('status', $this->__('Done! Item updated.'));
-                $logger->notice('{app}: User {user} executed the {action} workflow action for the {entity} with id {id}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'picture', 'id' => $itemid]);
+                $logger->notice('{app}: User {user} executed the {action} workflow action for the {entity} with id {id}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'picture', 'id' => $itemId]);
             }
         
             // Let any hooks know that we have updated or deleted an item
@@ -525,7 +521,7 @@ abstract class AbstractPictureController extends AbstractController
             if ($action != 'delete') {
                 $urlArgs = $entity->createUrlArgs();
                 $urlArgs['_locale'] = $request->getLocale();
-                $url = new RouteUrl('muimagemodule_picture_' . /*($isAdmin ? 'admin' : '') . */'display', $urlArgs);
+                $url = new RouteUrl('muimagemodule_picture_display', $urlArgs);
             }
             $hookHelper->callProcessHooks($entity, $hookType, $url);
         }

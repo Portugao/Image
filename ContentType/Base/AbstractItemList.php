@@ -157,27 +157,11 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
     
         $this->objectType = $data['objectType'];
     
-        if (!isset($data['sorting'])) {
-            $data['sorting'] = 'default';
-        }
-        if (!isset($data['amount'])) {
-            $data['amount'] = 1;
-        }
-        if (!isset($data['template'])) {
-            $data['template'] = 'itemlist_' . $this->objectType . '_display.html.twig';
-        }
-        if (!isset($data['customTemplate'])) {
-            $data['customTemplate'] = '';
-        }
-        if (!isset($data['filter'])) {
-            $data['filter'] = '';
-        }
-    
-        $this->sorting = $data['sorting'];
-        $this->amount = $data['amount'];
-        $this->template = $data['template'];
-        $this->customTemplate = $data['customTemplate'];
-        $this->filter = $data['filter'];
+        $this->sorting = isset($data['sorting']) ? $data['sorting'] : 'default';
+        $this->amount = isset($data['amount']) ? $data['amount'] : 1;
+        $this->template = isset($data['template']) ? $data['template'] : 'itemlist_' . $this->objectType . '_display.html.twig';
+        $this->customTemplate = isset($data['customTemplate']) ? $data['customTemplate'] : '';
+        $this->filter = isset($data['filter']) ? $data['filter'] : '';
         $featureActivationHelper = $this->container->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
             $this->categorisableObjectTypes = ['album', 'avatar'];
@@ -187,9 +171,9 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
             $this->catRegistries = [];
             $this->catProperties = [];
             if (in_array($this->objectType, $this->categorisableObjectTypes)) {
-                $selectionHelper = $this->container->get('mu_image_module.selection_helper');
-                $idFields = $selectionHelper->getIdFields($this->objectType);
-                $this->catRegistries = $categoryHelper->getAllPropertiesWithMainCat($this->objectType, $idFields[0]);
+                $entityFactory = $this->container->get('mu_image_module.entity_factory');
+                $idField = $entityFactory->getIdField($this->objectType);
+                $this->catRegistries = $categoryHelper->getAllPropertiesWithMainCat($this->objectType, $idField);
                 $this->catProperties = $categoryHelper->getAllProperties($this->objectType);
             }
     
@@ -213,6 +197,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
                         break;
                     }
                 }
+                $data['catIds'][$propName] = [];
                 if (isset($data['catids' . $propName])) {
                     $data['catIds'][$propName] = $data['catids' . $propName];
                 }
@@ -236,13 +221,12 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
      */
     public function display()
     {
-        $repository = $this->container->get('mu_image_module.entity_factory')->getRepository($objectType);
+        $repository = $this->container->get('mu_image_module.entity_factory')->getRepository($this->objectType);
         $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
     
         // create query
-        $where = $this->filter;
-        $orderBy = $this->getSortParam($repository);
-        $qb = $repository->genericBaseQuery($where, $orderBy);
+        $orderBy = $this->container->get('mu_image_module.model_helper')->resolveSortParameter($this->objectType, $this->sorting);
+        $qb = $repository->genericBaseQuery($this->filter, $orderBy);
     
         $featureActivationHelper = $this->container->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
@@ -259,7 +243,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
         $currentPage = 1;
         $resultsPerPage = isset($this->amount) ? $this->amount : 1;
         $query = $repository->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
-        list($entities, $objectCount) = $repository->retrieveCollectionResult($query, $orderBy, true);
+        list($entities, $objectCount) = $repository->retrieveCollectionResult($query, true);
     
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
             $entities = $categoryHelper->filterEntitiesByPermission($entities);
@@ -286,12 +270,11 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
             $templateParameters['properties'] = $this->catProperties;
         }
     
-        $imageHelper = $this->container->get('mu_image_module.image_helper');
-        $templateParameters = array_merge($templateData, $repository->getAdditionalTemplateParameters($imageHelper, 'contentType'));
+        $templateParameters = $this->container->get('mu_image_module.controller_helper')->addTemplateParameters($this->objectType, $templateParameters, 'contentType', []);
     
         $template = $this->getDisplayTemplate();
     
-        return $this->container->get('twig')->render('@MUImageModule/' . $template, $templateParameters);
+        return $this->container->get('twig')->render($template, $templateParameters);
     }
     
     /**
@@ -307,51 +290,23 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
         }
     
         $templateForObjectType = str_replace('itemlist_', 'itemlist_' . $this->objectType . '_', $templateFile);
+        $templating = $this->container->get('templating');
+    
+        $templateOptions = [
+            'ContentType/' . $templateForObjectType,
+            'ContentType/' . $templateFile,
+            'ContentType/itemlist_display.html.twig'
+        ];
     
         $template = '';
-        if ($this->view->template_exists('ContentType/' . $templateForObjectType)) {
-            $template = 'ContentType/' . $templateForObjectType;
-        } elseif ($this->view->template_exists('ContentType/' . $templateFile)) {
-            $template = 'ContentType/' . $templateFile;
-        } else {
-            $template = 'ContentType/itemlist_display.html.twig';
+        foreach ($templateOptions as $templatePath) {
+            if ($templating->exists('@MUImageModule/' . $templatePath)) {
+                $template = '@MUImageModule/' . $templatePath;
+                break;
+            }
         }
     
         return $template;
-    }
-    
-    /**
-     * Determines the order by parameter for item selection.
-     *
-     * @param Doctrine_Repository $repository The repository used for data fetching
-     *
-     * @return string the sorting clause
-     */
-    protected function getSortParam($repository)
-    {
-        if ($this->sorting == 'random') {
-            return 'RAND()';
-        }
-    
-        $sortParam = '';
-        if ($this->sorting == 'newest') {
-            $selectionHelper = $this->container->get('mu_image_module.selection_helper');
-            $idFields = $selectionHelper->getIdFields($this->objectType);
-            if (count($idFields) == 1) {
-                $sortParam = $idFields[0] . ' DESC';
-            } else {
-                foreach ($idFields as $idField) {
-                    if (!empty($sortParam)) {
-                        $sortParam .= ', ';
-                    }
-                    $sortParam .= $idField . ' DESC';
-                }
-            }
-        } elseif ($this->sorting == 'default') {
-            $sortParam = $repository->getDefaultSortingField() . ' ASC';
-        }
-    
-        return $sortParam;
     }
     
     /**
@@ -388,7 +343,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
         $this->view->toplevelmodule = 'MUImageModule';
     
         // ensure our custom plugins are loaded
-        array_push($this->view->plugins_dir, 'modules/MU/ImageModule/Resources/views//plugins');
+        array_push($this->view->plugins_dir, 'modules/MU/ImageModule/Resources/views/plugins');
     
         $featureActivationHelper = $this->container->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
@@ -413,11 +368,17 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
                 //$mainCategory = $categoryApi->getCategoryById($registryCid);
                 $cats = $categoryApi->getSubCategories($registryCid, true, true, false, true, false, null, '', null, 'sort_value');
                 $catsForDropdown = [
-                    ['value' => '', 'text' => $translator->__('All')]
+                    [
+                        'value' => '',
+                        'text' => $translator->__('All')
+                    ]
                 ];
-                foreach ($cats as $cat) {
-                    $catName = isset($cat['display_name'][$locale]) ? $cat['display_name'][$locale] : $cat['name'];
-                    $catsForDropdown[] = ['value' => $cat['id'], 'text' => $catName];
+                foreach ($cats as $category) {
+                    $categoryName = isset($category['display_name'][$locale]) ? $category['display_name'][$locale] : $category['name'];
+                    $catsForDropdown[] = [
+                        'value' => $category->getId(),
+                        'text' => $categoryName
+                    ];
                 }
                 $categories[$propName] = $catsForDropdown;
             }
@@ -425,6 +386,8 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
             $this->view->assign('categories', $categories)
                        ->assign('categoryHelper', $this->container->get('mu_image_module.category_helper'));
         }
+        $this->view->assign('featureActivationHelper', $featureActivationHelper)
+                   ->assign('objectType', $this->objectType);
     }
     
     /**

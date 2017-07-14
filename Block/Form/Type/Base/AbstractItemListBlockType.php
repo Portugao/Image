@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
+use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
  * List block form type base class.
@@ -48,12 +49,12 @@ abstract class AbstractItemListBlockType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->addObjectTypeField($builder, $options);
-        if ($options['featureActivationHelper']->isEnabled(FeatureActivationHelper::CATEGORIES, $options['objectType'])) {
+        if ($options['feature_activation_helper']->isEnabled(FeatureActivationHelper::CATEGORIES, $options['object_type'])) {
             $this->addCategoriesField($builder, $options);
         }
         $this->addSortingField($builder, $options);
@@ -63,11 +64,11 @@ abstract class AbstractItemListBlockType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['isCategorisable'] = $options['isCategorisable'];
+        $view->vars['isCategorisable'] = $options['is_categorisable'];
     }
 
     /**
@@ -104,14 +105,14 @@ abstract class AbstractItemListBlockType extends AbstractType
      */
     public function addCategoriesField(FormBuilderInterface $builder, array $options)
     {
-        if (!$options['isCategorisable'] || null === $options['categoryHelper']) {
+        if (!$options['is_categorisable'] || null === $options['category_helper']) {
             return;
         }
     
-        $hasMultiSelection = $options['categoryHelper']->hasMultipleSelection($options['objectType']);
+        $hasMultiSelection = $options['category_helper']->hasMultipleSelection($options['object_type']);
         $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
             'label' => ($hasMultiSelection ? $this->__('Categories') : $this->__('Category')) . ':',
-            'empty_data' => [],
+            'empty_data' => $hasMultiSelection ? [] : null,
             'attr' => [
                 'class' => 'category-selector',
                 'title' => $this->__('This is an optional filter.')
@@ -120,8 +121,8 @@ abstract class AbstractItemListBlockType extends AbstractType
             'required' => false,
             'multiple' => $hasMultiSelection,
             'module' => 'MUImageModule',
-            'entity' => ucfirst($options['objectType']) . 'Entity',
-            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['objectType']) . 'CategoryEntity'
+            'entity' => ucfirst($options['object_type']) . 'Entity',
+            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['object_type']) . 'CategoryEntity'
         ]);
     }
 
@@ -158,10 +159,10 @@ abstract class AbstractItemListBlockType extends AbstractType
         $builder->add('amount', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
             'label' => $this->__('Amount') . ':',
             'attr' => [
-                'max_length' => 2,
-                'title' => $this->__('The maximum amount of items to be shown. Only digits are allowed.')
+                'maxlength' => 2,
+                'title' => $this->__('The maximum amount of items to be shown.') . ' ' . $this->__('Only digits are allowed.')
             ],
-            'help' => $this->__('The maximum amount of items to be shown. Only digits are allowed.'),
+            'help' => $this->__('The maximum amount of items to be shown.') . ' ' . $this->__('Only digits are allowed.'),
             'empty_data' => 5,
             'scale' => 0
         ]);
@@ -192,7 +193,7 @@ abstract class AbstractItemListBlockType extends AbstractType
                 'label' => $this->__('Custom template') . ':',
                 'required' => false,
                 'attr' => [
-                    'max_length' => 80,
+                    'maxlength' => 80,
                     'title' => $this->__('Example') . ': itemlist_[objectType]_display.html.twig'
                 ],
                 'help' => $this->__('Example') . ': <em>itemlist_[objectType]_display.html.twig</em>'
@@ -212,13 +213,13 @@ abstract class AbstractItemListBlockType extends AbstractType
             'label' => $this->__('Filter (expert option)') . ':',
             'required' => false,
             'attr' => [
-                'max_length' => 255
+                'maxlength' => 255
             ]
         ]);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBlockPrefix()
     {
@@ -226,22 +227,23 @@ abstract class AbstractItemListBlockType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
-                'objectType' => 'album',
-                'isCategorisable' => false,
-                'categoryHelper' => null
+                'object_type' => 'album',
+                'is_categorisable' => false,
+                'category_helper' => null,
+                'feature_activation_helper' => null
             ])
-            ->setRequired(['objectType'])
-            ->setOptional(['isCategorisable', 'categoryHelper'])
-            ->setAllowedTypes([
-                'objectType' => 'string',
-                'isCategorisable' => 'bool'
-            ])
+            ->setRequired(['object_type'])
+            ->setOptional(['is_categorisable', 'category_helper', 'feature_activation_helper'])
+            ->setAllowedTypes('object_type', 'string')
+            ->setAllowedTypes('is_categorisable', 'bool')
+            ->setAllowedTypes('category_helper', 'object')
+            ->setAllowedTypes('feature_activation_helper', 'object')
         ;
     }
 }

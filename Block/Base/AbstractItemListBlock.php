@@ -76,9 +76,8 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
     
         // create query
-        $where = $properties['filter'];
-        $orderBy = $this->getSortParam($properties, $repository);
-        $qb = $repository->genericBaseQuery($where, $orderBy);
+        $orderBy = $this->get('mu_image_module.model_helper')->resolveSortParameter($objectType, $properties['sorting']);
+        $qb = $repository->genericBaseQuery($properties['filter'], $orderBy);
     
         // fetch category registries
         $catProperties = null;
@@ -97,7 +96,7 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         $currentPage = 1;
         $resultsPerPage = $properties['amount'];
         $query = $repository->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
-        list($entities, $objectCount) = $repository->retrieveCollectionResult($query, $orderBy, true);
+        list($entities, $objectCount) = $repository->retrieveCollectionResult($query, true);
     
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
             $entities = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($entities);
@@ -118,8 +117,8 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $properties['objectType'])) {
             $templateParameters['properties'] = $properties;
         }
-        $imageHelper = $this->get('mu_image_module.image_helper');
-        $templateParameters = array_merge($templateParameters, $repository->getAdditionalTemplateParameters($imageHelper, 'block'));
+    
+        $templateParameters = $this->get('mu_image_module.controller_helper')->addTemplateParameters($properties['objectType'], $templateParameters, 'block', []);
     
         return $this->renderView($template, $templateParameters);
     }
@@ -161,41 +160,6 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
     }
     
     /**
-     * Determines the order by parameter for item selection.
-     *
-     * @param array               $properties The block properties array
-     * @param Doctrine_Repository $repository The repository used for data fetching
-     *
-     * @return string the sorting clause
-     */
-    protected function getSortParam(array $properties, $repository)
-    {
-        if ($properties['sorting'] == 'random') {
-            return 'RAND()';
-        }
-    
-        $sortParam = '';
-        if ($properties['sorting'] == 'newest') {
-            $selectionHelper = $this->get('mu_image_module.selection_helper');
-            $idFields = $selectionHelper->getIdFields($properties['objectType']);
-            if (count($idFields) == 1) {
-                $sortParam = $idFields[0] . ' DESC';
-            } else {
-                foreach ($idFields as $idField) {
-                    if (!empty($sortParam)) {
-                        $sortParam .= ', ';
-                    }
-                    $sortParam .= $idField . ' DESC';
-                }
-            }
-        } elseif ($properties['sorting'] == 'default') {
-            $sortParam = $repository->getDefaultSortingField() . ' ASC';
-        }
-    
-        return $sortParam;
-    }
-    
-    /**
      * Returns the fully qualified class name of the block's form class.
      *
      * @return string Template path
@@ -226,10 +190,10 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         }
     
         return [
-            'objectType' => $objectType,
-            'isCategorisable' => in_array($objectType, $this->categorisableObjectTypes),
-            'categoryHelper' => $this->get('mu_image_module.category_helper'),
-            'featureActivationHelper' => $this->get('mu_image_module.feature_activation_helper')
+            'object_type' => $objectType,
+            'is_categorisable' => in_array($objectType, $this->categorisableObjectTypes),
+            'category_helper' => $this->get('mu_image_module.category_helper'),
+            'feature_activation_helper' => $this->get('mu_image_module.feature_activation_helper')
         ];
     }
     

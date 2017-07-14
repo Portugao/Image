@@ -13,7 +13,6 @@
 namespace MU\ImageModule\Container\Base;
 
 use Zikula\Bundle\HookBundle\AbstractHookContainer as ZikulaHookContainer;
-
 use Zikula\Bundle\HookBundle\Bundle\SubscriberBundle;
 
 /**
@@ -28,7 +27,7 @@ abstract class AbstractHookContainer extends ZikulaHookContainer
      */
     protected function setupHookBundles()
     {
-        $bundle = new SubscriberBundle('MUImageModule', 'subscriber.muimagemodule..ui_hooks.albums', 'ui_hooks', $this->__('muimagemodule. Albums Display Hooks'));
+        $bundle = new SubscriberBundle('MUImageModule', 'subscriber.muimagemodule.ui_hooks.albums', 'ui_hooks', $this->__('muimagemodule. Albums Display Hooks'));
         
         // Display hook for view/display templates.
         $bundle->addEvent('display_view', 'muimagemodule.ui_hooks.albums.display_view');
@@ -46,12 +45,12 @@ abstract class AbstractHookContainer extends ZikulaHookContainer
         $bundle->addEvent('process_delete', 'muimagemodule.ui_hooks.albums.process_delete');
         $this->registerHookSubscriberBundle($bundle);
         
-        $bundle = new SubscriberBundle('MUImageModule', 'subscriber.muimagemodule..filter_hooks.albums', 'filter_hooks', $this->__('muimagemodule. Albums Filter Hooks'));
+        $bundle = new SubscriberBundle('MUImageModule', 'subscriber.muimagemodule.filter_hooks.albums', 'filter_hooks', $this->__('muimagemodule. Albums Filter Hooks'));
         // A filter applied to the given area.
         $bundle->addEvent('filter', 'muimagemodule.filter_hooks.albums.filter');
         $this->registerHookSubscriberBundle($bundle);
         
-        $bundle = new SubscriberBundle('MUImageModule', 'subscriber.muimagemodule..ui_hooks.pictures', 'ui_hooks', $this->__('muimagemodule. Pictures Display Hooks'));
+        $bundle = new SubscriberBundle('MUImageModule', 'subscriber.muimagemodule.ui_hooks.pictures', 'ui_hooks', $this->__('muimagemodule. Pictures Display Hooks'));
         
         // Display hook for view/display templates.
         $bundle->addEvent('display_view', 'muimagemodule.ui_hooks.pictures.display_view');
@@ -69,11 +68,10 @@ abstract class AbstractHookContainer extends ZikulaHookContainer
         $bundle->addEvent('process_delete', 'muimagemodule.ui_hooks.pictures.process_delete');
         $this->registerHookSubscriberBundle($bundle);
         
-        $bundle = new SubscriberBundle('MUImageModule', 'subscriber.muimagemodule..filter_hooks.pictures', 'filter_hooks', $this->__('muimagemodule. Pictures Filter Hooks'));
+        $bundle = new SubscriberBundle('MUImageModule', 'subscriber.muimagemodule.filter_hooks.pictures', 'filter_hooks', $this->__('muimagemodule. Pictures Filter Hooks'));
         // A filter applied to the given area.
         $bundle->addEvent('filter', 'muimagemodule.filter_hooks.pictures.filter');
         $this->registerHookSubscriberBundle($bundle);
-        
         
         
     }

@@ -14,6 +14,7 @@ namespace MU\ImageModule\Controller\Base;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\Core\Response\PlainResponse;
@@ -38,35 +39,25 @@ abstract class AbstractExternalController extends AbstractController
     {
         $controllerHelper = $this->get('mu_image_module.controller_helper');
         $contextArgs = ['controller' => 'external', 'action' => 'display'];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $contextArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerType', $contextArgs);
+        if (!in_array($objectType, $controllerHelper->getObjectTypes('controllerAction', $contextArgs))) {
+            $objectType = $controllerHelper->getDefaultObjectType('controllerAction', $contextArgs);
         }
         
-        $component = $this->name . ':' . ucfirst($objectType) . ':';
+        $component = 'MUImageModule:' . ucfirst($objectType) . ':';
         if (!$this->hasPermission($component, $id . '::', ACCESS_READ)) {
             return '';
         }
         
-        $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
-        $repository->setRequest($this->get('request_stack')->getCurrentRequest());
-        $selectionHelper = $this->get('mu_image_module.selection_helper');
-        $idFields = $selectionHelper->getIdFields($objectType);
-        $idValues = ['id' => $id];
-        
-        $hasIdentifier = $controllerHelper->isValidIdentifier($idValues);
-        if (!$hasIdentifier) {
-            return $this->__('Error! Invalid identifier received.');
-        }
+        $entityFactory = $this->get('mu_image_module.entity_factory');
+        $repository = $entityFactory->getRepository($objectType);
         
         // assign object data fetched from the database
-        $entity = $repository->selectById($idValues);
-        if ((!is_array($entity) && !is_object($entity)) || !isset($entity[$idFields[0]])) {
-            return $this->__('No such item.');
+        $entity = $repository->selectById($id);
+        if (null === $entity) {
+            return new Response($this->__('No such item.'));
         }
         
         $entity->initWorkflow();
-        
-        $instance = $entity->createCompositeIdentifier() . '::';
         
         $templateParameters = [
             'objectType' => $objectType,
@@ -74,7 +65,9 @@ abstract class AbstractExternalController extends AbstractController
             $objectType => $entity,
             'displayMode' => $displayMode
         ];
-        $templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
+        
+        $contextArgs = ['controller' => 'external', 'action' => 'display'];
+        $templateParameters = $this->get('mu_image_module.controller_helper')->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);
         
         return $this->render('@MUImageModule/External/' . ucfirst($objectType) . '/display.html.twig', $templateParameters);
     }
@@ -101,10 +94,9 @@ abstract class AbstractExternalController extends AbstractController
         $cssAssetBag = $this->get('zikula_core.common.theme.assets_css');
         $cssAssetBag->add($assetHelper->resolve('@MUImageModule:css/style.css'));
         
-        $controllerHelper = $this->get('mu_image_module.controller_helper');
-        $contextArgs = ['controller' => 'external', 'action' => 'finder'];
-        if (!in_array($objectType, $controllerHelper->getObjectTypes('controller', $contextArgs))) {
-            $objectType = $controllerHelper->getDefaultObjectType('controllerType', $contextArgs);
+        $activatedObjectTypes = $this->getVar('enabledFinderTypes', []);
+        if (!in_array($objectType, $activatedObjectTypes)) {
+            throw new AccessDeniedException();
         }
         
         if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', ACCESS_COMMENT)) {
@@ -112,11 +104,10 @@ abstract class AbstractExternalController extends AbstractController
         }
         
         if (empty($editor) || !in_array($editor, ['ckeditor', 'tinymce'])) {
-            return $this->__('Error: Invalid editor context given for external controller action.');
+            return new Response($this->__('Error: Invalid editor context given for external controller action.'));
         }
         
         $repository = $this->get('mu_image_module.entity_factory')->getRepository($objectType);
-        $repository->setRequest($request);
         if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
             $sort = $repository->getDefaultSortingField();
         }
@@ -140,17 +131,19 @@ abstract class AbstractExternalController extends AbstractController
             'objectType' => $objectType,
             'sort' => $sort,
             'sortdir' => $sdir,
-            'currentPage' => $currentPage
+            'currentPage' => $currentPage,
+            'onlyImages' => false,
+            'imageField' => ''
         ];
         $searchTerm = '';
         
         $formOptions = [
-            'objectType' => $objectType,
-            'editorName' => $editor
+            'object_type' => $objectType,
+            'editor_name' => $editor
         ];
         $form = $this->createForm('MU\ImageModule\Form\Type\Finder\\' . ucfirst($objectType) . 'FinderType', $templateParameters, $formOptions);
         
-        if ($form->handleRequest($request)->isValid() && $form->get('update')->isClicked()) {
+        if ($form->handleRequest($request)->isValid()) {
             $formData = $form->getData();
             $templateParameters = array_merge($templateParameters, $formData);
             $currentPage = $formData['currentPage'];
@@ -158,15 +151,31 @@ abstract class AbstractExternalController extends AbstractController
             $sort = $formData['sort'];
             $sdir = $formData['sortdir'];
             $searchTerm = $formData['q'];
+            $templateParameters['onlyImages'] = isset($formData['onlyImages']) ? (bool)$formData['onlyImages'] : false;
+            $templateParameters['imageField'] = isset($formData['imageField']) ? $formData['imageField'] : '';
         }
         
         $where = '';
-        $sortParam = $sort . ' ' . $sdir;
-        if ($searchTerm != '') {
-            list($entities, $objectCount) = $repository->selectSearch($searchTerm, [], $sortParam, $currentPage, $resultsPerPage);
-        } else {
-            list($entities, $objectCount) = $repository->selectWherePaginated($where, $sortParam, $currentPage, $resultsPerPage);
+        $orderBy = $sort . ' ' . $sdir;
+        
+        $qb = $repository->getListQueryBuilder($where, $orderBy);
+        
+        if (true === $templateParameters['onlyImages'] && $templateParameters['imageField'] != '') {
+            $imageField = $templateParameters['imageField'];
+            $orX = $qb->expr()->orX();
+            foreach (['gif', 'jpg', 'jpeg', 'jpe', 'png', 'bmp'] as $imageExtension) {
+                $orX->add($qb->expr()->like('tbl.' . $imageField, '%.' . $imageExtension));
+            }
+        
+            $qb->andWhere($orX);
         }
+        
+        if ($searchTerm != '') {
+            $qb = $this->get('mu_image_module.collection_filter_helper')->addSearchFilter($objectType, $qb, $searchTerm);
+        }
+        $query = $repository->getQueryFromBuilder($qb);
+        
+        list($entities, $objectCount) = $repository->retrieveCollectionResult($query, true);
         
         if (in_array($objectType, ['album', 'avatar'])) {
             $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
@@ -182,7 +191,8 @@ abstract class AbstractExternalController extends AbstractController
         $templateParameters['items'] = $entities;
         $templateParameters['finderForm'] = $form->createView();
         
-        $templateParameters['featureActivationHelper'] = $this->get('mu_image_module.feature_activation_helper');
+        $contextArgs = ['controller' => 'external', 'action' => 'display'];
+        $templateParameters = $this->get('mu_image_module.controller_helper')->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);
         
         $templateParameters['pager'] = [
             'numitems' => $objectCount,

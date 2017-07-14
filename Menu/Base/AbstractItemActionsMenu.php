@@ -62,17 +62,20 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
 
         $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
         $currentUserApi = $this->container->get('zikula_users_module.current_user');
+        $entityDisplayHelper = $this->container->get('mu_image_module.entity_display_helper');
         $menu->setChildrenAttribute('class', 'list-inline');
 
+        $currentUserId = $currentUserApi->isLoggedIn() ? $currentUserApi->get('uid') : 1;
         if ($entity instanceof AlbumEntity) {
             $component = 'MUImageModule:Album:';
-            $instance = $entity['id'] . '::';
+            $instance = $entity->getKey() . '::';
             $routePrefix = 'muimagemodule_album_';
+            $isOwner = $currentUserId > 0 && null !== $entity->getCreatedBy() && $currentUserId == $entity->getCreatedBy()->getUid();
         
             if ($routeArea == 'admin') {
                 $menu->addChild($this->__('Preview'), [
                     'route' => $routePrefix . 'display',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-search-plus');
                 $menu[$this->__('Preview')]->setLinkAttribute('target', '_blank');
                 $menu[$this->__('Preview')]->setLinkAttribute('title', $this->__('Open preview page'));
@@ -80,26 +83,26 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             if ($context != 'display') {
                 $menu->addChild($this->__('Details'), [
                     'route' => $routePrefix . $routeArea . 'display',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-eye');
-                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
+                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
             }
             if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
                 $menu->addChild($this->__('Edit'), [
                     'route' => $routePrefix . $routeArea . 'edit',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-pencil-square-o');
                 $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this album'));
                 $menu->addChild($this->__('Reuse'), [
                     'route' => $routePrefix . $routeArea . 'edit',
-                    'routeParameters' => ['astemplate' => $entity['id']]
+                    'routeParameters' => ['astemplate' => $entity->getKey()]
                 ])->setAttribute('icon', 'fa fa-files-o');
                 $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new album'));
             }
             if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
                 $menu->addChild($this->__('Delete'), [
                     'route' => $routePrefix . $routeArea . 'delete',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-trash-o');
                 $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this album'));
             }
@@ -112,35 +115,39 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             }
             
             // more actions for adding new related items
-            $authAdmin = $permissionApi->hasPermission($component, $instance, ACCESS_ADMIN);
             
-            $uid = $currentUserApi->get('uid');
-            if ($authAdmin || (isset($uid) && method_exists($entity, 'getCreatedBy') && $entity->getCreatedBy()->getUid() == $uid)) {
-            
+            $relatedComponent = 'MUImageModule:Album:';
+            $relatedInstance = $entity->getKey() . '::';
+            if ($isOwner || $permissionApi->hasPermission($relatedComponent, $relatedInstance, ACCESS_EDIT)) {
                 $title = $this->__('Create album');
                 $menu->addChild($title, [
                     'route' => 'muimagemodule_album_' . $routeArea . 'edit',
-                    'routeParameters' => ['album' => $entity['id']]
+                    'routeParameters' => ['album' => $entity->getKey()]
                 ])->setAttribute('icon', 'fa fa-plus');
                 $menu[$title]->setLinkAttribute('title', $title);
+            }
             
+            $relatedComponent = 'MUImageModule:Picture:';
+            $relatedInstance = $entity->getKey() . '::';
+            if ($isOwner || $permissionApi->hasPermission($relatedComponent, $relatedInstance, ACCESS_EDIT)) {
                 $title = $this->__('Create picture');
                 $menu->addChild($title, [
                     'route' => 'muimagemodule_picture_' . $routeArea . 'edit',
-                    'routeParameters' => ['album' => $entity['id']]
+                    'routeParameters' => ['album' => $entity->getKey()]
                 ])->setAttribute('icon', 'fa fa-plus');
                 $menu[$title]->setLinkAttribute('title', $title);
             }
         }
         if ($entity instanceof PictureEntity) {
             $component = 'MUImageModule:Picture:';
-            $instance = $entity['id'] . '::';
+            $instance = $entity->getKey() . '::';
             $routePrefix = 'muimagemodule_picture_';
+            $isOwner = $currentUserId > 0 && null !== $entity->getCreatedBy() && $currentUserId == $entity->getCreatedBy()->getUid();
         
             if ($routeArea == 'admin') {
                 $menu->addChild($this->__('Preview'), [
                     'route' => $routePrefix . 'display',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-search-plus');
                 $menu[$this->__('Preview')]->setLinkAttribute('target', '_blank');
                 $menu[$this->__('Preview')]->setLinkAttribute('title', $this->__('Open preview page'));
@@ -148,26 +155,26 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             if ($context != 'display') {
                 $menu->addChild($this->__('Details'), [
                     'route' => $routePrefix . $routeArea . 'display',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-eye');
-                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
+                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
             }
             if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
                 $menu->addChild($this->__('Edit'), [
                     'route' => $routePrefix . $routeArea . 'edit',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-pencil-square-o');
                 $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this picture'));
                 $menu->addChild($this->__('Reuse'), [
                     'route' => $routePrefix . $routeArea . 'edit',
-                    'routeParameters' => ['astemplate' => $entity['id']]
+                    'routeParameters' => ['astemplate' => $entity->getKey()]
                 ])->setAttribute('icon', 'fa fa-files-o');
                 $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new picture'));
             }
             if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
                 $menu->addChild($this->__('Delete'), [
                     'route' => $routePrefix . $routeArea . 'delete',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-trash-o');
                 $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this picture'));
             }
@@ -181,13 +188,14 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
         }
         if ($entity instanceof AvatarEntity) {
             $component = 'MUImageModule:Avatar:';
-            $instance = $entity['id'] . '::';
+            $instance = $entity->getKey() . '::';
             $routePrefix = 'muimagemodule_avatar_';
+            $isOwner = $currentUserId > 0 && null !== $entity->getCreatedBy() && $currentUserId == $entity->getCreatedBy()->getUid();
         
             if ($routeArea == 'admin') {
                 $menu->addChild($this->__('Preview'), [
                     'route' => $routePrefix . 'display',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-search-plus');
                 $menu[$this->__('Preview')]->setLinkAttribute('target', '_blank');
                 $menu[$this->__('Preview')]->setLinkAttribute('title', $this->__('Open preview page'));
@@ -195,26 +203,26 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             if ($context != 'display') {
                 $menu->addChild($this->__('Details'), [
                     'route' => $routePrefix . $routeArea . 'display',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-eye');
-                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entity->getTitleFromDisplayPattern()));
+                $menu[$this->__('Details')]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
             }
             if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
                 $menu->addChild($this->__('Edit'), [
                     'route' => $routePrefix . $routeArea . 'edit',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-pencil-square-o');
                 $menu[$this->__('Edit')]->setLinkAttribute('title', $this->__('Edit this avatar'));
                 $menu->addChild($this->__('Reuse'), [
                     'route' => $routePrefix . $routeArea . 'edit',
-                    'routeParameters' => ['astemplate' => $entity['id']]
+                    'routeParameters' => ['astemplate' => $entity->getKey()]
                 ])->setAttribute('icon', 'fa fa-files-o');
                 $menu[$this->__('Reuse')]->setLinkAttribute('title', $this->__('Reuse for new avatar'));
             }
             if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
                 $menu->addChild($this->__('Delete'), [
                     'route' => $routePrefix . $routeArea . 'delete',
-                    'routeParameters' => ['id' => $entity['id']]
+                    'routeParameters' => $entity->createUrlArgs()
                 ])->setAttribute('icon', 'fa fa-trash-o');
                 $menu[$this->__('Delete')]->setLinkAttribute('title', $this->__('Delete this avatar'));
             }

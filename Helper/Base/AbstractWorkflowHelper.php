@@ -12,12 +12,9 @@
 
 namespace MU\ImageModule\Helper\Base;
 
-use Psr\Log\LoggerInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Doctrine\EntityAccess;
-use Zikula\PermissionsModule\Api\PermissionApi;
 use Zikula_Workflow_Util;
-use MU\ImageModule\Entity\Factory\ImageFactory;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
 /**
@@ -38,21 +35,6 @@ abstract class AbstractWorkflowHelper
     protected $translator;
 
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var PermissionApi
-     */
-    protected $permissionApi;
-
-    /**
-     * @var ImageFactory
-     */
-    protected $entityFactory;
-
-    /**
      * @var ListEntriesHelper
      */
     protected $listEntriesHelper;
@@ -61,20 +43,16 @@ abstract class AbstractWorkflowHelper
      * WorkflowHelper constructor.
      *
      * @param TranslatorInterface $translator        Translator service instance
-     * @param LoggerInterface     $logger            Logger service instance
-     * @param PermissionApi       $permissionApi     PermissionApi service instance
-     * @param ImageFactory $entityFactory ImageFactory service instance
      * @param ListEntriesHelper   $listEntriesHelper ListEntriesHelper service instance
      *
      * @return void
      */
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, PermissionApi $permissionApi, ImageFactory $entityFactory, ListEntriesHelper $listEntriesHelper)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        ListEntriesHelper $listEntriesHelper
+    ) {
         $this->name = 'MUImageModule';
         $this->translator = $translator;
-        $this->logger = $logger;
-        $this->permissionApi = $permissionApi;
-        $this->entityFactory = $entityFactory;
         $this->listEntriesHelper = $listEntriesHelper;
     }
 
@@ -100,11 +78,6 @@ abstract class AbstractWorkflowHelper
              'value' => 'deleted',
              'text' => $this->translator->__('Deleted'),
              'ui' => 'danger'
-         ];
-         $states[] = [
-             'value' => 'waiting',
-             'text' => $this->translator->__('Waiting'),
-             'ui' => 'warning'
          ];
     
          return $states;
@@ -150,29 +123,11 @@ abstract class AbstractWorkflowHelper
                 $result = 'none';
                 break;
             case 'avatar':
-                $result = 'standard';
+                $result = 'none';
                 break;
         }
     
         return $result;
-    }
-    
-    /**
-     * This method returns the workflow schema for a certain object type.
-     *
-     * @param string $objectType Name of treated object type
-     *
-     * @return array|null The resulting workflow schema
-     */
-    public function getWorkflowSchema($objectType = '')
-    {
-        $schema = null;
-        $schemaName = $this->getWorkflowName($objectType);
-        if ($schemaName != '') {
-            $schema = Zikula_Workflow_Util::loadSchema($schemaName, $this->name);
-        }
-    
-        return $schema;
     }
     
     /**
@@ -201,7 +156,7 @@ abstract class AbstractWorkflowHelper
     
         $actions = [];
         foreach ($wfActions as $actionId => $action) {
-            $nextState = (isset($action['nextState']) ? $action['nextState'] : '');
+            $nextState = isset($action['nextState']) ? $action['nextState'] : '';
             if (!in_array($nextState, ['', 'deleted']) && !in_array($nextState, $allowedStates)) {
                 continue;
             }
@@ -229,9 +184,6 @@ abstract class AbstractWorkflowHelper
                 break;
             case 'update':
                 $buttonClass = 'success';
-                break;
-            case 'approve':
-                $buttonClass = '';
                 break;
             case 'delete':
                 $buttonClass = 'danger';
@@ -277,6 +229,7 @@ abstract class AbstractWorkflowHelper
     
         return (false !== $result);
     }
+    
     /**
      * Performs a conversion of the workflow object back to an array.
      *
@@ -315,55 +268,4 @@ abstract class AbstractWorkflowHelper
         return true;
     }
     
-    /**
-     * Collects amount of moderation items foreach object type.
-     *
-     * @return array List of collected amounts
-     */
-    public function collectAmountOfModerationItems()
-    {
-        $amounts = [];
-    
-    
-        // check if objects are waiting for approval
-        $state = 'waiting';
-        $objectType = 'avatar';
-        if ($this->permissionApi->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', ACCESS_ADD)) {
-            $amount = $this->getAmountOfModerationItems($objectType, $state);
-            if ($amount > 0) {
-                $amounts[] = [
-                    'aggregateType' => 'avatarsApproval',
-                    'description' => $this->translator->__('Avatars pending approval'),
-                    'amount' => $amount,
-                    'objectType' => $objectType,
-                    'state' => $state,
-                    'message' => $this->translator->_fn('One avatar is waiting for approval.', '%s avatars are waiting for approval.', $amount, ['%s' => $amount])
-                ];
-        
-                $this->logger->info('{app}: There are {amount} {entities} waiting for approval.', ['app' => 'MUImageModule', 'amount' => $amount, 'entities' => 'avatars']);
-            }
-        }
-    
-        return $amounts;
-    }
-    
-    /**
-     * Retrieves the amount of moderation items for a given object type
-     * and a certain workflow state.
-     *
-     * @param string $objectType Name of treated object type
-     * @param string $state The given state value
-     *
-     * @return integer The affected amount of objects
-     */
-    public function getAmountOfModerationItems($objectType, $state)
-    {
-        $repository = $this->entityFactory->getRepository($objectType);
-    
-        $where = 'tbl.workflowState:eq:' . $state;
-        $parameters = ['workflowState' => $state];
-        $useJoins = false;
-    
-        return $repository->selectCount($where, $useJoins, $parameters);
-    }
 }

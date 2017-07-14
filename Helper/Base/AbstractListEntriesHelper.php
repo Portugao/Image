@@ -313,23 +313,9 @@ abstract class AbstractListEntriesHelper
     {
         $states = [];
         $states[] = [
-            'value'   => 'waiting',
-            'text'    => $this->__('Waiting'),
-            'title'   => $this->__('Content has been submitted and waits for approval.'),
-            'image'   => '',
-            'default' => false
-        ];
-        $states[] = [
             'value'   => 'approved',
             'text'    => $this->__('Approved'),
             'title'   => $this->__('Content has been approved and is available online.'),
-            'image'   => '',
-            'default' => false
-        ];
-        $states[] = [
-            'value'   => '!waiting',
-            'text'    => $this->__('All except waiting'),
-            'title'   => $this->__('Shows all items except these which are waiting'),
             'image'   => '',
             'default' => false
         ];

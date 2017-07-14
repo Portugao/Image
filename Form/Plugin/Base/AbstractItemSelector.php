@@ -105,10 +105,11 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput implements Conta
             $assetHelper = $this->container->get('zikula_core.common.theme.asset_helper');
             $cssAssetBag = $this->container->get('zikula_core.common.theme.assets_css');
             $jsAssetBag = $this->container->get('zikula_core.common.theme.assets_js');
-            $homePath = $this->container->get('router')->generate('home');
+            $homePath = $this->container->get('request_stack')->getCurrentRequest()->getBasePath();
 
-            $jsAssetBag->add($homePath . 'web/bootstrap-media-lightbox/bootstrap-media-lightbox.min.js');
-            $cssAssetBag->add($homePath . 'web/bootstrap-media-lightbox/bootstrap-media-lightbox.css');
+            $jsAssetBag->add($homePath . '/web/magnific-popup/jquery.magnific-popup.min.js');
+            $cssAssetBag->add($homePath . '/web/magnific-popup/magnific-popup.css');
+            $jsAssetBag->add($assetHelper->resolve('@MUImageModule:js/MUImageModule.js'));
             $jsAssetBag->add($assetHelper->resolve('@MUImageModule:js/MUImageModule.Finder.js'));
             $cssAssetBag->add($assetHelper->resolve('@MUImageModule:css/style.css'));
         }
@@ -145,6 +146,8 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput implements Conta
         $view = Zikula_View::getInstance('MUImageModule', false);
         $view->assign('objectType', $this->objectType)
              ->assign('items', $entities)
+             ->assign('sort', $sort)
+             ->assign('sortdir', $sdir)
              ->assign('selectedId', $this->selectedItemId);
 
         // assign category properties
@@ -168,8 +171,8 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput implements Conta
      */
     public function decode(Zikula_Form_View $view)
     {
-        parent::decode($view);
-        $this->objectType = $this->container->get('request_stack')->getCurrentRequest()->request->get('MUImageModule_objecttype', 'album');
-        $this->selectedItemId = $this->text;
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $this->objectType = $request->request->get('MUImageModule_objecttype', 'album');
+        $this->selectedItemId = $this->text = $request->request->get($this->inputName, 0);
     }
 }

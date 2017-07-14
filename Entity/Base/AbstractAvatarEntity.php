@@ -17,12 +17,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Zikula\Core\Doctrine\EntityAccess;
 use MU\ImageModule\Traits\EntityWorkflowTrait;
 use MU\ImageModule\Traits\StandardFieldsTrait;
-
-use RuntimeException;
-use ServiceUtil;
-use Zikula\Core\Doctrine\EntityAccess;
+use MU\ImageModule\Validator\Constraints as ImageAssert;
 
 /**
  * Entity class that defines the entity structure and behaviours.
@@ -53,18 +51,12 @@ abstract class AbstractAvatarEntity extends EntityAccess
     protected $_objectType = 'avatar';
     
     /**
-     * @Assert\Type(type="bool")
-     * @var boolean Option to bypass validation if needed
-     */
-    protected $_bypassValidation = false;
-    
-    /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer", unique=true)
      * @Assert\Type(type="integer")
      * @Assert\NotNull()
-     * @Assert\LessThan(value=1000000000, message="Length of field value must not be higher than 9.")) {
+     * @Assert\LessThan(value=1000000000)
      * @var integer $id
      */
     protected $id = 0;
@@ -73,7 +65,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
      * the current workflow state
      * @ORM\Column(length=20)
      * @Assert\NotBlank()
-     * @Assert\Choice(callback="getWorkflowStateAllowedValues", multiple=false)
+     * @ImageAssert\ListEntry(entityName="avatar", propertyName="workflowState", multiple=false)
      * @var string $workflowState
      */
     protected $workflowState = 'initial';
@@ -108,16 +100,16 @@ abstract class AbstractAvatarEntity extends EntityAccess
      * @Assert\NotBlank()
      * @Assert\Length(min="0", max="255")
      * @Assert\File(
-        maxSize = "100k",
-        mimeTypes = {"image/*"}
+     *    maxSize = "100k",
+     *    mimeTypes = {"image/*"}
      * )
      * @Assert\Image(
-        minWidth = 200,
-        maxWidth = 600,
-        minHeight = 200,
-        maxHeight = 600,
-        allowLandscape = false,
-        allowPortrait = false
+     *    minWidth = 200,
+     *    maxWidth = 600,
+     *    minHeight = 200,
+     *    maxHeight = 600,
+     *    allowLandscape = false,
+     *    allowPortrait = false
      * )
      * @var string $avatarUpload
      */
@@ -127,17 +119,18 @@ abstract class AbstractAvatarEntity extends EntityAccess
      * Full avatar upload path as url.
      *
      * @Assert\Type(type="string")
-     * @Assert\Url()
      * @var string $avatarUploadUrl
      */
     protected $avatarUploadUrl = '';
+    
     /**
+     * Be sure that you set the supported module in a logic way!
      * @ORM\Column(length=255)
      * @Assert\NotBlank()
-     * @Assert\Choice(callback="getSupportedModulesAllowedValues", multiple=false)
+     * @ImageAssert\ListEntry(entityName="avatar", propertyName="supportedModules", multiple=false)
      * @var string $supportedModules
      */
-    protected $supportedModules = null;
+    protected $supportedModules = '';
     
     
     /**
@@ -155,24 +148,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      * Will not be called by Doctrine and can therefore be used
      * for own implementation purposes. It is also possible to add
      * arbitrary arguments as with every other class method.
-     *
-     * @param TODO
      */
     public function __construct()
     {
-        $serviceManager = ServiceUtil::getManager();
-        
-        $listHelper = $serviceManager->get('mu_image_module.listentries_helper');
-        
-        $items = [];
-        $listEntries = $listHelper->getSupportedModulesEntriesForAvatar();
-        foreach ($listEntries as $listEntry) {
-            if (true === $listEntry['default']) {
-                $items[] = $listEntry['value'];
-            }
-        }
-        $this->supportedModules = implode('###', $items);
-        
         $this->initWorkflow();
         $this->categories = new ArrayCollection();
     }
@@ -196,29 +174,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function set_objectType($_objectType)
     {
-        $this->_objectType = $_objectType;
-    }
-    
-    /**
-     * Returns the _bypass validation.
-     *
-     * @return boolean
-     */
-    public function get_bypassValidation()
-    {
-        return $this->_bypassValidation;
-    }
-    
-    /**
-     * Sets the _bypass validation.
-     *
-     * @param boolean $_bypassValidation
-     *
-     * @return void
-     */
-    public function set_bypassValidation($_bypassValidation)
-    {
-        $this->_bypassValidation = $_bypassValidation;
+        if ($this->_objectType != $_objectType) {
+            $this->_objectType = $_objectType;
+        }
     }
     
     
@@ -241,7 +199,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function setId($id)
     {
-        $this->id = intval($id);
+        if (intval($this->id) !== intval($id)) {
+            $this->id = intval($id);
+        }
     }
     
     /**
@@ -263,7 +223,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function setWorkflowState($workflowState)
     {
-        $this->workflowState = isset($workflowState) ? $workflowState : '';
+        if ($this->workflowState !== $workflowState) {
+            $this->workflowState = isset($workflowState) ? $workflowState : '';
+        }
     }
     
     /**
@@ -285,7 +247,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function setTitle($title)
     {
-        $this->title = isset($title) ? $title : '';
+        if ($this->title !== $title) {
+            $this->title = isset($title) ? $title : '';
+        }
     }
     
     /**
@@ -307,7 +271,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function setDescription($description)
     {
-        $this->description = $description;
+        if ($this->description !== $description) {
+            $this->description = $description;
+        }
     }
     
     /**
@@ -329,7 +295,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function setAvatarUpload($avatarUpload)
     {
-        $this->avatarUpload = isset($avatarUpload) ? $avatarUpload : '';
+        if ($this->avatarUpload !== $avatarUpload) {
+            $this->avatarUpload = isset($avatarUpload) ? $avatarUpload : '';
+        }
     }
     
     /**
@@ -351,7 +319,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function setAvatarUploadUrl($avatarUploadUrl)
     {
-        $this->avatarUploadUrl = isset($avatarUploadUrl) ? $avatarUploadUrl : '';
+        if ($this->avatarUploadUrl !== $avatarUploadUrl) {
+            $this->avatarUploadUrl = isset($avatarUploadUrl) ? $avatarUploadUrl : '';
+        }
     }
     
     /**
@@ -373,7 +343,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function setAvatarUploadMeta($avatarUploadMeta = [])
     {
-        $this->avatarUploadMeta = isset($avatarUploadMeta) ? $avatarUploadMeta : '';
+        if ($this->avatarUploadMeta !== $avatarUploadMeta) {
+            $this->avatarUploadMeta = isset($avatarUploadMeta) ? $avatarUploadMeta : '';
+        }
     }
     
     /**
@@ -395,7 +367,9 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function setSupportedModules($supportedModules)
     {
-        $this->supportedModules = isset($supportedModules) ? $supportedModules : '';
+        if ($this->supportedModules !== $supportedModules) {
+            $this->supportedModules = isset($supportedModules) ? $supportedModules : '';
+        }
     }
     
     /**
@@ -455,89 +429,6 @@ abstract class AbstractAvatarEntity extends EntityAccess
     
     
     /**
-     * Returns the formatted title conforming to the display pattern
-     * specified for this entity.
-     *
-     * @return string The display title
-     */
-    public function getTitleFromDisplayPattern()
-    {
-        $listHelper = ServiceUtil::get('mu_image_module.listentries_helper');
-    
-        $formattedTitle = ''
-                . $this->getTitle();
-    
-        return $formattedTitle;
-    }
-    
-    
-    /**
-     * Returns a list of possible choices for the workflowState list field.
-     * This method is used for validation.
-     *
-     * @return array List of allowed choices
-     */
-    public static function getWorkflowStateAllowedValues()
-    {
-        $serviceManager = ServiceUtil::getManager();
-        $helper = $serviceManager->get('mu_image_module.listentries_helper');
-        $listEntries = $helper->getWorkflowStateEntriesForAvatar();
-    
-        $allowedValues = ['initial'];
-        foreach ($listEntries as $entry) {
-            $allowedValues[] = $entry['value'];
-        }
-    
-        return $allowedValues;
-    }
-    
-    /**
-     * Returns a list of possible choices for the supportedModules list field.
-     * This method is used for validation.
-     *
-     * @return array List of allowed choices
-     */
-    public static function getSupportedModulesAllowedValues()
-    {
-        $serviceManager = ServiceUtil::getManager();
-        $helper = $serviceManager->get('mu_image_module.listentries_helper');
-        $listEntries = $helper->getSupportedModulesEntriesForAvatar();
-    
-        $allowedValues = [];
-        foreach ($listEntries as $entry) {
-            $allowedValues[] = $entry['value'];
-        }
-    
-        return $allowedValues;
-    }
-    
-    /**
-     * Start validation and raise exception if invalid data is found.
-     *
-     * @return boolean Whether everything is valid or not
-     */
-    public function validate()
-    {
-        if (true === $this->_bypassValidation) {
-            return true;
-        }
-    
-        $validator = ServiceUtil::get('validator');
-        $errors = $validator->validate($this);
-    
-        if (count($errors) > 0) {
-            $flashBag = ServiceUtil::get('session')->getFlashBag();
-            foreach ($errors as $error) {
-                $flashBag->add('error', $error->getMessage());
-            }
-    
-            return false;
-        }
-    
-        return true;
-    }
-    
-    /**
      * Return entity data in JSON format.
      *
      * @return string JSON-encoded data
@@ -554,27 +445,19 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function createUrlArgs()
     {
-        $args = [];
-    
-        $args['id'] = $this['id'];
-    
-        if (property_exists($this, 'slug')) {
-            $args['slug'] = $this['slug'];
-        }
-    
-        return $args;
+        return [
+            'id' => $this->getId()
+        ];
     }
     
     /**
-     * Create concatenated identifier string (for composite keys).
+     * Returns the primary key.
      *
-     * @return String concatenated identifiers
+     * @return integer The identifier
      */
-    public function createCompositeIdentifier()
+    public function getKey()
     {
-        $itemId = $this['id'];
-    
-        return $itemId;
+        return $this->getId();
     }
     
     /**
@@ -607,7 +490,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
      */
     public function __toString()
     {
-        return 'Avatar ' . $this->createCompositeIdentifier() . ': ' . $this->getTitleFromDisplayPattern();
+        return 'Avatar ' . $this->getKey() . ': ' . $this->getTitle();
     }
     
     /**
@@ -623,13 +506,13 @@ abstract class AbstractAvatarEntity extends EntityAccess
     public function __clone()
     {
         // if the entity has no identity do nothing, do NOT throw an exception
-        if (!($this->id)) {
+        if (!$this->id) {
             return;
         }
     
         // otherwise proceed
     
-        // unset identifiers
+        // unset identifier
         $this->setId(0);
     
         // reset workflow

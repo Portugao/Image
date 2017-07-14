@@ -17,12 +17,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Zikula\Core\Doctrine\EntityAccess;
 use MU\ImageModule\Traits\EntityWorkflowTrait;
 use MU\ImageModule\Traits\StandardFieldsTrait;
-
-use RuntimeException;
-use ServiceUtil;
-use Zikula\Core\Doctrine\EntityAccess;
+use MU\ImageModule\Validator\Constraints as ImageAssert;
 
 /**
  * Entity class that defines the entity structure and behaviours.
@@ -53,12 +51,6 @@ abstract class AbstractAlbumEntity extends EntityAccess
     protected $_objectType = 'album';
     
     /**
-     * @Assert\Type(type="bool")
-     * @var boolean Option to bypass validation if needed
-     */
-    protected $_bypassValidation = false;
-    
-    /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer", unique=true)
@@ -70,7 +62,7 @@ abstract class AbstractAlbumEntity extends EntityAccess
      * the current workflow state
      * @ORM\Column(length=20)
      * @Assert\NotBlank()
-     * @Assert\Choice(callback="getWorkflowStateAllowedValues", multiple=false)
+     * @ImageAssert\ListEntry(entityName="album", propertyName="workflowState", multiple=false)
      * @var string $workflowState
      */
     protected $workflowState = 'initial';
@@ -100,10 +92,10 @@ abstract class AbstractAlbumEntity extends EntityAccess
     /**
      * @ORM\Column(length=255)
      * @Assert\NotBlank()
-     * @Assert\Choice(callback="getAlbumAccessAllowedValues", multiple=false)
+     * @ImageAssert\ListEntry(entityName="album", propertyName="albumAccess", multiple=false)
      * @var string $albumAccess
      */
-    protected $albumAccess = null;
+    protected $albumAccess = '';
     
     /**
      * @ORM\Column(length=255)
@@ -134,7 +126,7 @@ abstract class AbstractAlbumEntity extends EntityAccess
      * @Assert\Type(type="integer")
      * @Assert\NotBlank()
      * @Assert\NotEqualTo(value=0)
-     * @Assert\LessThan(value=2147483647, message="Length of field value must not be higher than 11.")) {
+     * @Assert\LessThan(value=100000000000)
      * @var integer $pos
      */
     protected $pos = 0;
@@ -157,7 +149,6 @@ abstract class AbstractAlbumEntity extends EntityAccess
      *      inverseJoinColumns={@ORM\JoinColumn(name="parent_id", referencedColumnName="id" )}
      * )
      * @Assert\Type(type="MU\ImageModule\Entity\AlbumEntity")
-     * @Assert\Valid()
      * @var \MU\ImageModule\Entity\AlbumEntity $album
      */
     protected $album;
@@ -190,25 +181,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      * Will not be called by Doctrine and can therefore be used
      * for own implementation purposes. It is also possible to add
      * arbitrary arguments as with every other class method.
-     *
-     * @param TODO
      */
     public function __construct()
     {
-        $serviceManager = ServiceUtil::getManager();
-        $this->pos = 1;
-        
-        $listHelper = $serviceManager->get('mu_image_module.listentries_helper');
-        
-        $items = [];
-        $listEntries = $listHelper->getAlbumAccessEntriesForAlbum();
-        foreach ($listEntries as $listEntry) {
-            if (true === $listEntry['default']) {
-                $items[] = $listEntry['value'];
-            }
-        }
-        $this->albumAccess = implode('###', $items);
-        
         $this->initWorkflow();
         $this->albums = new ArrayCollection();
         $this->pictures = new ArrayCollection();
@@ -234,29 +209,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function set_objectType($_objectType)
     {
-        $this->_objectType = $_objectType;
-    }
-    
-    /**
-     * Returns the _bypass validation.
-     *
-     * @return boolean
-     */
-    public function get_bypassValidation()
-    {
-        return $this->_bypassValidation;
-    }
-    
-    /**
-     * Sets the _bypass validation.
-     *
-     * @param boolean $_bypassValidation
-     *
-     * @return void
-     */
-    public function set_bypassValidation($_bypassValidation)
-    {
-        $this->_bypassValidation = $_bypassValidation;
+        if ($this->_objectType != $_objectType) {
+            $this->_objectType = $_objectType;
+        }
     }
     
     
@@ -279,7 +234,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setId($id)
     {
-        $this->id = intval($id);
+        if (intval($this->id) !== intval($id)) {
+            $this->id = intval($id);
+        }
     }
     
     /**
@@ -301,7 +258,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setWorkflowState($workflowState)
     {
-        $this->workflowState = isset($workflowState) ? $workflowState : '';
+        if ($this->workflowState !== $workflowState) {
+            $this->workflowState = isset($workflowState) ? $workflowState : '';
+        }
     }
     
     /**
@@ -323,7 +282,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setTitle($title)
     {
-        $this->title = isset($title) ? $title : '';
+        if ($this->title !== $title) {
+            $this->title = isset($title) ? $title : '';
+        }
     }
     
     /**
@@ -345,7 +306,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setDescription($description)
     {
-        $this->description = isset($description) ? $description : '';
+        if ($this->description !== $description) {
+            $this->description = isset($description) ? $description : '';
+        }
     }
     
     /**
@@ -367,7 +330,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setParent_id($parent_id)
     {
-        $this->parent_id = intval($parent_id);
+        if (intval($this->parent_id) !== intval($parent_id)) {
+            $this->parent_id = intval($parent_id);
+        }
     }
     
     /**
@@ -389,7 +354,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setAlbumAccess($albumAccess)
     {
-        $this->albumAccess = isset($albumAccess) ? $albumAccess : '';
+        if ($this->albumAccess !== $albumAccess) {
+            $this->albumAccess = isset($albumAccess) ? $albumAccess : '';
+        }
     }
     
     /**
@@ -411,7 +378,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setPasswordAccess($passwordAccess)
     {
-        $this->passwordAccess = isset($passwordAccess) ? $passwordAccess : '';
+        if ($this->passwordAccess !== $passwordAccess) {
+            $this->passwordAccess = isset($passwordAccess) ? $passwordAccess : '';
+        }
     }
     
     /**
@@ -433,7 +402,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setMyFriends($myFriends)
     {
-        $this->myFriends = isset($myFriends) ? $myFriends : '';
+        if ($this->myFriends !== $myFriends) {
+            $this->myFriends = isset($myFriends) ? $myFriends : '';
+        }
     }
     
     /**
@@ -455,8 +426,8 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setNotInFrontend($notInFrontend)
     {
-        if ($notInFrontend !== $this->notInFrontend) {
-            $this->notInFrontend = (bool)$notInFrontend;
+        if (boolval($this->notInFrontend) !== boolval($notInFrontend)) {
+            $this->notInFrontend = boolval($notInFrontend);
         }
     }
     
@@ -479,7 +450,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setPos($pos)
     {
-        $this->pos = intval($pos);
+        if (intval($this->pos) !== intval($pos)) {
+            $this->pos = intval($pos);
+        }
     }
     
     /**
@@ -577,6 +550,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setAlbums($albums)
     {
+        foreach ($this->albums as $albumSingle) {
+            $this->removeAlbums($albumSingle);
+        }
         foreach ($albums as $albumSingle) {
             $this->addAlbums($albumSingle);
         }
@@ -627,6 +603,9 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function setPictures($pictures)
     {
+        foreach ($this->pictures as $pictureSingle) {
+            $this->removePictures($pictureSingle);
+        }
         foreach ($pictures as $pictureSingle) {
             $this->addPictures($pictureSingle);
         }
@@ -661,89 +640,6 @@ abstract class AbstractAlbumEntity extends EntityAccess
     
     
     /**
-     * Returns the formatted title conforming to the display pattern
-     * specified for this entity.
-     *
-     * @return string The display title
-     */
-    public function getTitleFromDisplayPattern()
-    {
-        $listHelper = ServiceUtil::get('mu_image_module.listentries_helper');
-    
-        $formattedTitle = ''
-                . $this->getTitle();
-    
-        return $formattedTitle;
-    }
-    
-    
-    /**
-     * Returns a list of possible choices for the workflowState list field.
-     * This method is used for validation.
-     *
-     * @return array List of allowed choices
-     */
-    public static function getWorkflowStateAllowedValues()
-    {
-        $serviceManager = ServiceUtil::getManager();
-        $helper = $serviceManager->get('mu_image_module.listentries_helper');
-        $listEntries = $helper->getWorkflowStateEntriesForAlbum();
-    
-        $allowedValues = ['initial'];
-        foreach ($listEntries as $entry) {
-            $allowedValues[] = $entry['value'];
-        }
-    
-        return $allowedValues;
-    }
-    
-    /**
-     * Returns a list of possible choices for the albumAccess list field.
-     * This method is used for validation.
-     *
-     * @return array List of allowed choices
-     */
-    public static function getAlbumAccessAllowedValues()
-    {
-        $serviceManager = ServiceUtil::getManager();
-        $helper = $serviceManager->get('mu_image_module.listentries_helper');
-        $listEntries = $helper->getAlbumAccessEntriesForAlbum();
-    
-        $allowedValues = [];
-        foreach ($listEntries as $entry) {
-            $allowedValues[] = $entry['value'];
-        }
-    
-        return $allowedValues;
-    }
-    
-    /**
-     * Start validation and raise exception if invalid data is found.
-     *
-     * @return boolean Whether everything is valid or not
-     */
-    public function validate()
-    {
-        if (true === $this->_bypassValidation) {
-            return true;
-        }
-    
-        $validator = ServiceUtil::get('validator');
-        $errors = $validator->validate($this);
-    
-        if (count($errors) > 0) {
-            $flashBag = ServiceUtil::get('session')->getFlashBag();
-            foreach ($errors as $error) {
-                $flashBag->add('error', $error->getMessage());
-            }
-    
-            return false;
-        }
-    
-        return true;
-    }
-    
-    /**
      * Return entity data in JSON format.
      *
      * @return string JSON-encoded data
@@ -760,27 +656,19 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function createUrlArgs()
     {
-        $args = [];
-    
-        $args['id'] = $this['id'];
-    
-        if (property_exists($this, 'slug')) {
-            $args['slug'] = $this['slug'];
-        }
-    
-        return $args;
+        return [
+            'id' => $this->getId()
+        ];
     }
     
     /**
-     * Create concatenated identifier string (for composite keys).
+     * Returns the primary key.
      *
-     * @return String concatenated identifiers
+     * @return integer The identifier
      */
-    public function createCompositeIdentifier()
+    public function getKey()
     {
-        $itemId = $this['id'];
-    
-        return $itemId;
+        return $this->getId();
     }
     
     /**
@@ -823,7 +711,7 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function __toString()
     {
-        return 'Album ' . $this->createCompositeIdentifier() . ': ' . $this->getTitleFromDisplayPattern();
+        return 'Album ' . $this->getKey() . ': ' . $this->getTitle();
     }
     
     /**
@@ -839,13 +727,13 @@ abstract class AbstractAlbumEntity extends EntityAccess
     public function __clone()
     {
         // if the entity has no identity do nothing, do NOT throw an exception
-        if (!($this->id)) {
+        if (!$this->id) {
             return;
         }
     
         // otherwise proceed
     
-        // unset identifiers
+        // unset identifier
         $this->setId(0);
     
         // reset workflow

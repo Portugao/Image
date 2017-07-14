@@ -1,6 +1,6 @@
 {# purpose of this template: pictures list view #}
 {% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
-{% block title __('Picture list') %}
+{% block title own ? __('My pictures') : __('Picture list') %}
 {% block admin_page_icon 'list-alt' %}
 {% block content %}
 <div class="muimagemodule-picture muimagemodule-view">
@@ -19,21 +19,22 @@
                 {% if routeArea == 'admin' %}
                     <col id="cSelect" />
                 {% endif %}
+                <col id="cItemActions" />
                 <col id="cTitle" />
                 <col id="cDescription" />
                 <col id="cImageUpload" />
                 <col id="cAlbumImage" />
                 <col id="cPos" />
                 <col id="cAlbum" />
-                <col id="cItemActions" />
             </colgroup>
             <thead>
             <tr>
                 {% if routeArea == 'admin' %}
-                    <th id="hSelect" scope="col" class="text-center">
+                    <th id="hSelect" scope="col" class="{% if items|length > 0 %}fixed-column {% endif %}text-center z-w02">
                         <input type="checkbox" class="muimage-mass-toggle" />
                     </th>
                 {% endif %}
+                <th id="hItemActions" scope="col" class="{% if items|length > 0 %}fixed-column {% endif %}z-order-unsorted z-w02">{{ __('Actions') }}</th>
                 <th id="hTitle" scope="col" class="text-left">
                     <a href="{{ sort.title.url }}" title="{{ __f('Sort by %s', {'%s': 'title'}) }}" class="{{ sort.title.class }}">{{ __('Title') }}</a>
                 </th>
@@ -52,7 +53,6 @@
                 <th id="hAlbum" scope="col" class="text-left">
                     <a href="{{ sort.album.url }}" title="{{ __f('Sort by %s', {'%s': 'album'}) }}" class="{{ sort.album.class }}">{{ __('Album') }}</a>
                 </th>
-                <th id="hItemActions" scope="col" class="text-right z-order-unsorted">{{ __('Actions') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -60,22 +60,29 @@
         {% for picture in items %}
             <tr>
                 {% if routeArea == 'admin' %}
-                    <td headers="hSelect" class="text-center">
-                        <input type="checkbox" name="items[]" value="{{ picture.id }}" class="muimage-toggle-checkbox" />
+                    <td headers="hSelect" class="fixed-column text-center z-w02">
+                        <input type="checkbox" name="items[]" value="{{ picture.getKey() }}" class="muimage-toggle-checkbox" />
                     </td>
                 {% endif %}
+                <td id="itemActions{{ picture.getKey() }}" headers="hItemActions" class="fixed-column actions nowrap z-w02">
+                    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: picture, area: routeArea, context: 'view' }) %}
+                    <div class="dropdown">
+                        <a id="itemActions{{ picture.getKey() }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
+                        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
+                    </div>
+                </td>
                 <td headers="hTitle" class="text-left">
-                    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ picture.title|notifyFilters('muimagemodule.filterhook.pictures') }}</a>
+                    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.getId() }) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ picture.title|notifyFilters('muimagemodule.filterhook.pictures')|safeHtml }}</a>
                 </td>
                 <td headers="hDescription" class="text-left">
-                    {{ picture.description|safeHtml }}
+                    {{ picture.description|safeHtml|truncate(50) }}
                 </td>
                 <td headers="hImageUpload" class="text-left">
                     {% if picture.imageUploadMeta|default %}
-                    <a href="{{ picture.imageUploadUrl }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
+                    <a href="{{ picture.imageUploadUrl }}" title="{{ picture|muimagemodule_formattedTitle|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="image-link"{% endif %}>
                     {% if picture.imageUploadMeta.isImage %}
                         {% set thumbOptions = attribute(thumbRuntimeOptions, 'pictureImageUpload') %}
-                        <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
+                        <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ picture|muimagemodule_formattedTitle|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
                     {% else %}
                         {{ __('Download') }} ({{ picture.imageUploadMeta.size|muimagemodule_fileSize(picture.imageUpload.getPathname(), false, false) }})
                     {% endif %}
@@ -94,20 +101,13 @@
                 </td>
                 <td headers="hAlbum" class="text-left">
                     {% if picture.album|default %}
-                        <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.id }) }}">{% spaceless %}
-                          {{ picture.album.getTitleFromDisplayPattern() }}
+                        <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.getId() }) }}">{% spaceless %}
+                          {{ picture.album|muimagemodule_formattedTitle }}
                         {% endspaceless %}</a>
-                        <a id="albumItem{{ picture.id }}_rel_{{ picture.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.id, 'raw': 1 }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                        <a id="albumItem{{ picture.getKey() }}_rel_{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.getId(), 'raw': 1 }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
                     {% else %}
                         {{ __('Not set.') }}
                     {% endif %}
-                </td>
-                <td id="itemActions{{ picture.id }}" headers="hItemActions" class="actions text-right nowrap z-w02">
-                    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: picture, area: routeArea, context: 'view' }) %}
-                    <div class="dropdown">
-                        <a id="itemActions{{ picture.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
-                        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
-                    </div>
                 </td>
             </tr>
         {% else %}
@@ -122,7 +122,7 @@
         </table>
         </div>
         
-        {% if showAllEntries != 1 and pager|default %}
+        {% if all != 1 and pager|default %}
             {{ pager({ rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_picture_' ~ routeArea ~ 'view'}) }}
         {% endif %}
     {% if routeArea == 'admin' %}
@@ -146,19 +146,21 @@
 </div>
 {% endblock %}
 {% block page_nav_links %}
-    {% if canBeCreated %}
-        {% if hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
-            {% set createTitle = __('Create picture') %}
-            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
+    <p>
+        {% if canBeCreated %}
+            {% if hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
+                {% set createTitle = __('Create picture') %}
+                <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
+            {% endif %}
         {% endif %}
-    {% endif %}
-    {% if showAllEntries == 1 %}
-        {% set linkTitle = __('Back to paginated view') %}
-        <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
-    {% else %}
-        {% set linkTitle = __('Show all entries') %}
-        <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', { all: 1 }) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
-    {% endif %}
+        {% if all == 1 %}
+            {% set linkTitle = __('Back to paginated view') %}
+            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+        {% else %}
+            {% set linkTitle = __('Show all entries') %}
+            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', { all: 1 }) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+        {% endif %}
+    </p>
 {% endblock %}
 {% block display_hooks %}
     

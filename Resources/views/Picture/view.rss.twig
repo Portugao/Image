@@ -7,7 +7,7 @@
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:content="http://purl.org/rss/1.0/modules/content/"
     xmlns:atom="http://www.w3.org/2005/Atom">
-{*<rss version="0.92">*}
+{#<rss version="0.92">#}
     <channel>
         <title>{{ __('Latest pictures') }}</title>
         <link>{{ app.request.getSchemeAndHttpHost() ~ app.request.getBasePath()|e }}</link>
@@ -23,7 +23,7 @@
         #}
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <copyright>Copyright (c) {{ 'now'|date('Y') }}, {{ app.request.getSchemeAndHttpHost()|e }}</copyright>
-        <webMaster>{{ pageGetVar('adminmail)|e }} ({{ muimagemodule_userVar('name', 2, 'admin') }})</webMaster>
+        <webMaster>{{ pageGetVar('adminmail)|e }}</webMaster>
 {% for picture in items %}
     {{ block('entry') }}
 {% endfor %}
@@ -35,12 +35,12 @@
     </item>
 {% endblock %}
 {% block entry_content %}
-    <title><![CDATA[{% if picture.updatedDate|default %}{{ picture.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ picture.getTitleFromDisplayPattern()|notifyFilters('muimagemodule.filterhook.pictures') }}]]></title>
-    <link>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}</link>
-    <guid>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.id }) }}</guid>
-    {% if picture.createdBy|default %}
-        {% set realName = muimagemodule_userVar('name', obj.createdBy.getUid()) %}
-        <author>{{ picture.createdBy.getEmail() }} ({{ realName|default(obj.createdBy.getUname()) }})</author>
+    <title><![CDATA[{% if picture.updatedDate|default %}{{ picture.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ picture|muimagemodule_formattedTitle|notifyFilters('muimagemodule.filterhook.pictures')|safeHtml }}]]></title>
+    <link>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.getId() }) }}</link>
+    <guid>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.getId() }) }}</guid>
+    {% if picture.createdBy|default and picture.createdBy.getUid() > 0 %}
+        {% set creatorAttributes = picture.createdBy.getAttributes() %}
+        <author>{{ picture.createdBy.getEmail() }} ({{ creatorAttributes.get('realname')|default(creatorAttributes.get('name'))|default(picture.createdBy.getUname()) }})</author>
     {% endif %}
     <description>
         <![CDATA[

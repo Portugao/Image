@@ -19,25 +19,21 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Zikula\Bundle\CoreBundle\HttpKernel\ZikulaHttpKernelInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\Core\RouteUrl;
-use Zikula\ExtensionsModule\Api\VariableApi;
-use Zikula\GroupsModule\Entity\Repository\GroupApplicationRepository;
 use Zikula\PageLockModule\Api\LockingApi;
 use Zikula\PermissionsModule\Api\PermissionApi;
 use Zikula\UsersModule\Api\CurrentUserApi;
-use MU\ImageModule\Entity\Factory\ImageFactory;
+use MU\ImageModule\Entity\Factory\EntityFactory;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ControllerHelper;
 use MU\ImageModule\Helper\HookHelper;
 use MU\ImageModule\Helper\ModelHelper;
-use MU\ImageModule\Helper\SelectionHelper;
 use MU\ImageModule\Helper\WorkflowHelper;
 
 /**
@@ -84,18 +80,18 @@ abstract class AbstractEditHandler
     protected $entityRef = null;
 
     /**
-     * List of identifier names.
+     * Name of primary identifier field.
      *
-     * @var array
+     * @var string
      */
-    protected $idFields = [];
+    protected $idField = null;
 
     /**
-     * List of identifiers of treated entity.
+     * Identifier of treated entity.
      *
-     * @var array
+     * @var integer
      */
-    protected $idValues = [];
+    protected $idValue = 0;
 
     /**
      * Code defining the redirect goal after command handling.
@@ -133,13 +129,6 @@ abstract class AbstractEditHandler
     protected $idPrefix = '';
 
     /**
-     * Whether an existing item is used as template for a new one.
-     *
-     * @var boolean
-     */
-    protected $hasTemplateId = false;
-
-    /**
      * Whether the PageLock extension is used for this entity type or not.
      *
      * @var boolean
@@ -147,7 +136,7 @@ abstract class AbstractEditHandler
     protected $hasPageLockSupport = false;
 
     /**
-     * @var KernelInterface
+     * @var ZikulaHttpKernelInterface
      */
     protected $kernel;
 
@@ -181,22 +170,12 @@ abstract class AbstractEditHandler
     protected $permissionApi;
 
     /**
-     * @var VariableApi
-     */
-    protected $variableApi;
-
-    /**
      * @var CurrentUserApi
      */
     protected $currentUserApi;
 
     /**
-     * @var GroupApplicationRepository
-     */
-    protected $groupApplicationRepository;
-
-    /**
-     * @var ImageFactory
+     * @var EntityFactory
      */
     protected $entityFactory;
 
@@ -214,11 +193,6 @@ abstract class AbstractEditHandler
      * @var ModelHelper
      */
     protected $modelHelper;
-
-    /**
-     * @var SelectionHelper
-     */
-    protected $selectionHelper;
 
     /**
      * @var WorkflowHelper
@@ -254,43 +228,37 @@ abstract class AbstractEditHandler
     /**
      * EditHandler constructor.
      *
-     * @param KernelInterface      $kernel           Kernel service instance
-     * @param TranslatorInterface  $translator       Translator service instance
-     * @param FormFactoryInterface $formFactory      FormFactory service instance
-     * @param RequestStack         $requestStack     RequestStack service instance
-     * @param RouterInterface      $router           Router service instance
-     * @param LoggerInterface      $logger           Logger service instance
-     * @param PermissionApi        $permissionApi    PermissionApi service instance
-     * @param VariableApi          $variableApi      VariableApi service instance
-     * @param CurrentUserApi       $currentUserApi   CurrentUserApi service instance
-     * @param GroupApplicationRepository $groupApplicationRepository GroupApplicationRepository service instance.
-     * @param ImageFactory $entityFactory ImageFactory service instance
-     * @param ControllerHelper     $controllerHelper ControllerHelper service instance
-     * @param ModelHelper          $modelHelper      ModelHelper service instance
-     * @param SelectionHelper      $selectionHelper  SelectionHelper service instance
-     * @param WorkflowHelper       $workflowHelper   WorkflowHelper service instance
-     * @param HookHelper           $hookHelper       HookHelper service instance
-     * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
+     * @param ZikulaHttpKernelInterface $kernel           Kernel service instance
+     * @param TranslatorInterface       $translator       Translator service instance
+     * @param FormFactoryInterface      $formFactory      FormFactory service instance
+     * @param RequestStack              $requestStack     RequestStack service instance
+     * @param RouterInterface           $router           Router service instance
+     * @param LoggerInterface           $logger           Logger service instance
+     * @param PermissionApi             $permissionApi    PermissionApi service instance
+     * @param CurrentUserApi            $currentUserApi   CurrentUserApi service instance
+     * @param EntityFactory             $entityFactory    EntityFactory service instance
+     * @param ControllerHelper          $controllerHelper ControllerHelper service instance
+     * @param ModelHelper               $modelHelper      ModelHelper service instance
+     * @param WorkflowHelper            $workflowHelper   WorkflowHelper service instance
+     * @param HookHelper                $hookHelper       HookHelper service instance
+     * @param FeatureActivationHelper   $featureActivationHelper FeatureActivationHelper service instance
      */
     public function __construct(
-        KernelInterface $kernel,
+        ZikulaHttpKernelInterface $kernel,
         TranslatorInterface $translator,
         FormFactoryInterface $formFactory,
         RequestStack $requestStack,
         RouterInterface $router,
         LoggerInterface $logger,
         PermissionApi $permissionApi,
-        VariableApi $variableApi,
         CurrentUserApi $currentUserApi,
-        GroupApplicationRepository $groupApplicationRepository,
-        ImageFactory $entityFactory,
+        EntityFactory $entityFactory,
         ControllerHelper $controllerHelper,
         ModelHelper $modelHelper,
-        SelectionHelper $selectionHelper,
         WorkflowHelper $workflowHelper,
         HookHelper $hookHelper,
-        FeatureActivationHelper $featureActivationHelper)
-    {
+        FeatureActivationHelper $featureActivationHelper
+    ) {
         $this->kernel = $kernel;
         $this->setTranslator($translator);
         $this->formFactory = $formFactory;
@@ -298,13 +266,10 @@ abstract class AbstractEditHandler
         $this->router = $router;
         $this->logger = $logger;
         $this->permissionApi = $permissionApi;
-        $this->variableApi = $variableApi;
         $this->currentUserApi = $currentUserApi;
-        $this->groupApplicationRepository = $groupApplicationRepository;
         $this->entityFactory = $entityFactory;
         $this->controllerHelper = $controllerHelper;
         $this->modelHelper = $modelHelper;
-        $this->selectionHelper = $selectionHelper;
         $this->workflowHelper = $workflowHelper;
         $this->hookHelper = $hookHelper;
         $this->featureActivationHelper = $featureActivationHelper;
@@ -329,60 +294,66 @@ abstract class AbstractEditHandler
      *
      * @return boolean False in case of initialisation errors, otherwise true
      *
-     * @throws NotFoundHttpException Thrown if item to be edited isn't found
-     * @throws RuntimeException      Thrown if the workflow actions can not be determined
+     * @throws RuntimeException Thrown if the workflow actions can not be determined
      */
     public function processForm(array $templateParameters)
     {
         $this->templateParameters = $templateParameters;
-        $this->templateParameters['inlineUsage'] = $this->request->query->getBoolean('raw', false);
     
-        $this->idPrefix = $this->request->query->getAlnum('idp', '');
+        $this->idPrefix = $this->request->query->get('idp', '');
     
         // initialise redirect goal
         $this->returnTo = $this->request->query->get('returnTo', null);
-        if (null === $this->returnTo) {
-            // default to referer
-            if ($this->request->getSession()->has('muimagemoduleReferer')) {
-                $this->returnTo = $this->request->getSession()->get('muimagemoduleReferer');
-            } elseif ($this->request->headers->has('muimagemoduleReferer')) {
-                $this->returnTo = $this->request->headers->get('muimagemoduleReferer');
-                $this->request->getSession()->set('muimagemoduleReferer', $this->returnTo);
-            } elseif ($this->request->server->has('HTTP_REFERER')) {
-                $this->returnTo = $this->request->server->get('HTTP_REFERER');
-                $this->request->getSession()->set('muimagemoduleReferer', $this->returnTo);
+        // default to referer
+        $refererSessionVar = 'muimagemodule' . $this->objectTypeCapital . 'Referer';
+        if (null === $this->returnTo && $this->request->headers->has('referer')) {
+            $currentReferer = $this->request->headers->get('referer');
+            if ($currentReferer != $this->request->getUri()) {
+                $this->returnTo = $currentReferer;
+                $this->request->getSession()->set($refererSessionVar, $this->returnTo);
             }
+        }
+        if (null === $this->returnTo && $this->request->getSession()->has($refererSessionVar)) {
+            $this->returnTo = $this->request->getSession()->get($refererSessionVar);
         }
         // store current uri for repeated creations
         $this->repeatReturnUrl = $this->request->getSchemeAndHttpHost() . $this->request->getBasePath() . $this->request->getPathInfo();
     
         $this->permissionComponent = 'MUImageModule:' . $this->objectTypeCapital . ':';
     
-        $this->idFields = $this->selectionHelper->getIdFields($this->objectType);
+        $this->idField = $this->entityFactory->getIdField($this->objectType);
     
-        // retrieve identifier of the object we wish to view
-        $this->idValues = $this->controllerHelper->retrieveIdentifier($this->request, [], $this->objectType, $this->idFields);
-        $hasIdentifier = $this->controllerHelper->isValidIdentifier($this->idValues);
+        // retrieve identifier of the object we wish to edit
+        $routeParams = $this->request->get('_route_params', []);
+        if (empty($this->idValue)) {
+            if (array_key_exists($this->idField, $routeParams)) {
+                $this->idValue = (int) !empty($routeParams[$this->idField]) ? $routeParams[$this->idField] : 0;
+            }
+            if (0 === $this->idValue) {
+                $this->idValue = $this->request->query->getInt($this->idField, 0);
+            }
+            if (0 === $this->idValue && $this->idField != 'id') {
+                $this->idValue = $this->request->query->getInt('id', 0);
+            }
+        }
     
         $entity = null;
-        $this->templateParameters['mode'] = $hasIdentifier ? 'edit' : 'create';
+        $this->templateParameters['mode'] = !empty($this->idValue) ? 'edit' : 'create';
     
         if ($this->templateParameters['mode'] == 'edit') {
-            if (!$this->permissionApi->hasPermission($this->permissionComponent, $this->createCompositeIdentifier() . '::', ACCESS_EDIT)) {
+            if (!$this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_EDIT)) {
                 throw new AccessDeniedException();
             }
     
             $entity = $this->initEntityForEditing();
-            if (!is_object($entity)) {
-                return false;
-            }
-    
-            if (true === $this->hasPageLockSupport && $this->kernel->isBundle('ZikulaPageLockModule') && null !== $this->lockingApi) {
-                // try to guarantee that only one person at a time can be editing this entity
-                $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->createCompositeIdentifier();
-                $this->lockingApi->addLock($lockName, $this->getRedirectUrl(null));
-                // reload entity as the addLock call above has triggered the preUpdate event
-                $this->entityFactory->getObjectManager()->refresh($entity);
+            if (null !== $entity) {
+                if (true === $this->hasPageLockSupport && $this->kernel->isBundle('ZikulaPageLockModule') && null !== $this->lockingApi) {
+                    // try to guarantee that only one person at a time can be editing this entity
+                    $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->getKey();
+                    $this->lockingApi->addLock($lockName, $this->getRedirectUrl(null));
+                    // reload entity as the addLock call above has triggered the preUpdate event
+                    $this->entityFactory->getObjectManager()->refresh($entity);
+                }
             }
         } else {
             if (!$this->permissionApi->hasPermission($this->permissionComponent, '::', ACCESS_EDIT)) {
@@ -390,6 +361,25 @@ abstract class AbstractEditHandler
             }
     
             $entity = $this->initEntityForCreation();
+    
+            // set default values from request parameters
+            foreach ($this->request->query->all() as $key => $value) {
+                if (strlen($key) < 5 || substr($key, 0, 4) != 'set_') {
+                    continue;
+                }
+                $fieldName = str_replace('set_', '', $key);
+                $setterName = 'set' . ucfirst($fieldName);
+                if (!method_exists($entity, $setterName)) {
+                    continue;
+                }
+                $entity[$fieldName] = $value;
+            }
+        }
+    
+        if (null === $entity) {
+            $this->request->getSession()->getFlashBag()->add('error', $this->__('No such item found.'));
+    
+            return new RedirectResponse($this->getRedirectUrl(['commandName' => 'cancel']), 302);
         }
     
         // save entity reference for later reuse
@@ -401,7 +391,7 @@ abstract class AbstractEditHandler
         $actions = $this->workflowHelper->getActionsForObject($entity);
         if (false === $actions || !is_array($actions)) {
             $this->request->getSession()->getFlashBag()->add('error', $this->__('Error! Could not determine workflow actions.'));
-            $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType, 'id' => $entity->createCompositeIdentifier()];
+            $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType, 'id' => $entity->getKey()];
             $this->logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed to determine available workflow actions.', $logArgs);
             throw new \RuntimeException($this->__('Error! Could not determine workflow actions.'));
         }
@@ -462,36 +452,17 @@ abstract class AbstractEditHandler
         return $this->templateParameters;
     }
     
-    /**
-     * Create concatenated identifier string (for composite keys).
-     *
-     * @return String concatenated identifiers
-     */
-    protected function createCompositeIdentifier()
-    {
-        $itemId = '';
-        foreach ($this->idFields as $idField) {
-            if (!empty($itemId)) {
-                $itemId .= '_';
-            }
-            $itemId .= $this->idValues[$idField];
-        }
-    
-        return $itemId;
-    }
     
     /**
      * Initialise existing entity for editing.
      *
      * @return EntityAccess|null Desired entity instance or null
-     *
-     * @throws NotFoundHttpException Thrown if item to be edited isn't found
      */
     protected function initEntityForEditing()
     {
-        $entity = $this->selectionHelper->getEntity($this->objectType, $this->idValues);
+        $entity = $this->entityFactory->getRepository($this->objectType)->selectById($this->idValue);
         if (null === $entity) {
-            throw new NotFoundHttpException($this->__('No such item.'));
+            return null;
         }
     
         $entity->initWorkflow();
@@ -503,33 +474,19 @@ abstract class AbstractEditHandler
      * Initialise new entity for creation.
      *
      * @return EntityAccess|null Desired entity instance or null
-     *
-     * @throws NotFoundHttpException Thrown if item to be cloned isn't found
      */
     protected function initEntityForCreation()
     {
-        $this->hasTemplateId = false;
-        $templateId = $this->request->query->get('astemplate', '');
+        $templateId = $this->request->query->getInt('astemplate', '');
         $entity = null;
     
         if (!empty($templateId)) {
-            $templateIdValueParts = explode('_', $templateId);
-            $this->hasTemplateId = count($templateIdValueParts) == count($this->idFields);
-    
-            if (true === $this->hasTemplateId) {
-                $templateIdValues = [];
-                $i = 0;
-                foreach ($this->idFields as $idField) {
-                    $templateIdValues[$idField] = $templateIdValueParts[$i];
-                    $i++;
-                }
-                // reuse existing entity
-                $entityT = $this->selectionHelper->getEntity($this->objectType, $templateIdValues);
-                if (null === $entityT) {
-                    throw new NotFoundHttpException($this->__('No such item.'));
-                }
-                $entity = clone $entityT;
+            // reuse existing entity
+            $entityT = $this->entityFactory->getRepository($this->objectType)->selectById($templateId);
+            if (null === $entityT) {
+                return null;
             }
+            $entity = clone $entityT;
         }
     
         if (null === $entity) {
@@ -606,14 +563,14 @@ abstract class AbstractEditHandler
                 if ($action != 'delete') {
                     $urlArgs = $entity->createUrlArgs();
                     $urlArgs['_locale'] = $this->request->getLocale();
-                    $url = new RouteUrl('muimagemodule_' . $this->objectType . '_display', $urlArgs);
+                    $url = new RouteUrl('muimagemodule_' . $this->objectTypeLower . '_display', $urlArgs);
                 }
                 $this->hookHelper->callProcessHooks($entity, $hookType, $url);
             }
         }
     
         if (true === $this->hasPageLockSupport && $this->templateParameters['mode'] == 'edit' && $this->kernel->isBundle('ZikulaPageLockModule') && null !== $this->lockingApi) {
-            $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->createCompositeIdentifier();
+            $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->getKey();
             $this->lockingApi->releaseLock($lockName);
         }
     
@@ -675,7 +632,7 @@ abstract class AbstractEditHandler
     
         $flashType = true === $success ? 'status' : 'error';
         $this->request->getSession()->getFlashBag()->add($flashType, $message);
-        $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType, 'id' => $this->entityRef->createCompositeIdentifier()];
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType, 'id' => $this->entityRef->getKey()];
         if (true === $success) {
             $this->logger->notice('{app}: User {user} updated the {entity} with id {id}.', $logArgs);
         } else {
@@ -697,6 +654,15 @@ abstract class AbstractEditHandler
             $this->repeatCreateAction = true;
         }
     
+        if (method_exists($this->entityRef, 'getCreatedBy')) {
+            if (isset($this->form['moderationSpecificCreator']) && null !== $this->form['moderationSpecificCreator']->getData()) {
+                $this->entityRef->setCreatedBy($this->form['moderationSpecificCreator']->getData());
+            }
+            if (isset($this->form['moderationSpecificCreationDate']) && $this->form['moderationSpecificCreationDate']->getData() != '') {
+                $this->entityRef->setCreatedDate($this->form['moderationSpecificCreationDate']->getData());
+            }
+        }
+    
         if (isset($this->form['additionalNotificationRemarks']) && $this->form['additionalNotificationRemarks']->getData() != '') {
             $this->request->getSession()->set('MUImageModuleAdditionalNotificationRemarks', $this->form['additionalNotificationRemarks']->getData());
         }
@@ -716,33 +682,6 @@ abstract class AbstractEditHandler
     {
         // stub for subclasses
         return false;
-    }
-
-    /**
-     * Prepares properties related to advanced workflow.
-     *
-     * @param bool $enterprise Whether the enterprise workflow is used instead of the standard workflow
-     *
-     * @return array List of additional form options
-     */
-    protected function prepareWorkflowAdditions($enterprise = false)
-    {
-        $roles = [];
-        
-        $isLoggedIn = $this->currentUserApi->isLoggedIn();
-        $userId = $isLoggedIn ? $this->currentUserApi->get('uid') : 1;
-        $roles['isCreator'] = $this->templateParameters['mode'] == 'create'
-            || (method_exists($this->entityRef, 'getCreatedBy') && $this->entityRef->getCreatedBy()->getUid() == $userId);
-    
-        $groupApplicationArgs = ['user' => $userId, 'group' => $this->variableApi->get('MUImageModule', 'moderationGroupFor' . $this->objectTypeCapital, 2)];
-        $roles['isModerator'] = count($this->groupApplicationRepository->findBy($groupApplicationArgs)) > 0;
-    
-        if (true === $enterprise) {
-            $groupApplicationArgs = ['user' => $userId, 'group' => $this->variableApi->get('MUImageModule', 'superModerationGroupFor' . $this->objectTypeCapital, 2)];
-            $roles['isSuperModerator'] = count($this->groupApplicationRepository->findBy($groupApplicationArgs)) > 0;
-        }
-    
-        return $roles;
     }
 
     /**

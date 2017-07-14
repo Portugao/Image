@@ -23,11 +23,21 @@
  */
 function smarty_function_muimagemoduleObjectTypeSelector($params, $view)
 {
+    $dom = ZLanguage::getModuleDomain('MUImageModule');
     $result = [];
 
-    $result[] = ['text' => $this->__('Albums'), 'value' => 'album'];
-    $result[] = ['text' => $this->__('Pictures'), 'value' => 'picture'];
-    $result[] = ['text' => $this->__('Avatars'), 'value' => 'avatar'];
+    $result[] = [
+        'text' => __('Albums', $dom),
+        'value' => 'album'
+    ];
+    $result[] = [
+        'text' => __('Pictures', $dom),
+        'value' => 'picture'
+    ];
+    $result[] = [
+        'text' => __('Avatars', $dom),
+        'value' => 'avatar'
+    ];
 
     if (array_key_exists('assign', $params)) {
         $view->assign($params['assign'], $result);

@@ -15,7 +15,6 @@ namespace MU\ImageModule\Listener;
 use MU\ImageModule\Listener\Base\AbstractThemeListener;
 use Zikula\ThemeModule\Bridge\Event\TwigPostRenderEvent;
 use Zikula\ThemeModule\Bridge\Event\TwigPreRenderEvent;
-use Zikula\Core\Event\GenericEvent;
 
 /**
  * Event handler implementation class for theme-related events.
@@ -23,7 +22,7 @@ use Zikula\Core\Event\GenericEvent;
 class ThemeListener extends AbstractThemeListener
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public static function getSubscribedEvents()
     {
@@ -31,11 +30,11 @@ class ThemeListener extends AbstractThemeListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function smartyPreInit(GenericEvent $event)
+    public function preRender(TwigPreRenderEvent $event)
     {
-        parent::smartyPreInit($event);
+        parent::preRender($event);
     
         // you can access general data available in the event
         
@@ -58,11 +57,11 @@ class ThemeListener extends AbstractThemeListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function smartyInit(GenericEvent $event)
+    public function postRender(TwigPostRenderEvent $event)
     {
-        parent::smartyInit($event);
+        parent::postRender($event);
     
         // you can access general data available in the event
         
@@ -82,102 +81,5 @@ class ThemeListener extends AbstractThemeListener
         
         // the currently handled request
         // $request = $event->getRequest();
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function smartyLoadConfig(GenericEvent $event)
-    {
-        parent::smartyLoadConfig($event);
-    
-        // you can access general data available in the event
-        
-        // the event name
-        // echo 'Event: ' . $event->getName();
-        
-        // type of current request: MASTER_REQUEST or SUB_REQUEST
-        // if a listener should only be active for the master request,
-        // be sure to check that at the beginning of your method
-        // if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-        //     // don't do anything if it's not the master request
-        //     return;
-        // }
-        
-        // kernel instance handling the current request
-        // $kernel = $event->getKernel();
-        
-        // the currently handled request
-        // $request = $event->getRequest();
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function smartyPreFetch(GenericEvent $event)
-    {
-        parent::smartyPreFetch($event);
-    
-        // you can access general data available in the event
-        
-        // the event name
-        // echo 'Event: ' . $event->getName();
-        
-        // type of current request: MASTER_REQUEST or SUB_REQUEST
-        // if a listener should only be active for the master request,
-        // be sure to check that at the beginning of your method
-        // if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-        //     // don't do anything if it's not the master request
-        //     return;
-        // }
-        
-        // kernel instance handling the current request
-        // $kernel = $event->getKernel();
-        
-        // the currently handled request
-        // $request = $event->getRequest();
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function smartyPostFetch(GenericEvent $event)
-    {
-        parent::smartyPostFetch($event);
-    
-        // you can access general data available in the event
-        
-        // the event name
-        // echo 'Event: ' . $event->getName();
-        
-        // type of current request: MASTER_REQUEST or SUB_REQUEST
-        // if a listener should only be active for the master request,
-        // be sure to check that at the beginning of your method
-        // if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-        //     // don't do anything if it's not the master request
-        //     return;
-        // }
-        
-        // kernel instance handling the current request
-        // $kernel = $event->getKernel();
-        
-        // the currently handled request
-        // $request = $event->getRequest();
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function twigPreRender(TwigPreRenderEvent $event)
-    {
-        parent::twigPreRender($event);
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function twigPostRender(TwigPostRenderEvent $event)
-    {
-        parent::twigPostRender($event);
     }
 }

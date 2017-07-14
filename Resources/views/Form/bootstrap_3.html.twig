@@ -4,30 +4,52 @@
 {% block muimagemodule_field_upload_label %}{% endblock %}
 {% block muimagemodule_field_upload_row %}
     {% spaceless %}
-    {{ form_row(attribute(form, fieldName)) }}
+    {{ form_row(attribute(form, field_name)) }}
     <div class="col-sm-9 col-sm-offset-3">
         {% if not required %}
-            <span class="help-block"><a id="{{ id }}_{{ fieldName }}ResetVal" href="javascript:void(0);" class="hidden">{{ __('Reset to empty value') }}</a></span>
+            <span class="help-block"><a id="{{ id }}_{{ field_name }}ResetVal" href="javascript:void(0);" class="hidden">{{ __('Reset to empty value') }}</a></span>
         {% endif %}
-        <span class="help-block">{{ __('Allowed file extensions') }}: <span id="{{ id }}_{{ fieldName }}FileExtensions">{{ allowed_extensions|default('') }}</span></span>
-        {% if allowed_size|default is not null and allowed_size > 0 %}
-            <span class="help-block">{{ __('Allowed file size') }}: {{ allowed_size|muimagemodule_fileSize('', false, false) }}</span>
+        <span class="help-block">{{ __('Allowed file extensions') }}: <span id="{{ id }}_{{ field_name }}FileExtensions">{{ allowed_extensions|default('') }}</span></span>
+        {% if allowed_size|default %}
+            <span class="help-block">{{ __('Allowed file size') }}: {{ allowed_size }}</span>
         {% endif %}
         {% if file_path|default %}
             <span class="help-block">
                 {{ __('Current file') }}:
-                <a href="{{ file_url }}" title="{{ __('Open file') }}"{% if file_meta.isImage %} class="lightbox"{% endif %}>
+                <a href="{{ file_url }}" title="{{ __('Open file') }}"{% if file_meta.isImage %} class="image-link"{% endif %}>
                 {% if file_meta.isImage %}
-                    <img src="{{ file_path|imagine_filter('zkroot', thumbRuntimeOptions) }}" alt="{{ formattedEntityTitle|e('html_attr') }}" width="{{ thumbRuntimeOptions.thumbnail.size[0] }}" height="{{ thumbRuntimeOptions.thumbnail.size[1] }}" class="img-thumbnail" />
+                    <img src="{{ file_path|imagine_filter('zkroot', thumb_runtime_options) }}" alt="{{ edited_entity|muimagemodule_formattedTitle|e('html_attr') }}" width="{{ thumb_runtime_options.thumbnail.size[0] }}" height="{{ thumb_runtime_options.thumbnail.size[1] }}" class="img-thumbnail" />
                 {% else %}
                     {{ __('Download') }} ({{ file_meta.size|muimagemodule_fileSize(file_path, false, false) }})
                 {% endif %}
                 </a>
             </span>
             {% if not required %}
-                {{ form_row(attribute(form, fieldName ~ 'DeleteFile')) }}
+                {{ form_row(attribute(form, field_name ~ 'DeleteFile')) }}
             {% endif %}
         {% endif %}
     </div>
     {% endspaceless %}
+{% endblock %}
+
+{% block muimagemodule_field_user_widget %}
+    <div id="{{ id }}LiveSearch" class="muimagemodule-autocomplete-user hidden">
+        <i class="fa fa-search" title="{{ __('Search user') }}"></i>
+        <noscript><p>{{ __('This function requires JavaScript activated!') }}</p></noscript>
+        <input type="hidden" {{ block('widget_attributes') }} value="{{ value }}" />
+        <input type="text" id="{{ id }}Selector" name="{{ id }}Selector" autocomplete="off" value="{{ user_name|e('html_attr') }}" title="{{ __('Enter a part of the user name to search') }}" class="user-selector" />
+    </div>
+    <span id="{{ id }}Avatar" class="help-block avatar">
+        {% if value and not inline_usage %}
+            {{ muimagemodule_userAvatar(uid=value, rating='g') }}
+        {% endif %}
+    </span>
+    {% if not required %}
+        <span class="help-block"><a id="{{ id }}ResetVal" href="javascript:void(0);" class="hidden">{{ __('Reset to empty value') }}</a></span>
+    {% endif %}
+    {% if value and not inline_usage %}
+        {% if hasPermission('ZikulaUsersModule::', '::', 'ACCESS_ADMIN') %}
+            <span class="help-block"><a href="{{ path('zikulausersmodule_useradministration_modify', { 'user': value }) }}" title="{{ __('Switch to users administration') }}">{{ __('Manage user') }}</a></span>
+        {% endif %}
+    {% endif %}
 {% endblock %}

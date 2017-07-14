@@ -1,9 +1,12 @@
 {# Purpose of this template: Display one certain picture within an external context #}
-<div id="picture{$picture.id}" class="muimagemodule-external-picture">
+{{ pageAddAsset('javascript', asset('magnific-popup/jquery.magnific-popup.min.js')) }}
+{{ pageAddAsset('stylesheet', asset('magnific-popup/magnific-popup.css')) }}
+{{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.js')) }}
+<div id="picture{$picture->getKey()}" class="muimagemodule-external-picture">
 {% if displayMode == 'link' %}
     <p class="muimagemodule-external-link">
-    <a href="{{ path('muimagemodule_picture_display', { 'id': picture.id }) }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}">
-    {{ picture.getTitleFromDisplayPattern()|notifyFilters('image.filter_hooks.pictures.filter') }}
+    <a href="{{ path('muimagemodule_picture_display', { 'id': picture.getId() }) }}" title="{{ picture|muimagemodule_formattedTitle|e('html_attr') }}">
+    {{ picture|muimagemodule_formattedTitle|notifyFilters('image.filter_hooks.pictures.filter')|safeHtml }}
     </a>
     </p>
 {% endif %}
@@ -11,7 +14,7 @@
     {# for normal users without edit permission show only the actual file per default #}
     {% if displayMode == 'embed' %}
         <p class="muimagemodule-external-title">
-            <strong>{{ picture.getTitleFromDisplayPattern()|notifyFilters('image.filter_hooks.pictures.filter') }}</strong>
+            <strong>{{ picture|muimagemodule_formattedTitle|notifyFilters('image.filter_hooks.pictures.filter')|safeHtml }}</strong>
         </p>
     {% endif %}
 {% endif %}
@@ -20,10 +23,10 @@
 {% elseif displayMode == 'embed' %}
     <div class="muimagemodule-external-snippet">
         {% if picture.imageUploadMeta|default %}
-        <a href="{{ picture.imageUploadUrl }}" title="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="lightbox"{% endif %}>
+        <a href="{{ picture.imageUploadUrl }}" title="{{ picture|muimagemodule_formattedTitle|e('html_attr') }}"{% if picture.imageUploadMeta.isImage %} class="image-link"{% endif %}>
         {% if picture.imageUploadMeta.isImage %}
             {% set thumbOptions = attribute(thumbRuntimeOptions, 'pictureImageUpload') %}
-            <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ picture.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
+            <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ picture|muimagemodule_formattedTitle|e('html_attr') }}" width="{{ thumbOptions.thumbnail.size[0] }}" height="{{ thumbOptions.thumbnail.size[1] }}" class="img-thumbnail" />
         {% else %}
             {{ __('Download') }} ({{ picture.imageUploadMeta.size|muimagemodule_fileSize(picture.imageUpload.getPathname(), false, false) }})
         {% endif %}

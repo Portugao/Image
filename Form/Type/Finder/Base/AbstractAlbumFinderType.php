@@ -54,21 +54,21 @@ abstract class AbstractAlbumFinderType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->setMethod('GET')
             ->add('objectType', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', [
-                'data' => $options['objectType']
+                'data' => $options['object_type']
             ])
             ->add('editor', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', [
-                'data' => $options['editorName']
+                'data' => $options['editor_name']
             ])
         ;
 
-        if ($this->featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $options['objectType'])) {
+        if ($this->featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $options['object_type'])) {
             $this->addCategoriesField($builder, $options);
         }
         $this->addPasteAsField($builder, $options);
@@ -105,7 +105,7 @@ abstract class AbstractAlbumFinderType extends AbstractType
     {
         $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
             'label' => $this->__('Category') . ':',
-            'empty_data' => [],
+            'empty_data' => null,
             'attr' => [
                 'class' => 'category-selector',
                 'title' => $this->__('This is an optional filter.')
@@ -114,8 +114,8 @@ abstract class AbstractAlbumFinderType extends AbstractType
             'required' => false,
             'multiple' => false,
             'module' => 'MUImageModule',
-            'entity' => ucfirst($options['objectType']) . 'Entity',
-            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['objectType']) . 'CategoryEntity'
+            'entity' => ucfirst($options['object_type']) . 'Entity',
+            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['object_type']) . 'CategoryEntity'
         ]);
     }
 
@@ -127,12 +127,13 @@ abstract class AbstractAlbumFinderType extends AbstractType
      */
     public function addPasteAsField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('pasteas', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('pasteAs', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
             'label' => $this->__('Paste as') . ':',
             'empty_data' => 1,
             'choices' => [
-                $this->__('Link to the album') => 1,
-                $this->__('ID of album') => 2
+                $this->__('Relative link to the album') => 1,
+                $this->__('Absolute url to the album') => 2,
+                $this->__('ID of album') => 3
             ],
             'choices_as_values' => true,
             'multiple' => false,
@@ -163,7 +164,8 @@ abstract class AbstractAlbumFinderType extends AbstractType
                     $this->__('Pos') => 'pos',
                     $this->__('Creation date') => 'createdDate',
                     $this->__('Creator') => 'createdBy',
-                    $this->__('Update date') => 'updatedDate'
+                    $this->__('Update date') => 'updatedDate',
+                    $this->__('Updater') => 'updatedBy'
                 ],
                 'choices_as_values' => true,
                 'multiple' => false,
@@ -198,13 +200,13 @@ abstract class AbstractAlbumFinderType extends AbstractType
                 'class' => 'text-right'
             ],
             'choices' => [
-                5 => 5,
-                10 => 10,
-                15 => 15,
-                20 => 20,
-                30 => 30,
-                50 => 50,
-                100 => 100
+                $this->__('5') => 5,
+                $this->__('10') => 10,
+                $this->__('15') => 15,
+                $this->__('20') => 20,
+                $this->__('30') => 30,
+                $this->__('50') => 50,
+                $this->__('100') => 100
             ],
             'choices_as_values' => true,
             'multiple' => false,
@@ -224,13 +226,13 @@ abstract class AbstractAlbumFinderType extends AbstractType
             'label' => $this->__('Search for') . ':',
             'required' => false,
             'attr' => [
-                'max_length' => 255
+                'maxlength' => 255
             ]
         ]);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBlockPrefix()
     {
@@ -238,23 +240,19 @@ abstract class AbstractAlbumFinderType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
-                'objectType' => 'album',
-                'editorName' => 'ckeditor'
+                'object_type' => 'album',
+                'editor_name' => 'ckeditor'
             ])
-            ->setRequired(['objectType', 'editorName'])
-            ->setAllowedTypes([
-                'objectType' => 'string',
-                'editorName' => 'string'
-            ])
-            ->setAllowedValues([
-                'editorName' => ['tinymce', 'ckeditor']
-            ])
+            ->setRequired(['object_type', 'editor_name'])
+            ->setAllowedTypes('object_type', 'string')
+            ->setAllowedTypes('editor_name', 'string')
+            ->setAllowedValues('editor_name', ['tinymce', 'ckeditor'])
         ;
     }
 }

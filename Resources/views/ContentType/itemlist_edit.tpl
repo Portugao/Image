@@ -4,12 +4,12 @@
     {formlabel for='mUImageModuleObjectType' text=$objectTypeSelectorLabel cssClass='col-sm-3 control-label'}
     <div class="col-sm-9">
         {muimagemoduleObjectTypeSelector assign='allObjectTypes'}
-        {formdropdownlist id='mUImageModuleOjectType' dataField='objectType' group='data' mandatory=true items=$allObjectTypes cssClass='form-control'}
+        {formdropdownlist id='mUImageModuleObjectType' dataField='objectType' group='data' mandatory=true items=$allObjectTypes cssClass='form-control'}
         <span class="help-block">{gt text='If you change this please save the element once to reload the parameters below.' domain='muimagemodule'}</span>
     </div>
 </div>
 
-{if $featureActivationHelper->isEnabled(const('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES', $objectType))}
+{if $featureActivationHelper->isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), $objectType)}
 {formvolatile}
 {if $properties ne null && is_array($properties)}
     {nocache}
@@ -60,7 +60,7 @@
     {gt text='Amount' domain='muimagemodule' assign='amountLabel'}
     {formlabel for='mUImageModuleAmount' text=$amountLabel cssClass='col-sm-3 control-label'}
     <div class="col-sm-9">
-        {formintinput id='mUImageModuleAmount' dataField='amount' group='data' mandatory=true maxLength=2}
+        {formintinput id='mUImageModuleAmount' dataField='amount' group='data' mandatory=true maxLength=2 cssClass='form-control'}
     </div>
 </div>
 
@@ -73,12 +73,12 @@
     </div>
 </div>
 
-<div id="customTemplateArea" class="form-group" data-switch="mUImageModuleTemplate" data-switch-value="custom">
+<div id="customTemplateArea" class="form-group"{* data-switch="mUImageModuleTemplate" data-switch-value="custom"*}>
     {gt text='Custom template' domain='muimagemodule' assign='customTemplateLabel'}
     {formlabel for='mUImageModuleCustomTemplate' text=$customTemplateLabel cssClass='col-sm-3 control-label'}
     <div class="col-sm-9">
         {formtextinput id='mUImageModuleCustomTemplate' dataField='customTemplate' group='data' mandatory=false maxLength=80 cssClass='form-control'}
-        <span class="help-block">{gt text='Example' domain='muimagemodule'}: <em>itemlist_[objectType]_display.tpl</em></span>
+        <span class="help-block">{gt text='Example' domain='muimagemodule'}: <em>itemlist_[objectType]_display.html.twig</em></span>
     </div>
 </div>
 
@@ -87,14 +87,13 @@
     {formlabel for='mUImageModuleFilter' text=$filterLabel cssClass='col-sm-3 control-label'}
     <div class="col-sm-9">
         {formtextinput id='mUImageModuleFilter' dataField='filter' group='data' mandatory=false maxLength=255 cssClass='form-control'}
-        {*<span class="help-block">
-            <a class="fa fa-filter" data-toggle="modal" data-target="#filterSyntaxModal">{gt text='Show syntax examples' domain='muimagemodule'}</a>
-        </span>*}
     </div>
 </div>
 
-{*include file='include_filterSyntaxDialog.tpl'*}
-
-{pageaddvar name='stylesheet' value='web/bootstrap/css/bootstrap.min.css'}
-{pageaddvar name='stylesheet' value='web/bootstrap/css/bootstrap-theme.min.css'}
-{pageaddvar name='javascript' value='web/bootstrap/js/bootstrap.min.js'}
+<script type="text/javascript">
+    (function($) {
+    	$('#mUImageModuleTemplate').change(function() {
+    	    $('#customTemplateArea').toggleClass('hidden', $(this).val() != 'custom');
+	    }).trigger('change');
+    })(jQuery)
+</script>

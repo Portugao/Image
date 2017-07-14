@@ -51,7 +51,7 @@ function mUImageReadDate(val, includeTime)
     if (val.substr(2, 1) === '.' && val.substr(5, 1) === '.') {
         var newVal = val.substr(6, 4) + '-' + val.substr(3, 2) + '-' + val.substr(0, 2);
         if (true === includeTime) {
-            newVal += ' ' + val.substr(11, 5);
+            newVal += ' ' + val.substr(11, 7);
         }
 
         return newVal;
@@ -65,27 +65,31 @@ var lastAlbumTitle = '';
  */
 function mUImageUniqueCheck(ucOt, val, elem, ucEx)
 {
+    var result, params;
+
     if (elem.val() == window['last' + mUImageCapitaliseFirstLetter(ucOt) + mUImageCapitaliseFirstLetter(elem.attr('id')) ]) {
         return true;
     }
 
     window['last' + mUImageCapitaliseFirstLetter(ucOt) + mUImageCapitaliseFirstLetter(elem.attr('id')) ] = elem.val();
 
-    var result = true;
+    result = true;
+    params = {
+        ot: ucOt,
+        fn: encodeURIComponent(elem.attr('id')),
+        v: encodeURIComponent(val),
+        ex: ucEx
+    };
 
     jQuery.ajax({
-        type: 'POST',
         url: Routing.generate('muimagemodule_ajax_checkforduplicate'),
-        data: {
-            ot: ucOt,
-            fn: encodeURIComponent(elem.attr('id')),
-            v: encodeURIComponent(val),
-            ex: ucEx
-        },
-        async: false
-    }).done(function(res) {
-        if (null == res.data || true === res.data.isDuplicate) {
-            result = false;
+        datatype: 'json',
+        async: false,
+        data: params,
+        success: function(data) {
+            if (null == data || true === data.isDuplicate) {
+                result = false;
+            }
         }
     });
 
@@ -118,7 +122,7 @@ function mUImageValidateUploadExtension(val, elem)
 /**
  * Runs special validation rules.
  */
-function mUImageExecuteCustomValidationRules(objectType, currentEntityId)
+function mUImageExecuteCustomValidationConstraints(objectType, currentEntityId)
 {
     jQuery('.validate-nospace').each( function() {
         if (!mUImageValidateNoSpace(jQuery(this).val())) {

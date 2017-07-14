@@ -20,8 +20,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Event handler implementation class for Symfony kernel events.
@@ -29,7 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 class KernelListener extends AbstractKernelListener
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public static function getSubscribedEvents()
     {
@@ -37,7 +35,7 @@ class KernelListener extends AbstractKernelListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function onRequest(GetResponseEvent $event)
     {
@@ -72,7 +70,7 @@ class KernelListener extends AbstractKernelListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function onController(FilterControllerEvent $event)
     {
@@ -119,7 +117,7 @@ class KernelListener extends AbstractKernelListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function onView(GetResponseForControllerResultEvent $event)
     {
@@ -154,7 +152,7 @@ class KernelListener extends AbstractKernelListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function onResponse(FilterResponseEvent $event)
     {
@@ -188,7 +186,7 @@ class KernelListener extends AbstractKernelListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function onFinishRequest(FinishRequestEvent $event)
     {
@@ -215,7 +213,7 @@ class KernelListener extends AbstractKernelListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function onTerminate(PostResponseEvent $event)
     {
@@ -242,7 +240,7 @@ class KernelListener extends AbstractKernelListener
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function onException(GetResponseForExceptionEvent $event)
     {

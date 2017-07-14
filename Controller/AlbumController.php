@@ -21,7 +21,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 use MU\ImageModule\Entity\AlbumEntity;
-use SessionUtil;
 
 /**
  * Album controller class providing navigation and interaction functionality.
@@ -29,7 +28,7 @@ use SessionUtil;
 class AlbumController extends AbstractAlbumController
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/admin/albums",
      *        methods = {"GET"}
@@ -48,7 +47,7 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/albums",
      *        methods = {"GET"}
@@ -65,7 +64,7 @@ class AlbumController extends AbstractAlbumController
         return parent::indexAction($request);
     }
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/admin/albums/view/{sort}/{sortdir}/{pos}/{num}.{_format}",
      *        requirements = {"sortdir" = "asc|desc|ASC|DESC", "pos" = "\d+", "num" = "\d+", "_format" = "html|rss"},
@@ -90,7 +89,7 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/albums/view/{sort}/{sortdir}/{pos}/{num}.{_format}",
      *        requirements = {"sortdir" = "asc|desc|ASC|DESC", "pos" = "\d+", "num" = "\d+", "_format" = "html|rss"},
@@ -113,7 +112,7 @@ class AlbumController extends AbstractAlbumController
         return parent::viewAction($request, $sort, $sortdir, $pos, $num);
     }
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/admin/album/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -128,16 +127,15 @@ class AlbumController extends AbstractAlbumController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
+     * @throws NotFoundHttpException Thrown by param converter if album to be displayed isn't found
      */
     public function adminDisplayAction(Request $request, AlbumEntity $album)
     {
         return parent::adminDisplayAction($request, $album);
     }
     
-    
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/album/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -151,39 +149,14 @@ class AlbumController extends AbstractAlbumController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
+     * @throws NotFoundHttpException Thrown by param converter if album to be displayed isn't found
      */
     public function displayAction(Request $request, AlbumEntity $album)
     {
         return parent::displayAction($request, $album);
     }
-    
     /**
-     * {@inheritdoc}
-     *
-     * @Route("/albums/template",
-     *        methods = {"POST"}
-     * )
-     *
-     * @param Request $request Current request instance
-     *
-     * @return bool true on sucess, false on failure
-     *
-     * @throws RuntimeException Thrown if executing the workflow action fails
-     */
-    public function templateAction(Request $request)
-    {
-    	$template = $request->request->get('template', '');
-    	$ablumId = $request->request->get('albumid', 0);
-    	SessionUtil::setVar('useTemplate', $template);
-    	//$returnUrl = $request->request->get('returntourl', $this->get('router')->generate('muimagemodule_album_display', ['id' => 6]));
-    	$parameter = array('id' => 6);
-    	//return $this->redirectToRoute('muimagemodule_album_display', $parameter);
-    	return $this->redirectToRoute('muimagemodule_album_display', $parameter);
-    }
-    
-    /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/admin/album/edit/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -197,7 +170,7 @@ class AlbumController extends AbstractAlbumController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws NotFoundHttpException Thrown by form handler if album to be edited isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function adminEditAction(Request $request)
@@ -206,7 +179,7 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/album/edit/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -219,7 +192,7 @@ class AlbumController extends AbstractAlbumController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws NotFoundHttpException Thrown by form handler if album to be edited isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function editAction(Request $request)
@@ -227,7 +200,7 @@ class AlbumController extends AbstractAlbumController
         return parent::editAction($request);
     }
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/admin/album/delete/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -242,7 +215,7 @@ class AlbumController extends AbstractAlbumController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
+     * @throws NotFoundHttpException Thrown by param converter if album to be deleted isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function adminDeleteAction(Request $request, AlbumEntity $album)
@@ -251,7 +224,7 @@ class AlbumController extends AbstractAlbumController
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      *
      * @Route("/album/delete/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -265,7 +238,7 @@ class AlbumController extends AbstractAlbumController
      * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
+     * @throws NotFoundHttpException Thrown by param converter if album to be deleted isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function deleteAction(Request $request, AlbumEntity $album)
@@ -279,13 +252,14 @@ class AlbumController extends AbstractAlbumController
      * This function processes the items selected in the admin view page.
      * Multiple items may have their state changed or be deleted.
      *
-     * @Route("/albums/handleSelectedEntries",
+     * @Route("/admin/albums/handleSelectedEntries",
      *        methods = {"POST"}
      * )
+     * @Theme("admin")
      *
      * @param Request $request Current request instance
      *
-     * @return bool true on sucess, false on failure
+     * @return RedirectResponse
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
@@ -293,6 +267,7 @@ class AlbumController extends AbstractAlbumController
     {
         return parent::adminHandleSelectedEntriesAction($request);
     }
+    
     /**
      * Process status changes for multiple items.
      *
@@ -305,7 +280,7 @@ class AlbumController extends AbstractAlbumController
      *
      * @param Request $request Current request instance
      *
-     * @return bool true on sucess, false on failure
+     * @return RedirectResponse
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
@@ -314,16 +289,5 @@ class AlbumController extends AbstractAlbumController
         return parent::handleSelectedEntriesAction($request);
     }
 
-    /**
-     * This method includes the common implementation code for adminView() and view().
-     */
-    protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
-    {
-    	if ($isAdmin == 1) {
-    	    $num = $this->getVar('MUImageModule', 'albumEntriesPerPageInBackend');
-    	} else {
-    		$num = $this->getVar('MUImageModule', 'albumEntriesPerPage');
-    	}
-        return parent::viewInternal($request, $sort, $sortdir, $pos, $num, $isAdmin);
-    }
+    // feel free to add your own controller methods here
 }

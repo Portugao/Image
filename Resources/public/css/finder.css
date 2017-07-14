@@ -4,12 +4,6 @@ body {
     text-align: left;
 }
 
-.muimagemodule-finderform fieldset,
-.muimagemodule-finderform fieldset legend {
-    background-color: #fff;
-    border: none;
-}
-
 #muimagemoduleItemContainer {
     background-color: #eee;
     height: 300px;
@@ -48,4 +42,10 @@ body {
 #muimagemoduleItemContainer a:focus img,
 #muimagemoduleItemContainer a:active img {
     background-color: #fff;
+}
+
+.muimagemodule-finderform fieldset,
+.muimagemodule-finderform fieldset legend {
+    background-color: #fff;
+    border: none;
 }

@@ -1,6 +1,14 @@
 services:
-    # Entity factory class
+    # Entity factory
     mu_image_module.entity_factory:
-        class: MU\ImageModule\Entity\Factory\ImageFactory
+        class: MU\ImageModule\Entity\Factory\EntityFactory
         arguments:
             - "@doctrine.orm.default_entity_manager"
+            - "@mu_image_module.entity_initialiser"
+            - "@mu_image_module.collection_filter_helper"
+    
+    # Entity initialiser
+    mu_image_module.entity_initialiser:
+        class: MU\ImageModule\Entity\Factory\EntityInitialiser
+        arguments:
+        - "@mu_image_module.listentries_helper"

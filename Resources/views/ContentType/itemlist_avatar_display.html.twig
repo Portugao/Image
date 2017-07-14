@@ -1,6 +1,6 @@
 {# Purpose of this template: Display avatars within an external context #}
 {% for avatar in items %}
-    <h3>{{ avatar.getTitleFromDisplayPattern() }}</h3>
-    <p><a href="{{ path('muimagemodule_avatar_display', { 'id': avatar.id }) }}">{{ __('Read more') }}</a>
+    <h3>{{ avatar|muimagemodule_formattedTitle }}</h3>
+    <p><a href="{{ path('muimagemodule_avatar_display', { 'id': avatar.getId() }) }}">{{ __('Read more') }}</a>
     </p>
 {% endfor %}

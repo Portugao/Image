@@ -36,14 +36,11 @@ abstract class AbstractConfigController extends AbstractController
             throw new AccessDeniedException();
         }
         
-        $form = $this->createForm('MU\ImageModule\Form\AppSettingsType');
+        $form = $this->createForm('MU\ImageModule\Form\Type\ConfigType');
         
         if ($form->handleRequest($request)->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
-                foreach (['moderationGroupForAvatars'] as $groupFieldName) {
-                    $formData[$groupFieldName] = is_object($formData[$groupFieldName]) ? $formData[$groupFieldName]->getGid() : $formData[$groupFieldName];
-                }
                 $this->setVars($formData);
         
                 $this->addFlash('status', $this->__('Done! Module configuration updated.'));

@@ -1,30 +1,42 @@
 services:
-    # Helper classes
+    # Helper services
     mu_image_module.category_helper:
         class: MU\ImageModule\Helper\CategoryHelper
         arguments:
             - "@translator.default"
-            - "@session"
             - "@request_stack"
             - "@logger"
             - "@zikula_users_module.current_user"
             - "@zikula_categories_module.api.category_registry"
             - "@zikula_categories_module.api.category_permission"
     
+    mu_image_module.collection_filter_helper:
+        class: MU\ImageModule\Helper\CollectionFilterHelper
+        arguments:
+            - "@request_stack"
+            - "@zikula_users_module.current_user"
+            - "@mu_image_module.category_helper"
+            - "@=service('zikula_extensions_module.api.variable').get('MUImageModule', 'showOnlyOwnEntries', false)"
+    
     mu_image_module.controller_helper:
         class: MU\ImageModule\Helper\ControllerHelper
         arguments:
             - "@translator.default"
             - "@request_stack"
-            - "@session"
             - "@logger"
             - "@form.factory"
             - "@zikula_extensions_module.api.variable"
             - "@mu_image_module.entity_factory"
+            - "@mu_image_module.collection_filter_helper"
             - "@mu_image_module.model_helper"
-            - "@mu_image_module.selection_helper"
             - "@mu_image_module.image_helper"
             - "@mu_image_module.feature_activation_helper"
+    
+    mu_image_module.entity_display_helper:
+        class: MU\ImageModule\Helper\EntityDisplayHelper
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.listentries_helper"
     
     mu_image_module.feature_activation_helper:
         class: MU\ImageModule\Helper\FeatureActivationHelper
@@ -51,26 +63,21 @@ services:
         arguments:
             - "@mu_image_module.entity_factory"
     
-    mu_image_module.notification_helper:
-        class: MU\ImageModule\Helper\NotificationHelper
+    mu_image_module.search_helper:
+        class: MU\ImageModule\Helper\SearchHelper
         arguments:
-            - "@kernel"
             - "@translator.default"
+            - "@zikula_permissions_module.api.permission"
+            - "@templating.engine.twig"
             - "@session"
-            - "@router"
             - "@request_stack"
-            - "@zikula_extensions_module.api.variable"
-            - "@twig"
-            - "@zikula_mailer_module.api.mailer"
-            - "@zikula_groups_module.group_repository"
-            - "@zikula_users_module.user_repository"
-            - "@mu_image_module.workflow_helper"
-    
-    mu_image_module.selection_helper:
-        class: MU\ImageModule\Helper\SelectionHelper
-        arguments:
-            - "@translator.default"
             - "@mu_image_module.entity_factory"
+            - "@mu_image_module.controller_helper"
+            - "@mu_image_module.entity_display_helper"
+            - "@mu_image_module.feature_activation_helper"
+            - "@mu_image_module.category_helper"
+        tags:
+            - { name: zikula.searchable_module, bundleName: MUImageModule }
     
     mu_image_module.upload_helper:
         class: MU\ImageModule\Helper\UploadHelper
@@ -79,23 +86,22 @@ services:
             - "@session"
             - "@logger"
             - "@zikula_users_module.current_user"
-            - "@zikula_extensions_module.api.variable"
+            - "@=service('zikula_extensions_module.api.variable').getAll('MUImageModule')"
             - "%datadir%"
     
     mu_image_module.view_helper:
         class: MU\ImageModule\Helper\ViewHelper
         arguments:
-            - "@templating"
+            - "@twig"
+            - "@twig.loader"
             - "@request_stack"
             - "@zikula_permissions_module.api.permission"
             - "@zikula_extensions_module.api.variable"
+            - "@zikula_core.common.theme.pagevars"
             - "@mu_image_module.controller_helper"
     
     mu_image_module.workflow_helper:
         class: MU\ImageModule\Helper\WorkflowHelper
         arguments:
             - "@translator.default"
-            - "@logger"
-            - "@zikula_permissions_module.api.permission"
-            - "@mu_image_module.entity_factory"
             - "@mu_image_module.listentries_helper"
