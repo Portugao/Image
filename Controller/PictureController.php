@@ -225,7 +225,7 @@ class PictureController extends AbstractPictureController
     /**
      * This action provides a handling of edit requests.
      *
-     * @Route("/picture/multiupload/{albumid}.{_format}",
+     * @Route("/picture/zipupload/{albumid}.{_format}",
      *        requirements = {"albumid" = "\d+", "_format" = "html"},
      *        defaults = {"albumid" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}

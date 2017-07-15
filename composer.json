@@ -7,8 +7,8 @@
     "authors": [
         {
             "name": "Michael Ueberschaer",
-            "email": "kontakt@webdesign-in-bremen.com",
-            "homepage": "http://www.webdesign-in-bremen.com",
+            "email": "kontakt@homepages-mit-zikula.de",
+            "homepage": "http://homepages-mit-zikula.de",
             "role": "owner"
         }
     ],
@@ -22,15 +22,14 @@
     },
     "extra": {
         "zikula": {
-            "core-compatibility": ">=1.4.5 <3.0",
+            "core-compatibility": ">=1.4.6 <3.0",
             "class": "MU\\ImageModule\\MUImageModule",
             "displayname": "Image",
             "url": "image",
             "oldnames": ["MUImage"],
             "capabilities": {
-                "user": {"route": "muimagemodule_user_index"},
-                "admin": {"route": "muimagemodule_admin_index"},
-                "searchable": {"class": "MU\\ImageModule\\Helper\\SearchHelper"},
+                "user": {"route": "muimagemodule_album_index"},
+                "admin": {"route": "muimagemodule_album_adminindex"},
                 "categorizable": {
                     "entities": [
                         "MU\\ImageModule\\Entity\\AlbumEntity",
@@ -42,7 +41,6 @@
             "securityschema": {
                 "MUImageModule::": "::",
                 "MUImageModule:ItemListBlock:": "Block title::",
-                "MUImageModule:ModerationBlock:": "Block title::",
                 "MUImageModule:Album:": "Album ID::",
                 "MUImageModule:Album:Album": "Album ID:Album ID:",
                 "MUImageModule:Picture:": "Picture ID::",

@@ -13,32 +13,11 @@
 namespace MU\ImageModule\Listener;
 
 use MU\ImageModule\Listener\Base\AbstractEntityLifecycleListener;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
-use ModUtil;
 
 /**
  * Event subscriber implementation class for entity lifecycle events.
  */
 class EntityLifecycleListener extends AbstractEntityLifecycleListener
 {
-	/**
-	 * The postPersist event occurs for an entity after the entity has been made persistent.
-	 * It will be invoked after the database insert operations. Generated primary key values
-	 * are available in the postPersist event.
-	 *
-	 * @param LifecycleEventArgs $args
-	 *        	Event arguments
-	 */
-	public function postPersist(LifecycleEventArgs $args) 
-	{
-        $extend = \ModUtil::getVar('MUImageModule', 'useExtendedfeatures');
-        $subAlbums = \ModUtil::getVar('MUImageModule', 'supportSubAlbums'); 
-        if ($extend == 0 || $subAlbums == 0) {
-        	$entity = $args->getObject ();
-        	if (method_exists ( $entity, 'get_objectType' )) {
-        	    $entity->setAlbum(NULL);
-        	}
-        }
-		parent::postPersist($args);
-	}
+    // feel free to enhance this listener by custom actions
 }
