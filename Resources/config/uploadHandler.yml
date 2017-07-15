@@ -1,8 +1,0 @@
-services:
-    # Upload handler class
-    mu_image_module.upload_handler:
-        class: MU\ImageModule\UploadHandler
-        arguments:
-            - "@translator.default"
-            - "@zikula_users_module.current_user"
-            - "@zikula_extensions_module.api.variable"
