@@ -145,7 +145,12 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $registry->setModname('MUImageModule');
         $registry->setEntityname('AlbumEntity');
         $registry->setProperty($categoryHelper->getPrimaryProperty('Album'));
-        $registry->setCategory_Id($categoryGlobal['id']);
+        if (method_exists($registry, 'setCategory')) { // Core 1.5
+            $registry->setCategory($categoryGlobal);
+       } else { // Core 1.4
+           $registry->setCategory_Id($categoryGlobal['id']);
+       }
+ 
     
         try {
             $entityManager = $this->container->get('doctrine.orm.default_entity_manager');

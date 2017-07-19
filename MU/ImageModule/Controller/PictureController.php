@@ -15,10 +15,10 @@ namespace MU\ImageModule\Controller;
 use MU\ImageModule\Controller\Base\AbstractPictureController;
 
 use RuntimeException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 use MU\ImageModule\Entity\PictureEntity;
 
@@ -28,16 +28,16 @@ use MU\ImageModule\Entity\PictureEntity;
 class PictureController extends AbstractPictureController
 {
     /**
-     * @inheritDoc
+     * This is the default action handling the main admin area called without defining arguments.
      *
      * @Route("/admin/pictures",
      *        methods = {"GET"}
      * )
      * @Theme("admin")
      *
-     * @param Request $request Current request instance
+     * @param Request  $request      Current request instance
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -47,15 +47,15 @@ class PictureController extends AbstractPictureController
     }
     
     /**
-     * @inheritDoc
+     * This is the default action handling the main area called without defining arguments.
      *
      * @Route("/pictures",
      *        methods = {"GET"}
      * )
      *
-     * @param Request $request Current request instance
+     * @param Request  $request      Current request instance
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -64,7 +64,7 @@ class PictureController extends AbstractPictureController
         return parent::indexAction($request);
     }
     /**
-     * @inheritDoc
+     * This action provides an item list overview in the admin area.
      *
      * @Route("/admin/pictures/view/{sort}/{sortdir}/{pos}/{num}.{_format}",
      *        requirements = {"sortdir" = "asc|desc|ASC|DESC", "pos" = "\d+", "num" = "\d+", "_format" = "html|rss"},
@@ -73,13 +73,13 @@ class PictureController extends AbstractPictureController
      * )
      * @Theme("admin")
      *
-     * @param Request $request Current request instance
-     * @param string $sort         Sorting field
-     * @param string $sortdir      Sorting direction
-     * @param int    $pos          Current pager position
-     * @param int    $num          Amount of entries to display
+     * @param Request  $request      Current request instance
+     * @param string  $sort         Sorting field
+     * @param string  $sortdir      Sorting direction
+     * @param int     $pos          Current pager position
+     * @param int     $num          Amount of entries to display
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -89,7 +89,7 @@ class PictureController extends AbstractPictureController
     }
     
     /**
-     * @inheritDoc
+     * This action provides an item list overview.
      *
      * @Route("/pictures/view/{sort}/{sortdir}/{pos}/{num}.{_format}",
      *        requirements = {"sortdir" = "asc|desc|ASC|DESC", "pos" = "\d+", "num" = "\d+", "_format" = "html|rss"},
@@ -97,13 +97,13 @@ class PictureController extends AbstractPictureController
      *        methods = {"GET"}
      * )
      *
-     * @param Request $request Current request instance
-     * @param string $sort         Sorting field
-     * @param string $sortdir      Sorting direction
-     * @param int    $pos          Current pager position
-     * @param int    $num          Amount of entries to display
+     * @param Request  $request      Current request instance
+     * @param string  $sort         Sorting field
+     * @param string  $sortdir      Sorting direction
+     * @param int     $pos          Current pager position
+     * @param int     $num          Amount of entries to display
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -112,7 +112,7 @@ class PictureController extends AbstractPictureController
         return parent::viewAction($request, $sort, $sortdir, $pos, $num);
     }
     /**
-     * @inheritDoc
+     * This action provides a item detail view in the admin area.
      *
      * @Route("/admin/picture/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -121,13 +121,13 @@ class PictureController extends AbstractPictureController
      * )
      * @Theme("admin")
      *
-     * @param Request $request Current request instance
-     * @param PictureEntity $picture Treated picture instance
+     * @param Request  $request      Current request instance
+     * @param PictureEntity $picture      Treated picture instance
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if picture to be displayed isn't found
+     * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
      */
     public function adminDisplayAction(Request $request, PictureEntity $picture)
     {
@@ -135,7 +135,7 @@ class PictureController extends AbstractPictureController
     }
     
     /**
-     * @inheritDoc
+     * This action provides a item detail view.
      *
      * @Route("/picture/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -143,20 +143,20 @@ class PictureController extends AbstractPictureController
      *        methods = {"GET"}
      * )
      *
-     * @param Request $request Current request instance
-     * @param PictureEntity $picture Treated picture instance
+     * @param Request  $request      Current request instance
+     * @param PictureEntity $picture      Treated picture instance
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if picture to be displayed isn't found
+     * @throws NotFoundHttpException Thrown by param converter if item to be displayed isn't found
      */
     public function displayAction(Request $request, PictureEntity $picture)
     {
         return parent::displayAction($request, $picture);
     }
     /**
-     * @inheritDoc
+     * This action provides a handling of edit requests in the admin area.
      *
      * @Route("/admin/picture/edit/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -165,12 +165,12 @@ class PictureController extends AbstractPictureController
      * )
      * @Theme("admin")
      *
-     * @param Request $request Current request instance
+     * @param Request  $request      Current request instance
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if picture to be edited isn't found
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function adminEditAction(Request $request)
@@ -179,7 +179,7 @@ class PictureController extends AbstractPictureController
     }
     
     /**
-     * @inheritDoc
+     * This action provides a handling of edit requests.
      *
      * @Route("/picture/edit/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -187,20 +187,64 @@ class PictureController extends AbstractPictureController
      *        methods = {"GET", "POST"}
      * )
      *
-     * @param Request $request Current request instance
+     * @param Request  $request      Current request instance
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if picture to be edited isn't found
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function editAction(Request $request)
     {
         return parent::editAction($request);
     }
+    
     /**
-     * @inheritDoc
+     * This action provides a handling of edit requests.
+     *
+     * @Route("/picture/multiupload/{albumid}.{_format}",
+     *        requirements = {"albumid" = "\d+", "_format" = "html"},
+     *        defaults = {"albumid" = "0", "_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     *
+     * @param Request  $request      Current request instance
+     *
+     * @return mixed Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function multiuploadAction(Request $request)
+    {
+        return self::multiuploadInternal($request);
+    }
+    
+    /**
+     * This action provides a handling of edit requests.
+     *
+     * @Route("/picture/zipupload/{albumid}.{_format}",
+     *        requirements = {"albumid" = "\d+", "_format" = "html"},
+     *        defaults = {"albumid" = "0", "_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     *
+     * @param Request  $request      Current request instance
+     *
+     * @return mixed Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function zipuploadAction(Request $request)
+    {
+    	return self::zipuploadInternal($request);
+    }
+    /**
+     * This action provides a handling of simple delete requests in the admin area.
      *
      * @Route("/admin/picture/delete/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -209,13 +253,13 @@ class PictureController extends AbstractPictureController
      * )
      * @Theme("admin")
      *
-     * @param Request $request Current request instance
-     * @param PictureEntity $picture Treated picture instance
+     * @param Request  $request      Current request instance
+     * @param PictureEntity $picture      Treated picture instance
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if picture to be deleted isn't found
+     * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function adminDeleteAction(Request $request, PictureEntity $picture)
@@ -224,7 +268,7 @@ class PictureController extends AbstractPictureController
     }
     
     /**
-     * @inheritDoc
+     * This action provides a handling of simple delete requests.
      *
      * @Route("/picture/delete/{id}.{_format}",
      *        requirements = {"id" = "\d+", "_format" = "html"},
@@ -232,13 +276,13 @@ class PictureController extends AbstractPictureController
      *        methods = {"GET", "POST"}
      * )
      *
-     * @param Request $request Current request instance
-     * @param PictureEntity $picture Treated picture instance
+     * @param Request  $request      Current request instance
+     * @param PictureEntity $picture      Treated picture instance
      *
-     * @return Response Output
+     * @return mixed Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if picture to be deleted isn't found
+     * @throws NotFoundHttpException Thrown by param converter if item to be deleted isn't found
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function deleteAction(Request $request, PictureEntity $picture)
@@ -252,14 +296,13 @@ class PictureController extends AbstractPictureController
      * This function processes the items selected in the admin view page.
      * Multiple items may have their state changed or be deleted.
      *
-     * @Route("/admin/pictures/handleSelectedEntries",
+     * @Route("/pictures/handleSelectedEntries",
      *        methods = {"POST"}
      * )
-     * @Theme("admin")
      *
      * @param Request $request Current request instance
      *
-     * @return RedirectResponse
+     * @return bool true on sucess, false on failure
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
@@ -267,7 +310,6 @@ class PictureController extends AbstractPictureController
     {
         return parent::adminHandleSelectedEntriesAction($request);
     }
-    
     /**
      * Process status changes for multiple items.
      *
@@ -280,7 +322,7 @@ class PictureController extends AbstractPictureController
      *
      * @param Request $request Current request instance
      *
-     * @return RedirectResponse
+     * @return bool true on sucess, false on failure
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
@@ -288,6 +330,75 @@ class PictureController extends AbstractPictureController
     {
         return parent::handleSelectedEntriesAction($request);
     }
+    
+    /**
+     * This method includes the common implementation code for adminView() and view().
+     */
+    protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
+    {
+    	$num = $isAdmin ? $this->getVar('MUImageModule', 'pictureEntriesPerPageInBackend') : $this->getVar('MUImageModule', 'pictureEntriesPerPage');
+    	return parent::viewInternal($request, $sort, $sortdir, $pos, $num, $isAdmin);
+    }
 
-    // feel free to add your own controller methods here
+    /**
+     * This method includes the common implementation code for multiupload().
+     */
+    protected function multiuploadInternal(Request $request, $isAdmin = false)
+    {
+        // parameter specifying which type of objects we are treating
+        $objectType = 'picture';
+        $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
+        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+            throw new AccessDeniedException();
+        }
+        $templateParameters = [
+            'routeArea' => $isAdmin ? 'admin' : ''
+        ];
+        
+        $controllerHelper = $this->get('mu_image_module.controller_helper');
+        $templateParameters = $controllerHelper->processEditActionParameters($objectType, $templateParameters);
+        
+        // delegate form processing to the form handler
+        $formHandler = $this->get('mu_image_module.form.handler.picture');
+        $result = $formHandler->processForm($templateParameters);
+        if ($result instanceof RedirectResponse) {
+            return $result;
+        }
+        
+        $templateParameters = $formHandler->getTemplateParameters();
+        
+        // fetch and return the appropriate template
+        return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'multiupload', $templateParameters);
+    }
+    
+    /**
+     * This method includes the common implementation code for multiupload().
+     */
+    protected function zipuploadInternal(Request $request, $isAdmin = false)
+    {
+        // parameter specifying which type of objects we are treating
+        $objectType = 'picture';
+        $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
+        if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+            throw new AccessDeniedException();
+        }
+        $templateParameters = [
+            'routeArea' => $isAdmin ? 'admin' : ''
+        ];
+        
+        $controllerHelper = $this->get('mu_image_module.controller_helper');
+        $templateParameters = $controllerHelper->processEditActionParameters($objectType, $templateParameters);
+        
+        // delegate form processing to the form handler
+        $formHandler = $this->get('mu_image_module.form.handler.picture');
+        $result = $formHandler->processForm($templateParameters);
+        if ($result instanceof RedirectResponse) {
+            return $result;
+        }
+        
+        $templateParameters = $formHandler->getTemplateParameters();
+        
+        // fetch and return the appropriate template
+        return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'zipupload', $templateParameters);
+    }
 }
