@@ -6,6 +6,7 @@ imports:
   - { resource: 'formFields.yml' }
   - { resource: 'forms.yml' }
   - { resource: 'helpers.yml' }
+  - { resource: 'hooks.yml' }
   - { resource: 'twig.yml' }
   - { resource: 'logger.yml' }
 

@@ -12,9 +12,13 @@
 
 namespace MU\ImageModule\Helper\Base;
 
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Workflow\Registry;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Doctrine\EntityAccess;
-use Zikula_Workflow_Util;
+use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+use MU\ImageModule\Entity\Factory\EntityFactory;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
 /**
@@ -23,16 +27,34 @@ use MU\ImageModule\Helper\ListEntriesHelper;
 abstract class AbstractWorkflowHelper
 {
     /**
-     * Name of the application.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
      * @var TranslatorInterface
      */
     protected $translator;
+
+    /**
+     * @var Registry
+     */
+    protected $workflowRegistry;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var PermissionApiInterface
+     */
+    protected $permissionApi;
+
+    /**
+     * @var CurrentUserApiInterface
+     */
+    private $currentUserApi;
+
+    /**
+     * @var EntityFactory
+     */
+    protected $entityFactory;
 
     /**
      * @var ListEntriesHelper
@@ -43,16 +65,30 @@ abstract class AbstractWorkflowHelper
      * WorkflowHelper constructor.
      *
      * @param TranslatorInterface $translator        Translator service instance
+     * @param Registry            $registry          Workflow registry service instance
+     * @param LoggerInterface     $logger            Logger service instance
+     * @param PermissionApiInterface       $permissionApi     PermissionApi service instance
+     * @param CurrentUserApiInterface $currentUserApi    CurrentUserApi service instance
+     * @param EntityFactory       $entityFactory     EntityFactory service instance
      * @param ListEntriesHelper   $listEntriesHelper ListEntriesHelper service instance
      *
      * @return void
      */
     public function __construct(
         TranslatorInterface $translator,
+        Registry $registry,
+        LoggerInterface $logger,
+        PermissionApiInterface $permissionApi,
+        CurrentUserApiInterface $currentUserApi,
+        EntityFactory $entityFactory,
         ListEntriesHelper $listEntriesHelper
     ) {
-        $this->name = 'MUImageModule';
         $this->translator = $translator;
+        $this->workflowRegistry = $registry;
+        $this->logger = $logger;
+        $this->permissionApi = $permissionApi;
+        $this->currentUserApi = $currentUserApi;
+        $this->entityFactory = $entityFactory;
         $this->listEntriesHelper = $listEntriesHelper;
     }
 
@@ -106,66 +142,56 @@ abstract class AbstractWorkflowHelper
     }
     
     /**
-     * This method returns the workflow name for a certain object type.
-     *
-     * @param string $objectType Name of treated object type
-     *
-     * @return string Name of the corresponding workflow
-     */
-    public function getWorkflowName($objectType = '')
-    {
-        $result = '';
-        switch ($objectType) {
-            case 'album':
-                $result = 'none';
-                break;
-            case 'picture':
-                $result = 'none';
-                break;
-            case 'avatar':
-                $result = 'none';
-                break;
-        }
-    
-        return $result;
-    }
-    
-    /**
      * Retrieve the available actions for a given entity object.
      *
      * @param EntityAccess $entity The given entity instance
      *
      * @return array List of available workflow actions
      */
-    public function getActionsForObject($entity)
+    public function getActionsForObject(EntityAccess $entity)
     {
-        // get possible actions for this object in it's current workflow state
-        $objectType = $entity['_objectType'];
-    
-        $this->normaliseWorkflowData($entity);
-    
-        $idColumn = $entity['__WORKFLOW__']['obj_idcolumn'];
-        $wfActions = Zikula_Workflow_Util::getActionsForObject($entity, $objectType, $idColumn, $this->name);
-    
-        // as we use the workflows for multiple object types we must maybe filter out some actions
-        $states = $this->listEntriesHelper->getEntries($objectType, 'workflowState');
-        $allowedStates = [];
-        foreach ($states as $state) {
-            $allowedStates[] = $state['value'];
-        }
+        $workflow = $this->workflowRegistry->get($entity);
+        $wfActions = $workflow->getEnabledTransitions($entity);
+        $currentState = $entity->getWorkflowState();
     
         $actions = [];
-        foreach ($wfActions as $actionId => $action) {
-            $nextState = isset($action['nextState']) ? $action['nextState'] : '';
-            if (!in_array($nextState, ['', 'deleted']) && !in_array($nextState, $allowedStates)) {
-                continue;
-            }
-    
-            $actions[$actionId] = $action;
-            $actions[$actionId]['buttonClass'] = $this->getButtonClassForAction($actionId);
+        foreach ($wfActions as $action) {
+            $actionId = $action->getName();
+            $actions[$actionId] = [
+                'id' => $actionId,
+                'title' => $this->getTitleForAction($currentState, $actionId),
+                'buttonClass' => $this->getButtonClassForAction($actionId)
+            ];
         }
     
         return $actions;
+    }
+    
+    /**
+     * Returns a translatable title for a certain action.
+     *
+     * @param string $currentState Current state of the entity
+     * @param string $actionId     Id of the treated action
+     *
+     * @return string The action title
+     */
+    protected function getTitleForAction($currentState, $actionId)
+    {
+        $title = '';
+        switch ($actionId) {
+            case 'submit':
+                $title = $this->translator->__('Submit');
+                break;
+            case 'delete':
+                $title = $this->translator->__('Delete');
+                break;
+        }
+    
+        if ($title == '' && substr($actionId, 0, 6) == 'update') {
+            $title = $this->translator->__('Update');
+        }
+    
+        return $title;
     }
     
     /**
@@ -206,17 +232,44 @@ abstract class AbstractWorkflowHelper
      *
      * @return bool False on error or true if everything worked well
      */
-    public function executeAction($entity, $actionId = '', $recursive = false)
+    public function executeAction(EntityAccess $entity, $actionId = '', $recursive = false)
     {
-        $objectType = $entity['_objectType'];
-        $schemaName = $this->getWorkflowName($objectType);
+        $workflow = $this->workflowRegistry->get($entity);
+        if (!$workflow->can($entity, $actionId)) {
+            return false;
+        }
     
-        $entity->initWorkflow(true);
-        $idColumn = $entity['__WORKFLOW__']['obj_idcolumn'];
+        // get entity manager
+        $entityManager = $this->entityFactory->getObjectManager();
+        $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname')];
     
-        $this->normaliseWorkflowData($entity);
+        $result = false;
     
-        $result = Zikula_Workflow_Util::executeAction($schemaName, $entity, $actionId, $objectType, 'MUImageModule', $idColumn);
+        try {
+            $workflow->apply($entity, $actionId);
+    
+            //$entityManager->transactional(function($entityManager) {
+            if ($actionId == 'delete') {
+                $entityManager->remove($entity);
+            } else {
+                $entityManager->persist($entity);
+            }
+            $entityManager->flush();
+            //});
+            $result = true;
+            if ($actionId == 'delete') {
+                $this->logger->notice('{app}: User {user} deleted an entity.', $logArgs);
+            } else {
+                $this->logger->notice('{app}: User {user} updated an entity.', $logArgs);
+            }
+        } catch (\Exception $exception) {
+            if ($actionId == 'delete') {
+                $this->logger->error('{app}: User {user} tried to delete an entity, but failed.', $logArgs);
+            } else {
+                $this->logger->error('{app}: User {user} tried to update an entity, but failed.', $logArgs);
+            }
+            throw new \RuntimeException($exception->getMessage());
+        }
     
         if (false !== $result && !$recursive) {
             $entities = $entity->getRelatedObjectsToPersist();
@@ -228,44 +281,6 @@ abstract class AbstractWorkflowHelper
         }
     
         return (false !== $result);
-    }
-    
-    /**
-     * Performs a conversion of the workflow object back to an array.
-     *
-     * @param EntityAccess $entity The given entity instance (excplicitly assigned by reference as form handlers use arrays)
-     *
-     * @return bool False on error or true if everything worked well
-     */
-    public function normaliseWorkflowData(&$entity)
-    {
-        $workflow = $entity['__WORKFLOW__'];
-        if (!isset($workflow[0]) && isset($workflow['module'])) {
-            return true;
-        }
-    
-        if (isset($workflow[0])) {
-            $workflow = $workflow[0];
-        }
-    
-        if (!is_object($workflow)) {
-            $workflow['module'] = 'MUImageModule';
-            $entity['__WORKFLOW__'] = $workflow;
-    
-            return true;
-        }
-    
-        $entity['__WORKFLOW__'] = [
-            'module'        => 'MUImageModule',
-            'id'            => $workflow->getId(),
-            'state'         => $workflow->getState(),
-            'obj_table'     => $workflow->getObjTable(),
-            'obj_idcolumn'  => $workflow->getObjIdcolumn(),
-            'obj_id'        => $workflow->getObjId(),
-            'schemaname'    => $workflow->getSchemaname()
-        ];
-    
-        return true;
     }
     
 }

@@ -57,8 +57,6 @@ abstract class AbstractExternalController extends AbstractController
             return new Response($this->__('No such item.'));
         }
         
-        $entity->initWorkflow();
-        
         $templateParameters = [
             'objectType' => $objectType,
             'source' => $source,
@@ -182,10 +180,6 @@ abstract class AbstractExternalController extends AbstractController
             if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
                 $entities = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($entities);
             }
-        }
-        
-        foreach ($entities as $k => $entity) {
-            $entity->initWorkflow();
         }
         
         $templateParameters['items'] = $entities;

@@ -28,21 +28,6 @@ class AjaxController extends AbstractAjaxController
 {
     
     /**
-     * Retrieves a general purpose list of users.
-     *
-     * @Route("/searchUsers", options={"expose"=true})
-     * @Method("GET")
-     *
-     * @param Request $request Current request instance
-     *
-     * @return JsonResponse
-     */
-    public function searchUsersAction(Request $request)
-    {
-        return parent::searchUsersAction($request);
-    }
-    
-    /**
      * Retrieve item list for finder selections in Forms, Content type plugin and Scribite.
      *
      * @Route("/getItemListFinder", options={"expose"=true})

@@ -17,6 +17,7 @@ use Knp\Menu\MenuItem;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Zikula\Common\Translator\TranslatorTrait;
+use Zikula\UsersModule\Constant as UsersConstant;
 use MU\ImageModule\Entity\AlbumEntity;
 use MU\ImageModule\Entity\PictureEntity;
 use MU\ImageModule\Entity\AvatarEntity;
@@ -65,7 +66,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
         $entityDisplayHelper = $this->container->get('mu_image_module.entity_display_helper');
         $menu->setChildrenAttribute('class', 'list-inline');
 
-        $currentUserId = $currentUserApi->isLoggedIn() ? $currentUserApi->get('uid') : 1;
+        $currentUserId = $currentUserApi->isLoggedIn() ? $currentUserApi->get('uid') : UsersConstant::USER_ID_ANONYMOUS;
         if ($entity instanceof AlbumEntity) {
             $component = 'MUImageModule:Album:';
             $instance = $entity->getKey() . '::';

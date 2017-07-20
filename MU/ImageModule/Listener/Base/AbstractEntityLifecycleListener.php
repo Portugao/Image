@@ -23,7 +23,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\File;
-use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Doctrine\EntityAccess;
 use MU\ImageModule\ImageEvents;
 use MU\ImageModule\Event\FilterAlbumEvent;
@@ -48,28 +47,20 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber, Conta
     protected $logger;
 
     /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
      * EntityLifecycleListener constructor.
      *
      * @param ContainerInterface       $container
      * @param EventDispatcherInterface $eventDispatcher EventDispatcher service instance
      * @param LoggerInterface          $logger          Logger service instance
-     * @param TranslatorInterface      $translator      Translator service instance
      */
     public function __construct(
         ContainerInterface $container,
         EventDispatcherInterface $eventDispatcher,
-        LoggerInterface $logger,
-        TranslatorInterface $translator)
+        LoggerInterface $logger)
     {
         $this->setContainer($container);
         $this->eventDispatcher = $eventDispatcher;
         $this->logger = $logger;
-        $this->translator = $translator;
     }
 
     /**
@@ -108,28 +99,6 @@ abstract class AbstractEntityLifecycleListener implements EventSubscriber, Conta
         $this->eventDispatcher->dispatch(constant('\\MU\\ImageModule\\ImageEvents::' . strtoupper($entity->get_objectType()) . '_PRE_REMOVE'), $event);
         if ($event->isPropagationStopped()) {
             return false;
-        }
-        
-        // delete workflow for this entity
-        $workflowHelper = $this->container->get('mu_image_module.workflow_helper');
-        $workflowHelper->normaliseWorkflowData($entity);
-        $workflow = $entity['__WORKFLOW__'];
-        if ($workflow['id'] > 0) {
-            $result = true;
-            try {
-                $entityManager = $args->getEntityManager();
-                $workflow = $entityManager->find('Zikula\Core\Doctrine\Entity\WorkflowEntity', $workflow['id']);
-                $entityManager->remove($workflow);
-                $entityManager->flush();
-            } catch (\Exception $e) {
-                $result = false;
-            }
-            if (false === $result) {
-                $session = $this->container->get('session');
-                $session->getFlashBag()->add('error', $this->translator->__('Error! Could not remove stored workflow. Deletion has been aborted.'));
-        
-                return false;
-            }
         }
     }
 

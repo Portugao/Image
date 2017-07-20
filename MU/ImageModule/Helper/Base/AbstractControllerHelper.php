@@ -22,7 +22,7 @@ use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Component\SortableColumns\SortableColumns;
 use Zikula\Core\RouteUrl;
-use Zikula\ExtensionsModule\Api\VariableApi;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use MU\ImageModule\Entity\Factory\EntityFactory;
 use MU\ImageModule\Helper\CollectionFilterHelper;
 use MU\ImageModule\Helper\FeatureActivationHelper;
@@ -52,7 +52,7 @@ abstract class AbstractControllerHelper
     protected $formFactory;
 
     /**
-     * @var VariableApi
+     * @var VariableApiInterface
      */
     protected $variableApi;
 
@@ -88,7 +88,7 @@ abstract class AbstractControllerHelper
      * @param RequestStack        $requestStack    RequestStack service instance
      * @param LoggerInterface     $logger          Logger service instance
      * @param FormFactoryInterface $formFactory    FormFactory service instance
-     * @param VariableApi         $variableApi     VariableApi service instance
+     * @param VariableApiInterface $variableApi     VariableApi service instance
      * @param EntityFactory       $entityFactory   EntityFactory service instance
      * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
      * @param ModelHelper         $modelHelper     ModelHelper service instance
@@ -100,7 +100,7 @@ abstract class AbstractControllerHelper
         RequestStack $requestStack,
         LoggerInterface $logger,
         FormFactoryInterface $formFactory,
-        VariableApi $variableApi,
+        VariableApiInterface $variableApi,
         EntityFactory $entityFactory,
         CollectionFilterHelper $collectionFilterHelper,
         ModelHelper $modelHelper,
@@ -135,7 +135,7 @@ abstract class AbstractControllerHelper
      * @param string $context Usage context (allowed values: controllerAction, api, helper, actionHandler, block, contentType, util)
      * @param array  $args    Additional arguments
      *
-     * @return array List of allowed object types
+     * @return string[] List of allowed object types
      */
     public function getObjectTypes($context = '', array $args = [])
     {
@@ -183,7 +183,7 @@ abstract class AbstractControllerHelper
     {
         $contextArgs = ['controller' => $objectType, 'action' => 'view'];
         if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
-            throw new Exception($this->__('Error! Invalid object type received.'));
+            throw new \Exception($this->__('Error! Invalid object type received.'));
         }
     
         $request = $this->request;
@@ -200,7 +200,8 @@ abstract class AbstractControllerHelper
             $request->attributes->set('_route_params', $routeParams);
         }
         $sortdir = $request->query->get('sortdir', 'ASC');
-        $sortableColumns->setOrderBy($sortableColumns->getColumn($sort), strtoupper($sortdir));
+        $templateParameters['sort'] = $sort;
+        $templateParameters['sortdir'] = strtolower($sortdir);
     
         $templateParameters['all'] = 'csv' == $request->getRequestFormat() ? 1 : $request->query->getInt('all', 0);
         $templateParameters['own'] = $request->query->getInt('own', $this->variableApi->get('MUImageModule', 'showOnlyOwnEntries', 0));
@@ -227,12 +228,17 @@ abstract class AbstractControllerHelper
                 }
                 if (in_array($fieldName, ['all', 'own', 'num'])) {
                     $templateParameters[$fieldName] = $fieldValue;
+                } elseif ($fieldName == 'sort' && !empty($fieldValue)) {
+                    $sort = $fieldValue;
+                } elseif ($fieldName == 'sortdir' && !empty($fieldValue)) {
+                    $sortdir = $fieldValue;
                 } else {
                     // set filter as query argument, fetched inside repository
                     $request->query->set($fieldName, $fieldValue);
                 }
             }
         }
+        $sortableColumns->setOrderBy($sortableColumns->getColumn($sort), strtoupper($sortdir));
     
         $urlParameters = $templateParameters;
         foreach ($urlParameters as $parameterName => $parameterValue) {
@@ -295,7 +301,7 @@ abstract class AbstractControllerHelper
     {
         $contextArgs = ['controller' => $objectType, 'action' => 'display'];
         if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
-            throw new Exception($this->__('Error! Invalid object type received.'));
+            throw new \Exception($this->__('Error! Invalid object type received.'));
         }
     
         if (true === $supportsHooks) {
@@ -321,7 +327,7 @@ abstract class AbstractControllerHelper
     {
         $contextArgs = ['controller' => $objectType, 'action' => 'edit'];
         if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
-            throw new Exception($this->__('Error! Invalid object type received.'));
+            throw new \Exception($this->__('Error! Invalid object type received.'));
         }
     
         return $this->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);
@@ -340,7 +346,7 @@ abstract class AbstractControllerHelper
     {
         $contextArgs = ['controller' => $objectType, 'action' => 'delete'];
         if (!in_array($objectType, $this->getObjectTypes('controllerAction', $contextArgs))) {
-            throw new Exception($this->__('Error! Invalid object type received.'));
+            throw new \Exception($this->__('Error! Invalid object type received.'));
         }
     
         return $this->addTemplateParameters($objectType, $templateParameters, 'controllerAction', $contextArgs);

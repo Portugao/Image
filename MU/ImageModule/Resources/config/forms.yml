@@ -132,13 +132,6 @@ services:
         tags:
             - { name: form.type }
     
-    mu_image_module.form.type.deleteentity:
-        class: MU\ImageModule\Form\DeleteEntityType
-        arguments:
-            - "@translator.default"
-        tags:
-            - { name: form.type }
-    
     mu_image_module.form.type.block.itemlist:
         class: MU\ImageModule\Block\Form\Type\ItemListBlockType
         arguments:

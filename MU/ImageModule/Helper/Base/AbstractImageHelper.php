@@ -14,7 +14,7 @@ namespace MU\ImageModule\Helper\Base;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zikula\Common\Translator\TranslatorInterface;
-use Zikula\ExtensionsModule\Api\VariableApi;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 
 /**
  * Helper base class for image methods.
@@ -32,7 +32,7 @@ abstract class AbstractImageHelper
     protected $session;
 
     /**
-     * @var VariableApi
+     * @var VariableApiInterface
      */
     protected $variableApi;
 
@@ -48,12 +48,12 @@ abstract class AbstractImageHelper
      *
      * @param TranslatorInterface $translator  Translator service instance
      * @param SessionInterface    $session     Session service instance
-     * @param VariableApi         $variableApi VariableApi service instance
+     * @param VariableApiInterface $variableApi VariableApi service instance
      */
     public function __construct(
         TranslatorInterface $translator,
         SessionInterface $session,
-        VariableApi $variableApi
+        VariableApiInterface $variableApi
     ) {
         $this->translator = $translator;
         $this->session = $session;

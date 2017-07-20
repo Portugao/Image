@@ -7,9 +7,6 @@
     {{ pageAddAsset('javascript', asset('magnific-popup/jquery.magnific-popup.min.js')) }}
     {{ pageAddAsset('stylesheet', asset('magnific-popup/magnific-popup.css')) }}
     {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.js')) }}
-    {% if 'edit' in app.request.get('_route') or 'config' in app.request.get('_route') %}
-        {{ polyfill(['forms', 'forms-ext']) }}
-    {% endif %}
 {% endblock %}
 
 {% block appTitle %}

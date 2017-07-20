@@ -46,7 +46,7 @@ abstract class AbstractEntityInitialiser
      */
     public function initAlbum(AlbumEntity $entity)
     {
-        $listEntries = $this->listEntriesHelper->getAlbumAccessEntriesForAlbum();
+        $listEntries = $this->listEntriesHelper->getEntries('album', 'albumAccess');
         $items = [];
         foreach ($listEntries as $listEntry) {
             if (true === $listEntry['default']) {
@@ -81,7 +81,7 @@ abstract class AbstractEntityInitialiser
      */
     public function initAvatar(AvatarEntity $entity)
     {
-        $listEntries = $this->listEntriesHelper->getSupportedModulesEntriesForAvatar();
+        $listEntries = $this->listEntriesHelper->getEntries('avatar', 'supportedModules');
         $items = [];
         foreach ($listEntries as $listEntry) {
             if (true === $listEntry['default']) {

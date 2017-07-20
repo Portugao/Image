@@ -17,7 +17,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Zikula\Core\Doctrine\EntityAccess;
-use MU\ImageModule\Traits\EntityWorkflowTrait;
 use MU\ImageModule\Traits\StandardFieldsTrait;
 use MU\ImageModule\Validator\Constraints as ImageAssert;
 
@@ -34,11 +33,6 @@ use MU\ImageModule\Validator\Constraints as ImageAssert;
  */
 abstract class AbstractPictureEntity extends EntityAccess
 {
-    /**
-     * Hook entity workflow field and behaviour.
-     */
-    use EntityWorkflowTrait;
-
     /**
      * Hook standard fields behaviour embedding createdBy, updatedBy, createdDate, updatedDate fields.
      */
@@ -165,7 +159,6 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     public function __construct()
     {
-        $this->initWorkflow();
     }
     
     /**
@@ -556,7 +549,7 @@ abstract class AbstractPictureEntity extends EntityAccess
         $this->setId(0);
     
         // reset workflow
-        $this->resetWorkflow();
+        $this->setWorkflowState('initial');
     
         // reset upload fields
         $this->setImageUpload(null);

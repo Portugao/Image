@@ -18,7 +18,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Zikula\Core\Doctrine\EntityAccess;
-use MU\ImageModule\Traits\EntityWorkflowTrait;
 use MU\ImageModule\Traits\StandardFieldsTrait;
 use MU\ImageModule\Validator\Constraints as ImageAssert;
 
@@ -35,11 +34,6 @@ use MU\ImageModule\Validator\Constraints as ImageAssert;
  */
 abstract class AbstractAlbumEntity extends EntityAccess
 {
-    /**
-     * Hook entity workflow field and behaviour.
-     */
-    use EntityWorkflowTrait;
-
     /**
      * Hook standard fields behaviour embedding createdBy, updatedBy, createdDate, updatedDate fields.
      */
@@ -184,7 +178,6 @@ abstract class AbstractAlbumEntity extends EntityAccess
      */
     public function __construct()
     {
-        $this->initWorkflow();
         $this->albums = new ArrayCollection();
         $this->pictures = new ArrayCollection();
         $this->categories = new ArrayCollection();
@@ -737,7 +730,7 @@ abstract class AbstractAlbumEntity extends EntityAccess
         $this->setId(0);
     
         // reset workflow
-        $this->resetWorkflow();
+        $this->setWorkflowState('initial');
     
         $this->setCreatedBy(null);
         $this->setCreatedDate(null);

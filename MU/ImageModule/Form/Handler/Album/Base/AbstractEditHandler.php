@@ -13,6 +13,7 @@
 namespace MU\ImageModule\Form\Handler\Album\Base;
 
 use MU\ImageModule\Form\Handler\Common\EditHandler;
+use MU\ImageModule\Form\Type\AlbumType;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -99,14 +100,14 @@ abstract class AbstractEditHandler extends EditHandler
             'filter_by_ownership' => !$this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_ADD)
         ];
     
-        return $this->formFactory->create('MU\ImageModule\Form\Type\AlbumType', $this->entityRef, $options);
+        return $this->formFactory->create(AlbumType::class, $this->entityRef, $options);
     }
 
 
     /**
      * Get list of allowed redirect codes.
      *
-     * @return array list of possible redirect codes
+     * @return string[] list of possible redirect codes
      */
     protected function getRedirectCodes()
     {
@@ -171,7 +172,7 @@ abstract class AbstractEditHandler extends EditHandler
      *
      * @return mixed Redirect or false on errors
      */
-    public function handleCommand($args = [])
+    public function handleCommand(array $args = [])
     {
         $result = parent::handleCommand($args);
         if (false === $result) {
@@ -199,7 +200,7 @@ abstract class AbstractEditHandler extends EditHandler
      *
      * @return String desired status or error message
      */
-    protected function getDefaultMessage($args, $success = false)
+    protected function getDefaultMessage(array $args = [], $success = false)
     {
         if (false === $success) {
             return parent::getDefaultMessage($args, $success);
@@ -246,7 +247,7 @@ abstract class AbstractEditHandler extends EditHandler
         try {
             // execute the workflow action
             $success = $this->workflowHelper->executeAction($entity, $action);
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $flashBag->add('error', $this->__f('Sorry, but an error occured during the %action% action. Please apply the changes again!', ['%action%' => $action]) . ' ' . $exception->getMessage());
             $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => 'album', 'id' => $entity->getKey(), 'errorMessage' => $exception->getMessage()];
             $this->logger->error('{app}: User {user} tried to edit the {entity} with id {id}, but failed. Error details: {errorMessage}.', $logArgs);
@@ -276,7 +277,7 @@ abstract class AbstractEditHandler extends EditHandler
         }
     
         if ($this->request->getSession()->has('muimagemodule' . $this->objectTypeCapital . 'Referer')) {
-            $this->request->getSession()->del('muimagemodule' . $this->objectTypeCapital . 'Referer');
+            $this->request->getSession()->remove('muimagemodule' . $this->objectTypeCapital . 'Referer');
         }
     
         // normal usage, compute return url from given redirect code

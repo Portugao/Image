@@ -13,6 +13,13 @@
         {{ form_start(deleteForm) }}
         {{ form_errors(deleteForm) }}
 
+        {% if formHookTemplates|length > 0 %}
+            <fieldset>
+                {% for hookTemplate in formHookTemplates %}
+                    {{ include(hookTemplate.0, hookTemplate.1, ignore_missing = true) }}
+                {% endfor %}
+            </fieldset>
+        {% endif %}
         <fieldset>
             <legend>{{ __('Confirmation prompt') }}</legend>
             <div class="form-group">
@@ -22,9 +29,9 @@
                 </div>
             </div>
         </fieldset>
+        {{ form_end(deleteForm) }}
 
         {{ block('display_hooks') }}
-        {{ form_end(deleteForm) }}
     </div>
 {% endblock %}
 {% block display_hooks %}

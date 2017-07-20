@@ -13,6 +13,11 @@
 namespace MU\ImageModule\Form\Type\Base;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
@@ -69,14 +74,14 @@ abstract class AbstractConfigType extends AbstractType
         $this->addIntegrationFields($builder, $options);
 
         $builder
-            ->add('save', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
+            ->add('save', SubmitType::class, [
                 'label' => $this->__('Update configuration'),
                 'icon' => 'fa-check',
                 'attr' => [
                     'class' => 'btn btn-success'
                 ]
             ])
-            ->add('cancel', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
+            ->add('cancel', SubmitType::class, [
                 'label' => $this->__('Cancel'),
                 'icon' => 'fa-times',
                 'attr' => [
@@ -96,7 +101,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addGeneralFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('supportCategoriesForPictures', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('supportCategoriesForPictures', CheckboxType::class, [
                 'label' => $this->__('Support categories for pictures') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['supportCategoriesForPictures']) ? $this->moduleVars['supportCategoriesForPictures'] : false),
@@ -104,7 +109,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The support categories for pictures option.')
                 ],
             ])
-            ->add('supportCategoriesForAvatars', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('supportCategoriesForAvatars', CheckboxType::class, [
                 'label' => $this->__('Support categories for avatars') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['supportCategoriesForAvatars']) ? $this->moduleVars['supportCategoriesForAvatars'] : false),
@@ -112,7 +117,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The support categories for avatars option.')
                 ],
             ])
-            ->add('supportSubAlbums', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('supportSubAlbums', CheckboxType::class, [
                 'label' => $this->__('Support sub albums') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['supportSubAlbums']) ? $this->moduleVars['supportSubAlbums'] : false),
@@ -120,7 +125,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The support sub albums option.')
                 ],
             ])
-            ->add('userDeletePictures', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('userDeletePictures', CheckboxType::class, [
                 'label' => $this->__('User delete pictures') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['userDeletePictures']) ? $this->moduleVars['userDeletePictures'] : false),
@@ -128,7 +133,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The user delete pictures option.')
                 ],
             ])
-            ->add('slideshow1', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('slideshow1', CheckboxType::class, [
                 'label' => $this->__('Slideshow 1') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['slideshow1']) ? $this->moduleVars['slideshow1'] : false),
@@ -136,7 +141,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The slideshow 1 option.')
                 ],
             ])
-            ->add('useAvatars', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('useAvatars', CheckboxType::class, [
                 'label' => $this->__('Use avatars') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['useAvatars']) ? $this->moduleVars['useAvatars'] : false),
@@ -144,7 +149,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The use avatars option.')
                 ],
             ])
-            ->add('useWatermark', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('useWatermark', CheckboxType::class, [
                 'label' => $this->__('Use watermark') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['useWatermark']) ? $this->moduleVars['useWatermark'] : false),
@@ -152,7 +157,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The use watermark option.')
                 ],
             ])
-            ->add('useExtendedFeatures', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('useExtendedFeatures', CheckboxType::class, [
                 'label' => $this->__('Use extended features') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -189,7 +194,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addSlideshowsFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('slide1Interval', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('slide1Interval', IntegerType::class, [
                 'label' => $this->__('Slide 1 interval') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['slide1Interval']) ? intval($this->moduleVars['slide1Interval']) : intval(4000),
@@ -199,7 +204,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the slide 1 interval.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('slide1Speed', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('slide1Speed', IntegerType::class, [
                 'label' => $this->__('Slide 1 speed') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['slide1Speed']) ? intval($this->moduleVars['slide1Speed']) : intval(1000),
@@ -221,7 +226,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addUploadHandlerFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fileSizeForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('fileSizeForPictures', IntegerType::class, [
                 'label' => $this->__('File size for pictures') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['fileSizeForPictures']) ? intval($this->moduleVars['fileSizeForPictures']) : intval(102400),
@@ -231,7 +236,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the file size for pictures.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('fileSizeForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('fileSizeForAvatars', IntegerType::class, [
                 'label' => $this->__('File size for avatars') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['fileSizeForAvatars']) ? intval($this->moduleVars['fileSizeForAvatars']) : intval(),
@@ -241,7 +246,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the file size for avatars.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('fileSizesForZip', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('fileSizesForZip', IntegerType::class, [
                 'label' => $this->__('File sizes for zip') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['fileSizesForZip']) ? intval($this->moduleVars['fileSizesForZip']) : intval(),
@@ -251,7 +256,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the file sizes for zip.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('minWidthForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('minWidthForPictures', IntegerType::class, [
                 'label' => $this->__('Min width for pictures') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['minWidthForPictures']) ? intval($this->moduleVars['minWidthForPictures']) : intval(400),
@@ -261,7 +266,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the min width for pictures.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('maxWidthForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('maxWidthForPictures', IntegerType::class, [
                 'label' => $this->__('Max width for pictures') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['maxWidthForPictures']) ? intval($this->moduleVars['maxWidthForPictures']) : intval(),
@@ -271,7 +276,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the max width for pictures.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('maxHeightForPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('maxHeightForPictures', IntegerType::class, [
                 'label' => $this->__('Max height for pictures') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['maxHeightForPictures']) ? intval($this->moduleVars['maxHeightForPictures']) : intval(),
@@ -281,7 +286,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the max height for pictures.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('minWidthForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('minWidthForAvatars', IntegerType::class, [
                 'label' => $this->__('Min width for avatars') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['minWidthForAvatars']) ? intval($this->moduleVars['minWidthForAvatars']) : intval(),
@@ -291,7 +296,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the min width for avatars.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('maxWidthForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('maxWidthForAvatars', IntegerType::class, [
                 'label' => $this->__('Max width for avatars') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['maxWidthForAvatars']) ? intval($this->moduleVars['maxWidthForAvatars']) : intval(),
@@ -301,7 +306,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the max width for avatars.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('maxHeightForAvatars', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('maxHeightForAvatars', IntegerType::class, [
                 'label' => $this->__('Max height for avatars') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['maxHeightForAvatars']) ? intval($this->moduleVars['maxHeightForAvatars']) : intval(),
@@ -311,7 +316,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the max height for avatars.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('firstWidth', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('firstWidth', IntegerType::class, [
                 'label' => $this->__('First width') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -326,7 +331,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the first width.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('firstHeight', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('firstHeight', IntegerType::class, [
                 'label' => $this->__('First height') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -341,7 +346,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the first height.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('secondWidth', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('secondWidth', IntegerType::class, [
                 'label' => $this->__('Second width') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -356,7 +361,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the second width.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('secondHeight', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('secondHeight', IntegerType::class, [
                 'label' => $this->__('Second height') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -371,7 +376,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the second height.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('thirdWidth', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thirdWidth', IntegerType::class, [
                 'label' => $this->__('Third width') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -386,7 +391,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the third width.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('thirdHeight', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thirdHeight', IntegerType::class, [
                 'label' => $this->__('Third height') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -413,7 +418,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addAvatarsFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('numberHeightAndNameOfAvatars', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+            ->add('numberHeightAndNameOfAvatars', TextType::class, [
                 'label' => $this->__('Number height and name of avatars') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -428,7 +433,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the number height and name of avatars.')
                 ],
             ])
-            ->add('shrink', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('shrink', CheckboxType::class, [
                 'label' => $this->__('Shrink') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['shrink']) ? $this->moduleVars['shrink'] : false),
@@ -448,7 +453,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addDisplaySettingsFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('albumEntriesPerPageInBackend', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('albumEntriesPerPageInBackend', IntegerType::class, [
                 'label' => $this->__('Album entries per page in backend') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -463,7 +468,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the album entries per page in backend.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('pictureEntriesPerPageInBackend', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('pictureEntriesPerPageInBackend', IntegerType::class, [
                 'label' => $this->__('Picture entries per page in backend') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -478,7 +483,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the picture entries per page in backend.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('avatarEntriesPerPageInBackend', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('avatarEntriesPerPageInBackend', IntegerType::class, [
                 'label' => $this->__('Avatar entries per page in backend') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -493,7 +498,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the avatar entries per page in backend.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('countImageView', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('countImageView', CheckboxType::class, [
                 'label' => $this->__('Count image view') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['countImageView']) ? $this->moduleVars['countImageView'] : false),
@@ -501,7 +506,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The count image view option.')
                 ],
             ])
-            ->add('numberParentAlbums', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('numberParentAlbums', IntegerType::class, [
                 'label' => $this->__('Number parent albums') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -516,7 +521,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the number parent albums.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('numberSubAlbums', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('numberSubAlbums', IntegerType::class, [
                 'label' => $this->__('Number sub albums') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -531,7 +536,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the number sub albums.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('numberPictures', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('numberPictures', IntegerType::class, [
                 'label' => $this->__('Number pictures') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -546,7 +551,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the number pictures.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('groupForCommonAlbums', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('groupForCommonAlbums', ChoiceType::class, [
                 'label' => $this->__('Group for common albums') . ':',
                 'data' => isset($this->moduleVars['groupForCommonAlbums']) ? $this->moduleVars['groupForCommonAlbums'] : '',
                 'empty_data' => '',
@@ -558,7 +563,7 @@ abstract class AbstractConfigType extends AbstractType
                 'choices_as_values' => true,
                 'multiple' => false
             ])
-            ->add('kindOfShowSubAlbums', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('kindOfShowSubAlbums', ChoiceType::class, [
                 'label' => $this->__('Kind of show sub albums') . ':',
                 'data' => isset($this->moduleVars['kindOfShowSubAlbums']) ? $this->moduleVars['kindOfShowSubAlbums'] : '',
                 'empty_data' => '',
@@ -571,7 +576,7 @@ abstract class AbstractConfigType extends AbstractType
                 'choices_as_values' => true,
                 'multiple' => false
             ])
-            ->add('breadcrumbsInFrontend', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('breadcrumbsInFrontend', CheckboxType::class, [
                 'label' => $this->__('Breadcrumbs in frontend') . ':',
                 'required' => false,
                 'data' => (bool)(isset($this->moduleVars['breadcrumbsInFrontend']) ? $this->moduleVars['breadcrumbsInFrontend'] : false),
@@ -579,7 +584,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The breadcrumbs in frontend option.')
                 ],
             ])
-            ->add('ending', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+            ->add('ending', TextType::class, [
                 'label' => $this->__('Ending') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['ending']) ? $this->moduleVars['ending'] : '',
@@ -601,7 +606,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addWatermarkFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('watermark', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+            ->add('watermark', TextType::class, [
                 'label' => $this->__('Watermark') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -616,7 +621,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the watermark.')
                 ],
             ])
-            ->add('bottom', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('bottom', IntegerType::class, [
                 'label' => $this->__('Bottom') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -631,7 +636,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the bottom.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('left', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('left', IntegerType::class, [
                 'label' => $this->__('Left') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -646,7 +651,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the left.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('right', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('right', IntegerType::class, [
                 'label' => $this->__('Right') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['right']) ? intval($this->moduleVars['right']) : intval(),
@@ -656,7 +661,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the right.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('top', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('top', IntegerType::class, [
                 'label' => $this->__('Top') . ':',
                 'required' => false,
                 'data' => isset($this->moduleVars['top']) ? intval($this->moduleVars['top']) : intval(),
@@ -678,7 +683,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addListViewsFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('albumEntriesPerPage', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('albumEntriesPerPage', IntegerType::class, [
                 'label' => $this->__('Album entries per page') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -693,7 +698,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the album entries per page.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('linkOwnAlbumsOnAccountPage', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('linkOwnAlbumsOnAccountPage', CheckboxType::class, [
                 'label' => $this->__('Link own albums on account page') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -706,7 +711,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The link own albums on account page option.')
                 ],
             ])
-            ->add('pictureEntriesPerPage', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('pictureEntriesPerPage', IntegerType::class, [
                 'label' => $this->__('Picture entries per page') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -721,7 +726,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the picture entries per page.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('linkOwnPicturesOnAccountPage', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('linkOwnPicturesOnAccountPage', CheckboxType::class, [
                 'label' => $this->__('Link own pictures on account page') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -734,7 +739,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('The link own pictures on account page option.')
                 ],
             ])
-            ->add('avatarEntriesPerPage', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('avatarEntriesPerPage', IntegerType::class, [
                 'label' => $this->__('Avatar entries per page') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -749,7 +754,7 @@ abstract class AbstractConfigType extends AbstractType
                     'title' => $this->__('Enter the avatar entries per page.') . ' ' . $this->__('Only digits are allowed.')
                 ],'scale' => 0
             ])
-            ->add('linkOwnAvatarsOnAccountPage', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('linkOwnAvatarsOnAccountPage', CheckboxType::class, [
                 'label' => $this->__('Link own avatars on account page') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -774,7 +779,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addImagesFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('enableShrinkingForPictureImageUpload', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('enableShrinkingForPictureImageUpload', CheckboxType::class, [
                 'label' => $this->__('Enable shrinking') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -788,7 +793,7 @@ abstract class AbstractConfigType extends AbstractType
                     'class' => 'shrink-enabler'
                 ],
             ])
-            ->add('shrinkWidthPictureImageUpload', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('shrinkWidthPictureImageUpload', IntegerType::class, [
                 'label' => $this->__('Shrink width') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -805,7 +810,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('shrinkHeightPictureImageUpload', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('shrinkHeightPictureImageUpload', IntegerType::class, [
                 'label' => $this->__('Shrink height') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -822,7 +827,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailModePictureImageUpload', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('thumbnailModePictureImageUpload', ChoiceType::class, [
                 'label' => $this->__('Thumbnail mode') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -840,7 +845,7 @@ abstract class AbstractConfigType extends AbstractType
                 'choices_as_values' => true,
                 'multiple' => false
             ])
-            ->add('thumbnailWidthPictureImageUploadView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailWidthPictureImageUploadView', IntegerType::class, [
                 'label' => $this->__('Thumbnail width view') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -856,7 +861,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailHeightPictureImageUploadView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailHeightPictureImageUploadView', IntegerType::class, [
                 'label' => $this->__('Thumbnail height view') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -872,7 +877,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailWidthPictureImageUploadDisplay', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailWidthPictureImageUploadDisplay', IntegerType::class, [
                 'label' => $this->__('Thumbnail width display') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -888,7 +893,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailHeightPictureImageUploadDisplay', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailHeightPictureImageUploadDisplay', IntegerType::class, [
                 'label' => $this->__('Thumbnail height display') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -904,7 +909,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailWidthPictureImageUploadEdit', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailWidthPictureImageUploadEdit', IntegerType::class, [
                 'label' => $this->__('Thumbnail width edit') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -920,7 +925,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailHeightPictureImageUploadEdit', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailHeightPictureImageUploadEdit', IntegerType::class, [
                 'label' => $this->__('Thumbnail height edit') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -936,7 +941,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('enableShrinkingForAvatarAvatarUpload', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+            ->add('enableShrinkingForAvatarAvatarUpload', CheckboxType::class, [
                 'label' => $this->__('Enable shrinking') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -950,7 +955,7 @@ abstract class AbstractConfigType extends AbstractType
                     'class' => 'shrink-enabler'
                 ],
             ])
-            ->add('shrinkWidthAvatarAvatarUpload', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('shrinkWidthAvatarAvatarUpload', IntegerType::class, [
                 'label' => $this->__('Shrink width') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -967,7 +972,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('shrinkHeightAvatarAvatarUpload', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('shrinkHeightAvatarAvatarUpload', IntegerType::class, [
                 'label' => $this->__('Shrink height') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -984,7 +989,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailModeAvatarAvatarUpload', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('thumbnailModeAvatarAvatarUpload', ChoiceType::class, [
                 'label' => $this->__('Thumbnail mode') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -1002,7 +1007,7 @@ abstract class AbstractConfigType extends AbstractType
                 'choices_as_values' => true,
                 'multiple' => false
             ])
-            ->add('thumbnailWidthAvatarAvatarUploadView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailWidthAvatarAvatarUploadView', IntegerType::class, [
                 'label' => $this->__('Thumbnail width view') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -1018,7 +1023,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailHeightAvatarAvatarUploadView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailHeightAvatarAvatarUploadView', IntegerType::class, [
                 'label' => $this->__('Thumbnail height view') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -1034,7 +1039,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailWidthAvatarAvatarUploadDisplay', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailWidthAvatarAvatarUploadDisplay', IntegerType::class, [
                 'label' => $this->__('Thumbnail width display') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -1050,7 +1055,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailHeightAvatarAvatarUploadDisplay', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailHeightAvatarAvatarUploadDisplay', IntegerType::class, [
                 'label' => $this->__('Thumbnail height display') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -1066,7 +1071,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailWidthAvatarAvatarUploadEdit', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailWidthAvatarAvatarUploadEdit', IntegerType::class, [
                 'label' => $this->__('Thumbnail width edit') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -1082,7 +1087,7 @@ abstract class AbstractConfigType extends AbstractType
                 ],'scale' => 0,
                 'input_group' => ['right' => $this->__('pixels')]
             ])
-            ->add('thumbnailHeightAvatarAvatarUploadEdit', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+            ->add('thumbnailHeightAvatarAvatarUploadEdit', IntegerType::class, [
                 'label' => $this->__('Thumbnail height edit') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
@@ -1110,7 +1115,7 @@ abstract class AbstractConfigType extends AbstractType
     public function addIntegrationFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('enabledFinderTypes', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('enabledFinderTypes', ChoiceType::class, [
                 'label' => $this->__('Enabled finder types') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',

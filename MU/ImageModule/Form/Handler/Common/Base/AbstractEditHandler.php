@@ -22,13 +22,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Bundle\CoreBundle\HttpKernel\ZikulaHttpKernelInterface;
+use Zikula\Bundle\HookBundle\Category\FormAwareCategory;
+use Zikula\Bundle\HookBundle\Category\UiHooksCategory;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\Core\RouteUrl;
-use Zikula\PageLockModule\Api\LockingApi;
-use Zikula\PermissionsModule\Api\PermissionApi;
-use Zikula\UsersModule\Api\CurrentUserApi;
+use Zikula\PageLockModule\Api\ApiInterface\LockingApiInterface;
+use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use MU\ImageModule\Entity\Factory\EntityFactory;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ControllerHelper;
@@ -165,12 +167,12 @@ abstract class AbstractEditHandler
     protected $logger;
 
     /**
-     * @var PermissionApi
+     * @var PermissionApiInterface
      */
     protected $permissionApi;
 
     /**
-     * @var CurrentUserApi
+     * @var CurrentUserApiInterface
      */
     protected $currentUserApi;
 
@@ -207,7 +209,7 @@ abstract class AbstractEditHandler
     /**
      * Reference to optional locking api.
      *
-     * @var LockingApi
+     * @var LockingApiInterface
      */
     protected $lockingApi = null;
 
@@ -234,8 +236,8 @@ abstract class AbstractEditHandler
      * @param RequestStack              $requestStack     RequestStack service instance
      * @param RouterInterface           $router           Router service instance
      * @param LoggerInterface           $logger           Logger service instance
-     * @param PermissionApi             $permissionApi    PermissionApi service instance
-     * @param CurrentUserApi            $currentUserApi   CurrentUserApi service instance
+     * @param PermissionApiInterface             $permissionApi    PermissionApi service instance
+     * @param CurrentUserApiInterface   $currentUserApi   CurrentUserApi service instance
      * @param EntityFactory             $entityFactory    EntityFactory service instance
      * @param ControllerHelper          $controllerHelper ControllerHelper service instance
      * @param ModelHelper               $modelHelper      ModelHelper service instance
@@ -250,8 +252,8 @@ abstract class AbstractEditHandler
         RequestStack $requestStack,
         RouterInterface $router,
         LoggerInterface $logger,
-        PermissionApi $permissionApi,
-        CurrentUserApi $currentUserApi,
+        PermissionApiInterface $permissionApi,
+        CurrentUserApiInterface $currentUserApi,
         EntityFactory $entityFactory,
         ControllerHelper $controllerHelper,
         ModelHelper $modelHelper,
@@ -349,7 +351,7 @@ abstract class AbstractEditHandler
             if (null !== $entity) {
                 if (true === $this->hasPageLockSupport && $this->kernel->isBundle('ZikulaPageLockModule') && null !== $this->lockingApi) {
                     // try to guarantee that only one person at a time can be editing this entity
-                    $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->getKey();
+                    $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->entityRef->getKey();
                     $this->lockingApi->addLock($lockName, $this->getRedirectUrl(null));
                     // reload entity as the addLock call above has triggered the preUpdate event
                     $this->entityFactory->getObjectManager()->refresh($entity);
@@ -401,6 +403,12 @@ abstract class AbstractEditHandler
         $this->form = $this->createForm();
         if (!is_object($this->form)) {
             return false;
+        }
+    
+        if ($entity->supportsHookSubscribers()) {
+            // Call form aware display hooks
+            $formHook = $this->hookHelper->callFormDisplayHooks($this->form, $entity, FormAwareCategory::TYPE_EDIT);
+            $this->templateParameters['formHookTemplates'] = $formHook->getTemplates();
         }
     
         // handle form request and check validity constraints of edited entity
@@ -460,14 +468,7 @@ abstract class AbstractEditHandler
      */
     protected function initEntityForEditing()
     {
-        $entity = $this->entityFactory->getRepository($this->objectType)->selectById($this->idValue);
-        if (null === $entity) {
-            return null;
-        }
-    
-        $entity->initWorkflow();
-    
-        return $entity;
+        return $this->entityFactory->getRepository($this->objectType)->selectById($this->idValue);
     }
     
     /**
@@ -500,7 +501,7 @@ abstract class AbstractEditHandler
     /**
      * Get list of allowed redirect codes.
      *
-     * @return array list of possible redirect codes
+     * @return string[] list of possible redirect codes
      */
     protected function getRedirectCodes()
     {
@@ -518,7 +519,7 @@ abstract class AbstractEditHandler
      *
      * @return mixed Redirect or false on errors
      */
-    public function handleCommand($args = [])
+    public function handleCommand(array $args = [])
     {
         // build $args for BC (e.g. used by redirect handling)
         foreach ($this->templateParameters['actions'] as $action) {
@@ -534,17 +535,22 @@ abstract class AbstractEditHandler
         $isRegularAction = !in_array($action, ['delete', 'cancel']);
     
         if ($isRegularAction || $action == 'delete') {
-            $this->fetchInputData($args);
+            $this->fetchInputData();
         }
     
         // get treated entity reference from persisted member var
         $entity = $this->entityRef;
     
         if ($entity->supportsHookSubscribers() && $action != 'cancel') {
-            // Let any hooks perform additional validation actions
-            $hookType = $action == 'delete' ? 'validate_delete' : 'validate_edit';
-            $validationHooksPassed = $this->hookHelper->callValidationHooks($entity, $hookType);
-            if (!$validationHooksPassed) {
+            // Let any ui hooks perform additional validation actions
+            $hookType = $action == 'delete' ? UiHooksCategory::TYPE_VALIDATE_DELETE : UiHooksCategory::TYPE_VALIDATE_EDIT;
+            $validationErrors = $this->hookHelper->callValidationHooks($entity, $hookType);
+            if (count($validationErrors) > 0) {
+                $flashBag = $this->request->getSession()->getFlashBag();
+                foreach ($validationErrors as $message) {
+                    $flashBag->add('error', $message);
+                }
+    
                 return false;
             }
         }
@@ -557,20 +563,25 @@ abstract class AbstractEditHandler
             }
     
             if ($entity->supportsHookSubscribers()) {
-                // Let any hooks know that we have created, updated or deleted an item
-                $hookType = $action == 'delete' ? 'process_delete' : 'process_edit';
-                $url = null;
+                $routeUrl = null;
                 if ($action != 'delete') {
                     $urlArgs = $entity->createUrlArgs();
                     $urlArgs['_locale'] = $this->request->getLocale();
-                    $url = new RouteUrl('muimagemodule_' . $this->objectTypeLower . '_display', $urlArgs);
+                    $routeUrl = new RouteUrl('muimagemodule_' . $this->objectTypeLower . '_display', $urlArgs);
                 }
-                $this->hookHelper->callProcessHooks($entity, $hookType, $url);
+    
+                // Call form aware processing hooks
+                $hookType = $action == 'delete' ? FormAwareCategory::TYPE_PROCESS_DELETE : FormAwareCategory::TYPE_PROCESS_EDIT;
+                $this->hookHelper->callFormProcessHooks($this->form, $entity, $hookType, $routeUrl);
+    
+                // Let any ui hooks know that we have created, updated or deleted an item
+                $hookType = $action == 'delete' ? UiHooksCategory::TYPE_PROCESS_DELETE : UiHooksCategory::TYPE_PROCESS_EDIT;
+                $this->hookHelper->callProcessHooks($entity, $hookType, $routeUrl);
             }
         }
     
         if (true === $this->hasPageLockSupport && $this->templateParameters['mode'] == 'edit' && $this->kernel->isBundle('ZikulaPageLockModule') && null !== $this->lockingApi) {
-            $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->getKey();
+            $lockName = 'MUImageModule' . $this->objectTypeCapital . $this->entityRef->getKey();
             $this->lockingApi->releaseLock($lockName);
         }
     
@@ -585,7 +596,7 @@ abstract class AbstractEditHandler
      *
      * @return String desired status or error message
      */
-    protected function getDefaultMessage($args, $success = false)
+    protected function getDefaultMessage(array $args = [], $success = false)
     {
         $message = '';
         switch ($args['commandName']) {
@@ -623,7 +634,7 @@ abstract class AbstractEditHandler
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
-    protected function addDefaultMessage($args, $success = false)
+    protected function addDefaultMessage(array $args = [], $success = false)
     {
         $message = $this->getDefaultMessage($args, $success);
         if (empty($message)) {
@@ -642,10 +653,8 @@ abstract class AbstractEditHandler
 
     /**
      * Input data processing called by handleCommand method.
-     *
-     * @param array $args Additional arguments
      */
-    public function fetchInputData($args)
+    public function fetchInputData()
     {
         // fetch posted data input values as an associative array
         $formData = $this->form->getData();
@@ -687,9 +696,9 @@ abstract class AbstractEditHandler
     /**
      * Sets optional locking api reference.
      *
-     * @param LockingApi $lockingApi
+     * @param LockingApiInterface $lockingApi
      */
-    public function setLockingApi(LockingApi $lockingApi)
+    public function setLockingApi(LockingApiInterface $lockingApi)
     {
         $this->lockingApi = $lockingApi;
     }

@@ -13,8 +13,14 @@
 namespace MU\ImageModule\Form\Type\Finder\Base;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Zikula\CategoriesModule\Form\Type\CategoriesType;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use MU\ImageModule\Helper\FeatureActivationHelper;
@@ -60,10 +66,10 @@ abstract class AbstractAvatarFinderType extends AbstractType
     {
         $builder
             ->setMethod('GET')
-            ->add('objectType', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', [
+            ->add('objectType', HiddenType::class, [
                 'data' => $options['object_type']
             ])
-            ->add('editor', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', [
+            ->add('editor', HiddenType::class, [
                 'data' => $options['editor_name']
             ])
         ;
@@ -78,14 +84,14 @@ abstract class AbstractAvatarFinderType extends AbstractType
         $this->addSearchField($builder, $options);
 
         $builder
-            ->add('update', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
+            ->add('update', SubmitType::class, [
                 'label' => $this->__('Change selection'),
                 'icon' => 'fa-check',
                 'attr' => [
                     'class' => 'btn btn-success'
                 ]
             ])
-            ->add('cancel', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
+            ->add('cancel', SubmitType::class, [
                 'label' => $this->__('Cancel'),
                 'icon' => 'fa-times',
                 'attr' => [
@@ -104,7 +110,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      */
     public function addCategoriesField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
+        $builder->add('categories', CategoriesType::class, [
             'label' => $this->__('Category') . ':',
             'empty_data' => null,
             'attr' => [
@@ -128,13 +134,13 @@ abstract class AbstractAvatarFinderType extends AbstractType
      */
     public function addImageFields(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('onlyImages', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+        $builder->add('onlyImages', CheckboxType::class, [
             'label' => $this->__('Only images'),
             'empty_data' => false,
             'help' => $this->__('Enable this option to insert images'),
             'required' => false
         ]);
-        $builder->add('imageField', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', [
+        $builder->add('imageField', HiddenType::class, [
             'data' => 'avatarUpload'
         ]);
     }
@@ -147,7 +153,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      */
     public function addPasteAsField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('pasteAs', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('pasteAs', ChoiceType::class, [
             'label' => $this->__('Paste as') . ':',
             'empty_data' => 1,
             'choices' => [
@@ -174,7 +180,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
     public function addSortingFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('sort', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('sort', ChoiceType::class, [
                 'label' => $this->__('Sort by') . ':',
                 'empty_data' => '',
                 'choices' => [
@@ -191,7 +197,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
                 'multiple' => false,
                 'expanded' => false
             ])
-            ->add('sortdir', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('sortdir', ChoiceType::class, [
                 'label' => $this->__('Sort direction') . ':',
                 'empty_data' => 'asc',
                 'choices' => [
@@ -213,7 +219,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      */
     public function addAmountField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('num', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('num', ChoiceType::class, [
             'label' => $this->__('Page size') . ':',
             'empty_data' => 20,
             'attr' => [
@@ -242,7 +248,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      */
     public function addSearchField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('q', 'Symfony\Component\Form\Extension\Core\Type\SearchType', [
+        $builder->add('q', SearchType::class, [
             'label' => $this->__('Search for') . ':',
             'required' => false,
             'attr' => [

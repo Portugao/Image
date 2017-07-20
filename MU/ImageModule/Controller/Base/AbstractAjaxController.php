@@ -16,57 +16,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
-use Zikula\UsersModule\Constant as UsersConstant;
 
 /**
  * Ajax controller base class.
  */
 abstract class AbstractAjaxController extends AbstractController
 {
-    
-    /**
-     * Retrieves a general purpose list of users.
-     *
-     * @param Request $request Current request instance
-     *
-     * @return JsonResponse
-     */
-    public function searchUsersAction(Request $request)
-    {
-        if (!$this->hasPermission('MUImageModule::Ajax', '::', ACCESS_EDIT)) {
-            return true;
-        }
-        
-        $fragment = $request->query->get('fragment', '');
-        $userRepository = $this->get('zikula_users_module.user_repository');
-        $limit = 50;
-        $filter = [
-            'activated' => ['operator' => 'notIn', 'operand' => [
-                UsersConstant::ACTIVATED_PENDING_REG,
-                UsersConstant::ACTIVATED_PENDING_DELETE
-            ]],
-            'uname' => ['operator' => 'like', 'operand' => '%' . $fragment . '%']
-        ];
-        $results = $userRepository->query($filter, ['uname' => 'asc'], $limit);
-        
-        // load avatar plugin
-        include_once 'lib/legacy/viewplugins/function.useravatar.php';
-        $view = \Zikula_View::getInstance('MUImageModule', false);
-        
-        $resultItems = [];
-        if (count($results) > 0) {
-            foreach ($results as $result) {
-                $resultItems[] = [
-                    'uid' => $result->getUid(),
-                    'uname' => $result->getUname(),
-                    'avatar' => $profileModule->getAvatar(['uid' => $result->getUid(), ['rating' => 'g']])
-                ];
-            }
-        }
-        
-        // return response
-        return new JsonResponse($resultItems);
-    }
     
     /**
      * Retrieve item list for finder selections in Forms, Content type plugin and Scribite.

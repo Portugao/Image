@@ -15,6 +15,7 @@ namespace MU\ImageModule\Controller;
 use MU\ImageModule\Controller\Base\AbstractConfigController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 
@@ -35,7 +36,7 @@ class ConfigController extends AbstractConfigController
      *
      * @param Request $request Current request instance
      *
-     * @return string Output
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */

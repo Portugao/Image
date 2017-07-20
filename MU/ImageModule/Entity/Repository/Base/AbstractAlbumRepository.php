@@ -21,7 +21,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Zikula\Common\Translator\TranslatorInterface;
-use Zikula\UsersModule\Api\CurrentUserApi;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use MU\ImageModule\Entity\AlbumEntity;
 use MU\ImageModule\Helper\CollectionFilterHelper;
 
@@ -32,6 +32,11 @@ use MU\ImageModule\Helper\CollectionFilterHelper;
  */
 abstract class AbstractAlbumRepository extends EntityRepository
 {
+    /**
+     * @var string The main entity class
+     */
+    protected $mainEntityClass = 'MU\ImageModule\Entity\AlbumEntity';
+
     /**
      * @var string The default sorting field/expression
      */
@@ -45,7 +50,7 @@ abstract class AbstractAlbumRepository extends EntityRepository
     /**
      * Retrieves an array with all fields which can be used for sorting instances.
      *
-     * @return array Sorting fields array
+     * @return string[] Sorting fields array
      */
     public function getAllowedSortingFields()
     {
@@ -115,36 +120,19 @@ abstract class AbstractAlbumRepository extends EntityRepository
     
 
     /**
-     * Helper method for truncating the table.
-     * Used during installation when inserting default data.
-     *
-     * @param LoggerInterface $logger Logger service instance
-     */
-    public function truncateTable(LoggerInterface $logger)
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->delete('MU\ImageModule\Entity\AlbumEntity', 'tbl');
-        $query = $qb->getQuery();
-    
-        $query->execute();
-    
-        $logArgs = ['app' => 'MUImageModule', 'entity' => 'album'];
-        $logger->debug('{app}: Truncated the {entity} entity table.', $logArgs);
-    }
-    /**
      * Updates the creator of all objects created by a certain user.
      *
      * @param integer             $userId         The userid of the creator to be replaced
      * @param integer             $newUserId      The new userid of the creator as replacement
      * @param TranslatorInterface $translator     Translator service instance
      * @param LoggerInterface     $logger         Logger service instance
-     * @param CurrentUserApi      $currentUserApi CurrentUserApi service instance
+     * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
      *
      * @return void
      *
      * @throws InvalidArgumentException Thrown if invalid parameters are received
      */
-    public function updateCreator($userId, $newUserId, TranslatorInterface $translator, LoggerInterface $logger, CurrentUserApi $currentUserApi)
+    public function updateCreator($userId, $newUserId, TranslatorInterface $translator, LoggerInterface $logger, CurrentUserApiInterface $currentUserApi)
     {
         // check id parameter
         if ($userId == 0 || !is_numeric($userId)
@@ -153,7 +141,7 @@ abstract class AbstractAlbumRepository extends EntityRepository
         }
     
         $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->update('MU\ImageModule\Entity\AlbumEntity', 'tbl')
+        $qb->update($this->mainEntityClass, 'tbl')
            ->set('tbl.createdBy', $newUserId)
            ->where('tbl.createdBy = :creator')
            ->setParameter('creator', $userId);
@@ -171,13 +159,13 @@ abstract class AbstractAlbumRepository extends EntityRepository
      * @param integer             $newUserId      The new userid of the last editor as replacement
      * @param TranslatorInterface $translator     Translator service instance
      * @param LoggerInterface     $logger         Logger service instance
-     * @param CurrentUserApi      $currentUserApi CurrentUserApi service instance
+     * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
      *
      * @return void
      *
      * @throws InvalidArgumentException Thrown if invalid parameters are received
      */
-    public function updateLastEditor($userId, $newUserId, TranslatorInterface $translator, LoggerInterface $logger, CurrentUserApi $currentUserApi)
+    public function updateLastEditor($userId, $newUserId, TranslatorInterface $translator, LoggerInterface $logger, CurrentUserApiInterface $currentUserApi)
     {
         // check id parameter
         if ($userId == 0 || !is_numeric($userId)
@@ -186,7 +174,7 @@ abstract class AbstractAlbumRepository extends EntityRepository
         }
     
         $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->update('MU\ImageModule\Entity\AlbumEntity', 'tbl')
+        $qb->update($this->mainEntityClass, 'tbl')
            ->set('tbl.updatedBy', $newUserId)
            ->where('tbl.updatedBy = :editor')
            ->setParameter('editor', $userId);
@@ -203,13 +191,13 @@ abstract class AbstractAlbumRepository extends EntityRepository
      * @param integer             $userId         The userid of the creator to be removed
      * @param TranslatorInterface $translator     Translator service instance
      * @param LoggerInterface     $logger         Logger service instance
-     * @param CurrentUserApi      $currentUserApi CurrentUserApi service instance
+     * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
      *
      * @return void
      *
      * @throws InvalidArgumentException Thrown if invalid parameters are received
      */
-    public function deleteByCreator($userId, TranslatorInterface $translator, LoggerInterface $logger, CurrentUserApi $currentUserApi)
+    public function deleteByCreator($userId, TranslatorInterface $translator, LoggerInterface $logger, CurrentUserApiInterface $currentUserApi)
     {
         // check id parameter
         if ($userId == 0 || !is_numeric($userId)) {
@@ -217,7 +205,7 @@ abstract class AbstractAlbumRepository extends EntityRepository
         }
     
         $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->delete('MU\ImageModule\Entity\AlbumEntity', 'tbl')
+        $qb->delete($this->mainEntityClass, 'tbl')
            ->where('tbl.createdBy = :creator')
            ->setParameter('creator', $userId);
         $query = $qb->getQuery();
@@ -233,13 +221,13 @@ abstract class AbstractAlbumRepository extends EntityRepository
      * @param integer             $userId         The userid of the last editor to be removed
      * @param TranslatorInterface $translator     Translator service instance
      * @param LoggerInterface     $logger         Logger service instance
-     * @param CurrentUserApi      $currentUserApi CurrentUserApi service instance
+     * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
      *
      * @return void
      *
      * @throws InvalidArgumentException Thrown if invalid parameters are received
      */
-    public function deleteByLastEditor($userId, TranslatorInterface $translator, LoggerInterface $logger, CurrentUserApi $currentUserApi)
+    public function deleteByLastEditor($userId, TranslatorInterface $translator, LoggerInterface $logger, CurrentUserApiInterface $currentUserApi)
     {
         // check id parameter
         if ($userId == 0 || !is_numeric($userId)) {
@@ -247,7 +235,7 @@ abstract class AbstractAlbumRepository extends EntityRepository
         }
     
         $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->delete('MU\ImageModule\Entity\AlbumEntity', 'tbl')
+        $qb->delete($this->mainEntityClass, 'tbl')
            ->where('tbl.updatedBy = :editor')
            ->setParameter('editor', $userId);
         $query = $qb->getQuery();
@@ -325,8 +313,8 @@ abstract class AbstractAlbumRepository extends EntityRepository
     /**
      * Adds where clauses excluding desired identifiers from selection.
      *
-     * @param QueryBuilder $qb           Query builder to be enhanced
-     * @param array        $excludesions Array of ids to be excluded from selection
+     * @param QueryBuilder $qb         Query builder to be enhanced
+     * @param array        $exclusions Array of ids to be excluded from selection
      *
      * @return QueryBuilder Enriched query builder instance
      */
@@ -491,7 +479,7 @@ abstract class AbstractAlbumRepository extends EntityRepository
     
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select($selection)
-           ->from('MU\ImageModule\Entity\AlbumEntity', 'tbl');
+           ->from($this->mainEntityClass, 'tbl');
     
         if (!empty($where)) {
             $qb->andWhere($where);
@@ -572,8 +560,6 @@ abstract class AbstractAlbumRepository extends EntityRepository
             // but for the slim version we select only the basic fields, and no joins
     
             $selection = 'tbl.id';
-            
-            
             $selection .= ', tbl.title';
             $useJoins = false;
         }
@@ -584,7 +570,7 @@ abstract class AbstractAlbumRepository extends EntityRepository
     
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select($selection)
-           ->from('MU\ImageModule\Entity\AlbumEntity', 'tbl');
+           ->from($this->mainEntityClass, 'tbl');
     
         if (true === $useJoins) {
             $this->addJoinsToFrom($qb);

@@ -39,15 +39,12 @@
             {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: picture }) }}
         {% endif %}
         
-        {% set hookId = mode != 'create' ? picture.id : null %}
-        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.form_edit', id=hookId) %}
-        {% if hooks is iterable and hooks|length > 0 %}
-            {% for providerArea, hook in hooks if providerArea != 'provider.scribite.ui_hooks.editor' %}
-                <fieldset>
-                    <legend>{{ providerArea }}</legend>
-                    {{ hook }}
-                </fieldset>
-            {% endfor %}
+        {% if formHookTemplates|length > 0 %}
+            <fieldset>
+                {% for hookTemplate in formHookTemplates %}
+                    {{ include(hookTemplate.0, hookTemplate.1, ignore_missing = true) }}
+                {% endfor %}
+            </fieldset>
         {% endif %}
         
         {% if form.moderationSpecificCreator is defined %}
@@ -79,26 +76,38 @@
             </div>
         </div>
         {{ form_end(form) }}
+        {% set hookId = mode != 'create' ? picture.id : null %}
+        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.form_edit', id=hookId) %}
+        {% if hooks is iterable and hooks|length > 0 %}
+            <h3>{{ __('Hooks') }}</h3>
+            {% for providerArea, hook in hooks if providerArea != 'provider.scribite.ui_hooks.editor' %}
+                <h4>{{ providerArea }}</h4>
+                {{ hook }}
+            {% endfor %}
+        {% endif %}
+        
     </div>
 {% endblock %}
 {% block footer %}
     {{ parent() }}
     {% set editImage = '<span class="fa fa-pencil-square-o"></span>' %}
     {% set removeImage = '<span class="fa fa-trash-o"></span>' %}
-    
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        
-        ( function($) {
-            $(document).ready(function() {
-                // initialise auto completion for user fields
-                {% if form.moderationSpecificCreator is defined %}
-                    mUImageInitUserField('muimagemodule_picture_moderationSpecificCreator');
-                {% endif %}
-                mUImageInitEditForm('{{ mode }}', '{% if mode != 'create' %}{{ picture.id }}{% endif %}');
-                mUImageInitUploadField('muimagemodule_picture_imageUpload_imageUpload');
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
+    {% set formInitScript %}
+        <script type="text/javascript">
+        /* <![CDATA[ */
+            
+            ( function($) {
+                $(document).ready(function() {
+                    // initialise auto completion for user fields
+                    {% if form.moderationSpecificCreator is defined %}
+                        initUserLiveSearch('muimagemodule_picture_moderationSpecificCreator');
+                    {% endif %}
+                    mUImageInitEditForm('{{ mode }}', '{% if mode != 'create' %}{{ picture.id }}{% endif %}');
+                    mUImageInitUploadField('muimagemodule_picture_imageUpload_imageUpload');
+                });
+            })(jQuery);
+        /* ]]> */
+        </script>
+    {% endset %}
+    {{ pageAddAsset('footer', formInitScript) }}
 {% endblock %}

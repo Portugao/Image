@@ -15,7 +15,6 @@ namespace MU\ImageModule\Base;
 use Doctrine\DBAL\Connection;
 use RuntimeException;
 use Zikula\Core\AbstractExtensionInstaller;
-use Zikula_Workflow_Util;
 use Zikula\CategoriesModule\Entity\CategoryRegistryEntity;
 
 /**
@@ -40,18 +39,18 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
             $container = $this->container;
             $uploadHelper = new \MU\ImageModule\Helper\UploadHelper($container->get('translator.default'), $container->get('session'), $container->get('logger'), $container->get('zikula_users_module.current_user'), $container->get('zikula_extensions_module.api.variable'), $container->getParameter('datadir'));
             $uploadHelper->checkAndCreateAllUploadFolders();
-        } catch (\Exception $e) {
-            $this->addFlash('error', $e->getMessage());
-            $logger->error('{app}: User {user} could not create upload folders during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'errorMessage' => $e->getMessage()]);
+        } catch (\Exception $exception) {
+            $this->addFlash('error', $exception->getMessage());
+            $logger->error('{app}: User {user} could not create upload folders during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'errorMessage' => $exception->getMessage()]);
         
             return false;
         }
         // create all tables from according entity definitions
         try {
             $this->schemaTool->create($this->listEntityClasses());
-        } catch (\Exception $e) {
-            $this->addFlash('error', $this->__('Doctrine Exception') . ': ' . $e->getMessage());
-            $logger->error('{app}: Could not create the database tables during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'errorMessage' => $e->getMessage()]);
+        } catch (\Exception $exception) {
+            $this->addFlash('error', $this->__('Doctrine Exception') . ': ' . $exception->getMessage());
+            $logger->error('{app}: Could not create the database tables during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'errorMessage' => $exception->getMessage()]);
     
             return false;
         }
@@ -136,29 +135,24 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
             $this->container->get('request_stack'),
             $logger,
             $this->container->get('zikula_users_module.current_user'),
-            $this->container->get('zikula_categories_module.api.category_registry'),
+            $this->container->get('zikula_categories_module.category_registry_repository'),
             $this->container->get('zikula_categories_module.api.category_permission')
         );
-        $categoryGlobal = $this->container->get('zikula_categories_module.api.category')->getCategoryByPath('/__SYSTEM__/Modules/Global');
+        $categoryGlobal = $this->container->get('zikula_categories_module.category_repository')->findOneBy(['name' => 'Global']);
     
         $registry = new CategoryRegistryEntity();
         $registry->setModname('MUImageModule');
         $registry->setEntityname('AlbumEntity');
         $registry->setProperty($categoryHelper->getPrimaryProperty('Album'));
-        if (method_exists($registry, 'setCategory')) { // Core 1.5
-            $registry->setCategory($categoryGlobal);
-       } else { // Core 1.4
-           $registry->setCategory_Id($categoryGlobal['id']);
-       }
- 
+        $registry->setCategory($categoryGlobal);
     
         try {
             $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
             $entityManager->persist($registry);
             $entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->addFlash('error', $this->__f('Error! Could not create a category registry for the %entity% entity.', ['%entity%' => 'album']));
-            $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'albums', 'errorMessage' => $e->getMessage()]);
+            $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'albums', 'errorMessage' => $exception->getMessage()]);
         }
         $categoryRegistryIdsPerEntity['album'] = $registry->getId();
     
@@ -166,23 +160,17 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $registry->setModname('MUImageModule');
         $registry->setEntityname('AvatarEntity');
         $registry->setProperty($categoryHelper->getPrimaryProperty('Avatar'));
-        $registry->setCategory_Id($categoryGlobal['id']);
+        $registry->setCategory($categoryGlobal);
     
         try {
             $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
             $entityManager->persist($registry);
             $entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->addFlash('error', $this->__f('Error! Could not create a category registry for the %entity% entity.', ['%entity%' => 'avatar']));
-            $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'avatars', 'errorMessage' => $e->getMessage()]);
+            $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'avatars', 'errorMessage' => $exception->getMessage()]);
         }
         $categoryRegistryIdsPerEntity['avatar'] = $registry->getId();
-    
-        // create the default data
-        $this->createDefaultData($categoryRegistryIdsPerEntity);
-    
-        // install subscriber hooks
-        $this->hookApi->installSubscriberHooks($this->bundle->getMetaData());
     
         // initialisation successful
         return true;
@@ -212,9 +200,9 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
                 // update the database schema
                 try {
                     $this->schemaTool->update($this->listEntityClasses());
-                } catch (\Exception $e) {
-                    $this->addFlash('error', $this->__('Doctrine Exception') . ': ' . $e->getMessage());
-                    $logger->error('{app}: Could not update the database tables during the upgrade. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'errorMessage' => $e->getMessage()]);
+                } catch (\Exception $exception) {
+                    $this->addFlash('error', $this->__('Doctrine Exception') . ': ' . $exception->getMessage());
+                    $logger->error('{app}: Could not update the database tables during the upgrade. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'errorMessage' => $exception->getMessage()]);
     
                     return false;
                 }
@@ -250,6 +238,9 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
             // update module name in the workflows table
             $this->updateWorkflowsFor14();
         } * /
+    
+        // remove obsolete persisted hooks from the database
+        //$this->hookApi->uninstallSubscriberHooks($this->bundle->getMetaData());
     */
     
         // update successful
@@ -461,41 +452,25 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     {
         $logger = $this->container->get('logger');
     
-        // delete stored object workflows
-        $result = Zikula_Workflow_Util::deleteWorkflowsForModule('MUImageModule');
-        if (false === $result) {
-            $this->addFlash('error', $this->__f('An error was encountered while removing stored object workflows for the %extension% extension.', ['%extension%' => 'MUImageModule']));
-            $logger->error('{app}: Could not remove stored object workflows during uninstallation.', ['app' => 'MUImageModule']);
-    
-            return false;
-        }
-    
         try {
             $this->schemaTool->drop($this->listEntityClasses());
-        } catch (\Exception $e) {
-            $this->addFlash('error', $this->__('Doctrine Exception') . ': ' . $e->getMessage());
-            $logger->error('{app}: Could not remove the database tables during uninstallation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'errorMessage' => $e->getMessage()]);
+        } catch (\Exception $exception) {
+            $this->addFlash('error', $this->__('Doctrine Exception') . ': ' . $exception->getMessage());
+            $logger->error('{app}: Could not remove the database tables during uninstallation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'errorMessage' => $exception->getMessage()]);
     
             return false;
         }
-    
-        // uninstall subscriber hooks
-        $this->hookApi->uninstallSubscriberHooks($this->bundle->getMetaData());
     
         // remove all module vars
         $this->delVars();
     
         // remove category registry entries
-        $categoryRegistryApi = $this->container->get('zikula_categories_module.api.category_registry');
-        // assume that not more than five registries exist
-        for ($i = 1; $i <= 5; $i++) {
-            $categoryRegistryApi->deleteRegistry('MUImageModule');
+        $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
+        $registries = $this->container->get('zikula_categories_module.category_registry_repository')->findBy(['modname' => 'MUImageModule']);
+        foreach ($registries as $registry) {
+            $entityManager->remove($registry);
         }
-    
-        // remove all thumbnails
-        $manager = $this->container->get('systemplugin.imagine.manager');
-        $manager->setModule('MUImageModule');
-        $manager->cleanupModuleThumbs();
+        $entityManager->flush();
     
         // remind user about upload folders not being deleted
         $uploadPath = $this->container->getParameter('datadir') . '/MUImageModule/';
@@ -520,26 +495,5 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $classNames[] = 'MU\ImageModule\Entity\AvatarCategoryEntity';
     
         return $classNames;
-    }
-    
-    /**
-     * Create the default data for MUImageModule.
-     *
-     * @param array $categoryRegistryIdsPerEntity List of category registry ids
-     *
-     * @return void
-     */
-    protected function createDefaultData($categoryRegistryIdsPerEntity)
-    {
-        $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
-        $logger = $this->container->get('logger');
-        $request = $this->container->get('request_stack')->getCurrentRequest();
-        
-        $entityClass = 'MU\ImageModule\Entity\AlbumEntity';
-        $entityManager->getRepository($entityClass)->truncateTable($logger);
-        $entityClass = 'MU\ImageModule\Entity\PictureEntity';
-        $entityManager->getRepository($entityClass)->truncateTable($logger);
-        $entityClass = 'MU\ImageModule\Entity\AvatarEntity';
-        $entityManager->getRepository($entityClass)->truncateTable($logger);
     }
 }

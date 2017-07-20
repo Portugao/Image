@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Zikula\Bundle\HookBundle\Category\FormAwareCategory;
+use Zikula\Bundle\HookBundle\Category\UiHooksCategory;
 use Zikula\Component\SortableColumns\Column;
 use Zikula\Component\SortableColumns\SortableColumns;
 use Zikula\Core\Controller\AbstractController;
@@ -134,6 +136,8 @@ abstract class AbstractAlbumController extends AbstractController
         $controllerHelper = $this->get('mu_image_module.controller_helper');
         $viewHelper = $this->get('mu_image_module.view_helper');
         
+        $request->query->set('sort', $sort);
+        $request->query->set('sortdir', $sortdir);
         $request->query->set('pos', $pos);
         
         $sortableColumns = new SortableColumns($this->get('router'), 'muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'view', 'sort', 'sortdir');
@@ -161,9 +165,6 @@ abstract class AbstractAlbumController extends AbstractController
             $templateParameters['items'] = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($templateParameters['items']);
         }
         
-        foreach ($templateParameters['items'] as $k => $entity) {
-            $entity->initWorkflow();
-        }
         
         // fetch and return the appropriate template
         return $viewHelper->processTemplate($objectType, 'view', $templateParameters);
@@ -221,7 +222,6 @@ abstract class AbstractAlbumController extends AbstractController
             throw new AccessDeniedException();
         }
         
-        $album->initWorkflow();
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : '',
             $objectType => $album
@@ -358,8 +358,6 @@ abstract class AbstractAlbumController extends AbstractController
         $logger = $this->get('logger');
         $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'album', 'id' => $album->getKey()];
         
-        $album->initWorkflow();
-        
         // determine available workflow actions
         $workflowHelper = $this->get('mu_image_module.workflow_helper');
         $actions = $workflowHelper->getActionsForObject($album);
@@ -389,14 +387,21 @@ abstract class AbstractAlbumController extends AbstractController
             return $this->redirectToRoute($redirectRoute);
         }
         
-        $form = $this->createForm('MU\ImageModule\Form\DeleteEntityType', $album);
+        $form = $this->createForm('Zikula\Bundle\FormExtensionBundle\Form\Type\DeletionType', $album);
+        $hookHelper = $this->get('mu_image_module.hook_helper');
+        
+        // Call form aware display hooks
+        $formHook = $hookHelper->callFormDisplayHooks($form, $album, FormAwareCategory::TYPE_DELETE);
         
         if ($form->handleRequest($request)->isValid()) {
             if ($form->get('delete')->isClicked()) {
-                $hookHelper = $this->get('mu_image_module.hook_helper');
-                // Let any hooks perform additional validation actions
-                $validationHooksPassed = $hookHelper->callValidationHooks($album, 'validate_delete');
-                if ($validationHooksPassed) {
+                // Let any ui hooks perform additional validation actions
+                $validationErrors = $hookHelper->callValidationHooks($album, UiHooksCategory::TYPE_VALIDATE_DELETE);
+                if (count($validationErrors) > 0) {
+                    foreach ($validationErrors as $message) {
+                        $this->addFlash('error', $message);
+                    }
+                } else {
                     // execute the workflow action
                     $success = $workflowHelper->executeAction($album, $deleteActionId);
                     if ($success) {
@@ -404,8 +409,11 @@ abstract class AbstractAlbumController extends AbstractController
                         $logger->notice('{app}: User {user} deleted the {entity} with id {id}.', $logArgs);
                     }
                     
-                    // Let any hooks know that we have deleted the album
-                    $hookHelper->callProcessHooks($album, 'process_delete', null);
+                    // Call form aware processing hooks
+                    $hookHelper->callFormProcessHooks($form, $album, FormAwareCategory::TYPE_PROCESS_DELETE);
+                    
+                    // Let any ui hooks know that we have deleted the album
+                    $hookHelper->callProcessHooks($album, UiHooksCategory::TYPE_PROCESS_DELETE);
                     
                     return $this->redirectToRoute($redirectRoute);
                 }
@@ -419,7 +427,8 @@ abstract class AbstractAlbumController extends AbstractController
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : '',
             'deleteForm' => $form->createView(),
-            $objectType => $album
+            $objectType => $album,
+            'formHookTemplates' => $formHook->getTemplates()
         ];
         
         $controllerHelper = $this->get('mu_image_module.controller_helper');
@@ -492,7 +501,6 @@ abstract class AbstractAlbumController extends AbstractController
             if (null === $entity) {
                 continue;
             }
-            $entity->initWorkflow();
         
             // check if $action can be applied to this entity (may depend on it's current workflow state)
             $allowedActions = $workflowHelper->getActionsForObject($entity);
@@ -502,10 +510,13 @@ abstract class AbstractAlbumController extends AbstractController
                 continue;
             }
         
-            // Let any hooks perform additional validation actions
-            $hookType = $action == 'delete' ? 'validate_delete' : 'validate_edit';
-            $validationHooksPassed = $hookHelper->callValidationHooks($entity, $hookType);
-            if (!$validationHooksPassed) {
+            // Let any ui hooks perform additional validation actions
+            $hookType = $action == 'delete' ? UiHooksCategory::TYPE_VALIDATE_DELETE : UiHooksCategory::TYPE_VALIDATE_EDIT;
+            $validationErrors = $hookHelper->callValidationHooks($entity, $hookType);
+            if (count($validationErrors) > 0) {
+                foreach ($validationErrors as $message) {
+                    $this->addFlash('error', $message);
+                }
                 continue;
             }
         
@@ -513,9 +524,9 @@ abstract class AbstractAlbumController extends AbstractController
             try {
                 // execute the workflow action
                 $success = $workflowHelper->executeAction($entity, $action);
-            } catch(\Exception $e) {
-                $this->addFlash('error', $this->__f('Sorry, but an error occured during the %action% action.', ['%action%' => $action]) . '  ' . $e->getMessage());
-                $logger->error('{app}: User {user} tried to execute the {action} workflow action for the {entity} with id {id}, but failed. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'album', 'id' => $itemId, 'errorMessage' => $e->getMessage()]);
+            } catch (\Exception $exception) {
+                $this->addFlash('error', $this->__f('Sorry, but an error occured during the %action% action.', ['%action%' => $action]) . '  ' . $exception->getMessage());
+                $logger->error('{app}: User {user} tried to execute the {action} workflow action for the {entity} with id {id}, but failed. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'album', 'id' => $itemId, 'errorMessage' => $exception->getMessage()]);
             }
         
             if (!$success) {
@@ -530,8 +541,8 @@ abstract class AbstractAlbumController extends AbstractController
                 $logger->notice('{app}: User {user} executed the {action} workflow action for the {entity} with id {id}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'album', 'id' => $itemId]);
             }
         
-            // Let any hooks know that we have updated or deleted an item
-            $hookType = $action == 'delete' ? 'process_delete' : 'process_edit';
+            // Let any ui hooks know that we have updated or deleted an item
+            $hookType = $action == 'delete' ? UiHooksCategory::TYPE_PROCESS_DELETE : UiHooksCategory::TYPE_PROCESS_EDIT;
             $url = null;
             if ($action != 'delete') {
                 $urlArgs = $entity->createUrlArgs();

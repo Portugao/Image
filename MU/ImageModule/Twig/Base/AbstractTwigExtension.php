@@ -15,9 +15,7 @@ namespace MU\ImageModule\Twig\Base;
 use Twig_Extension;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
-use Zikula\ExtensionsModule\Api\VariableApi;
-use Zikula\UsersModule\Constant as UsersConstant;
-use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use MU\ImageModule\Helper\ListEntriesHelper;
 use MU\ImageModule\Helper\EntityDisplayHelper;
 use MU\ImageModule\Helper\WorkflowHelper;
@@ -30,14 +28,9 @@ abstract class AbstractTwigExtension extends Twig_Extension
     use TranslatorTrait;
     
     /**
-     * @var VariableApi
+     * @var VariableApiInterface
      */
     protected $variableApi;
-    
-    /**
-     * @var UserRepositoryInterface
-     */
-    protected $userRepository;
     
     /**
      * @var EntityDisplayHelper
@@ -58,23 +51,20 @@ abstract class AbstractTwigExtension extends Twig_Extension
      * TwigExtension constructor.
      *
      * @param TranslatorInterface $translator     Translator service instance
-     * @param VariableApi         $variableApi    VariableApi service instance
-     * @param UserRepositoryInterface $userRepository UserRepository service instance
+     * @param VariableApiInterface $variableApi    VariableApi service instance
      * @param EntityDisplayHelper $entityDisplayHelper EntityDisplayHelper service instance
      * @param WorkflowHelper      $workflowHelper WorkflowHelper service instance
      * @param ListEntriesHelper   $listHelper     ListEntriesHelper service instance
      */
     public function __construct(
         TranslatorInterface $translator,
-        VariableApi $variableApi,
-        UserRepositoryInterface $userRepository,
+        VariableApiInterface $variableApi,
         EntityDisplayHelper $entityDisplayHelper,
         WorkflowHelper $workflowHelper,
         ListEntriesHelper $listHelper)
     {
         $this->setTranslator($translator);
         $this->variableApi = $variableApi;
-        $this->userRepository = $userRepository;
         $this->entityDisplayHelper = $entityDisplayHelper;
         $this->workflowHelper = $workflowHelper;
         $this->listHelper = $listHelper;
@@ -93,21 +83,20 @@ abstract class AbstractTwigExtension extends Twig_Extension
     /**
      * Returns a list of custom Twig functions.
      *
-     * @return array
+     * @return \Twig_SimpleFunction[]
      */
     public function getFunctions()
     {
         return [
             new \Twig_SimpleFunction('muimagemodule_objectTypeSelector', [$this, 'getObjectTypeSelector']),
-            new \Twig_SimpleFunction('muimagemodule_templateSelector', [$this, 'getTemplateSelector']),
-            new \Twig_SimpleFunction('muimagemodule_userAvatar', [$this, 'getUserAvatar'], ['is_safe' => ['html']])
+            new \Twig_SimpleFunction('muimagemodule_templateSelector', [$this, 'getTemplateSelector'])
         ];
     }
     
     /**
      * Returns a list of custom Twig filters.
      *
-     * @return array
+     * @return \Twig_SimpleFilter[]
      */
     public function getFilters()
     {
@@ -304,57 +293,5 @@ abstract class AbstractTwigExtension extends Twig_Extension
     public function getFormattedEntityTitle($entity)
     {
         return $this->entityDisplayHelper->getFormattedTitle($entity);
-    }
-    
-    /**
-     * Displays the avatar of a given user.
-     *
-     * @param int|string $uid    The user's id or name
-     * @param int        $width  Image width (optional)
-     * @param int        $height Image height (optional)
-     * @param int        $size   Gravatar size (optional)
-     * @param string     $rating Gravatar self-rating [g|pg|r|x] see: http://en.gravatar.com/site/implement/images/ (optional)
-     *
-     * @return string
-     */
-    public function getUserAvatar($uid = 0, $width = 0, $height = 0, $size = 0, $rating = '')
-    {
-        if (!is_numeric($uid)) {
-            $limit = 1;
-            $filter = [
-                'activated' => ['operator' => 'notIn', 'operand' => [
-                    UsersConstant::ACTIVATED_PENDING_REG,
-                    UsersConstant::ACTIVATED_PENDING_DELETE
-                ]],
-                'uname' => ['operator' => '=', 'operand' => $uid]
-            ];
-            $results = $this->userRepository->query($filter, [], $limit);
-            if (!count($results)) {
-                return '';
-            }
-    
-            $uid = $results->getIterator()->getArrayCopy()[0]->getUid();
-        }
-        $params = ['uid' => $uid];
-        if ($width > 0) {
-            $params['width'] = $width;
-        }
-        if ($height > 0) {
-            $params['height'] = $height;
-        }
-        if ($size > 0) {
-            $params['size'] = $size;
-        }
-        if ($rating != '') {
-            $params['rating'] = $rating;
-        }
-    
-        // load avatar plugin
-        include_once 'lib/legacy/viewplugins/function.useravatar.php';
-    
-        $view = \Zikula_View::getInstance('MUImageModule', false);
-        $result = smarty_function_useravatar($params, $view);
-    
-        return $result;
     }
 }

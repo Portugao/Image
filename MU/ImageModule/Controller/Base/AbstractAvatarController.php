@@ -133,6 +133,8 @@ abstract class AbstractAvatarController extends AbstractController
         $controllerHelper = $this->get('mu_image_module.controller_helper');
         $viewHelper = $this->get('mu_image_module.view_helper');
         
+        $request->query->set('sort', $sort);
+        $request->query->set('sortdir', $sortdir);
         $request->query->set('pos', $pos);
         
         $sortableColumns = new SortableColumns($this->get('router'), 'muimagemodule_avatar_' . ($isAdmin ? 'admin' : '') . 'view', 'sort', 'sortdir');
@@ -155,9 +157,6 @@ abstract class AbstractAvatarController extends AbstractController
             $templateParameters['items'] = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($templateParameters['items']);
         }
         
-        foreach ($templateParameters['items'] as $k => $entity) {
-            $entity->initWorkflow();
-        }
         
         // fetch and return the appropriate template
         return $viewHelper->processTemplate($objectType, 'view', $templateParameters);
@@ -215,7 +214,6 @@ abstract class AbstractAvatarController extends AbstractController
             throw new AccessDeniedException();
         }
         
-        $avatar->initWorkflow();
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : '',
             $objectType => $avatar
@@ -352,8 +350,6 @@ abstract class AbstractAvatarController extends AbstractController
         $logger = $this->get('logger');
         $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'avatar', 'id' => $avatar->getKey()];
         
-        $avatar->initWorkflow();
-        
         // determine available workflow actions
         $workflowHelper = $this->get('mu_image_module.workflow_helper');
         $actions = $workflowHelper->getActionsForObject($avatar);
@@ -383,7 +379,7 @@ abstract class AbstractAvatarController extends AbstractController
             return $this->redirectToRoute($redirectRoute);
         }
         
-        $form = $this->createForm('MU\ImageModule\Form\DeleteEntityType', $avatar);
+        $form = $this->createForm('Zikula\Bundle\FormExtensionBundle\Form\Type\DeletionType', $avatar);
         
         if ($form->handleRequest($request)->isValid()) {
             if ($form->get('delete')->isClicked()) {
@@ -477,7 +473,6 @@ abstract class AbstractAvatarController extends AbstractController
             if (null === $entity) {
                 continue;
             }
-            $entity->initWorkflow();
         
             // check if $action can be applied to this entity (may depend on it's current workflow state)
             $allowedActions = $workflowHelper->getActionsForObject($entity);
@@ -491,9 +486,9 @@ abstract class AbstractAvatarController extends AbstractController
             try {
                 // execute the workflow action
                 $success = $workflowHelper->executeAction($entity, $action);
-            } catch(\Exception $e) {
-                $this->addFlash('error', $this->__f('Sorry, but an error occured during the %action% action.', ['%action%' => $action]) . '  ' . $e->getMessage());
-                $logger->error('{app}: User {user} tried to execute the {action} workflow action for the {entity} with id {id}, but failed. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'avatar', 'id' => $itemId, 'errorMessage' => $e->getMessage()]);
+            } catch (\Exception $exception) {
+                $this->addFlash('error', $this->__f('Sorry, but an error occured during the %action% action.', ['%action%' => $action]) . '  ' . $exception->getMessage());
+                $logger->error('{app}: User {user} tried to execute the {action} workflow action for the {entity} with id {id}, but failed. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'action' => $action, 'entity' => 'avatar', 'id' => $itemId, 'errorMessage' => $exception->getMessage()]);
             }
         
             if (!$success) {

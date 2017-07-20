@@ -15,6 +15,7 @@ namespace MU\ImageModule\Block\Base;
 use Zikula\BlocksModule\AbstractBlockHandler;
 use Zikula\Core\AbstractBundle;
 use MU\ImageModule\Helper\FeatureActivationHelper;
+use MU\ImageModule\Block\Form\Type\ItemListBlockType;
 
 /**
  * Generic item list block base class.
@@ -96,7 +97,12 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         $currentPage = 1;
         $resultsPerPage = $properties['amount'];
         $query = $repository->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
-        list($entities, $objectCount) = $repository->retrieveCollectionResult($query, true);
+        try {
+            list($entities, $objectCount) = $repository->retrieveCollectionResult($query, true);
+        } catch (\Exception $exception) {
+            $entities = [];
+            $objectCount = 0;
+        }
     
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
             $entities = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($entities);
@@ -166,7 +172,7 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
      */
     public function getFormClassName()
     {
-        return 'MU\ImageModule\Block\Form\Type\ItemListBlockType';
+        return ItemListBlockType::class;
     }
     
     /**
@@ -181,10 +187,13 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         $request = $this->get('request_stack')->getCurrentRequest();
         if ($request->attributes->has('blockEntity')) {
             $blockEntity = $request->attributes->get('blockEntity');
-            if (is_object($blockEntity) && method_exists($blockEntity, 'getContent')) {
-                $blockProperties = $blockEntity->getContent();
+            if (is_object($blockEntity) && method_exists($blockEntity, 'getProperties')) {
+                $blockProperties = $blockEntity->getProperties();
                 if (isset($blockProperties['objectType'])) {
                     $objectType = $blockProperties['objectType'];
+                } else {
+                    // set default options for new block creation
+                    $blockEntity->setProperties($this->getDefaults());
                 }
             }
         }
@@ -214,7 +223,7 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
      */
     protected function getDefaults()
     {
-        $defaults = [
+        return [
             'objectType' => 'album',
             'sorting' => 'default',
             'amount' => 5,
@@ -222,8 +231,6 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
             'customTemplate' => '',
             'filter' => ''
         ];
-    
-        return $defaults;
     }
     
     

@@ -15,11 +15,11 @@ namespace MU\ImageModule\Helper\Base;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Zikula\UsersModule\Api\CurrentUserApi;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+use Zikula\UsersModule\Constant as UsersConstant;
 use MU\ImageModule\Entity\AlbumEntity;
 use MU\ImageModule\Entity\PictureEntity;
 use MU\ImageModule\Entity\AvatarEntity;
-use MU\ImageModule\Entity\Factory\ImageFactory;
 use MU\ImageModule\Helper\CategoryHelper;
 
 /**
@@ -33,7 +33,7 @@ abstract class AbstractCollectionFilterHelper
     protected $request;
 
     /**
-     * @var CurrentUserApi
+     * @var CurrentUserApiInterface
      */
     protected $currentUserApi;
 
@@ -51,13 +51,13 @@ abstract class AbstractCollectionFilterHelper
      * CollectionFilterHelper constructor.
      *
      * @param RequestStack   $requestStack        RequestStack service instance
-     * @param CurrentUserApi        $currentUserApi        CurrentUserApi service instance
+     * @param CurrentUserApiInterface $currentUserApi        CurrentUserApi service instance
      * @param CategoryHelper $categoryHelper      CategoryHelper service instance
      * @param bool           $showOnlyOwnEntries  Fallback value to determine whether only own entries should be selected or not
      */
     public function __construct(
         RequestStack $requestStack,
-        CurrentUserApi $currentUserApi,
+        CurrentUserApiInterface $currentUserApi,
         CategoryHelper $categoryHelper,
         $showOnlyOwnEntries
     ) {
@@ -153,7 +153,7 @@ abstract class AbstractCollectionFilterHelper
     protected function getViewQuickNavParametersForAlbum($context = '', $args = [])
     {
         $parameters = [];
-        if (!is_object($this->request)) {
+        if (null === $this->request) {
             return $parameters;
         }
     
@@ -179,7 +179,7 @@ abstract class AbstractCollectionFilterHelper
     protected function getViewQuickNavParametersForPicture($context = '', $args = [])
     {
         $parameters = [];
-        if (!is_object($this->request)) {
+        if (null === $this->request) {
             return $parameters;
         }
     
@@ -202,7 +202,7 @@ abstract class AbstractCollectionFilterHelper
     protected function getViewQuickNavParametersForAvatar($context = '', $args = [])
     {
         $parameters = [];
-        if (!is_object($this->request)) {
+        if (null === $this->request) {
             return $parameters;
         }
     
@@ -224,6 +224,9 @@ abstract class AbstractCollectionFilterHelper
      */
     protected function addCommonViewFiltersForAlbum(QueryBuilder $qb)
     {
+        if (null === $this->request) {
+            return $qb;
+        }
         $routeName = $this->request->get('_route');
         if (false !== strpos($routeName, 'edit')) {
             return $qb;
@@ -287,6 +290,9 @@ abstract class AbstractCollectionFilterHelper
      */
     protected function addCommonViewFiltersForPicture(QueryBuilder $qb)
     {
+        if (null === $this->request) {
+            return $qb;
+        }
         $routeName = $this->request->get('_route');
         if (false !== strpos($routeName, 'edit')) {
             return $qb;
@@ -337,6 +343,9 @@ abstract class AbstractCollectionFilterHelper
      */
     protected function addCommonViewFiltersForAvatar(QueryBuilder $qb)
     {
+        if (null === $this->request) {
+            return $qb;
+        }
         $routeName = $this->request->get('_route');
         if (false !== strpos($routeName, 'edit')) {
             return $qb;
@@ -394,6 +403,9 @@ abstract class AbstractCollectionFilterHelper
      */
     protected function applyDefaultFiltersForAlbum(QueryBuilder $qb, $parameters = [])
     {
+        if (null === $this->request) {
+            return $qb;
+        }
         $routeName = $this->request->get('_route');
         $isAdminArea = false !== strpos($routeName, 'muimagemodule_album_admin');
         if ($isAdminArea) {
@@ -419,6 +431,9 @@ abstract class AbstractCollectionFilterHelper
      */
     protected function applyDefaultFiltersForPicture(QueryBuilder $qb, $parameters = [])
     {
+        if (null === $this->request) {
+            return $qb;
+        }
         $routeName = $this->request->get('_route');
         $isAdminArea = false !== strpos($routeName, 'muimagemodule_picture_admin');
         if ($isAdminArea) {
@@ -444,6 +459,9 @@ abstract class AbstractCollectionFilterHelper
      */
     protected function applyDefaultFiltersForAvatar(QueryBuilder $qb, $parameters = [])
     {
+        if (null === $this->request) {
+            return $qb;
+        }
         $routeName = $this->request->get('_route');
         $isAdminArea = false !== strpos($routeName, 'muimagemodule_avatar_admin');
         if ($isAdminArea) {
@@ -536,7 +554,7 @@ abstract class AbstractCollectionFilterHelper
     public function addCreatorFilter(QueryBuilder $qb, $userId = null)
     {
         if (null === $userId) {
-            $userId = $this->currentUserApi->isLoggedIn() ? $this->currentUserApi->get('uid') : 1;
+            $userId = $this->currentUserApi->isLoggedIn() ? $this->currentUserApi->get('uid') : UsersConstant::USER_ID_ANONYMOUS;
         }
     
         if (is_array($userId)) {

@@ -13,6 +13,8 @@
 namespace MU\ImageModule\Form\Type\Field\Base;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -96,7 +98,7 @@ abstract class AbstractUploadType extends AbstractType
         }
         $fileOptions['attr']['class'] = 'validate-upload';
 
-        $builder->add($fieldName, 'Symfony\Component\Form\Extension\Core\Type\FileType', $fileOptions);
+        $builder->add($fieldName, FileType::class, $fileOptions);
         $uploadFileTransformer = new UploadFileTransformer($this, $this->requestStack, $this->uploadHelper, $fieldName);
         $builder->get($fieldName)->addModelTransformer($uploadFileTransformer);
 
@@ -104,7 +106,7 @@ abstract class AbstractUploadType extends AbstractType
             return;
         }
 
-        $builder->add($fieldName . 'DeleteFile', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+        $builder->add($fieldName . 'DeleteFile', CheckboxType::class, [
             'mapped' => false,
             'label' => $this->translator->__('Delete existing file'),
             'required' => false,

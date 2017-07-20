@@ -6,7 +6,6 @@ services:
             - "@service_container"
             - "@event_dispatcher"
             - "@logger"
-            - "@translator.default"
         tags:
             - { name: doctrine.event_subscriber }
     
@@ -72,6 +71,13 @@ services:
     
     mu_image_module.thirdparty_listener:
         class: MU\ImageModule\Listener\ThirdPartyListener
+        tags:
+            - { name: kernel.event_subscriber }
+    
+    mu_image_module.workflow_events_listener:
+        class: MU\ImageModule\Listener\WorkflowEventsListener
+        arguments:
+            - "@zikula_permissions_module.api.permission"
         tags:
             - { name: kernel.event_subscriber }
     

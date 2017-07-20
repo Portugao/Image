@@ -1,0 +1,43 @@
+services:
+    mu_image_module.hook_subscriber.filter_hooks.albums:
+        class: MU\ImageModule\HookSubscriber\AlbumFilterHooksSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.muimagemodule.filter_hooks.albums' }
+
+    mu_image_module.hook_subscriber.form_aware_hook.albums:
+        class: MU\ImageModule\HookSubscriber\AlbumFormAwareHookSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.muimagemodule.form_aware_hook.albums' }
+
+    mu_image_module.hook_subscriber.ui_hooks.albums:
+        class: MU\ImageModule\HookSubscriber\AlbumUiHooksSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.muimagemodule.ui_hooks.albums' }
+
+    mu_image_module.hook_subscriber.filter_hooks.pictures:
+        class: MU\ImageModule\HookSubscriber\PictureFilterHooksSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.muimagemodule.filter_hooks.pictures' }
+
+    mu_image_module.hook_subscriber.form_aware_hook.pictures:
+        class: MU\ImageModule\HookSubscriber\PictureFormAwareHookSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.muimagemodule.form_aware_hook.pictures' }
+
+    mu_image_module.hook_subscriber.ui_hooks.pictures:
+        class: MU\ImageModule\HookSubscriber\PictureUiHooksSubscriber
+        arguments:
+            - "@translator.default"
+        tags:
+            - { name: zikula.hook_subscriber, areaName: 'subscriber.muimagemodule.ui_hooks.pictures' }
+

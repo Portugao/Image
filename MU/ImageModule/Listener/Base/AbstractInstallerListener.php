@@ -14,7 +14,6 @@ namespace MU\ImageModule\Listener\Base;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Zikula\Core\CoreEvents;
-use Zikula\Core\Event\GenericEvent;
 use Zikula\Core\Event\ModuleStateEvent;
 
 /**
@@ -33,8 +32,7 @@ abstract class AbstractInstallerListener implements EventSubscriberInterface
             CoreEvents::MODULE_UPGRADE             => ['moduleUpgraded', 5],
             CoreEvents::MODULE_ENABLE              => ['moduleEnabled', 5],
             CoreEvents::MODULE_DISABLE             => ['moduleDisabled', 5],
-            CoreEvents::MODULE_REMOVE              => ['moduleRemoved', 5],
-            'installer.subscriberarea.uninstalled' => ['subscriberAreaUninstalled', 5]
+            CoreEvents::MODULE_REMOVE              => ['moduleRemoved', 5]
         ];
     }
     
@@ -44,6 +42,24 @@ abstract class AbstractInstallerListener implements EventSubscriberInterface
      * Called after a module has been successfully installed.
      * The event allows accessing the module bundle and the extension
      * information array using `$event->getModule()` and `$event->getModInfo()`.
+     *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
      *
      * @param ModuleStateEvent $event The event instance
      */
@@ -58,6 +74,24 @@ abstract class AbstractInstallerListener implements EventSubscriberInterface
      * The event allows accessing the module bundle and the extension
      * information array using `$event->getModule()` and `$event->getModInfo()`.
      *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
+     *
      * @param ModuleStateEvent $event The event instance
      */
     public function modulePostInstalled(ModuleStateEvent $event)
@@ -70,6 +104,24 @@ abstract class AbstractInstallerListener implements EventSubscriberInterface
      * Called after a module has been successfully upgraded.
      * The event allows accessing the module bundle and the extension
      * information array using `$event->getModule()` and `$event->getModInfo()`.
+     *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
      *
      * @param ModuleStateEvent $event The event instance
      */
@@ -84,6 +136,24 @@ abstract class AbstractInstallerListener implements EventSubscriberInterface
      * The event allows accessing the module bundle and the extension
      * information array using `$event->getModule()` and `$event->getModInfo()`.
      *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
+     *
      * @param ModuleStateEvent $event The event instance
      */
     public function moduleEnabled(ModuleStateEvent $event)
@@ -96,6 +166,24 @@ abstract class AbstractInstallerListener implements EventSubscriberInterface
      * Called after a module has been successfully disabled.
      * The event allows accessing the module bundle and the extension
      * information array using `$event->getModule()` and `$event->getModInfo()`.
+     *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
      *
      * @param ModuleStateEvent $event The event instance
      */
@@ -110,21 +198,27 @@ abstract class AbstractInstallerListener implements EventSubscriberInterface
      * The event allows accessing the module bundle and the extension
      * information array using `$event->getModule()` and `$event->getModInfo()`.
      *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
+     *
      * @param ModuleStateEvent $event The event instance
      */
     public function moduleRemoved(ModuleStateEvent $event)
-    {
-    }
-    
-    /**
-     * Listener for the `installer.subscriberarea.uninstalled` event.
-     *
-     * Called after a hook subscriber area has been unregistered.
-     * Receives args['areaid'] as the areaId. Use this to remove orphan data associated with this area.
-     *
-     * @param GenericEvent $event The event instance
-     */
-    public function subscriberAreaUninstalled(GenericEvent $event)
     {
     }
 }

@@ -16,7 +16,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Event\GenericEvent;
-use Zikula\UsersModule\Api\CurrentUserApi;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\UserEvents;
 use MU\ImageModule\Entity\Factory\EntityFactory;
 
@@ -36,7 +37,7 @@ abstract class AbstractUserListener implements EventSubscriberInterface
     protected $entityFactory;
     
     /**
-     * @var CurrentUserApi
+     * @var CurrentUserApiInterface
      */
     protected $currentUserApi;
     
@@ -50,7 +51,7 @@ abstract class AbstractUserListener implements EventSubscriberInterface
      *
      * @param TranslatorInterface $translator    Translator service instance
      * @param EntityFactory       $entityFactory EntityFactory service instance
-     * @param CurrentUserApi      $currentUserApi CurrentUserApi service instance
+     * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
      * @param LoggerInterface     $logger        Logger service instance
      *
      * @return void
@@ -58,7 +59,7 @@ abstract class AbstractUserListener implements EventSubscriberInterface
     public function __construct(
         TranslatorInterface $translator,
         EntityFactory $entityFactory,
-        CurrentUserApi $currentUserApi,
+        CurrentUserApiInterface $currentUserApi,
         LoggerInterface $logger
     ) {
         $this->translator = $translator;
@@ -88,6 +89,24 @@ abstract class AbstractUserListener implements EventSubscriberInterface
      * This is a storage-level event, not a UI event. It should not be used for UI-level actions such as redirects.
      * The subject of the event is set to the user record that was created.
      *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
+     *
      * @param GenericEvent $event The event instance
      */
     public function create(GenericEvent $event)
@@ -102,6 +121,24 @@ abstract class AbstractUserListener implements EventSubscriberInterface
      * This is a storage-level event, not a UI event. It should not be used for UI-level actions such as redirects.
      * The subject of the event is set to the user record, with the updated values.
      *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
+     *
      * @param GenericEvent $event The event instance
      */
     public function update(GenericEvent $event)
@@ -114,6 +151,24 @@ abstract class AbstractUserListener implements EventSubscriberInterface
      * Occurs after the deletion of a user account. Subject is $userId.
      * This is a storage-level event, not a UI event. It should not be used for UI-level actions such as redirects.
      *
+     * You can access general data available in the event.
+     *
+     * The event name:
+     *     `echo 'Event: ' . $event->getName();`
+     *
+     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
+     * If a listener should only be active for the master request,
+     * be sure to check that at the beginning of your method.
+     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+     *         return;
+     *     }`
+     *
+     * The kernel instance handling the current request:
+     *     `$kernel = $event->getKernel();`
+     *
+     * The currently handled request:
+     *     `$request = $event->getRequest();`
+     *
      * @param GenericEvent $event The event instance
      */
     public function delete(GenericEvent $event)
@@ -122,31 +177,31 @@ abstract class AbstractUserListener implements EventSubscriberInterface
     
         
         $repo = $this->entityFactory->getRepository('album');
-        // set creator to admin (2) for all albums created by this user
-        $repo->updateCreator($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
+        // set creator to admin (UsersConstant::USER_ID_ADMIN) for all albums created by this user
+        $repo->updateCreator($userId, UsersConstant::USER_ID_ADMIN, $this->translator, $this->logger, $this->currentUserApi);
         
-        // set last editor to admin (2) for all albums updated by this user
-        $repo->updateLastEditor($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
+        // set last editor to admin (UsersConstant::USER_ID_ADMIN) for all albums updated by this user
+        $repo->updateLastEditor($userId, UsersConstant::USER_ID_ADMIN, $this->translator, $this->logger, $this->currentUserApi);
         
         $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entities' => 'albums'];
         $this->logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);
         
         $repo = $this->entityFactory->getRepository('picture');
-        // set creator to admin (2) for all pictures created by this user
-        $repo->updateCreator($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
+        // set creator to admin (UsersConstant::USER_ID_ADMIN) for all pictures created by this user
+        $repo->updateCreator($userId, UsersConstant::USER_ID_ADMIN, $this->translator, $this->logger, $this->currentUserApi);
         
-        // set last editor to admin (2) for all pictures updated by this user
-        $repo->updateLastEditor($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
+        // set last editor to admin (UsersConstant::USER_ID_ADMIN) for all pictures updated by this user
+        $repo->updateLastEditor($userId, UsersConstant::USER_ID_ADMIN, $this->translator, $this->logger, $this->currentUserApi);
         
         $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entities' => 'pictures'];
         $this->logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);
         
         $repo = $this->entityFactory->getRepository('avatar');
-        // set creator to admin (2) for all avatars created by this user
-        $repo->updateCreator($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
+        // set creator to admin (UsersConstant::USER_ID_ADMIN) for all avatars created by this user
+        $repo->updateCreator($userId, UsersConstant::USER_ID_ADMIN, $this->translator, $this->logger, $this->currentUserApi);
         
-        // set last editor to admin (2) for all avatars updated by this user
-        $repo->updateLastEditor($userId, 2, $this->translator, $this->logger, $this->currentUserApi);
+        // set last editor to admin (UsersConstant::USER_ID_ADMIN) for all avatars updated by this user
+        $repo->updateLastEditor($userId, UsersConstant::USER_ID_ADMIN, $this->translator, $this->logger, $this->currentUserApi);
         
         $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entities' => 'avatars'];
         $this->logger->notice('{app}: User {user} has been deleted, so we deleted/updated corresponding {entities}, too.', $logArgs);

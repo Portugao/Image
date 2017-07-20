@@ -18,8 +18,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Environment;
 use Zikula\Core\Response\PlainResponse;
-use Zikula\ExtensionsModule\Api\VariableApi;
-use Zikula\PermissionsModule\Api\PermissionApi;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\ThemeModule\Engine\ParameterBag;
 use MU\ImageModule\Helper\ControllerHelper;
 
@@ -44,12 +44,12 @@ abstract class AbstractViewHelper
     protected $request;
 
     /**
-     * @var PermissionApi
+     * @var PermissionApiInterface
      */
     protected $permissionApi;
 
     /**
-     * @var VariableApi
+     * @var VariableApiInterface
      */
     protected $variableApi;
 
@@ -69,8 +69,8 @@ abstract class AbstractViewHelper
      * @param Twig_Environment $twig             Twig service instance
      * @param FilesystemLoader $twigLoader       Twig loader service instance
      * @param RequestStack     $requestStack     RequestStack service instance
-     * @param PermissionApi    $permissionApi    PermissionApi service instance
-     * @param VariableApi      $variableApi      VariableApi service instance
+     * @param PermissionApiInterface    $permissionApi    PermissionApi service instance
+     * @param VariableApiInterface $variableApi      VariableApi service instance
      * @param ParameterBag     $pageVars         ParameterBag for theme page variables
      * @param ControllerHelper $controllerHelper ControllerHelper service instance
      *
@@ -80,8 +80,8 @@ abstract class AbstractViewHelper
         Twig_Environment $twig,
         FilesystemLoader $twigLoader,
         RequestStack $requestStack,
-        PermissionApi $permissionApi,
-        VariableApi $variableApi,
+        PermissionApiInterface $permissionApi,
+        VariableApiInterface $variableApi,
         ParameterBag $pageVars,
         ControllerHelper $controllerHelper
     ) {

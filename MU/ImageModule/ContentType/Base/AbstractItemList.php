@@ -243,7 +243,12 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
         $currentPage = 1;
         $resultsPerPage = isset($this->amount) ? $this->amount : 1;
         $query = $repository->getSelectWherePaginatedQuery($qb, $currentPage, $resultsPerPage);
-        list($entities, $objectCount) = $repository->retrieveCollectionResult($query, true);
+        try {
+            list($entities, $objectCount) = $repository->retrieveCollectionResult($query, true);
+        } catch (\Exception $exception) {
+            $entities = [];
+            $objectCount = 0;
+        }
     
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
             $entities = $categoryHelper->filterEntitiesByPermission($entities);
@@ -355,7 +360,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
             $translator = $this->container->get('translator.default');
             $locale = $this->container->get('request_stack')->getCurrentRequest()->getLocale();
             $categories = [];
-            $categoryApi = $this->container->get('zikula_categories_module.api.category');
+            $categoryRepository = $this->container->get('zikula_categories_module.category_repository');
             foreach ($this->catRegistries as $registryId => $registryCid) {
                 $propName = '';
                 foreach ($this->catProperties as $propertyName => $propertyId) {
@@ -365,8 +370,9 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
                     }
                 }
     
-                //$mainCategory = $categoryApi->getCategoryById($registryCid);
-                $cats = $categoryApi->getSubCategories($registryCid, true, true, false, true, false, null, '', null, 'sort_value');
+                $mainCategory = $categoryRepository->find($registryCid);
+                $queryBuilder = $categoryRepository->getChildrenQueryBuilder($registryCid);
+                $cats = $queryBuilder->getQuery()->execute();
                 $catsForDropdown = [
                     [
                         'value' => '',
@@ -374,7 +380,8 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
                     ]
                 ];
                 foreach ($cats as $category) {
-                    $categoryName = isset($category['display_name'][$locale]) ? $category['display_name'][$locale] : $category['name'];
+                    $indent = str_repeat('--', $category->getLvl() - $mainCategory()->getLvl() - 1);
+                    $categoryName = (!empty($indent) ? '|' : '') . $indent . $category->getName();
                     $catsForDropdown[] = [
                         'value' => $category->getId(),
                         'text' => $categoryName

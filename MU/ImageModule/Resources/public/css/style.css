@@ -80,9 +80,6 @@ div.muimagemodule-relation-rightside {
 div.muimagemodule-autocomplete .ui-autocomplete .suggestion {
     background-image: url("../../../../../../images/icons/extrasmall/tab_right.png");
 }
-div.muimagemodule-autocomplete-user .ui-autocomplete .suggestion {
-    background-image: url("../../../../../../images/icons/extrasmall/user.png");
-}
 div.muimagemodule-autocomplete-with-image .ui-autocomplete .suggestion {
     background-image: url("../../../../../../images/icons/extrasmall/agt_Multimedia.png");
 }

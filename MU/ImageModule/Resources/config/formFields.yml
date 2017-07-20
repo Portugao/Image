@@ -10,10 +10,3 @@ services:
             - "@mu_image_module.upload_helper"
         tags:
             - { name: form.type }
-    
-    mu_image_module.form.type.field.user:
-        class: MU\ImageModule\Form\Type\Field\UserType
-        arguments:
-            - "@zikula_users_module.user_repository"
-        tags:
-            - { name: form.type }

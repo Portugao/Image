@@ -14,12 +14,23 @@ namespace MU\ImageModule\Form\Type\Base;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Zikula\CategoriesModule\Form\Type\CategoriesType;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use MU\ImageModule\Entity\Factory\EntityFactory;
+use Zikula\UsersModule\Form\Type\UserLiveSearchType;
 use MU\ImageModule\Helper\CollectionFilterHelper;
 use MU\ImageModule\Helper\EntityDisplayHelper;
 use MU\ImageModule\Helper\FeatureActivationHelper;
@@ -117,7 +128,7 @@ abstract class AbstractAlbumType extends AbstractType
     public function addEntityFields(FormBuilderInterface $builder, array $options)
     {
         
-        $builder->add('title', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+        $builder->add('title', TextType::class, [
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
             'attr' => [
@@ -128,7 +139,7 @@ abstract class AbstractAlbumType extends AbstractType
             'required' => true,
         ]);
         
-        $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
+        $builder->add('description', TextareaType::class, [
             'label' => $this->__('Description') . ':',
             'help' => $this->__f('Note: this value must not exceed %amount% characters.', ['%amount%' => 2000]),
             'empty_data' => '',
@@ -148,7 +159,7 @@ abstract class AbstractAlbumType extends AbstractType
             $choices[$entry['text']] = $entry['value'];
             $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
         }
-        $builder->add('albumAccess', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('albumAccess', ChoiceType::class, [
             'label' => $this->__('Album access') . ':',
             'empty_data' => '',
             'attr' => [
@@ -163,7 +174,7 @@ abstract class AbstractAlbumType extends AbstractType
             'expanded' => false
         ]);
         
-        $builder->add('passwordAccess', 'Symfony\Component\Form\Extension\Core\Type\PasswordType', [
+        $builder->add('passwordAccess', PasswordType::class, [
             'label' => $this->__('Password access') . ':',
             'empty_data' => '',
             'attr' => [
@@ -174,7 +185,7 @@ abstract class AbstractAlbumType extends AbstractType
             'required' => false,
         ]);
         
-        $builder->add('myFriends', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+        $builder->add('myFriends', TextType::class, [
             'label' => $this->__('My friends') . ':',
             'empty_data' => '',
             'attr' => [
@@ -185,7 +196,7 @@ abstract class AbstractAlbumType extends AbstractType
             'required' => false,
         ]);
         
-        $builder->add('notInFrontend', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+        $builder->add('notInFrontend', CheckboxType::class, [
             'label' => $this->__('Not in frontend') . ':',
             'attr' => [
                 'class' => '',
@@ -194,7 +205,7 @@ abstract class AbstractAlbumType extends AbstractType
             'required' => false,
         ]);
         
-        $builder->add('pos', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+        $builder->add('pos', IntegerType::class, [
             'label' => $this->__('Pos') . ':',
             'empty_data' => '0',
             'attr' => [
@@ -215,7 +226,7 @@ abstract class AbstractAlbumType extends AbstractType
      */
     public function addCategoriesField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
+        $builder->add('categories', CategoriesType::class, [
             'label' => $this->__('Category') . ':',
             'empty_data' => null,
             'attr' => [
@@ -272,7 +283,7 @@ abstract class AbstractAlbumType extends AbstractType
             return;
         }
     
-        $builder->add('moderationSpecificCreator', 'MU\ImageModule\Form\Type\Field\UserType', [
+        $builder->add('moderationSpecificCreator', UserLiveSearchType::class, [
             'mapped' => false,
             'label' => $this->__('Creator') . ':',
             'attr' => [
@@ -284,7 +295,7 @@ abstract class AbstractAlbumType extends AbstractType
             'required' => false,
             'help' => $this->__('Here you can choose a user which will be set as creator')
         ]);
-        $builder->add('moderationSpecificCreationDate', 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', [
+        $builder->add('moderationSpecificCreationDate', DateTimeType::class, [
             'mapped' => false,
             'label' => $this->__('Creation date') . ':',
             'attr' => [
@@ -311,7 +322,7 @@ abstract class AbstractAlbumType extends AbstractType
         if ($options['mode'] != 'create') {
             return;
         }
-        $builder->add('repeatCreation', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+        $builder->add('repeatCreation', CheckboxType::class, [
             'mapped' => false,
             'label' => $this->__('Create another item after save'),
             'required' => false
@@ -327,16 +338,15 @@ abstract class AbstractAlbumType extends AbstractType
     public function addSubmitButtons(FormBuilderInterface $builder, array $options)
     {
         foreach ($options['actions'] as $action) {
-            $builder->add($action['id'], 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
-                'label' => $this->__(/** @Ignore */$action['title']),
+            $builder->add($action['id'], SubmitType::class, [
+                'label' => $action['title'],
                 'icon' => ($action['id'] == 'delete' ? 'fa-trash-o' : ''),
                 'attr' => [
-                    'class' => $action['buttonClass'],
-                    'title' => $this->__(/** @Ignore */$action['description'])
+                    'class' => $action['buttonClass']
                 ]
             ]);
         }
-        $builder->add('reset', 'Symfony\Component\Form\Extension\Core\Type\ResetType', [
+        $builder->add('reset', ResetType::class, [
             'label' => $this->__('Reset'),
             'icon' => 'fa-refresh',
             'attr' => [
@@ -344,7 +354,7 @@ abstract class AbstractAlbumType extends AbstractType
                 'formnovalidate' => 'formnovalidate'
             ]
         ]);
-        $builder->add('cancel', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
+        $builder->add('cancel', SubmitType::class, [
             'label' => $this->__('Cancel'),
             'icon' => 'fa-times',
             'attr' => [

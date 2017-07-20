@@ -17,10 +17,10 @@ use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Zikula\CategoriesModule\Api\CategoryRegistryApi;
-use Zikula\CategoriesModule\Api\CategoryPermissionApi;
+use Zikula\CategoriesModule\Api\ApiInterface\CategoryPermissionApiInterface;
+use Zikula\CategoriesModule\Entity\RepositoryInterface\CategoryRegistryRepositoryInterface;
 use Zikula\Common\Translator\TranslatorInterface;
-use Zikula\UsersModule\Api\CurrentUserApi;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 
 /**
  * Category helper base class.
@@ -43,17 +43,17 @@ abstract class AbstractCategoryHelper
     protected $logger;
 
     /**
-     * @var CurrentUserApi
+     * @var CurrentUserApiInterface
      */
     protected $currentUserApi;
 
     /**
-     * @var CategoryRegistryApi
+     * @var CategoryRegistryRepositoryInterface
      */
-    protected $categoryRegistryApi;
+    protected $categoryRegistryRepository;
 
     /**
-     * @var CategoryPermissionApi
+     * @var CategoryPermissionApiInterface
      */
     protected $categoryPermissionApi;
 
@@ -63,23 +63,23 @@ abstract class AbstractCategoryHelper
      * @param TranslatorInterface   $translator            Translator service instance
      * @param RequestStack          $requestStack          RequestStack service instance
      * @param LoggerInterface       $logger                Logger service instance
-     * @param CurrentUserApi        $currentUserApi        CurrentUserApi service instance
-     * @param CategoryRegistryApi   $categoryRegistryApi   CategoryRegistryApi service instance
-     * @param CategoryPermissionApi $categoryPermissionApi CategoryPermissionApi service instance
+     * @param CurrentUserApiInterface $currentUserApi        CurrentUserApi service instance
+     * @param CategoryRegistryRepositoryInterface $categoryRegistryRepository CategoryRegistryRepository service instance
+     * @param CategoryPermissionApiInterface $categoryPermissionApi CategoryPermissionApi service instance
      */
     public function __construct(
         TranslatorInterface $translator,
         RequestStack $requestStack,
         LoggerInterface $logger,
-        CurrentUserApi $currentUserApi,
-        CategoryRegistryApi $categoryRegistryApi,
-        CategoryPermissionApi $categoryPermissionApi
+        CurrentUserApiInterface $currentUserApi,
+        CategoryRegistryRepositoryInterface $categoryRegistryRepository,
+        CategoryPermissionApiInterface $categoryPermissionApi
     ) {
         $this->translator = $translator;
         $this->request = $requestStack->getCurrentRequest();
         $this->logger = $logger;
         $this->currentUserApi = $currentUserApi;
-        $this->categoryRegistryApi = $categoryRegistryApi;
+        $this->categoryRegistryRepository = $categoryRegistryRepository;
         $this->categoryPermissionApi = $categoryPermissionApi;
     }
 
@@ -235,7 +235,17 @@ abstract class AbstractCategoryHelper
             throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
     	}
     
-        return $this->categoryRegistryApi->getModuleRegistriesIds('MUImageModule', ucfirst($objectType) . 'Entity');
+        $moduleRegistries = $this->categoryRegistryRepository->findBy([
+            'modname' => 'MUImageModule',
+            'entityname' => ucfirst($objectType) . 'Entity'
+        ]);
+    
+        $result = [];
+        foreach ($moduleRegistries as $registry) {
+            $result[$registry['property']] = $registry['id'];
+        }
+    
+        return $result;
     }
     
     /**
@@ -252,7 +262,18 @@ abstract class AbstractCategoryHelper
             throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
     	}
     
-        return $this->categoryRegistryApi->getModuleCategoryIds('MUImageModule', ucfirst($objectType) . 'Entity', $arrayKey);
+        $moduleRegistries = $this->categoryRegistryRepository->findBy([
+            'modname' => 'MUImageModule',
+            'entityname' => ucfirst($objectType) . 'Entity'
+        ], ['id' => 'ASC']);
+    
+        $result = [];
+        foreach ($moduleRegistries as $registry) {
+            $registry = $registry->toArray();
+            $result[$registry[$arrayKey]] = $registry['category']->getId();
+        }
+    
+        return $result;
     }
     
     /**
@@ -269,7 +290,12 @@ abstract class AbstractCategoryHelper
             throw new InvalidArgumentException($this->translator->__('Invalid object type received.'));
     	}
     
-        return $this->categoryRegistryApi->getModuleCategoryId('MUImageModule', ucfirst($objectType) . 'Entity', $property);
+        $registries = $this->getAllPropertiesWithMainCat($objectType, 'property');
+        if ($registries && isset($registries[$property]) && $registries[$property]) {
+            return $registries[$property];
+        }
+    
+        return null;
     }
     
     /**
@@ -312,26 +338,6 @@ abstract class AbstractCategoryHelper
      */
     public function hasPermission($entity)
     {
-        $objectType = $entity->get_objectType();
-        $categories = $entity['categories'];
-    
-        $registries = $this->getAllProperties($objectType);
-        $registries = array_flip($registries);
-    
-        $categoryInfo = [];
-        foreach ($categories as $category) {
-            $registryId = $category->getCategoryRegistryId();
-            if (!isset($registries[$registryId])) {
-                // seems this registry has been deleted
-                continue;
-            }
-            $registryName = $registries[$registryId];
-            if (!isset($categoryInfo[$registryName])) {
-                $categoryInfo[$registryName] = [];
-            }
-            $categoryInfo[$registryName][] = $category->getCategory()->toArray();
-        }
-    
-        return $this->categoryPermissionApi->hasCategoryAccess($categoryInfo, ACCESS_OVERVIEW);
+        return $this->categoryPermissionApi->hasCategoryAccess($entity->getCategories()->toArray(), ACCESS_OVERVIEW);
     }
 }

@@ -14,16 +14,18 @@ namespace MU\ImageModule\Helper\Base;
 
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr\Composite;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\RouteUrl;
-use Zikula\PermissionsModule\Api\PermissionApi;
+use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\SearchModule\Entity\SearchResultEntity;
-use Zikula\SearchModule\AbstractSearchable;
+use Zikula\SearchModule\SearchableInterface;
 use MU\ImageModule\Entity\Factory\EntityFactory;
 use MU\ImageModule\Helper\CategoryHelper;
 use MU\ImageModule\Helper\ControllerHelper;
@@ -33,19 +35,14 @@ use MU\ImageModule\Helper\FeatureActivationHelper;
 /**
  * Search helper base class.
  */
-abstract class AbstractSearchHelper extends AbstractSearchable
+abstract class AbstractSearchHelper implements SearchableInterface
 {
     use TranslatorTrait;
     
     /**
-     * @var PermissionApi
+     * @var PermissionApiInterface
      */
     protected $permissionApi;
-    
-    /**
-     * @var EngineInterface
-     */
-    private $templateEngine;
     
     /**
      * @var SessionInterface
@@ -86,8 +83,7 @@ abstract class AbstractSearchHelper extends AbstractSearchable
      * SearchHelper constructor.
      *
      * @param TranslatorInterface $translator          Translator service instance
-     * @param PermissionApi    $permissionApi   PermissionApi service instance
-     * @param EngineInterface     $templateEngine      Template engine service instance
+     * @param PermissionApiInterface    $permissionApi   PermissionApi service instance
      * @param SessionInterface    $session             Session service instance
      * @param RequestStack        $requestStack        RequestStack service instance
      * @param EntityFactory       $entityFactory       EntityFactory service instance
@@ -98,8 +94,7 @@ abstract class AbstractSearchHelper extends AbstractSearchable
      */
     public function __construct(
         TranslatorInterface $translator,
-        PermissionApi $permissionApi,
-        EngineInterface $templateEngine,
+        PermissionApiInterface $permissionApi,
         SessionInterface $session,
         RequestStack $requestStack,
         EntityFactory $entityFactory,
@@ -110,7 +105,6 @@ abstract class AbstractSearchHelper extends AbstractSearchable
     ) {
         $this->setTranslator($translator);
         $this->permissionApi = $permissionApi;
-        $this->templateEngine = $templateEngine;
         $this->session = $session;
         $this->request = $requestStack->getCurrentRequest();
         $this->entityFactory = $entityFactory;
@@ -133,21 +127,26 @@ abstract class AbstractSearchHelper extends AbstractSearchable
     /**
      * @inheritDoc
      */
-    public function getOptions($active, $modVars = null)
+    public function amendForm(FormBuilderInterface $builder)
     {
         if (!$this->permissionApi->hasPermission('MUImageModule::', '::', ACCESS_READ)) {
             return '';
         }
     
-        $templateParameters = [];
+        $builder->add('active', HiddenType::class, [
+            'data' => true
+        ]);
     
         $searchTypes = $this->getSearchTypes();
     
         foreach ($searchTypes as $searchType => $typeInfo) {
-            $templateParameters['active_' . $typeInfo['value']] = true;
+            $builder->add('active_' . $searchType, CheckboxType::class, [
+                'value' => $typeInfo['value'],
+                'label' => $typeInfo['label'],
+                'label_attr' => ['class' => 'checkbox-inline'],
+                'required' => false
+            ]);
         }
-    
-        return $this->templateEngine->renderResponse('@MUImageModule/Search/options.html.twig', $templateParameters)->getContent();
     }
     
     /**
@@ -163,16 +162,19 @@ abstract class AbstractSearchHelper extends AbstractSearchable
         $results = [];
     
         // retrieve list of activated object types
-        $searchTypes = isset($modVars['objectTypes']) ? (array)$modVars['objectTypes'] : [];
-        if (!is_array($searchTypes) || !count($searchTypes)) {
-            if ($this->request->isMethod('GET')) {
-                $searchTypes = $this->request->query->get('mUImageModuleSearchTypes', []);
-            } elseif ($this->request->isMethod('POST')) {
-                $searchTypes = $this->request->request->get('mUImageModuleSearchTypes', []);
-            }
-        }
+        $searchTypes = $this->getSearchTypes();
     
-        foreach ($searchTypes as $objectType) {
+        foreach ($searchTypes as $searchTypeCode => $typeInfo) {
+            $objectType = $typeInfo['value'];
+            $isActivated = false;
+            if ($this->request->isMethod('GET')) {
+                $isActivated = $this->request->query->get('active_' . $searchTypeCode, false);
+            } elseif ($this->request->isMethod('POST')) {
+                $isActivated = $this->request->request->get('active_' . $searchTypeCode, false);
+            }
+            if (!$isActivated) {
+                continue;
+            }
             $whereArray = [];
             $languageField = null;
             switch ($objectType) {

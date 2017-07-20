@@ -14,6 +14,14 @@ namespace MU\ImageModule\Form\Type\Base;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,6 +31,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use MU\ImageModule\Entity\Factory\EntityFactory;
+use MU\ImageModule\Form\Type\Field\UploadType;
+use Zikula\UsersModule\Form\Type\UserLiveSearchType;
 use MU\ImageModule\Helper\CollectionFilterHelper;
 use MU\ImageModule\Helper\EntityDisplayHelper;
 use MU\ImageModule\Helper\FeatureActivationHelper;
@@ -134,7 +144,7 @@ abstract class AbstractPictureType extends AbstractType
     public function addEntityFields(FormBuilderInterface $builder, array $options)
     {
         
-        $builder->add('title', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+        $builder->add('title', TextType::class, [
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
             'attr' => [
@@ -145,7 +155,7 @@ abstract class AbstractPictureType extends AbstractType
             'required' => false,
         ]);
         
-        $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
+        $builder->add('description', TextareaType::class, [
             'label' => $this->__('Description') . ':',
             'help' => $this->__f('Note: this value must not exceed %amount% characters.', ['%amount%' => 2000]),
             'empty_data' => '',
@@ -157,8 +167,9 @@ abstract class AbstractPictureType extends AbstractType
             'required' => false,
         ]);
         
-        $builder->add('imageUpload', 'MU\ImageModule\Form\Type\Field\UploadType', [
+        $builder->add('imageUpload', UploadType::class, [
             'label' => $this->__('Image upload') . ':',
+            'help' => [$this->__f('Note: the image must have a width between %min% and %max% pixels.', ['%min%' => 400, '%max%' => 1000]), $this->__f('Note: the image must have a height between %min% and %max% pixels.', ['%min%' => 400, '%max%' => 1000])],
             'attr' => [
                 'class' => ' validate-upload',
                 'title' => $this->__('Enter the image upload of the picture')
@@ -169,7 +180,7 @@ abstract class AbstractPictureType extends AbstractType
             'allowed_size' => '200k'
         ]);
         
-        $builder->add('imageView', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+        $builder->add('imageView', IntegerType::class, [
             'label' => $this->__('Image view') . ':',
             'empty_data' => '',
             'attr' => [
@@ -181,7 +192,7 @@ abstract class AbstractPictureType extends AbstractType
             'scale' => 0
         ]);
         
-        $builder->add('albumImage', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+        $builder->add('albumImage', CheckboxType::class, [
             'label' => $this->__('Album image') . ':',
             'attr' => [
                 'class' => '',
@@ -190,7 +201,7 @@ abstract class AbstractPictureType extends AbstractType
             'required' => false,
         ]);
         
-        $builder->add('pos', 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
+        $builder->add('pos', IntegerType::class, [
             'label' => $this->__('Pos') . ':',
             'empty_data' => '0',
             'attr' => [
@@ -246,7 +257,7 @@ abstract class AbstractPictureType extends AbstractType
             return;
         }
     
-        $builder->add('moderationSpecificCreator', 'MU\ImageModule\Form\Type\Field\UserType', [
+        $builder->add('moderationSpecificCreator', UserLiveSearchType::class, [
             'mapped' => false,
             'label' => $this->__('Creator') . ':',
             'attr' => [
@@ -258,7 +269,7 @@ abstract class AbstractPictureType extends AbstractType
             'required' => false,
             'help' => $this->__('Here you can choose a user which will be set as creator')
         ]);
-        $builder->add('moderationSpecificCreationDate', 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', [
+        $builder->add('moderationSpecificCreationDate', DateTimeType::class, [
             'mapped' => false,
             'label' => $this->__('Creation date') . ':',
             'attr' => [
@@ -285,7 +296,7 @@ abstract class AbstractPictureType extends AbstractType
         if ($options['mode'] != 'create') {
             return;
         }
-        $builder->add('repeatCreation', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+        $builder->add('repeatCreation', CheckboxType::class, [
             'mapped' => false,
             'label' => $this->__('Create another item after save'),
             'required' => false
@@ -301,16 +312,15 @@ abstract class AbstractPictureType extends AbstractType
     public function addSubmitButtons(FormBuilderInterface $builder, array $options)
     {
         foreach ($options['actions'] as $action) {
-            $builder->add($action['id'], 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
-                'label' => $this->__(/** @Ignore */$action['title']),
+            $builder->add($action['id'], SubmitType::class, [
+                'label' => $action['title'],
                 'icon' => ($action['id'] == 'delete' ? 'fa-trash-o' : ''),
                 'attr' => [
-                    'class' => $action['buttonClass'],
-                    'title' => $this->__(/** @Ignore */$action['description'])
+                    'class' => $action['buttonClass']
                 ]
             ]);
         }
-        $builder->add('reset', 'Symfony\Component\Form\Extension\Core\Type\ResetType', [
+        $builder->add('reset', ResetType::class, [
             'label' => $this->__('Reset'),
             'icon' => 'fa-refresh',
             'attr' => [
@@ -318,7 +328,7 @@ abstract class AbstractPictureType extends AbstractType
                 'formnovalidate' => 'formnovalidate'
             ]
         ]);
-        $builder->add('cancel', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
+        $builder->add('cancel', SubmitType::class, [
             'label' => $this->__('Cancel'),
             'icon' => 'fa-times',
             'attr' => [

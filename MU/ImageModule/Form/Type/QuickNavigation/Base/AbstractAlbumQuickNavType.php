@@ -12,10 +12,16 @@
 
 namespace MU\ImageModule\Form\Type\QuickNavigation\Base;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Zikula\CategoriesModule\Form\Type\CategoriesType;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use MU\ImageModule\Helper\EntityDisplayHelper;
@@ -89,9 +95,9 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
     {
         $builder
             ->setMethod('GET')
-            ->add('all', 'Symfony\Component\Form\Extension\Core\Type\HiddenType')
-            ->add('own', 'Symfony\Component\Form\Extension\Core\Type\HiddenType')
-            ->add('tpl', 'Symfony\Component\Form\Extension\Core\Type\HiddenType')
+            ->add('all', HiddenType::class)
+            ->add('own', HiddenType::class)
+            ->add('tpl', HiddenType::class)
         ;
 
         if ($this->featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, 'album')) {
@@ -103,7 +109,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
         $this->addSortingFields($builder, $options);
         $this->addAmountField($builder, $options);
         $this->addBooleanFields($builder, $options);
-        $builder->add('updateview', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
+        $builder->add('updateview', SubmitType::class, [
             'label' => $this->__('OK'),
             'attr' => [
                 'class' => 'btn btn-default btn-sm'
@@ -121,7 +127,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
     {
         $objectType = 'album';
     
-        $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
+        $builder->add('categories', CategoriesType::class, [
             'label' => $this->__('Category'),
             'empty_data' => null,
             'attr' => [
@@ -156,7 +162,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
         $choiceLabelClosure = function ($entity) use ($entityDisplayHelper) {
             return $entityDisplayHelper->getFormattedTitle($entity);
         };
-        $builder->add('album', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
+        $builder->add('album', EntityType::class, [
             'class' => 'MUImageModule:AlbumEntity',
             'choice_label' => $choiceLabelClosure,
             'placeholder' => $this->__('All'),
@@ -188,7 +194,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
             $choices[$entry['text']] = $entry['value'];
             $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
         }
-        $builder->add('workflowState', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('workflowState', ChoiceType::class, [
             'label' => $this->__('State'),
             'attr' => [
                 'class' => 'input-sm'
@@ -208,7 +214,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
             $choices[$entry['text']] = $entry['value'];
             $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
         }
-        $builder->add('albumAccess', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('albumAccess', ChoiceType::class, [
             'label' => $this->__('Album access'),
             'attr' => [
                 'class' => 'input-sm'
@@ -231,7 +237,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      */
     public function addSearchField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('q', 'Symfony\Component\Form\Extension\Core\Type\SearchType', [
+        $builder->add('q', SearchType::class, [
             'label' => $this->__('Search'),
             'attr' => [
                 'maxlength' => 255,
@@ -251,7 +257,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
     public function addSortingFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('sort', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('sort', ChoiceType::class, [
                 'label' => $this->__('Sort by'),
                 'attr' => [
                     'class' => 'input-sm'
@@ -274,7 +280,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
                 'required' => true,
                 'expanded' => false
             ])
-            ->add('sortdir', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+            ->add('sortdir', ChoiceType::class, [
                 'label' => $this->__('Sort direction'),
                 'empty_data' => 'asc',
                 'attr' => [
@@ -299,7 +305,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      */
     public function addAmountField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('num', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('num', ChoiceType::class, [
             'label' => $this->__('Page size'),
             'empty_data' => 20,
             'attr' => [
@@ -328,7 +334,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      */
     public function addBooleanFields(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('notInFrontend', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('notInFrontend', ChoiceType::class, [
             'label' => $this->__('Not in frontend'),
             'attr' => [
                 'class' => 'input-sm'

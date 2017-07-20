@@ -7,7 +7,7 @@ application "Image" {
     prefix "muimage"
     generatorSettings {
         settingsContainer "Einstellungen"
-        targetCoreVersion ZK14
+        targetCoreVersion ZK15
         generateMailzApi false
         generateModerationBlock true
         generateNewsletterPlugin false

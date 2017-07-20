@@ -13,15 +13,26 @@
 namespace MU\ImageModule\Form\Type\Base;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Zikula\CategoriesModule\Form\Type\CategoriesType;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use MU\ImageModule\Entity\Factory\EntityFactory;
+use MU\ImageModule\Form\Type\Field\UploadType;
+use Zikula\UsersModule\Form\Type\UserLiveSearchType;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
@@ -117,7 +128,7 @@ abstract class AbstractAvatarType extends AbstractType
     public function addEntityFields(FormBuilderInterface $builder, array $options)
     {
         
-        $builder->add('title', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
+        $builder->add('title', TextType::class, [
             'label' => $this->__('Title') . ':',
             'empty_data' => '',
             'attr' => [
@@ -128,7 +139,7 @@ abstract class AbstractAvatarType extends AbstractType
             'required' => true,
         ]);
         
-        $builder->add('description', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
+        $builder->add('description', TextareaType::class, [
             'label' => $this->__('Description') . ':',
             'label_attr' => [
                 'class' => 'tooltips',
@@ -144,8 +155,9 @@ abstract class AbstractAvatarType extends AbstractType
             'required' => false,
         ]);
         
-        $builder->add('avatarUpload', 'MU\ImageModule\Form\Type\Field\UploadType', [
+        $builder->add('avatarUpload', UploadType::class, [
             'label' => $this->__('Avatar upload') . ':',
+            'help' => [$this->__f('Note: the image must have a width between %min% and %max% pixels.', ['%min%' => 200, '%max%' => 600]), $this->__f('Note: the image must have a height between %min% and %max% pixels.', ['%min%' => 200, '%max%' => 600]), $this->__('Note: only square dimension (no portrait or landscape) is allowed.')],
             'attr' => [
                 'class' => ' validate-upload',
                 'title' => $this->__('Enter the avatar upload of the avatar')
@@ -163,7 +175,7 @@ abstract class AbstractAvatarType extends AbstractType
             $choices[$entry['text']] = $entry['value'];
             $choiceAttributes[$entry['text']] = ['title' => $entry['title']];
         }
-        $builder->add('supportedModules', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
+        $builder->add('supportedModules', ChoiceType::class, [
             'label' => $this->__('Supported modules') . ':',
             'label_attr' => [
                 'class' => 'tooltips',
@@ -192,7 +204,7 @@ abstract class AbstractAvatarType extends AbstractType
      */
     public function addCategoriesField(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('categories', 'Zikula\CategoriesModule\Form\Type\CategoriesType', [
+        $builder->add('categories', CategoriesType::class, [
             'label' => $this->__('Category') . ':',
             'empty_data' => null,
             'attr' => [
@@ -218,7 +230,7 @@ abstract class AbstractAvatarType extends AbstractType
             return;
         }
     
-        $builder->add('moderationSpecificCreator', 'MU\ImageModule\Form\Type\Field\UserType', [
+        $builder->add('moderationSpecificCreator', UserLiveSearchType::class, [
             'mapped' => false,
             'label' => $this->__('Creator') . ':',
             'attr' => [
@@ -230,7 +242,7 @@ abstract class AbstractAvatarType extends AbstractType
             'required' => false,
             'help' => $this->__('Here you can choose a user which will be set as creator')
         ]);
-        $builder->add('moderationSpecificCreationDate', 'Symfony\Component\Form\Extension\Core\Type\DateTimeType', [
+        $builder->add('moderationSpecificCreationDate', DateTimeType::class, [
             'mapped' => false,
             'label' => $this->__('Creation date') . ':',
             'attr' => [
@@ -257,7 +269,7 @@ abstract class AbstractAvatarType extends AbstractType
         if ($options['mode'] != 'create') {
             return;
         }
-        $builder->add('repeatCreation', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
+        $builder->add('repeatCreation', CheckboxType::class, [
             'mapped' => false,
             'label' => $this->__('Create another item after save'),
             'required' => false
@@ -273,16 +285,15 @@ abstract class AbstractAvatarType extends AbstractType
     public function addSubmitButtons(FormBuilderInterface $builder, array $options)
     {
         foreach ($options['actions'] as $action) {
-            $builder->add($action['id'], 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
-                'label' => $this->__(/** @Ignore */$action['title']),
+            $builder->add($action['id'], SubmitType::class, [
+                'label' => $action['title'],
                 'icon' => ($action['id'] == 'delete' ? 'fa-trash-o' : ''),
                 'attr' => [
-                    'class' => $action['buttonClass'],
-                    'title' => $this->__(/** @Ignore */$action['description'])
+                    'class' => $action['buttonClass']
                 ]
             ]);
         }
-        $builder->add('reset', 'Symfony\Component\Form\Extension\Core\Type\ResetType', [
+        $builder->add('reset', ResetType::class, [
             'label' => $this->__('Reset'),
             'icon' => 'fa-refresh',
             'attr' => [
@@ -290,7 +301,7 @@ abstract class AbstractAvatarType extends AbstractType
                 'formnovalidate' => 'formnovalidate'
             ]
         ]);
-        $builder->add('cancel', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
+        $builder->add('cancel', SubmitType::class, [
             'label' => $this->__('Cancel'),
             'icon' => 'fa-times',
             'attr' => [
