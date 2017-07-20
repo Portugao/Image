@@ -19,5 +19,67 @@ use MU\ImageModule\Twig\Base\AbstractTwigExtension;
  */
 class TwigExtension extends AbstractTwigExtension
 {
-    // feel free to add your own Twig extension methods here
+    /**
+     * Returns a list of custom Twig functions.
+     *
+     * @return array
+     */
+    public function getFunctions()
+    {
+        $functions = parent::getFunctions();
+        $functions[] = new \Twig_SimpleFunction('muimagemodule_checkGroupMember', [$this, 'checkGroupMember']);
+        $functions[] = new \Twig_SimpleFunction('muimagemodule_checkAlbumAccess', [$this, 'checkAlbumAccess']);
+        $functions[] = new \Twig_SimpleFunction('muimagemodule_giveImageOfAlbum', [$this, 'giveImageOfAlbum']);
+        $functions[] = new \Twig_SimpleFunction('muimagemodule_breadcrumb', [$this, 'breadcrumb']);
+        
+        return $functions;
+    }
+    
+    /**
+     * The muimagemodule_checkGroupMember function checks if an user is in the the group of the creator.
+     *
+     * @return string The output of the plugin
+     */
+    public function checkGroupMember($created)
+    {
+    	$out = $this->controllerHelper->checkGroupMember($created);
+    
+    	return $out;
+    }
+    
+    /**
+     * The muimagemodule_checkAlbumAccess function checks if an user has access to an album.
+     *
+     * @return string The output of the plugin
+     */
+    public function checkAlbumAccess($albumId)
+    {
+    	$out = $this->controllerHelper->checkAlbumAccess($albumId);
+    
+    	return $out;
+    }
+
+    /**
+     * The muimagemodule_giveImageOfAlbum function checks if an user has access to an album.
+     *
+     * @return string The output of the plugin
+     */
+    public function giveImageOfAlbum($albumId)
+    {
+    	$out = $this->controllerHelper->giveImageOfAlbum($albumId);
+    
+    	return $out;
+    }
+    
+    /**
+     * The muimagemodule_breadcrumb function gives breadcrumb for the actual album.
+     *
+     * @return string The output of the plugin
+     */
+    public function breadcrumb($albumId)
+    {
+    	$out = $this->controllerHelper->breadcrumb($albumId);
+    
+    	return $out;
+    }
 }
