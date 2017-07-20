@@ -43,7 +43,7 @@
             <dt>{{ __('Image view') }}</dt>
             <dd>{{ picture.imageView }}</dd>
         {% endif %}
-        {% if picture.albumImage is not empty %}
+        {#% if picture.albumImage is not empty %}
             <dt>{{ __('Album image') }}</dt>
             <dd>{% if picture.albumImage %}
                 <i class="fa fa-check" title="{{ __('Yes') }}"></i>
@@ -55,7 +55,7 @@
         {% if picture.pos is not empty %}
             <dt>{{ __('Pos') }}</dt>
             <dd>{{ picture.pos }}</dd>
-        {% endif %}
+        {% endif %#}
         {% if picture.album|default %}
             <dt>{{ __('Album') }}</dt>
             <dd>
