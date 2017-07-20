@@ -6,13 +6,103 @@
 <div class="muimagemodule-album muimagemodule-view">
 
     {{ block('page_nav_links') }}
+    
+    {% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
+
+    {% if routeArea != 'admin' %}
+    <div class="album-bootstrap-view">
+	{% if items is defined and items|length > 0 %}
+	<ul class="row">
+		{% for album in items %}
+			{% if album.album == NULL %}
+			{% if extended == 1 %}
+		    	{% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %}
+		    {% else %}
+		        {% set accessThisAlbum = 1 %}
+		    {% endif %}
+		    	{% if accessThisAlbum == 1 %}
+		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-3">
+		    		<div class="thumbnail album-view-container">
+					{#% set albumpicture = muimagemodule_giveImageOfAlbum(albumId=album.id) %#}
+					{#% if albumpicture != '' %}
+					{% set thumbOptions = attribute(thumbOptions, 'pictureImageUpload') %}
+					{<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
+       				<img src="{{ albumpicture.imageUpload.getPathname()|imagine_filter('zkroot', thumbOptions) }}" alt="{{ album.title }}">
+    				</a>}
+    				{% else %}
+    				<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
+   					<img src="/modules/MU/ImageModule/Resources/public/images/placeholder.png" width="300" height="200" />
+    				</a>
+    				{% endif %#}    		 		
+    				<div class="caption album-view-info">
+    				<a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ __('View detail page')|e('html_attr') }}">
+    				<i class="fa fa-eye fa-2x"></i>
+    				</a>&nbsp;	
+    				{% if hasPermission('MUImageModule:Album:', '::', 'ACCESS_EDIT') %}
+    				    {% if extended == 1 %}
+    					    {% set groupMember = muimagemodule_checkGroupMember(created=album.createdBy_id) %}
+    				    {% else %}
+    				        {% set groupMember = 1 %}
+    				    {% endif %}
+    				    {% if groupMember == 1 %}		
+    					    <a title="{{ __('Edit') }}" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'edit', { 'id': album.id }) }}">
+    							<i class="fa fa-pencil-square-o fa-2x"></i>
+    					    </a>
+    					{% endif %}
+    				{% endif %}	
+    				<div>		
+					{% if album.albums is defined and album.albums != null and album.albums|length > 0 %}			    
+			    		{{ __('SubAlbums') }}: : {{ album.albums|length }}    
+					{% else %}
+						{{ __('No SubAlbums') }}
+					{% endif %}
+					</div>
+					<p>
+					{{ __('Pictures') }}: {{ album.pictures|length }}
+           			</p>			
+    				</div>			
+					</div>
+		    		</li>
+				{% endif %}
+			{% endif %}
+	    {% endfor %}
+	       
+	    {% for album in items %}
+	        {% if extended == 1 %}
+	    	    {#% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %#}
+	    	    {% set accessThisAlbum = 1 %}
+	    	{% else %}
+	    	    {% set accessThisAlbum = 1 %}
+	    	{% endif %}
+				{% if accessThisAlbum == 2 %}
+					<li class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+						<div class="thumbnail">
+							<span style="width: 300px; height: 200px; background: url(/modules/MU/ImageModule/Resources/public/images/placeholder.png) no-repeat center center; background-size: cover;">
+		        				{#usergetvar name='uname' uid=album.createdUserId assign='username'#}
+		        				{{ __('This album is saved with a password by') }}: {username}<br /><br />
+		        				{% set albumid = album.id %}
+                				{#include file='bootstrap/album/enterPassword.tpl' id=albumid#}		
+							</span>
+   						</div>
+   					</li>
+				{% endif %}	    
+	    {% endfor %}
+	</ul>
+        {% if all != 1 and pager|default %}
+            {{ pager({ rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_album_' ~ routeArea ~ 'view'}) }}
+        {% endif %}
+	{% else %}
+	    {{ __('No albums') }}
+	{% endif %}
+	</div>
+	{% endif %}
 
     {{ include('@MUImageModule/Album/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
 
     {% if routeArea == 'admin' %}
     <form action="{{ path('muimagemodule_album_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="albumsViewForm" class="form-horizontal" role="form">
         <div>
-    {% endif %}
+
         <div class="table-responsive">
         <table class="table table-striped table-bordered table-hover table-condensed">
             <colgroup>
@@ -22,7 +112,6 @@
                 <col id="cItemActions" />
                 <col id="cTitle" />
                 <col id="cDescription" />
-                <col id="cParent_id" />
                 <col id="cAlbumAccess" />
                 <col id="cPasswordAccess" />
                 <col id="cMyFriends" />
@@ -43,9 +132,6 @@
                 </th>
                 <th id="hDescription" scope="col" class="text-left">
                     <a href="{{ sort.description.url }}" title="{{ __f('Sort by %s', {'%s': 'description'}) }}" class="{{ sort.description.class }}">{{ __('Description') }}</a>
-                </th>
-                <th id="hParent_id" scope="col" class="text-right">
-                    <a href="{{ sort.parent_id.url }}" title="{{ __f('Sort by %s', {'%s': 'parent_id'}) }}" class="{{ sort.parent_id.class }}">{{ __('Parent_id') }}</a>
                 </th>
                 <th id="hAlbumAccess" scope="col" class="text-left">
                     <a href="{{ sort.albumAccess.url }}" title="{{ __f('Sort by %s', {'%s': 'album access'}) }}" class="{{ sort.albumAccess.class }}">{{ __('Album access') }}</a>
@@ -88,9 +174,6 @@
                 </td>
                 <td headers="hDescription" class="text-left">
                     {{ album.description|safeHtml|truncate(50) }}
-                </td>
-                <td headers="hParent_id" class="text-right">
-                    {{ album.parent_id }}
                 </td>
                 <td headers="hAlbumAccess" class="text-left">
                     {{ album.albumAccess|muimagemodule_listEntry('album', 'albumAccess') }}
@@ -158,6 +241,7 @@
             </fieldset>
         </div>
     </form>
+    {% endif %}
     {% endif %}
 
     {{ block('display_hooks') }}
