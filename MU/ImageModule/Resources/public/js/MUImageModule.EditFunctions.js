@@ -15,7 +15,7 @@ function mUImageResetUploadField(fieldName)
  */
 function mUImageInitUploadField(fieldName)
 {
-    jQuery('#' + fieldName + 'ResetVal').click( function (event) {
+    jQuery('#' + fieldName + 'ResetVal').click(function (event) {
         event.preventDefault();
         mUImageResetUploadField(fieldName);
     }).removeClass('hidden');

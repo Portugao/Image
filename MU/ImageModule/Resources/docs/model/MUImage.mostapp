@@ -24,7 +24,7 @@ application "Image" {
         generateTests false
         writeModelToDocs true
         skipFiles "README.md,\r\n.gitignore,\r\nResources/public/images/admin.png"
-        markFiles ""
+        markFiles "ImageModuleInstaller.php,\r\nContainer/Base/LinkContainer.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nForm/Type/Base/AbstractAlbumType.php,\r\nForm/Type/AlbumType.php,\r\nHelper/ControllerHelper.php,\r\nHelper/ViewHelper.php,\r\nNeedles/Base/Abstractentry.php,\r\nForm/AppSettingsType.php,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,\r\nTwig/Base/AbstractTwigExtension.php,\r\nTwig/TwigExtension.php"
     }
     entities {
         entity "album" leading categorisable {
@@ -60,7 +60,7 @@ application "Image" {
                 }
             ,
                 integer "pos" {
-                    defaultValue "0"
+                    defaultValue "1"
                     visible false
                 }
             }
@@ -104,7 +104,7 @@ application "Image" {
                 },
                 integer "pos"
             {
-                    defaultValue "0"
+                    defaultValue "1"
                 visible false
                 }
             }
