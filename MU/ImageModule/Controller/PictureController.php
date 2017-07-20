@@ -199,6 +199,51 @@ class PictureController extends AbstractPictureController
     {
         return parent::editAction($request);
     }
+    
+    /**
+     * This action provides a handling of edit requests.
+     *
+     * @Route("/picture/multiupload/{albumid}.{_format}",
+     *        requirements = {"albumid" = "\d+", "_format" = "html"},
+     *        defaults = {"albumid" = "0", "_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     *
+     * @param Request  $request      Current request instance
+     *
+     * @return mixed Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function multiuploadAction(Request $request)
+    {
+    	return self::multiuploadInternal($request);
+    }
+    
+    /**
+     * This action provides a handling of edit requests.
+     *
+     * @Route("/picture/zipupload/{albumid}.{_format}",
+     *        requirements = {"albumid" = "\d+", "_format" = "html"},
+     *        defaults = {"albumid" = "0", "_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     *
+     * @param Request  $request      Current request instance
+     *
+     * @return mixed Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function zipuploadAction(Request $request)
+    {
+    	return self::zipuploadInternal($request);
+    }
+    
     /**
      * @inheritDoc
      *
@@ -287,6 +332,77 @@ class PictureController extends AbstractPictureController
     public function handleSelectedEntriesAction(Request $request)
     {
         return parent::handleSelectedEntriesAction($request);
+    }
+    
+    /**
+     * This method includes the common implementation code for adminView() and view().
+     */
+    protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
+    {
+    	$num = $isAdmin ? $this->getVar('MUImageModule', 'pictureEntriesPerPageInBackend') : $this->getVar('MUImageModule', 'pictureEntriesPerPage');
+    	return parent::viewInternal($request, $sort, $sortdir, $pos, $num, $isAdmin);
+    }
+    
+    /**
+     * This method includes the common implementation code for multiupload().
+     */
+    protected function multiuploadInternal(Request $request, $isAdmin = false)
+    {
+    	// parameter specifying which type of objects we are treating
+    	$objectType = 'picture';
+    	$permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
+    	if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+    		throw new AccessDeniedException();
+    	}
+    	$templateParameters = [
+    			'routeArea' => $isAdmin ? 'admin' : ''
+    	];
+    
+    	$controllerHelper = $this->get('mu_image_module.controller_helper');
+    	$templateParameters = $controllerHelper->processEditActionParameters($objectType, $templateParameters);
+    
+    	// delegate form processing to the form handler
+    	$formHandler = $this->get('mu_image_module.form.handler.picture');
+    	$result = $formHandler->processForm($templateParameters);
+    	if ($result instanceof RedirectResponse) {
+    		return $result;
+    	}
+    
+    	$templateParameters = $formHandler->getTemplateParameters();
+    
+    	// fetch and return the appropriate template
+    	return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'multiupload', $templateParameters);
+    }
+    
+    /**
+     * This method includes the common implementation code for multiupload().
+     */
+    protected function zipuploadInternal(Request $request, $isAdmin = false)
+    {
+    	// parameter specifying which type of objects we are treating
+    	$objectType = 'picture';
+    	$permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
+    	if (!$this->hasPermission($this->name . ':' . ucfirst($objectType) . ':', '::', $permLevel)) {
+    		throw new AccessDeniedException();
+    	}
+    	$templateParameters = [
+    			'routeArea' => $isAdmin ? 'admin' : ''
+    	];
+    
+    	$controllerHelper = $this->get('mu_image_module.controller_helper');
+    	$templateParameters = $controllerHelper->processEditActionParameters($objectType, $templateParameters);
+    
+    	// delegate form processing to the form handler
+    	$formHandler = $this->get('mu_image_module.form.handler.picture');
+    	$result = $formHandler->processForm($templateParameters);
+    	if ($result instanceof RedirectResponse) {
+    		return $result;
+    	}
+    
+    	$templateParameters = $formHandler->getTemplateParameters();
+    
+    	// fetch and return the appropriate template
+    	return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'zipupload', $templateParameters);
     }
 
     // feel free to add your own controller methods here
