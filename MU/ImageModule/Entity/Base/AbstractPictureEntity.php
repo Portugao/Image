@@ -136,7 +136,7 @@ abstract class AbstractPictureEntity extends EntityAccess
      * @Assert\LessThan(value=100000000000)
      * @var integer $pos
      */
-    protected $pos = 0;
+    protected $pos = 1;
     
     
     /**
