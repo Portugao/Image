@@ -116,8 +116,32 @@ function mUImageGetPasteSnippet(mode, itemId)
     if (pasteMode === '2') {
         return mode === 'url' ? itemUrl : '<a href="' + itemUrl + '" title="' + itemDescription + '">' + itemTitle + '</a>';
     }
-
+    
+    if (pasteMode === '3') {
+    	return '<img alt="' + itemTitle + '" src="' + itemPath + '" width="' + selectedWidth + '" height="auto" />';
+    }
+    
+    if (pasteMode === '4') {
+    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" />';
+    }
+    
+    if (pasteMode === '5') {
+    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" />';
+    }
+    
     if (pasteMode === '6') {
+    	return '<a href="' + fullPath + '" rel="imageviewer[picture]"><img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" /></a>';
+    }
+    
+    if (pasteMode === '7') {
+    	return '<a href="' + fullPath + '"rel="imageviewer[picture]"><img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" /></a>';
+    }
+    
+    if (pasteMode === '8') {
+    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + origPath + '" />';
+    }
+
+    /*if (pasteMode === '6') {
         // relative link to image file
         return mode === 'url' ? imagePath : '<a href="' + imagePath + '" title="' + itemDescription + '">' + itemTitle + '</a>';
     }
@@ -132,7 +156,7 @@ function mUImageGetPasteSnippet(mode, itemId)
     if (pasteMode === '9') {
         // image tag with absolute url to detail page
         return mode === 'url' ? itemUrl : '<a href="' + itemUrl + '" title="' + itemTitle + '"><img src="' + imagePath + '" alt="' + itemTitle + '" width="300" /></a>';
-    }
+    }*/
 
 
     return '';
