@@ -1,6 +1,7 @@
 {# purpose of this template: albums display view #}
-{% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
-{% block pageTitle %}{{ album.getTitleFromDisplayPattern()|default(__('Album')) }}{% endblock %}
+{% set baseTemplate = app.request.query.getBoolean('raw', false) ? 'raw' : (routeArea == 'admin' ? 'adminBase' : 'base') %}
+{% extends 'MUImageModule::' ~ baseTemplate ~ '.html.twig' %}
+{% block pageTitle %}{{ album|muimagemodule_formattedTitle|default(__('Album')) }}{% endblock %}
 {% block title %}
     {% if routeArea == 'admin' %}
     {% set templateTitle = album.getTitleFromDisplayPattern()|default(__('Album')) %}
@@ -80,9 +81,9 @@
             <dd>
               {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
                   <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id }) }}">{% spaceless %}
-                    {{ album.album.getTitleFromDisplayPattern() }}
+                    {{ album.album|muimagemodule_formattedTitle|default(__('Album')) }}
                   {% endspaceless %}</a>
-                  <a id="albumItem{{ album.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ album.album.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                  <a id="albumItem{{ album.album.id }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ album.album|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
               {% else %}
                   {{ album.album.getTitleFromDisplayPattern() }}
               {% endif %}
@@ -98,7 +99,7 @@
     {% endif %}
     {% if routeArea != 'admin' %}
     {% if extended == 1 %}
-        {#% set groupMember = muimagemodule_checkGroupMember(created=album.createdBy.getUid()) %#}
+        {% set groupMember = muimagemodule_checkGroupMember(created=album.createdBy.getUid()) %}
     {% else %}
     	{% set groupMember = 1 %}
     {% endif %}
