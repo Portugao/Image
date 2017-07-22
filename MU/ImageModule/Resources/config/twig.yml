@@ -8,6 +8,7 @@ services:
             - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.workflow_helper"
             - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.controller_helper"
         public: false
         tags:
             - { name: twig.extension }
