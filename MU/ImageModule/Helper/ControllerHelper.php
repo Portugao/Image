@@ -143,6 +143,7 @@ class ControllerHelper extends AbstractControllerHelper
 		$pictureRespository = $this->entityFactory->getRepository('picture');
 		$albumpicture = $pictureRespository->selectWhere($where);	
 		
+		if ($albumpicture) {
 		if (!is_array($albumpicture)) {
 			$where2 = '';
 			$where2 = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
@@ -152,6 +153,9 @@ class ControllerHelper extends AbstractControllerHelper
 		}
 		if (is_array($pictures)) {
 		return $pictures[0];
+		} else {
+			return '';
+		}
 		} else {
 			return '';
 		}
