@@ -2,6 +2,12 @@
 {% extends 'MUImageModule::adminBase.html.twig' %}
 {% block title __('Settings') %}
 {% block admin_page_icon 'wrench' %}
+
+{% set avatars = getModVar('MUImageModule', 'useAvatars') %}
+{% set slideshow1 = getModVar('MUImageModule', 'slideshow1') %}
+{% set watermark = getModVar('MUImageModule', 'useWatermark') %}
+{% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
+
 {% block content %}
     <div class="muimagemodule-config">
         {% form_theme form with [
@@ -23,18 +29,24 @@
             <li role="presentation">
                 <a id="vars3Tab" href="#tab3" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
             </li>
+            {% if slideshow1 == 1 and extended == 1 %}
             {% set tabTitle = __('Slideshows') %}
             <li role="presentation">
                 <a id="vars4Tab" href="#tab4" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
             </li>
+            {% endif %}
+            {% if avatars == 1 and extended == 1 %}
             {% set tabTitle = __('Avatars') %}
             <li role="presentation">
                 <a id="vars5Tab" href="#tab5" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
             </li>
+            {% endif %}
+            {% if watermark == 1 and extended == 1 %}
             {% set tabTitle = __('Watermark') %}
             <li role="presentation">
                 <a id="vars6Tab" href="#tab6" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
             </li>
+            {% endif %}
             {% set tabTitle = __('List views') %}
             <li role="presentation">
                 <a id="vars7Tab" href="#tab7" title="{{ tabTitle|e('html_attr') }}" role="tab" data-toggle="tab">{{ tabTitle }}</a>
@@ -69,14 +81,25 @@
                         <legend>{{ tabTitle }}</legend>
                     
                         <p class="alert alert-info">{{ __('Here you can manage all basic settings for this application.') }}</p>
-                    
-                        {{ form_row(form.supportCategoriesForPictures) }}
+                        {% if extended == 0 %}
+                        	<div class="hidden">
+                    	{% endif %}
+                        {{ form_row(form.supportCategoriesForAlbums) }}
                         {{ form_row(form.supportCategoriesForAvatars) }}
+                        {% if extended == 0 %}
+                            </div>
+                        {% endif %}
                         {{ form_row(form.supportSubAlbums) }}
                         {{ form_row(form.userDeletePictures) }}
+                        {% if extended == 0 %}
+                            <div class="hidden">
+                        {% endif %}
                         {{ form_row(form.slideshow1) }}
                         {{ form_row(form.useAvatars) }}
                         {{ form_row(form.useWatermark) }}
+                        {% if extended == 0 %}
+                            </div>
+                        {% endif %}
                         {{ form_row(form.useExtendedFeatures) }}
                     </fieldset>
                 </div>
@@ -85,10 +108,6 @@
                     <fieldset>
                         <legend>{{ tabTitle }}</legend>
                     
-                    
-                        {{ form_row(form.albumEntriesPerPageInBackend) }}
-                        {{ form_row(form.pictureEntriesPerPageInBackend) }}
-                        {{ form_row(form.avatarEntriesPerPageInBackend) }}
                         {{ form_row(form.countImageView) }}
                         {{ form_row(form.numberParentAlbums) }}
                         {{ form_row(form.numberSubAlbums) }}
@@ -162,6 +181,9 @@
                     
                         <p class="alert alert-info">{{ __('Here you can configure parameters for list views.')|nl2br }}</p>
                     
+                        {{ form_row(form.albumEntriesPerPageInBackend) }}
+                        {{ form_row(form.pictureEntriesPerPageInBackend) }}
+                        {{ form_row(form.avatarEntriesPerPageInBackend) }}
                         {{ form_row(form.albumEntriesPerPage) }}
                         {{ form_row(form.linkOwnAlbumsOnAccountPage) }}
                         {{ form_row(form.pictureEntriesPerPage) }}
