@@ -101,12 +101,12 @@ abstract class AbstractConfigType extends AbstractType
     public function addGeneralFields(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('supportCategoriesForPictures', CheckboxType::class, [
-                'label' => $this->__('Support categories for pictures') . ':',
+            ->add('supportCategoriesForAlbums', CheckboxType::class, [
+                'label' => $this->__('Support categories for albums') . ':',
                 'required' => false,
-                'data' => (bool)(isset($this->moduleVars['supportCategoriesForPictures']) ? $this->moduleVars['supportCategoriesForPictures'] : false),
+                'data' => (bool)(isset($this->moduleVars['supportCategoriesForAlbums']) ? $this->moduleVars['supportCategoriesForAlbums'] : false),
                 'attr' => [
-                    'title' => $this->__('The support categories for pictures option.')
+                    'title' => $this->__('The support categories for albums option.')
                 ],
             ])
             ->add('supportCategoriesForAvatars', CheckboxType::class, [
@@ -161,7 +161,7 @@ abstract class AbstractConfigType extends AbstractType
                 'label' => $this->__('Use extended features') . ':',
                 'label_attr' => [
                     'class' => 'tooltips',
-                    'title' => $this->__('Do want to support sub albums?
+                    'title' => $this->__(' you want to support sub albums?
                     Do you want to limit creating of albums, subalbums or pictures?
                     Do you want set a group for common albums?
                     Do you want to give the option to rule the access to albums?
@@ -169,7 +169,7 @@ abstract class AbstractConfigType extends AbstractType
                     
                     Then you can enable these features here!')
                 ],
-                'help' => $this->__('Do want to support sub albums?
+                'help' => $this->__('Do you want to support sub albums?
                 Do you want to limit creating of albums, subalbums or pictures?
                 Do you want set a group for common albums?
                 Do you want to give the option to rule the access to albums?
