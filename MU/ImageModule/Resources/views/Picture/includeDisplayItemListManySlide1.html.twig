@@ -1,0 +1,92 @@
+{# purpose of this template: inclusion template for display of related pictures #}
+{% set hasAdminPermission = hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
+{% if nolink is not defined %}
+    {% set nolink = false %}
+{% endif %}
+{% if items|default and items|length > 0 %}
+
+{% if routeArea != 'admin' %}
+	{% if items is defined and items != null %}
+	
+	<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <!-- Positionsanzeiger -->
+    <ol class="carousel-indicators">
+    {% set counter = 0 %}
+    {% set counter2 = 0 %}
+    {% for picture in items %}   
+        <li data-target="#carousel-example-generic" data-slide-to="{{ counter }}" class="active"></li>
+        {% set counter = counter + 1 %}
+    {% endfor %}
+    </ol>
+
+    <!-- Verpackung für die Elemente -->
+    <div class="carousel-inner" role="listbox">
+    {% for picture in items %}
+        <div class="item {% if counter2 == 0 %}active{% endif %}">
+        <img src="{{ picture.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ picture.title }}">
+        {% set counter2 = counter2 + 1 %}
+        <div class="carousel-caption">
+        ...
+        </div>
+        </div>
+    {% endfor %}
+    </div>
+
+    <!-- Schalter -->
+    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Zurück</span>
+    </a>
+    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Weiter</span>
+    </a>
+</div>
+
+{% endif %}
+    
+{% else %}
+
+
+<ul class="muimagemodule-related-item-list picture">
+{% for item in items %}
+    {% if hasAdminPermission or item.workflowState == 'approved' %}
+    <li>
+{% spaceless %}
+{% if not nolink %}
+    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id }) }}" title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}">
+{% endif %}
+    {{ item.getTitleFromDisplayPattern() }}
+{% if not nolink %}
+    </a>
+    <a id="pictureItem{{ item.id }}Display" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+{% endif %}
+{% endspaceless %}
+<br />
+{% if item.imageUpload is not empty and item.imageUploadMeta.isImage %}
+    <img src="{{ item.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ relationThumbRuntimeOptions.thumbnail.size[0] }}" height="{{ relationThumbRuntimeOptions.thumbnail.size[1] }}" class="img-rounded" />
+{% endif %}
+    </li>
+    {% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+
+<script type="text/javascript" charset="utf-8">
+/* <![CDATA[ */
+
+    var MU = jQuery.noConflict();
+	MU(document).ready(function(MU) {	
+    {% if currentUser.uid == 2 or currentUser.uid == album.createdBy.getUid() or groupMember == 1 %}
+        MU(function() {
+            MU( "#sortable" ).sortable();
+        });
+    {% endif %}
+    
+    	MU(function () {
+			MU('[data-toggle="tooltip"]').tooltip()
+		})
+		});
+    /* ]]> */
+</script>
