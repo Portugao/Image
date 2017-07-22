@@ -12,6 +12,7 @@
 {% block content %}
 {% set categories = getModVar('MUImageModule', 'supportCategoriesForAlbums') %}
 {% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
+{% set subalbums = getModVar('MUImageModule', 'supportSubAlbums') %}
     <div class="muimagemodule-album muimagemodule-edit">
         {% form_theme form with [
             '@MUImageModule/Form/bootstrap_3.html.twig',
@@ -23,10 +24,12 @@
                 <li role="presentation" class="active">
                     <a id="fieldsTab" href="#tabFields" title="{{ __('Fields') }}" role="tab" data-toggle="tab">{{ __('Fields') }}</a>
                 </li>
+                {% if subalbums == 1 and extended == 1 %}
                 <li role="presentation">
                     <a id="albumTab" href="#tabAlbum" title="{{ __('Album') }}" role="tab" data-toggle="tab">{{ __('Album') }}</a>
                 </li>
-                {% if categories == 0 and extended == 1 %}
+                {% endif %}
+                {% if categories == 1 and extended == 1 %}
                 {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
                     <li role="presentation">
                         <a id="categoriesTab" href="#tabCategories" title="{{ __('Categories') }}" role="tab" data-toggle="tab">{{ __('Categories') }}</a>
@@ -62,11 +65,20 @@
                         </div>
                     </fieldset>
                 </div>
-                
+                {% if subalbums == 1 and extended == 1 %}
                 {{ include(
                     '@MUImageModule/Album/includeSelectOne.html.twig',
                     { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, tabs: true, displayMode: 'choices' }
                 ) }}
+                {% else %}
+                <div class="hidden">
+                {{ include(
+                    '@MUImageModule/Album/includeSelectOne.html.twig',
+                    { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, tabs: true, displayMode: 'choices' }
+                ) }}
+                </div>
+                <input type="hidden" name="muimagemodule_album[album]" value='' />
+                {% endif %}
                 {% if categories == 0 %}
                     <div class="hidden">
                 {% endif %}
