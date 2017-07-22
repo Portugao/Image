@@ -90,7 +90,7 @@
         {% endif %}
         
     </dl>
-    {% set cats = getModVar('MUImageModule', 'supportCategories') %}
+    {% set cats = getModVar('MUImageModule', 'supportCategoriesForAlbums') %}
     {% if cats == 1 %}
     {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
         {{ include('@MUImageModule/Helper/includeCategoriesDisplay.html.twig', { obj: album }) }}
@@ -146,7 +146,7 @@
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         {% if album.pictures|default %}
             <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="überschriftEins">
+                <div class="panel-heading" role="tab" id="UeberschriftEins">
                 <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEins" aria-expanded="true" aria-controls"collapseEins">
                     {{ __('Pictures') }}
