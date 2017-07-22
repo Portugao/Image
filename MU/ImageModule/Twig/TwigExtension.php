@@ -13,12 +13,50 @@
 namespace MU\ImageModule\Twig;
 
 use MU\ImageModule\Twig\Base\AbstractTwigExtension;
+use Zikula\Common\Translator\TranslatorInterface;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+use MU\ImageModule\Helper\ListEntriesHelper;
+use MU\ImageModule\Helper\EntityDisplayHelper;
+use MU\ImageModule\Helper\WorkflowHelper;
+use MU\ImageModule\Helper\ControllerHelper;
 
 /**
  * Twig extension implementation class.
  */
 class TwigExtension extends AbstractTwigExtension
 {
+	/**
+	 * @var ControllerHelper
+	 */
+	protected $controllerHelper;
+	
+
+	/**
+	 * TwigExtension constructor.
+	 *
+	 * @param TranslatorInterface $translator     Translator service instance
+	 * @param VariableApiInterface $variableApi    VariableApi service instance
+	 * @param EntityDisplayHelper $entityDisplayHelper EntityDisplayHelper service instance
+	 * @param WorkflowHelper      $workflowHelper WorkflowHelper service instance
+	 * @param ListEntriesHelper   $listHelper     ListEntriesHelper service instance
+	 * @param ControllerHelper    $controllerHelper ControllerHelper service instance
+	 */
+	public function __construct(
+			TranslatorInterface $translator,
+			VariableApiInterface $variableApi,
+			EntityDisplayHelper $entityDisplayHelper,
+			WorkflowHelper $workflowHelper,
+			ListEntriesHelper $listHelper,
+			ControllerHelper $controllerHelper)
+	{
+		$this->setTranslator($translator);
+		$this->variableApi = $variableApi;
+		$this->entityDisplayHelper = $entityDisplayHelper;
+		$this->workflowHelper = $workflowHelper;
+		$this->listHelper = $listHelper;
+		$this->controllerHelper = $controllerHelper;
+	}
+	
     /**
      * Returns a list of custom Twig functions.
      *
@@ -82,4 +120,5 @@ class TwigExtension extends AbstractTwigExtension
     
     	return $out;
     }
+
 }
