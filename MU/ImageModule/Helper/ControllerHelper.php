@@ -140,8 +140,8 @@ class ControllerHelper extends AbstractControllerHelper
 		$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
 		$where .= ' AND ';
 		$where .= 'tbl.albumImage = 1';
-		$albumRespository = $this->entityFactory->getRepository('album');
-		$albumpicture = $albumRespository->selectWhere($where);	
+		$pictureRespository = $this->entityFactory->getRepository('picture');
+		$albumpicture = $pictureRespository->selectWhere($where);	
 		
 		if (!is_array($albumpicture)) {
 			$where2 = '';
