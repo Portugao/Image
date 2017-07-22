@@ -10,6 +10,8 @@
 {% block title mode == 'create' ? __('Create album') : __('Edit album') %}
 {% block admin_page_icon mode == 'create' ? 'plus' : 'pencil-square-o' %}
 {% block content %}
+{% set categories = getModVar('MUImageModule', 'supportCategoriesForAlbums') %}
+{% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
     <div class="muimagemodule-album muimagemodule-edit">
         {% form_theme form with [
             '@MUImageModule/Form/bootstrap_3.html.twig',
@@ -24,10 +26,12 @@
                 <li role="presentation">
                     <a id="albumTab" href="#tabAlbum" title="{{ __('Album') }}" role="tab" data-toggle="tab">{{ __('Album') }}</a>
                 </li>
+                {% if categories == 0 and extended == 1 %}
                 {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
                     <li role="presentation">
                         <a id="categoriesTab" href="#tabCategories" title="{{ __('Categories') }}" role="tab" data-toggle="tab">{{ __('Categories') }}</a>
                     </li>
+                {% endif %}
                 {% endif %}
                 {% if mode != 'create' %}
                     <li role="presentation">
@@ -63,8 +67,14 @@
                     '@MUImageModule/Album/includeSelectOne.html.twig',
                     { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, tabs: true, displayMode: 'choices' }
                 ) }}
+                {% if categories == 0 %}
+                    <div class="hidden">
+                {% endif %}
                 {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
                     {{ include('@MUImageModule/Helper/includeCategoriesEdit.html.twig', { obj: album, tabs: true }) }}
+                {% endif %}
+                {% if categories == 0 %}
+                    </div>
                 {% endif %}
                 {% if mode != 'create' %}
                     {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: album, tabs: true }) }}
