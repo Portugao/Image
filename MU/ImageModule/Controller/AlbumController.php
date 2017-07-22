@@ -21,6 +21,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 use MU\ImageModule\Entity\AlbumEntity;
+use SessionUtil;
 
 /**
  * Album controller class providing navigation and interaction functionality.
@@ -296,6 +297,42 @@ class AlbumController extends AbstractAlbumController
     {
     	$num = $isAdmin ? $this->getVar('MUImageModule', 'albumsEntriesPerPageInBackend') : $this->getVar('MUImageModule', 'albumsEntriesPerPage');
     	return parent::viewInternal($request, $sort, $sortdir, $pos, $num, $isAdmin);
+    }
+    
+    /**
+     * @inheritDoc
+     *
+     * @Route("/album/template/{id}.{_format}",
+     *        requirements = {"id" = "\d+", "_format" = "html"},
+     *        defaults = {"id" = "0", "_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     *
+     * @param Request $request Current request instance
+     *
+     * @return Response Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by form handler if album to be edited isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function templateAction(Request $request)
+    {
+    	return $this->templateInternal($request);
+    }
+    
+    /**
+     * This method includes the common implementation code for adminEdit() and edit().
+     */
+    protected function templateInternal(Request $request, $isAdmin = false)
+    {
+    	// we get the album id from request
+    	$albumid = $request->get('albumid');
+    	$template = $request->get('template');
+    	
+    	SessionUtil::setVar('templateForAlbums', $template);  
+   	
+    	return $this->redirectToRoute('muimagemodule_album_display', array('id' => $albumid));  
     }
 
     // feel free to add your own controller methods here
