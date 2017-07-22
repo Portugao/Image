@@ -21,7 +21,7 @@
 		        {% set accessThisAlbum = 1 %}
 		    {% endif %}
 		    	{% if accessThisAlbum == 1 %}
-		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-3">
+		    		<li class="col-xs-6 col-sm-4 col-md-4 col-lg-3 sortable">
 		    		<div class="thumbnail album-view-container">
 					{% set albumpicture = muimagemodule_giveImageOfAlbum(albumId=album.id) %}
 					{% if albumpicture != '' %}
@@ -30,7 +30,7 @@
     				</a>
     				{% else %}
     				<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
-   					<img src="/modules/MU/ImageModule/Resources/public/images/placeholder.png" width="300" height="200" />
+   					<img src="/modules/MU/ImageModule/Resources/public/images/placeholder.png" style="width: 100%;" />
     				</a>
     				{% endif %}    		 		
     				<div class="caption album-view-info">
@@ -65,7 +65,7 @@
 	       
 	    {% for album in items %}
 	        {% if extended == 1 %}
-	    	    {#% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %#}
+	    	    {% set accessThisAlbum = muimagemodule_checkAlbumAccess(albumId=album.id) %}
 	    	    {% set accessThisAlbum = 1 %}
 	    	{% else %}
 	    	    {% set accessThisAlbum = 1 %}
@@ -93,7 +93,7 @@
 	</div>
 	{% endif %}
 
-    {{ include('@MUImageModule/Album/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
+    {#{ include('@MUImageModule/Album/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
 
     {% if routeArea == 'admin' %}
     <form action="{{ path('muimagemodule_album_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="albumsViewForm" class="form-horizontal" role="form">
