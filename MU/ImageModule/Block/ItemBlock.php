@@ -12,12 +12,12 @@
 
 namespace MU\ImageModule\Block;
 
-use MU\ImageModule\Block\Base\AbstractItemListBlock;
+use MU\ImageModule\Block\Base\AbstractItemBlock;
 
 /**
- * Generic item list block implementation class.
+ * Generic item detail block implementation class.
  */
-class ItemListBlock extends AbstractItemListBlock
+class ItemBlock extends AbstractItemBlock
 {
-    // feel free to extend the item list block here
+    // feel free to extend the item detail block here
 }
