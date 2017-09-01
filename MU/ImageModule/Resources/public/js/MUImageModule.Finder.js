@@ -20,7 +20,7 @@ function getMUImageModulePopupAttributes()
 /**
  * Open a popup window with the finder triggered by a CKEditor button.
  */
-function MUImageModuleFinderCKEditor(editor, muimageUrl)
+function MUImageModuleFinderCKEditor(editor, imageUrl)
 {
     // Save editor for access in selector window
     currentMUImageModuleEditor = editor;
@@ -40,6 +40,10 @@ mUImageModule.finder = {};
 mUImageModule.finder.onLoad = function (baseId, selectedId)
 {
     var imageModeEnabled;
+
+    if (jQuery('#mUImageModuleSelectorForm').length < 1) {
+        return;
+    }
 
     imageModeEnabled = jQuery("[id$='onlyImages']").prop('checked');
     if (!imageModeEnabled) {
@@ -116,32 +120,8 @@ function mUImageGetPasteSnippet(mode, itemId)
     if (pasteMode === '2') {
         return mode === 'url' ? itemUrl : '<a href="' + itemUrl + '" title="' + itemDescription + '">' + itemTitle + '</a>';
     }
-    
-    if (pasteMode === '3') {
-    	return '<img alt="' + itemTitle + '" src="' + itemPath + '" width="' + selectedWidth + '" height="auto" />';
-    }
-    
-    if (pasteMode === '4') {
-    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" />';
-    }
-    
-    if (pasteMode === '5') {
-    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" />';
-    }
-    
-    if (pasteMode === '6') {
-    	return '<a href="' + fullPath + '" rel="imageviewer[picture]"><img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" /></a>';
-    }
-    
-    if (pasteMode === '7') {
-    	return '<a href="' + fullPath + '"rel="imageviewer[picture]"><img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" /></a>';
-    }
-    
-    if (pasteMode === '8') {
-    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + origPath + '" />';
-    }
 
-    /*if (pasteMode === '6') {
+    if (pasteMode === '6') {
         // relative link to image file
         return mode === 'url' ? imagePath : '<a href="' + imagePath + '" title="' + itemDescription + '">' + itemTitle + '</a>';
     }
@@ -156,7 +136,7 @@ function mUImageGetPasteSnippet(mode, itemId)
     if (pasteMode === '9') {
         // image tag with absolute url to detail page
         return mode === 'url' ? itemUrl : '<a href="' + itemUrl + '" title="' + itemTitle + '"><img src="' + imagePath + '" alt="' + itemTitle + '" width="300" /></a>';
-    }*/
+    }
 
 
     return '';
@@ -191,132 +171,6 @@ function mUImageClosePopup()
     window.close();
 }
 
-
-
-
-//=============================================================================
-// MUImageModule item selector for Forms
-//=============================================================================
-
-mUImageModule.itemSelector = {};
-mUImageModule.itemSelector.items = {};
-mUImageModule.itemSelector.baseId = 0;
-mUImageModule.itemSelector.selectedId = 0;
-
-mUImageModule.itemSelector.onLoad = function (baseId, selectedId)
-{
-    mUImageModule.itemSelector.baseId = baseId;
-    mUImageModule.itemSelector.selectedId = selectedId;
-
-    // required as a changed object type requires a new instance of the item selector plugin
-    jQuery('#mUImageModuleObjectType').change(mUImageModule.itemSelector.onParamChanged);
-
-    jQuery('#' + baseId + '_catidMain').change(mUImageModule.itemSelector.onParamChanged);
-    jQuery('#' + baseId + '_catidsMain').change(mUImageModule.itemSelector.onParamChanged);
-    jQuery('#' + baseId + 'Id').change(mUImageModule.itemSelector.onItemChanged);
-    jQuery('#' + baseId + 'Sort').change(mUImageModule.itemSelector.onParamChanged);
-    jQuery('#' + baseId + 'SortDir').change(mUImageModule.itemSelector.onParamChanged);
-    jQuery('#mUImageModuleSearchGo').click(mUImageModule.itemSelector.onParamChanged);
-    jQuery('#mUImageModuleSearchGo').keypress(mUImageModule.itemSelector.onParamChanged);
-
-    mUImageModule.itemSelector.getItemList();
-};
-
-mUImageModule.itemSelector.onParamChanged = function ()
-{
-    jQuery('#ajaxIndicator').removeClass('hidden');
-
-    mUImageModule.itemSelector.getItemList();
-};
-
-mUImageModule.itemSelector.getItemList = function ()
-{
-    var baseId;
-    var params;
-
-    baseId = mUImageModule.itemSelector.baseId;
-    params = {
-        ot: baseId,
-        sort: jQuery('#' + baseId + 'Sort').val(),
-        sortdir: jQuery('#' + baseId + 'SortDir').val(),
-        q: jQuery('#' + baseId + 'SearchTerm').val()
-    }
-    if (jQuery('#' + baseId + '_catidMain').length > 0) {
-        params[catidMain] = jQuery('#' + baseId + '_catidMain').val();
-    } else if (jQuery('#' + baseId + '_catidsMain').length > 0) {
-        params[catidsMain] = jQuery('#' + baseId + '_catidsMain').val();
-    }
-
-    jQuery.getJSON(Routing.generate('muimagemodule_ajax_getitemlistfinder'), params, function( data ) {
-        var baseId;
-
-        baseId = mUImageModule.itemSelector.baseId;
-        mUImageModule.itemSelector.items[baseId] = data;
-        jQuery('#ajaxIndicator').addClass('hidden');
-        mUImageModule.itemSelector.updateItemDropdownEntries();
-        mUImageModule.itemSelector.updatePreview();
-    });
-};
-
-mUImageModule.itemSelector.updateItemDropdownEntries = function ()
-{
-    var baseId, itemSelector, items, i, item;
-
-    baseId = mUImageModule.itemSelector.baseId;
-    itemSelector = jQuery('#' + baseId + 'Id');
-    itemSelector.length = 0;
-
-    items = mUImageModule.itemSelector.items[baseId];
-    for (i = 0; i < items.length; ++i) {
-        item = items[i];
-        itemSelector.get(0).options[i] = new Option(item.title, item.id, false);
-    }
-
-    if (mUImageModule.itemSelector.selectedId > 0) {
-        jQuery('#' + baseId + 'Id').val(mUImageModule.itemSelector.selectedId);
-    }
-};
-
-mUImageModule.itemSelector.updatePreview = function ()
-{
-    var baseId, items, selectedElement, i;
-
-    baseId = mUImageModule.itemSelector.baseId;
-    items = mUImageModule.itemSelector.items[baseId];
-
-    jQuery('#' + baseId + 'PreviewContainer').addClass('hidden');
-
-    if (items.length === 0) {
-        return;
-    }
-
-    selectedElement = items[0];
-    if (mUImageModule.itemSelector.selectedId > 0) {
-        for (var i = 0; i < items.length; ++i) {
-            if (items[i].id == mUImageModule.itemSelector.selectedId) {
-                selectedElement = items[i];
-                break;
-            }
-        }
-    }
-
-    if (null !== selectedElement) {
-        jQuery('#' + baseId + 'PreviewContainer')
-            .html(window.atob(selectedElement.previewInfo))
-            .removeClass('hidden');
-        mUImageInitImageViewer();
-    }
-};
-
-mUImageModule.itemSelector.onItemChanged = function ()
-{
-    var baseId, itemSelector, preview;
-
-    baseId = mUImageModule.itemSelector.baseId;
-    itemSelector = jQuery('#' + baseId + 'Id').get(0);
-    preview = window.atob(mUImageModule.itemSelector.items[baseId][itemSelector.selectedIndex].previewInfo);
-
-    jQuery('#' + baseId + 'PreviewContainer').html(preview);
-    mUImageModule.itemSelector.selectedId = jQuery('#' + baseId + 'Id').val();
-    mUImageInitImageViewer();
-};
+jQuery(document).ready(function() {
+    mUImageModule.finder.onLoad();
+});

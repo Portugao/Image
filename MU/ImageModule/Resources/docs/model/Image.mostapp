@@ -1,0 +1,298 @@
+application "Image" {
+    vendor "MU"
+    author "Michael Ueberschaer"
+    email "info@homepages-mit-zikula.de"
+    url "https://homepages-mit-zikula.de"
+    version "1.4.0"
+    prefix "image"
+    generatorSettings {
+        settingsContainer "Einstellungen"
+        targetCoreVersion ZK15
+        generateMailzApi false
+        generateModerationBlock true
+        generateNewsletterPlugin false
+        generatePendingContentSupport true
+        generateAtomTemplates false
+        generateCsvTemplates false
+        generateXmlTemplates false
+        generateJsonTemplates false
+        generateKmlTemplates false
+        generateIcsTemplates false
+        generateOnlyBaseClasses false
+        versionAllGeneratedFiles false
+        generatePoweredByBacklinksIntoFooterTemplates false
+        generateTests false
+        writeModelToDocs true
+        skipFiles "README.md,\r\n.gitignore,\r\nResources/public/images/admin.png"
+        markFiles "ImageModuleInstaller.php,\r\nContainer/LinkContainer.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nForm/Type/AlbumType.php,\r\nHelper/ControllerHelper.php,\r\nHelper/ViewHelper.php,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,\r\nTwig/TwigExtension.php"
+    }
+    entities {
+        entity "album" leading categorisable {
+            nameMultiple "albums"
+            displayPattern "#title#"
+            fields {
+                string "title" unique,
+                text "description" {
+                    mandatory false
+                },
+                integer "parent_id" nullable {
+                    dbName "parent_id" defaultValue ""
+                    mandatory false
+                },
+                list "albumAccess" {
+                    items {
+                        listItem  "All" ( "all" ),
+                        listItem  "Users" ( "users" ) { documentation "only registered users" image "only registered users" },
+                        listItem  "Friends" ( "friends" ),
+                        
+                    listItem  "knownPassword" ( "known" )
+                    }
+                },
+                string "passwordAccess" password {
+                    mandatory false
+                },
+                string "myFriends" {
+                    mandatory false
+                },
+                boolean "notInFrontend" ajaxTogglability {
+                    defaultValue ""
+                    mandatory false
+                }
+            ,
+                integer "pos" {
+                    defaultValue "1"
+                    visible false
+                }
+            }
+            actions {
+                mainAction "Main",
+                viewAction "View",
+                displayAction "Display",
+                editAction "Edit",
+                deleteAction "Delete"
+            }
+        },
+        entity "picture" {
+            nameMultiple "pictures"
+            displayPattern "#title#"
+            fields {
+                string "title" {
+                    defaultValue ""
+                    mandatory false
+                },
+                text "description" {
+                    defaultValue ""
+                    mandatory false
+                },
+                upload "imageUpload" {
+                    maxSize "200k"
+                    minWidth 400
+                    maxWidth 1000
+                    minHeight 400
+                    maxHeight 1000
+                detectCorrupted true
+                },
+                integer "imageView" {
+                    defaultValue ""
+                    mandatory false
+                displayType DISPLAY
+                visible false
+                },
+                boolean "albumImage" {
+                    defaultValue ""
+                    mandatory false
+                },
+                integer "pos"
+            {
+                    defaultValue "1"
+                visible false
+                }
+            }
+            actions {
+                mainAction "Main",
+                viewAction "View",
+                displayAction "Display",
+                editAction "Edit",
+                deleteAction "Delete"
+            }
+        }
+    ,
+        entity "avatar" categorisable {
+            nameMultiple "avatars"
+            displayPattern "#title#"
+            workflow NONE
+            skipHookSubscribers true
+            fields {
+                string "title" {
+                    documentation ""
+                },
+                text "description" nullable {
+                    documentation "Here you can enter, for which use cases this avatar is."
+                    mandatory false
+                },
+                upload "avatarUpload" {
+                    maxSize "100k"
+                    minWidth 200
+                    maxWidth 600
+                    minHeight 200
+                    maxHeight 600
+                    allowLandscape false
+                    allowPortrait false
+                detectCorrupted true
+                }
+            ,
+                list "supportedModules" multiple {
+                    documentation "Be sure that you set the supported module in a logic way!"
+                    defaultValue ""
+                    items {
+                        
+                    listItem   "All" ( "all" ),
+                        listItem "MUImageModule" ( "MUImageModule" )
+                    }
+                }
+            }
+            actions {
+                mainAction "Index",
+                viewAction "View",
+                displayAction "Display",
+                editAction "Edit",
+                deleteAction "Delete"
+            }
+        }
+    }
+    relations {
+        one2many bidirectional {
+            source "album"
+            sourceAlias "album"
+            sourceField "parent_id"
+            target "album"
+            targetAlias "albums"
+        },
+        
+    one2many bidirectional {
+            source "album"
+            sourceAlias "album"
+            target "picture"
+            targetAlias "pictures"
+        }
+    }
+    variables {
+        varContainer "General" {
+            vars {
+                boolVar "supportCategoriesForAlbums" ,
+                boolVar "supportCategoriesForAvatars" , boolVar "supportSubAlbums" , boolVar "userDeletePictures" {
+                    value ""
+                }
+            ,
+                boolVar "slideshow1"
+            ,
+                boolVar "useAvatars",
+                boolVar "useWatermark"
+            ,
+                boolVar "useExtendedFeatures" {
+                    documentation "Do you want to support sub albums?\r\nDo you want to limit creating of albums, subalbums or pictures?\r\nDo you want set a group for common albums?\r\nDo you want to give the option to rule the access to albums?\r\nDo you want to use Categories for Albums or Avatars?\r\n\r\nThen you can enable these features here!"
+                }
+            }
+        },
+        varContainer "Slideshows" {
+            sortOrder 4
+            vars {
+                intVar "slide1Interval" {
+                    value "4000"
+                },
+                intVar "slide1Speed" {
+                    value "1000"
+                }
+            }
+        }
+    , varContainer "uploadHandler" { sortOrder 3 vars {
+                intVar "fileSizeForPictures" {
+                    value "102400"
+                }, intVar "fileSizeForAvatars" , intVar "fileSizesForZip", intVar"minWidthForPictures" {
+                    value "400"
+                }, intVar"maxWidthForPictures", intVar"maxHeightForPictures", intVar "minWidthForAvatars" , intVar "maxWidthForAvatars" ,
+                intVar "maxHeightForAvatars" ,
+                boolVar "createSeveralPictures", intVar "firstWidth" {
+                    documentation "Width for the first additional picture"
+                }, intVar "firstHeight" {
+                    documentation "Height for the first additional picture"
+                }, intVar "secondWidth" {
+                    documentation "Width for the second additional picture"
+                }, intVar "secondHeight" {
+                    documentation "Height for the second additional picture"
+                }, intVar "thirdWidth" {
+                    documentation "Width for the third additional picture"
+                }, intVar "thirdHeight" {
+                    documentation "Height for the third additional picture"
+                }
+            }
+        } ,
+        varContainer "Avatars" {
+            sortOrder 5
+            vars {
+                textVar "numberHeightAndNameOfAvatars" {
+                    documentation "Here you can set, how many avatar sizes with which name you wish."
+                    value "200,thumb;400,view;600,normal"
+                }
+            ,
+                boolVar "shrink"
+            }
+        }
+    ,
+        varContainer "DisplaySettings" {
+            sortOrder 2
+            vars {
+                intVar "albumEntriesPerPageInBackend" {
+                    documentation "The amount of albums shown per page in the backend"
+                    value "10"
+                },
+                intVar "pictureEntriesPerPageInBackend" {
+                    documentation "The amount of pictures shown per page in the backend"
+                    value "10"
+                },
+                intVar "avatarEntriesPerPageInBackend" {
+                    documentation "The amount of avatars shown per page in the backend"
+                    value "10"
+                },
+                boolVar "countImageView" {
+                    value "1"
+                },
+                intVar "numberParentAlbums" {
+                    documentation "How many main albums may a user create"
+                    value "1"
+                },
+                intVar "numberSubAlbums" {
+                    documentation "How many sub albums may a user create"
+                    value "2"
+                },
+                intVar "numberPictures" {
+                    documentation "How many pictures may a user create"
+                    value "20"
+                },
+                listVar "groupForCommonAlbums" { items { listVarItem default "None" } } ,
+                listVar "kindOfShowSubAlbums" { items {  listVarItem "Links" ,  listVarItem default "Panel" } } ,
+                boolVar "breadcrumbsInFrontend" ,
+                textVar "ending" {
+                    value "html"
+                }
+            }
+        }
+    ,
+        varContainer "watermark" {
+            sortOrder 6
+            vars {
+                textVar "watermark" {
+                    documentation "Path to the image that is for the watermark"
+                },
+                intVar "bottom" {
+                    documentation "If top is set, bottom has no effect"
+                },
+                intVar "left" {
+                    documentation "If left is set, right has no effect"
+                },
+                intVar "right",
+                intVar "top"
+            }
+        }
+    }
+    }

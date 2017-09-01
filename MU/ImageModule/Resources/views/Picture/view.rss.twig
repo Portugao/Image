@@ -36,18 +36,18 @@
 {% endblock %}
 {% block entry_content %}
     <title><![CDATA[{% if picture.updatedDate|default %}{{ picture.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ picture|muimagemodule_formattedTitle|notifyFilters('muimagemodule.filterhook.pictures')|safeHtml }}]]></title>
-    <link>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.getId() }) }}</link>
-    <guid>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.getId() }) }}</guid>
+    <link>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', {'id': picture.getId()}) }}</link>
+    <guid>{{ url('muimagemodule_picture_' ~ routeArea ~ 'display', {'id': picture.getId()}) }}</guid>
     {% if picture.createdBy|default and picture.createdBy.getUid() > 0 %}
         {% set creatorAttributes = picture.createdBy.getAttributes() %}
         <author>{{ picture.createdBy.getEmail() }} ({{ creatorAttributes.get('realname')|default(creatorAttributes.get('name'))|default(picture.createdBy.getUname()) }})</author>
     {% endif %}
     <description>
         <![CDATA[
-        {{ picture.description|replace({ '<br>': '<br />' }) }}
+        {{ picture.description|replace({'<br>': '<br />'}) }}
         ]]>
     </description>
     {% if picture.createdDate|default %}
-        <pubDate>{{ picture.createdDate|date('a, d b Y T +0100') }}</pubDate>
+        <pubDate>{{ picture.createdDate|date('r') }}</pubDate>
     {% endif %}
 {% endblock %}

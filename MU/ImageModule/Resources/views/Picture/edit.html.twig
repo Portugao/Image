@@ -33,10 +33,10 @@
         
         {{ include(
             '@MUImageModule/Album/includeSelectOne.html.twig',
-            { group: 'picture', alias: 'album', aliasReverse: 'pictures', mandatory: false, idPrefix: 'muimagePicture_Album', linkingItem: picture, displayMode: 'choices' }
+            {group: 'picture', heading: __('Album'), alias: 'album', mandatory: false, idPrefix: 'imagePicture_Album', linkingItem: picture, displayMode: 'choices'}
         ) }}
         {% if mode != 'create' %}
-            {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', { obj: picture }) }}
+            {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', {obj: picture}) }}
         {% endif %}
         
         {% if formHookTemplates|length > 0 %}
@@ -58,7 +58,7 @@
         {% endif %}
         
         {# include return control #}
-        {% if mode == 'create' %}
+        {% if mode == 'create' and form.repeatCreation is defined %}
             <fieldset>
                 <legend>{{ __('Return control') }}</legend>
                 {{ form_row(form.repeatCreation) }}
@@ -77,24 +77,17 @@
         </div>
         {{ form_end(form) }}
         {% set hookId = mode != 'create' ? picture.id : null %}
-        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.form_edit', id=hookId) %}
-        {% if hooks is iterable and hooks|length > 0 %}
-            <h3>{{ __('Hooks') }}</h3>
-            {% for providerArea, hook in hooks if providerArea != 'provider.scribite.ui_hooks.editor' %}
-                <h4>{{ providerArea }}</h4>
-                {{ hook }}
-            {% endfor %}
-        {% endif %}
+        {{ notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.form_edit', id=hookId) }}
         
     </div>
 {% endblock %}
 {% block footer %}
     {{ parent() }}
-    {% set editImage = '<span class="fa fa-pencil-square-o"></span>' %}
-    {% set removeImage = '<span class="fa fa-trash-o"></span>' %}
     {% set formInitScript %}
         <script type="text/javascript">
         /* <![CDATA[ */
+            var mUImageInlineEditHandlers = [];
+            var mUImageEditHandler = null;
             
             ( function($) {
                 $(document).ready(function() {

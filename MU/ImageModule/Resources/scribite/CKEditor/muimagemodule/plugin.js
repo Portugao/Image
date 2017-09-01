@@ -12,7 +12,7 @@ CKEDITOR.plugins.add('muimagemodule', {
         editor.ui.addButton('muimagemodule', {
             label: editor.lang.muimagemodule.title,
             command: 'insertMUImageModule',
-            icon: this.path.replace('Scribite/CKEditor/muimagemodule', 'public/images') + 'admin.png'
+            icon: this.path.replace('scribite/CKEditor/muimagemodule', 'public/images') + 'admin.png'
         });
     }
 });

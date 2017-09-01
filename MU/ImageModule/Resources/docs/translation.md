@@ -16,7 +16,7 @@ Note you can even include custom views in `app/Resources/MUImageModule/views/` a
 
 `php app/console translation:extract en --bundle=MUImageModule --enable-extractor=jms_i18n_routing --output-format=po --dir=./modules/MU/ImageModule --dir=./app/Resources/MUImageModule`
 
-For questions and other remarks visit our homepage http://www.webdesign-in-bremen.com.
+For questions and other remarks visit our homepage https://homepages-mit-zikula.de.
 
-Michael Ueberschaer (kontakt@webdesign-in-bremen.com)
-http://www.webdesign-in-bremen.com
+Michael Ueberschaer (info@homepages-mit-zikula.de)
+https://homepages-mit-zikula.de

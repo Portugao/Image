@@ -12,18 +12,20 @@
         <fieldset>
             <h3>{{ __('Quick navigation') }}</h3>
             {% set categoriesEnabled = featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
-            {% if (categoryFilter is defined and categoryFilter != true) or not categoriesEnabled %}
-                <div class="hidden">
-            {% else %}
-                <div class="row">
-                    <div class="col-sm-3">
-            {% endif %}
-                {{ form_row(quickNavForm.categories) }}
-            {% if (categoryFilter is defined and categoryFilter != true) or not categoriesEnabled %}
-                </div>
-            {% else %}
+            {% if categoriesEnabled %}
+                {% if (categoryFilter is defined and categoryFilter != true) %}
+                    <div class="hidden">
+                {% else %}
+                    <div class="row">
+                        <div class="col-sm-3">
+                {% endif %}
+                    {{ form_row(quickNavForm.categories) }}
+                {% if (categoryFilter is defined and categoryFilter != true) %}
                     </div>
-                    <div class="col-sm-9">
+                {% else %}
+                        </div>
+                        <div class="col-sm-9">
+                {% endif %}
             {% endif %}
             {% if albumFilter is defined and albumFilter != true %}
                 <div class="hidden">
@@ -76,10 +78,12 @@
                 </div>
             {% endif %}
             {{ form_widget(quickNavForm.updateview) }}
-            {% if (categoryFilter is defined and categoryFilter != true) or not categoriesEnabled %}
-            {% else %}
+            {% if categoriesEnabled %}
+                {% if categoryFilter is defined and categoryFilter != true %}
+                {% else %}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             {% endif %}
         </fieldset>
     </div>

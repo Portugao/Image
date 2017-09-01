@@ -5,10 +5,10 @@
 {% block title %}
     {% set templateTitle = picture|muimagemodule_formattedTitle|default(__('Picture')) %}
     {{ templateTitle|notifyFilters('muimagemodule.filter_hooks.pictures.filter')|safeHtml }}
-    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: picture, area: routeArea, context: 'display' }) %}
+    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: picture, area: routeArea, context: 'display'}) %}
     <div class="dropdown">
         <a id="itemActions{{ picture.getKey() }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
-        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
+        {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:actions.html.twig'}) }}
     </div>
 {% endblock %}
 {% block admin_page_icon 'eye' %}
@@ -43,7 +43,7 @@
             <dt>{{ __('Image view') }}</dt>
             <dd>{{ picture.imageView }}</dd>
         {% endif %}
-        {#% if picture.albumImage is not empty %}
+        {% if picture.albumImage is not empty %}
             <dt>{{ __('Album image') }}</dt>
             <dd>{% if picture.albumImage %}
                 <i class="fa fa-check" title="{{ __('Yes') }}"></i>
@@ -55,15 +55,15 @@
         {% if picture.pos is not empty %}
             <dt>{{ __('Pos') }}</dt>
             <dd>{{ picture.pos }}</dd>
-        {% endif %#}
+        {% endif %}
         {% if picture.album|default %}
             <dt>{{ __('Album') }}</dt>
             <dd>
               {% if not isQuickView %}
-                  <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.getId() }) }}">{% spaceless %}
+                  <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId()}) }}">{% spaceless %}
                     {{ picture.album|muimagemodule_formattedTitle }}
                   {% endspaceless %}</a>
-                  <a id="albumItem{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.getId(), 'raw': 1 }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                  <a id="albumItem{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
               {% else %}
                   {{ picture.album|muimagemodule_formattedTitle }}
               {% endif %}
@@ -72,15 +72,11 @@
         
     </dl>
 
-    {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: picture }) }}
+    {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', {obj: picture}) }}
 
     {{ block('display_hooks') }}
 </div>
 {% endblock %}
 {% block display_hooks %}
-    {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', id=picture.getKey(), urlObject=currentUrlObject) %}
-    {% for providerArea, hook in hooks if providerArea != 'provider.scribite.ui_hooks.editor' %}
-        <h4>{{ providerArea }}</h4>
-        {{ hook }}
-    {% endfor %}
+    {{ notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', id=picture.getKey(), urlObject=currentUrlObject) }}
 {% endblock %}

@@ -75,10 +75,10 @@
          */
         getInfo: function () {
             return {
-                longname: 'MUImageModule for tinymce',
+                longname: 'MUImageModule for TinyMCE',
                 author: 'Michael Ueberschaer',
-                authorurl: 'http://www.webdesign-in-bremen.com',
-                infourl: 'http://www.webdesign-in-bremen.com',
+                authorurl: 'https://homepages-mit-zikula.de',
+                infourl: 'https://homepages-mit-zikula.de',
                 version: '1.4.0'
             };
         }

@@ -36,8 +36,8 @@
 {% endblock %}
 {% block entry_content %}
     <title><![CDATA[{% if avatar.updatedDate|default %}{{ avatar.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ avatar|muimagemodule_formattedTitle }}]]></title>
-    <link>{{ url('muimagemodule_avatar_' ~ routeArea ~ 'display', { 'id': avatar.getId() }) }}</link>
-    <guid>{{ url('muimagemodule_avatar_' ~ routeArea ~ 'display', { 'id': avatar.getId() }) }}</guid>
+    <link>{{ url('muimagemodule_avatar_' ~ routeArea ~ 'display', {'id': avatar.getId()}) }}</link>
+    <guid>{{ url('muimagemodule_avatar_' ~ routeArea ~ 'display', {'id': avatar.getId()}) }}</guid>
     {% if avatar.createdBy|default and avatar.createdBy.getUid() > 0 %}
         {% set creatorAttributes = avatar.createdBy.getAttributes() %}
         <author>{{ avatar.createdBy.getEmail() }} ({{ creatorAttributes.get('realname')|default(creatorAttributes.get('name'))|default(avatar.createdBy.getUname()) }})</author>
@@ -45,10 +45,10 @@
     <category><![CDATA[{{ __('Categories') }}: {% for propName, catMapping in avatar.categories %}{{ catMapping.category.display_name[lang] }}{% if not loop.last %}, {% endif %}{% endfor %}]]></category>
     <description>
         <![CDATA[
-        {{ avatar.description|replace({ '<br>': '<br />' }) }}
+        {{ avatar.description|replace({'<br>': '<br />'}) }}
         ]]>
     </description>
     {% if avatar.createdDate|default %}
-        <pubDate>{{ avatar.createdDate|date('a, d b Y T +0100') }}</pubDate>
+        <pubDate>{{ avatar.createdDate|date('r') }}</pubDate>
     {% endif %}
 {% endblock %}

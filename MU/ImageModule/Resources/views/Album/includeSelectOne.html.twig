@@ -4,11 +4,11 @@
 {% endif %}
 {% if tabs|default(false) == true %}
     <div role="tabpanel" class="tab-pane fade" id="tabAlbum" aria-labelledby="albumTab">
-        <h3>{{ __('Album') }}</h3>
+        <h3>{{ heading|default ? heading : __('Album') }}</h3>
 {% else %}
     <fieldset class="album">
 {% endif %}
-    <legend>{{ __('Album') }}</legend>
+    <legend>{{ heading|default ? heading : __('Album') }}</legend>
     {% if displayMode == 'choices' %}
         {{ form_row(attribute(form, alias)) }}
     {% elseif displayMode == 'autocomplete' %}
@@ -16,7 +16,7 @@
         <div class="muimagemodule-relation-leftside">
             {{ include(
                 '@MUImageModule/Album/includeSelectItemListOne.html.twig',
-                attribute(linkingItem, alias) is defined ? { item: attribute(linkingItem, alias) } : {}
+                attribute(linkingItem, alias) is defined ? {item: attribute(linkingItem, alias)} : {}
             ) }}
         </div>
         <br style="clear: both" />

@@ -5,10 +5,10 @@
 {% block title %}
     {% set templateTitle = avatar|muimagemodule_formattedTitle|default(__('Avatar')) %}
     {{ templateTitle }}
-    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: avatar, area: routeArea, context: 'display' }) %}
+    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: avatar, area: routeArea, context: 'display'}) %}
     <div class="dropdown">
         <a id="itemActions{{ avatar.getKey() }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
-        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
+        {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:actions.html.twig'}) }}
     </div>
 {% endblock %}
 {% block admin_page_icon 'eye' %}
@@ -47,9 +47,9 @@
     </dl>
 
     {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'avatar') %}
-        {{ include('@MUImageModule/Helper/includeCategoriesDisplay.html.twig', { obj: avatar }) }}
+        {{ include('@MUImageModule/Helper/includeCategoriesDisplay.html.twig', {obj: avatar}) }}
     {% endif %}
-    {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', { obj: avatar }) }}
+    {{ include('@MUImageModule/Helper/includeStandardFieldsDisplay.html.twig', {obj: avatar}) }}
 
 </div>
 {% endblock %}

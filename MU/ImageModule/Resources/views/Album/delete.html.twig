@@ -4,7 +4,7 @@
 {% block admin_page_icon 'trash-o' %}
 {% block content %}
     <div class="muimagemodule-album muimagemodule-delete">
-        <p class="alert alert-warning">{{ __f('Do you really want to delete this album: "%name%" ?', { '%name%': album|muimagemodule_formattedTitle }) }}</p>
+        <p class="alert alert-warning">{{ __f('Do you really want to delete this album: "%name%" ?', {'%name%': album|muimagemodule_formattedTitle}) }}</p>
 
         {% form_theme deleteForm with [
             '@MUImageModule/Form/bootstrap_3.html.twig',
@@ -35,13 +35,5 @@
     </div>
 {% endblock %}
 {% block display_hooks %}
-    {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.form_delete', id=album.getKey()) %}
-    {% if hooks is iterable and hooks|length > 0 %}
-        {% for providerArea, hook in hooks %}
-            <fieldset>
-                {# <legend>{{ hookName }}</legend> #}
-                {{ hook }}
-            </fieldset>
-        {% endfor %}
-    {% endif %}
+    {{ notifyDisplayHooks(eventName='muimagemodule.ui_hooks.albums.form_delete', id=album.getKey()) }}
 {% endblock %}

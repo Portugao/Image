@@ -6,7 +6,7 @@
    Note this step is optional as the install process can create these folders, too.
 4. Make the directory `/userdata/MUImageModule/` writable including all sub folders.
 
-For questions and other remarks visit our homepage http://www.webdesign-in-bremen.com.
+For questions and other remarks visit our homepage https://homepages-mit-zikula.de.
 
-Michael Ueberschaer (kontakt@webdesign-in-bremen.com)
-http://www.webdesign-in-bremen.com
+Michael Ueberschaer (info@homepages-mit-zikula.de)
+https://homepages-mit-zikula.de

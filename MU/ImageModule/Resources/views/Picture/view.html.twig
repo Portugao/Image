@@ -7,7 +7,7 @@
 
     {{ block('page_nav_links') }}
 
-    {{ include('@MUImageModule/Picture/viewQuickNav.html.twig', { workflowStateFilter: false }) }}{# see template file for available options #}
+    {{ include('@MUImageModule/Picture/viewQuickNav.html.twig', {workflowStateFilter: false}) }}{# see template file for available options #}
 
     {% if routeArea == 'admin' %}
     <form action="{{ path('muimagemodule_picture_' ~ routeArea ~ 'handleselectedentries') }}" method="post" id="picturesViewForm" class="form-horizontal" role="form">
@@ -65,17 +65,17 @@
                     </td>
                 {% endif %}
                 <td id="itemActions{{ picture.getKey() }}" headers="hItemActions" class="fixed-column actions nowrap z-w02">
-                    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: picture, area: routeArea, context: 'view' }) %}
+                    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: picture, area: routeArea, context: 'view'}) %}
                     <div class="dropdown">
                         <a id="itemActions{{ picture.getKey() }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
-                        {{ knp_menu_render(itemActions, { template: 'ZikulaMenuModule:Override:actions.html.twig' }) }}
+                        {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:actions.html.twig'}) }}
                     </div>
                 </td>
                 <td headers="hTitle" class="text-left">
-                    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': picture.getId() }) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ picture.title|notifyFilters('muimagemodule.filterhook.pictures')|safeHtml }}</a>
+                    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', {'id': picture.getId()}) }}" title="{{ __('View detail page')|e('html_attr') }}">{{ picture.title|notifyFilters('muimagemodule.filterhook.pictures')|safeHtml }}</a>
                 </td>
                 <td headers="hDescription" class="text-left">
-                    {{ picture.description|safeHtml|truncate(50) }}
+                    {{ picture.description|striptags|truncate(50) }}
                 </td>
                 <td headers="hImageUpload" class="text-left">
                     {% if picture.imageUploadMeta|default %}
@@ -101,10 +101,10 @@
                 </td>
                 <td headers="hAlbum" class="text-left">
                     {% if picture.album|default %}
-                        <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.getId() }) }}">{% spaceless %}
+                        <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId()}) }}">{% spaceless %}
                           {{ picture.album|muimagemodule_formattedTitle }}
                         {% endspaceless %}</a>
-                        <a id="albumItem{{ picture.getKey() }}_rel_{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': picture.album.getId(), 'raw': 1 }) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                        <a id="albumItem{{ picture.getKey() }}_rel_{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
                     {% else %}
                         {{ __('Not set.') }}
                     {% endif %}
@@ -123,7 +123,7 @@
         </div>
         
         {% if all != 1 and pager|default %}
-            {{ pager({ rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_picture_' ~ routeArea ~ 'view'}) }}
+            {{ pager({rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_picture_' ~ routeArea ~ 'view'}) }}
         {% endif %}
     {% if routeArea == 'admin' %}
             <fieldset>
@@ -158,7 +158,7 @@
             <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
         {% else %}
             {% set linkTitle = __('Show all entries') %}
-            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', { all: 1 }) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', {all: 1}) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
         {% endif %}
     </p>
 {% endblock %}
@@ -166,9 +166,6 @@
     
     {# here you can activate calling display hooks for the view page if you need it #}
     {# % if routeArea != 'admin' %}
-        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', urlObject=currentUrlObject) %}
-        {% for providerArea, hook in hooks %}
-            {{ hook }}
-        {% endfor %}
+        {{ notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', urlObject=currentUrlObject) }}
     {% endif % #}
 {% endblock %}

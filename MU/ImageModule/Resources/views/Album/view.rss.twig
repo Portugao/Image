@@ -36,8 +36,8 @@
 {% endblock %}
 {% block entry_content %}
     <title><![CDATA[{% if album.updatedDate|default %}{{ album.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ album|muimagemodule_formattedTitle|notifyFilters('muimagemodule.filterhook.albums')|safeHtml }}]]></title>
-    <link>{{ url('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.getId() }) }}</link>
-    <guid>{{ url('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.getId() }) }}</guid>
+    <link>{{ url('muimagemodule_album_' ~ routeArea ~ 'display', {'id': album.getId()}) }}</link>
+    <guid>{{ url('muimagemodule_album_' ~ routeArea ~ 'display', {'id': album.getId()}) }}</guid>
     {% if album.createdBy|default and album.createdBy.getUid() > 0 %}
         {% set creatorAttributes = album.createdBy.getAttributes() %}
         <author>{{ album.createdBy.getEmail() }} ({{ creatorAttributes.get('realname')|default(creatorAttributes.get('name'))|default(album.createdBy.getUname()) }})</author>
@@ -45,10 +45,10 @@
     <category><![CDATA[{{ __('Categories') }}: {% for propName, catMapping in album.categories %}{{ catMapping.category.display_name[lang] }}{% if not loop.last %}, {% endif %}{% endfor %}]]></category>
     <description>
         <![CDATA[
-        {{ album.description|replace({ '<br>': '<br />' }) }}
+        {{ album.description|replace({'<br>': '<br />'}) }}
         ]]>
     </description>
     {% if album.createdDate|default %}
-        <pubDate>{{ album.createdDate|date('a, d b Y T +0100') }}</pubDate>
+        <pubDate>{{ album.createdDate|date('r') }}</pubDate>
     {% endif %}
 {% endblock %}

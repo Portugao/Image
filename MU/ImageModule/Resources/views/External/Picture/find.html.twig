@@ -8,13 +8,13 @@
             <ul class="nav nav-tabs">
             {% set activatedObjectTypes = getModVar('MUImageModule', 'enabledFinderTypes', []) %}
             {% if 'album' in activatedObjectTypes %}
-                <li{{ objectType == 'album' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'album', 'editor': editorName}) }}" title="{{ __('Search and select album') }}">{{ __('Albums') }}</a></li>
+                <li{{ objectType == 'album' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {objectType: 'album', editor: editorName}) }}" title="{{ __('Search and select album') }}">{{ __('Albums') }}</a></li>
             {% endif %}
             {% if 'picture' in activatedObjectTypes %}
-                <li{{ objectType == 'picture' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'picture', 'editor': editorName}) }}" title="{{ __('Search and select picture') }}">{{ __('Pictures') }}</a></li>
+                <li{{ objectType == 'picture' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {objectType: 'picture', editor: editorName}) }}" title="{{ __('Search and select picture') }}">{{ __('Pictures') }}</a></li>
             {% endif %}
             {% if 'avatar' in activatedObjectTypes %}
-                <li{{ objectType == 'avatar' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {'objectType': 'avatar', 'editor': editorName}) }}" title="{{ __('Search and select avatar') }}">{{ __('Avatars') }}</a></li>
+                <li{{ objectType == 'avatar' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {objectType: 'avatar', editor: editorName}) }}" title="{{ __('Search and select avatar') }}">{{ __('Avatars') }}</a></li>
             {% endif %}
             </ul>
         </div>
@@ -22,7 +22,7 @@
             '@MUImageModule/Form/bootstrap_3.html.twig',
             'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
         ] %}
-        {{ form_start(finderForm, {attr: { id: 'mUImageModuleSelectorForm' }}) }}
+        {{ form_start(finderForm, {attr: {id: 'mUImageModuleSelectorForm'}}) }}
         {{ form_errors(finderForm) }}
         <fieldset>
             <legend>{{ __('Search and select picture') }}</legend>
@@ -53,8 +53,8 @@
                                             {{ picture|muimagemodule_formattedTitle }}
                                         {% endif %}
                                     </a>
-                                    <input type="hidden" id="path{{ itemId }}" value="{{ path('muimagemodule_picture_display', { 'id': picture.getId() }) }}" />
-                                    <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_picture_display', { 'id': picture.getId() }) }}" />
+                                    <input type="hidden" id="path{{ itemId }}" value="{{ path('muimagemodule_picture_display', {'id': picture.getId()}) }}" />
+                                    <input type="hidden" id="url{{ itemId }}" value="{{ url('muimagemodule_picture_display', {'id': picture.getId()}) }}" />
                                     <input type="hidden" id="title{{ itemId }}" value="{{ picture|muimagemodule_formattedTitle|e('html_attr') }}" />
                                     <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if picture.description is not empty %}{{ picture.description }}{% endif %}
                                     {% endset %}{{ description|striptags|e('html_attr') }}" />
@@ -82,7 +82,7 @@
                 {{ form_row(finderForm.q) }}
             </div>
             <div>
-                {{ pager({ display: 'page', rowcount: pager.numitems, limit: pager.itemsperpage, posvar: 'pos', maxpages: 10, route: 'muimagemodule_external_finder'}) }}
+                {{ pager({display: 'page', rowcount: pager.numitems, limit: pager.itemsperpage, posvar: 'pos', maxpages: 10, route: 'muimagemodule_external_finder'}) }}
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-9">
@@ -101,14 +101,4 @@
         </fieldset>
     </div>
     #}
-
-    <script type="text/javascript">
-    /* <![CDATA[ */
-        ( function($) {
-            $(document).ready(function() {
-                mUImageModule.finder.onLoad();
-            });
-        })(jQuery);
-    /* ]]> */
-    </script>
 {% endblock %}

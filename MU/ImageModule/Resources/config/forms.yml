@@ -32,8 +32,8 @@ services:
         tags:
             - { name: form.type }
     
-    mu_image_module.form.handler.album:
-        class: MU\ImageModule\Form\Handler\Album\EditHandler
+    mu_image_module.form.handler.common:
+        abstract: true
         arguments:
             - "@kernel"
             - "@translator.default"
@@ -51,8 +51,11 @@ services:
             - "@mu_image_module.feature_activation_helper"
         calls:
             - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
-        tags:
-            - { name: form.type }
+    
+    
+    mu_image_module.form.handler.album:
+        class: MU\ImageModule\Form\Handler\Album\EditHandler
+        parent: mu_image_module.form.handler.common
     
     mu_image_module.form.type.album:
         class: MU\ImageModule\Form\Type\AlbumType
@@ -68,25 +71,7 @@ services:
     
     mu_image_module.form.handler.picture:
         class: MU\ImageModule\Form\Handler\Picture\EditHandler
-        arguments:
-            - "@kernel"
-            - "@translator.default"
-            - "@form.factory"
-            - "@request_stack"
-            - "@router"
-            - "@logger"
-            - "@zikula_permissions_module.api.permission"
-            - "@zikula_users_module.current_user"
-            - "@mu_image_module.entity_factory"
-            - "@mu_image_module.controller_helper"
-            - "@mu_image_module.model_helper"
-            - "@mu_image_module.workflow_helper"
-            - "@mu_image_module.hook_helper"
-            - "@mu_image_module.feature_activation_helper"
-        calls:
-            - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
-        tags:
-            - { name: form.type }
+        parent: mu_image_module.form.handler.common
     
     mu_image_module.form.type.picture:
         class: MU\ImageModule\Form\Type\PictureType
@@ -102,25 +87,7 @@ services:
     
     mu_image_module.form.handler.avatar:
         class: MU\ImageModule\Form\Handler\Avatar\EditHandler
-        arguments:
-            - "@kernel"
-            - "@translator.default"
-            - "@form.factory"
-            - "@request_stack"
-            - "@router"
-            - "@logger"
-            - "@zikula_permissions_module.api.permission"
-            - "@zikula_users_module.current_user"
-            - "@mu_image_module.entity_factory"
-            - "@mu_image_module.controller_helper"
-            - "@mu_image_module.model_helper"
-            - "@mu_image_module.workflow_helper"
-            - "@mu_image_module.hook_helper"
-            - "@mu_image_module.feature_activation_helper"
-        calls:
-            - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
-        tags:
-            - { name: form.type }
+        parent: mu_image_module.form.handler.common
     
     mu_image_module.form.type.avatar:
         class: MU\ImageModule\Form\Type\AvatarType
@@ -136,6 +103,15 @@ services:
         class: MU\ImageModule\Block\Form\Type\ItemListBlockType
         arguments:
             - "@translator.default"
+        tags:
+            - { name: form.type }
+    
+    mu_image_module.form.type.block.item:
+        class: MU\ImageModule\Block\Form\Type\ItemBlockType
+        arguments:
+            - "@translator.default"
+            - "@mu_image_module.entity_factory"
+            - "@mu_image_module.entity_display_helper"
         tags:
             - { name: form.type }
     
