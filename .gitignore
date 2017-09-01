@@ -10,3 +10,4 @@ phpunit.xml
 *twig.generated.yml
 *generated.css
 *generated.php
+*generated*
