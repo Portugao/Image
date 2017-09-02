@@ -69,6 +69,7 @@ class TwigExtension extends AbstractTwigExtension
         $functions[] = new \Twig_SimpleFunction('muimagemodule_checkAlbumAccess', [$this, 'checkAlbumAccess']);
         $functions[] = new \Twig_SimpleFunction('muimagemodule_giveImageOfAlbum', [$this, 'giveImageOfAlbum']);
         $functions[] = new \Twig_SimpleFunction('muimagemodule_breadcrumb', [$this, 'breadcrumb']);
+        $function [] = new \Twig_SimpleFunction('muimagemodule_avatar', [$this, 'avatar']);
         
         return $functions;
     }
@@ -117,6 +118,18 @@ class TwigExtension extends AbstractTwigExtension
     public function breadcrumb($albumId)
     {
     	$out = $this->controllerHelper->breadcrumb($albumId);
+    
+    	return $out;
+    }
+    
+    /**
+     * The muimagemodule_avatar function gives avatar in different modules.
+     *
+     * @return string The output of the plugin
+     */
+    public function avatar($module)
+    {
+    	$out = $this->controllerHelper->avatar($module);
     
     	return $out;
     }
