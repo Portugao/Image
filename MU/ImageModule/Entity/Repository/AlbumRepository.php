@@ -21,5 +21,22 @@ use MU\ImageModule\Entity\Repository\Base\AbstractAlbumRepository;
  */
 class AlbumRepository extends AbstractAlbumRepository
 {
-    // feel free to add your own methods here, like for example reusable DQL queries
+    /**
+     * Builds a generic Doctrine query supporting WHERE and ORDER BY.
+     *
+     * @param string  $where    The where clause to use when retrieving the collection (optional) (default='')
+     * @param string  $orderBy  The order-by clause to use when retrieving the collection (optional) (default='')
+     * @param boolean $useJoins Whether to include joining related objects (optional) (default=true)
+     * @param boolean $slimMode If activated only some basic fields are selected without using any joins (optional) (default=false)
+     *
+     * @return QueryBuilder Query builder instance to be further processed
+     */
+    public function genericBaseQuery($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
+    {
+        $qb = parent::genericBaseQuery($where, $orderBy, $useJoins, $slimMode);
+        
+        $qb->andWhere('tbl.album is NULL');
+    
+        return $qb;
+    }
 }
