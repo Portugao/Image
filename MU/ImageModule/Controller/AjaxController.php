@@ -77,6 +77,60 @@ class AjaxController extends AbstractAjaxController
     {
         return parent::toggleFlagAction($request);
     }
+    
+    /**
+     * Changes a given state (boolean field) by switching between true and false.
+     *
+     * @Route("/savePicturePosition", options={"expose"=true})
+     * @Method("GET")
+     *
+     * @param Request $request Current request instance
+     *
+     * @return JsonResponse
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     */
+    public function savePicturePositionAction(Request $request)
+    {
+    	return $this->savePicturePosition($request);
+    }
+    
+    public function savePicturePosition($request)
+    {
+    	if (!$this->hasPermission('MUImageModule::Ajax', '::', ACCESS_EDIT)) {
+    		throw new AccessDeniedException();
+    	}
+    	 
+    	$pictures = $request->query->get('pictures');
+    	$pictures = explode(',', $pictures);
+    	 
+    	if ($pictures == '') {
+    		$result = $this->__('Error: invalid input.');
+    	}
+    	 
+    	// select data from data source
+    	$entityFactory = $this->get('mu_image_module.entity_factory');
+    	$repository = $entityFactory->getRepository('picture');
+    	 
+    	$index = 0;
+    	foreach ($pictures as $picture) {
+    		 
+    		$index = $index + 1;
+    		$thisPicture = $repository->selectById($picture);
+    		$thisPicture->setPos($index);
+    		//$entityManager->flush();
+    		/*$thisalbum = $thispicture->getAlbum();
+    		 $thisAlbumId = $thisalbum['id'];*/
+    		 
+    		// save entity back to database
+    		$entityFactory->getObjectManager()->flush();
+    	}
+    
+    	// return response
+    	return new JsonResponse([
+    			'message' => $this->__('The setting has been successfully changed.')
+    	]);
+    }
 
     // feel free to add your own ajax controller methods here
 }

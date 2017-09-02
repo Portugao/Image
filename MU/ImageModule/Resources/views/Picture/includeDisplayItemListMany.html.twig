@@ -9,7 +9,7 @@
 	{% if items is defined and items != null %}
 	<ul id="sortable" class="row">
 		{% for picture in items %}
-			<li class="ui-state-default col-xs-4 col-sm-3 col-md-3 col-lg-2">
+			<li id="{{ picture.id }}" class="ui-state-default col-xs-4 col-sm-3 col-md-3 col-lg-2">
 				<div class="thumbnail">
 				    {% if extended == 1 %}
     			        {% set groupMember = muimagemodule_checkGroupMember(picture.createdBy.getUid()) %}
@@ -83,9 +83,19 @@
     var MU = jQuery.noConflict();
 	MU(document).ready(function(MU) {	
     {% if currentUser.uid == 2 or currentUser.uid == album.createdBy.getUid() or groupMember == 1 %}
-        MU(function() {
-            MU( "#sortable" ).sortable();
-        });
+		MU('#sortable').sortable({
+			update: function(event, ui) {
+				var sortedIDs = MU(this).sortable('toArray').toString();
+				MU('#action-for-albums').after('<img class="dragimg" src="../../images/ajax/indicator_circle.gif" />');
+				MU.get('{{ path('muimagemodule_ajax_savepictureposition') }}',{pictures:sortedIDs} , function(data) {
+                if(data) {
+                    MU('.dragimg').hide(2000).remove();
+                    MU('#action-for-albums').delay(2000).after('<span id="movemessage">' + data.message + '</span>');
+                    MU('#movemessage').delay(4000).hide(1000).remove();
+                }
+             });
+			}
+		});
     {% endif %}
     
     	MU(function () {
