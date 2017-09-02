@@ -30,7 +30,7 @@
     				</a>
     				{% else %}
     				<a data-placement="top" data-toggle="tooltip" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.id }) }}" title="{{ album.title }}{% if album.description != '' %} - {{ album.description|safeHtml }}{% endif %}">
-   					<img src="/modules/MU/ImageModule/Resources/public/images/placeholder.png" style="width: 100%;" />
+   					<img src="../../../modules/MU/ImageModule/Resources/public/images/placeholder.png" style="width: 100%;" />
     				</a>
     				{% endif %}    		 		
     				<div class="caption album-view-info">
@@ -85,7 +85,7 @@
 	    {% endfor %}
 	</ul>
         {% if all != 1 and pager|default %}
-            {{ pager({ rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_album_' ~ routeArea ~ 'view'}) }}
+            {{ pager({rowcount: pager.amountOfItems, limit: pager.itemsPerPage, display: 'page', route: 'muimagemodule_album_' ~ routeArea ~ 'view'}) }}
         {% endif %}
 	{% else %}
 	    {{ __('No albums') }}
