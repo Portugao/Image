@@ -162,6 +162,7 @@ abstract class AbstractAlbumEntity extends EntityAccess
      *
      * @ORM\OneToMany(targetEntity="MU\ImageModule\Entity\PictureEntity", mappedBy="album")
      * @ORM\JoinTable(name="mu_image_albumpictures")
+     * @ORM\OrderBy({"pos" = "DESC"})
      * @var \MU\ImageModule\Entity\PictureEntity[] $pictures
      */
     protected $pictures = null;
