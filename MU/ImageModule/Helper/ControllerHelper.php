@@ -13,6 +13,9 @@
 namespace MU\ImageModule\Helper;
 
 use MU\ImageModule\Helper\Base\AbstractControllerHelper;
+use LogUtil;
+use ModUtil;
+use UserUtil;
 
 /**
  * Helper implementation class for controller layer methods.
@@ -167,6 +170,7 @@ class ControllerHelper extends AbstractControllerHelper
 		
 		$repository = $this->entityFactory->getRepository('album');
 		$album = $repository->selectById($albumId);
+
 		if (!isset($params['out'])) {
 			$out = '';
 		} else {
@@ -182,6 +186,7 @@ class ControllerHelper extends AbstractControllerHelper
 		} else {
 			$thisAlbum = $params['thisAlbum'];
 		}
+
 		
 		if ($thisAlbum['parent_id'] != NULL) {
 			$albumParent = $repository->selectById($album['parent_id']);
@@ -197,10 +202,44 @@ class ControllerHelper extends AbstractControllerHelper
 				\LogUtil::registerStatus('ParentId: ' . $parentAlbumId);
 				self::breadcrumb($parentAlbumId, $params);
 			} else {
-				$url = ModUtil::url('MUImage', 'user', 'main');
+				$url = ModUtil::url('MUImageModule', 'album', 'view');
 				$out = '<ol class="breadcrumb">' . '<li><a href="' . $url . '">' . __('Albums') . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol>';
 
 				return $out;
+			}
+		}
+		
+		/**
+		 *
+		 * @param string $module
+		 * @return unknown|array
+		 */
+		public function avatar($module, $width)
+		{
+			$where = '';
+			$avatar = '';
+			$where = $module . 'IN (tbl.supportesModules)';
+			$where .= ' OR ';
+			$where .= 'tbl.supportedModules = All';
+
+			$avatarRespository = $this->entityFactory->getRepository('avatar');
+			$avatar = $avatarRespository->selectWhere($where);
+		
+			if ($albumpicture) {
+				if (!is_array($albumpicture)) {
+					$where2 = '';
+					$where2 = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
+					$pictures = $this->selectionHelper->getEntities('picture', [], $where2);
+				} else {
+					return $albumpicture[0];
+				}
+				if (is_array($pictures)) {
+					return $pictures[0];
+				} else {
+					return '';
+				}
+			} else {
+				return '';
 			}
 		}
 }
