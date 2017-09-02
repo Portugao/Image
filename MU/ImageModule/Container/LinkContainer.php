@@ -33,6 +33,8 @@ class LinkContainer extends AbstractLinkContainer
         $allowedObjectTypes = $this->controllerHelper->getObjectTypes('api', $contextArgs);
 
         $permLevel = LinkContainerInterface::TYPE_ADMIN == $type ? ACCESS_ADMIN : ACCESS_READ;
+        $extended = $this->variableApi->get('MUImageModule', 'useExtendedFeatures');
+        $avatars = $this->variableApi->get('MUImageModule', 'useAvatars');
 
         // Create an array of links to return
         $links = [];
@@ -66,7 +68,9 @@ class LinkContainer extends AbstractLinkContainer
 
             if (true === $this->variableApi->get('MUImageModule', 'linkOwnAvatarsOnAccountPage', true)) {
                 $objectType = 'avatar';
-                if ($this->permissionApi->hasPermission($this->getBundleName() . ':' . ucfirst($objectType) . ':', '::', ACCESS_READ)) {
+                if ($this->permissionApi->hasPermission($this->getBundleName() . ':' . ucfirst($objectType) . ':', '::', ACCESS_READ)
+                    && $extended == true
+        	        && $avatars == true) {
                     $links[] = [
                         'url' => $this->router->generate('muimagemodule_' . strtolower($objectType) . '_view', ['own' => 1]),
                         'text' => $this->__('My avatars', 'muimagemodule'),
@@ -135,7 +139,9 @@ class LinkContainer extends AbstractLinkContainer
         			];
         		}
         if (in_array('avatar', $allowedObjectTypes)
-            && $this->permissionApi->hasPermission($this->getBundleName() . ':Avatar:', '::', $permLevel) && $routeArea == 'admin') {
+            && $this->permissionApi->hasPermission($this->getBundleName() . ':Avatar:', '::', $permLevel) && $routeArea == 'admin' 
+        		&& $extended == 1 
+        		&& $avatars == 1) {
             $links[] = [
                 'url' => $this->router->generate('muimagemodule_avatar_' . $routeArea . 'view'),
                 'text' => $this->__('Avatars'),
