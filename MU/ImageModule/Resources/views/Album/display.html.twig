@@ -35,13 +35,13 @@
     {% endif %}
 
     <dl>
-        {% if album.title is not empty %}
+        {#% if album.title is not empty %}
             <dt>{{ __('Title') }}</dt>
             <dd>{{ album.title }}</dd>
-        {% endif %}
+        {% endif %#}
         {% if album.description is not empty %}
             <dt>{{ __('Description') }}</dt>
-            <dd>{{ album.description|safeHtml }}</dd>
+            <dd>{{ album.description|notifyFilters('muimagemodule.filter_hooks.albums.filter')|safeHtml }}</dd>
         {% endif %}
         {% if routeArea == 'admin' %}
         {#% if album.parent_id is not empty %}
