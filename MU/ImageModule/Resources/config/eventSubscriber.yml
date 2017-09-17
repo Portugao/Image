@@ -71,6 +71,9 @@ services:
     
     mu_image_module.thirdparty_listener:
         class: MU\ImageModule\Listener\ThirdPartyListener
+        arguments:
+            - "@filesystem"
+            - "@request_stack"
         tags:
             - { name: kernel.event_subscriber }
     

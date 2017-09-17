@@ -278,7 +278,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
             ->setRequired(['object_type', 'editor_name'])
             ->setAllowedTypes('object_type', 'string')
             ->setAllowedTypes('editor_name', 'string')
-            ->setAllowedValues('editor_name', ['tinymce', 'ckeditor'])
+            ->setAllowedValues('editor_name', ['ckeditor', 'quill', 'summernote', 'tinymce'])
         ;
     }
 }

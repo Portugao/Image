@@ -51,7 +51,7 @@ class ExternalController extends AbstractExternalController
      * Finds items of a certain object type.
      *
      * @Route("/finder/{objectType}/{editor}/{sort}/{sortdir}/{pos}/{num}",
-     *        requirements = {"editor" = "ckeditor|tinymce", "sortdir" = "asc|desc", "pos" = "\d+", "num" = "\d+"},
+     *        requirements = {"editor" = "ckeditor|quill|summernote|tinymce", "sortdir" = "asc|desc", "pos" = "\d+", "num" = "\d+"},
      *        defaults = {"sort" = "", "sortdir" = "asc", "pos" = 1, "num" = 0},
      *        methods = {"GET"},
      *        options={"expose"=true}

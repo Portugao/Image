@@ -1,18 +1,15 @@
 CKEDITOR.plugins.add('muimagemodule', {
     requires: 'popup',
-    lang: 'en,nl,de',
     init: function (editor) {
         editor.addCommand('insertMUImageModule', {
             exec: function (editor) {
-                var url = Routing.generate('muimagemodule_external_finder', { objectType: 'album', editor: 'ckeditor' });
-                // call method in MUImageModule.Finder.js and provide current editor
-                MUImageModuleFinderCKEditor(editor, url);
+                MUImageModuleFinderOpenPopup(editor, 'ckeditor');
             }
         });
         editor.ui.addButton('muimagemodule', {
-            label: editor.lang.muimagemodule.title,
+            label: 'Image',
             command: 'insertMUImageModule',
-            icon: this.path.replace('scribite/CKEditor/muimagemodule', 'public/images') + 'admin.png'
+            icon: this.path.replace('scribite/CKEditor/muimagemodule', 'images') + 'admin.png'
         });
     }
 });

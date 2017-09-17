@@ -24,7 +24,7 @@ application "Image" {
         generateTests false
         writeModelToDocs true
         skipFiles "README.md,\r\n.gitignore,\r\nResources/public/images/admin.png"
-        markFiles "ImageModuleInstaller.php,\r\nContainer/LinkContainer.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nForm/Type/AlbumType.php,\r\nHelper/ControllerHelper.php,\r\nHelper/ViewHelper.php,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,\r\nTwig/TwigExtension.php"
+        markFiles "ImageModuleInstaller.php,\r\nContainer/LinkContainer.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nEntity/Repository/AlbumRepository.php,\r\nForm/Type/AlbumType.php,\r\nHelper/ControllerHelper.php,\r\nHelper/ViewHelper.php,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,\r\nTwig/TwigExtension.php"
     }
     entities {
         entity "album" leading categorisable {
@@ -174,6 +174,7 @@ application "Image" {
             sourceAlias "album"
             target "picture"
             targetAlias "pictures"
+        orderBy "pos"
         }
     }
     variables {

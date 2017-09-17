@@ -115,7 +115,7 @@ abstract class AbstractExternalController extends AbstractController
             throw new AccessDeniedException();
         }
         
-        if (empty($editor) || !in_array($editor, ['ckeditor', 'tinymce'])) {
+        if (empty($editor) || !in_array($editor, ['ckeditor', 'quill', 'summernote', 'tinymce'])) {
             return new Response($this->__('Error: Invalid editor context given for external controller action.'));
         }
         

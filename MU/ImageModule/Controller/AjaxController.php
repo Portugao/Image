@@ -100,18 +100,18 @@ class AjaxController extends AbstractAjaxController
     	if (!$this->hasPermission('MUImageModule::Ajax', '::', ACCESS_EDIT)) {
     		throw new AccessDeniedException();
     	}
-    	 
+    
     	$pictures = $request->query->get('pictures');
     	$pictures = explode(',', $pictures);
-    	 
+    
     	if ($pictures == '') {
     		$result = $this->__('Error: invalid input.');
     	}
-    	 
+    
     	// select data from data source
     	$entityFactory = $this->get('mu_image_module.entity_factory');
     	$repository = $entityFactory->getRepository('picture');
-    	 
+    
     	$index = 0;
     	foreach ($pictures as $picture) {
     		 
