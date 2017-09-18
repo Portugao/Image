@@ -14,12 +14,51 @@ namespace MU\ImageModule\Container;
 
 use MU\ImageModule\Container\Base\AbstractLinkContainer;
 use Zikula\Core\LinkContainer\LinkContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
+use Zikula\Common\Translator\TranslatorInterface;
+
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
+use MU\ImageModule\Helper\ControllerHelper;
 
 /**
  * This is the link container service implementation class.
  */
 class LinkContainer extends AbstractLinkContainer
 {
+	/**
+	 * @var Request
+	 */
+	protected $request;
+	
+	/**
+	 * LinkContainer constructor.
+	 *
+	 * @param TranslatorInterface    $translator       Translator service instance
+	 * @param Routerinterface        $router           Router service instance
+	 * @param PermissionApiInterface $permissionApi    PermissionApi service instance
+	 * @param VariableApiInterface   $variableApi      VariableApi service instance
+	 * @param ControllerHelper       $controllerHelper ControllerHelper service instance
+	 * @param RequestStack           $requestStack     RequestStack service instance
+	 */
+	public function __construct(
+			TranslatorInterface $translator,
+			RouterInterface $router,
+			PermissionApiInterface $permissionApi,
+			VariableApiInterface $variableApi,
+			ControllerHelper $controllerHelper,
+			RequestStack $requestStack
+			) {
+				$this->setTranslator($translator);
+				$this->router = $router;
+				$this->permissionApi = $permissionApi;
+				$this->variableApi = $variableApi;
+				$this->controllerHelper = $controllerHelper;
+				$this->request = $requestStack->getCurrentRequest();
+	}
+	
     /**
      * Returns available header links.
      *
@@ -34,7 +73,13 @@ class LinkContainer extends AbstractLinkContainer
 
         $permLevel = LinkContainerInterface::TYPE_ADMIN == $type ? ACCESS_ADMIN : ACCESS_READ;
         $extended = $this->variableApi->get('MUImageModule', 'useExtendedFeatures');
+        $subalbums = $this->variableApi->get('MUImageModule', 'supportSubAlbums');
         $avatars = $this->variableApi->get('MUImageModule', 'useAvatars');
+        
+        $request = $this->request;
+        
+        $albumId = $request->query->getAlnum('id', 0);
+        die($albumId);
 
         // Create an array of links to return
         $links = [];
@@ -91,7 +136,6 @@ class LinkContainer extends AbstractLinkContainer
             return $links;
         }
 
-
         $routeArea = LinkContainerInterface::TYPE_ADMIN == $type ? 'admin' : '';
         if (LinkContainerInterface::TYPE_ADMIN == $type) {
             if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_READ)) {
@@ -131,17 +175,24 @@ class LinkContainer extends AbstractLinkContainer
             ];
         }
         if (in_array('album', $allowedObjectTypes)
-        		&& $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', ACCESS_EDIT) && $routeArea != 'admin') {
-        			$links[] = [
-        					'url' => $this->router->generate('muimagemodule_album_' . $routeArea . 'edit'),
-        					'text' => $this->__('New album'),
-        					'title' => $this->__('Create new album')
-        			];
-        		}
+        	&& $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', ACCESS_EDIT) && $routeArea != 'admin' && $albumId == 0) {
+        		$links[] = [
+        				'url' => $this->router->generate('muimagemodule_album_' . $routeArea . 'edit'),
+        				'text' => $this->__('New album'),
+        				'title' => $this->__('Create new album')
+        	];
+        }
+        if (in_array('album', $allowedObjectTypes)
+        	&& $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', ACCESS_EDIT) && $routeArea != 'admin' && $albumId > 0 && $extended == 1 && $subalbums == 1) {
+        		$links[] = [
+        				'url' => $this->router->generate('muimagemodule_album_' . $routeArea . 'edit', array('album' => 1)),
+        				'text' => $this->__('New subalbum'),
+        				'title' => $this->__('Create new subalbum')
+        		];
+        	}
         if (in_array('avatar', $allowedObjectTypes)
             && $this->permissionApi->hasPermission($this->getBundleName() . ':Avatar:', '::', $permLevel) && $routeArea == 'admin' 
-        		&& $extended == 1 
-        		&& $avatars == 1) {
+        		&& $extended == 1 && $avatars == 1) {
             $links[] = [
                 'url' => $this->router->generate('muimagemodule_avatar_' . $routeArea . 'view'),
                 'text' => $this->__('Avatars'),

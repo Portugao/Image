@@ -58,17 +58,17 @@
     <li>
 {% spaceless %}
 {% if not nolink %}
-    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id }) }}" title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}">
+    <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id }) }}" title="{{ item|muimagemodule_formattedTitle|e('html_attr') }}">
 {% endif %}
-    {{ item.getTitleFromDisplayPattern() }}
+    {{ item|muimagemodule_formattedTitle|e('html_attr') }}
 {% if not nolink %}
     </a>
-    <a id="pictureItem{{ item.id }}Display" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+    <a id="pictureItem{{ item.id }}Display" href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'display', { 'id': item.id, 'theme': 'ZikulaPrinterTheme' }) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
 {% endif %}
 {% endspaceless %}
 <br />
 {% if item.imageUpload is not empty and item.imageUploadMeta.isImage %}
-    <img src="{{ item.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ item.getTitleFromDisplayPattern()|e('html_attr') }}" width="{{ relationThumbRuntimeOptions.thumbnail.size[0] }}" height="{{ relationThumbRuntimeOptions.thumbnail.size[1] }}" class="img-rounded" />
+    <img src="{{ item.imageUpload.getPathname()|imagine_filter('zkroot', relationThumbRuntimeOptions) }}" alt="{{ item|muimagemodule_formattedTitle|e('html_attr') }}" width="{{ relationThumbRuntimeOptions.thumbnail.size[0] }}" height="{{ relationThumbRuntimeOptions.thumbnail.size[1] }}" class="img-rounded" />
 {% endif %}
     </li>
     {% endif %}

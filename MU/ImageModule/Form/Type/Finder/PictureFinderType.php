@@ -14,10 +14,42 @@ namespace MU\ImageModule\Form\Type\Finder;
 
 use MU\ImageModule\Form\Type\Finder\Base\AbstractPictureFinderType;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
+
 /**
  * Picture finder form type implementation class.
  */
 class PictureFinderType extends AbstractPictureFinderType
 {
-    // feel free to extend the base form type class here
+    /**
+     * Adds a "paste as" field.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
+     */
+    public function addPasteAsField(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('pasteAs', ChoiceType::class, [
+            'label' => $this->__('Paste as') . ':',
+            'empty_data' => 1,
+            'choices' => [
+                $this->__('Relative link to the picture') => 1,
+                $this->__('Absolute url to the picture') => 2,
+                $this->__('ID of picture') => 3,
+                $this->__('Relative link to the image') => 6,
+                $this->__('Image') => 7,
+                $this->__('Image with relative link to the picture') => 8,
+                $this->__('Image with absolute url to the picture') => 9,
+            	$this->__('Thumbnail of picture') => 10,
+            	$this->__('Preview of picture') => 11,
+            	$this->__('Thumbnail of picture with lightbox') => 12,
+            	$this->__('Preview of picture with lightbox') => 13
+            		
+            ],
+            'choices_as_values' => true,
+            'multiple' => false,
+            'expanded' => false
+        ]);
+    }
 }

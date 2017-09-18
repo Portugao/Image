@@ -59,7 +59,10 @@
                                     <input type="hidden" id="desc{{ itemId }}" value="{% set description %}{% if picture.description is not empty %}{{ picture.description }}{% endif %}
                                     {% endset %}{{ description|striptags|e('html_attr') }}" />
                                     {% if onlyImages %}
-                                        <input type="hidden" id="imagePath{{ itemId }}" value="/{{ attribute(picture, imageField).getPathname() }}" />
+                                        <input type="hidden" id="imagePath{{ itemId }}" value="{{ app.request.basePath }}/{{ attribute(picture, imageField).getPathname() }}" />
+                                        <input type="hidden" id="pathtmb{{ itemId }}" value="/{{ picture.imageUpload|replace({ ('.jpg'): '' }) }}_tmb.jpg" />
+                                        <input type="hidden" id="pathpre{{ itemId }}" value="/{{ picture.imageUpload|replace({ ('.jpg'): '' }) }}_pre.jpg" />
+                                        <input type="hidden" id="pathfull{{ itemId }}" value="/{{ picture.imageUpload|replace({ ('.jpg'): '' }) }}_full.jpg" />
                                     {% endif %}
                                 {% if not onlyImages %}
                                     </li>

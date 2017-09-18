@@ -142,9 +142,68 @@ class ImageModuleInstaller extends AbstractImageModuleInstaller
             	// nothing to do
             	
             case '1.3.1':
+            	try {
+            		$this->schemaTool->update($this->listEntityClasses());
+            	} catch (\Exception $exception) {
+            		$this->addFlash('error', $this->__('Doctrine Exception') . ': ' . $exception->getMessage());
+            		$logger->error('{app}: Could not update the database tables during the upgrade. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'errorMessage' => $exception->getMessage()]);
+            	
+            		return false;
+            	}
+            	
+            	// rename module for all modvars
+            	$this->updateModVarsTo14();
+            	
+            	// update extension information about this app
+            	$this->updateExtensionInfoFor14();
+            	
+            	// rename existing permission rules
+            	$this->renamePermissionsFor14();
+            	
+            	// rename existing category registries
+            	$this->renameCategoryRegistriesFor14();
+            	
+            	// rename all tables
+            	$this->renameTablesFor14();
+            	
+            	// remove event handler definitions from database
+            	$this->dropEventHandlersFromDatabase();
+            	
+            	// update module name in the hook tables
+            	$this->updateHookNamesFor14();
+            	
+            	// update module name in the workflows table
+            	$this->updateWorkflowsFor14();
+            	
+            	// remove obsolete persisted hooks from the database
+            	$this->hookApi->uninstallSubscriberHooks($this->bundle->getMetaData());
+            	
+            	$modvars = $this->getVars();
+            	
+            	$this->setVar('firstWidth', $modvars['widthFirst']);
+            	$this->setVar('firstHeight', $modvars['heightFirst']);
+            	
+            	$this->setVar('secondWidth', $modvars['widthSecond']);
+            	$this->setVar('secondHeight', $modvars['heightSecond']);
+            	
+            	$this->setVar('thirdWidth', $modvars['widthThird']);
+            	$this->setVar('thirdHeight', $modvars['heightThird']);
+            	
             	// delete modvars
                 $this->delVar('fileNameForTitle');
                 $this->delVar('layout');
+                
+                $this->delVar('widthFirst');
+                $this->delVar('heightFirst');
+                
+                $this->delVar('widthSecond');
+                $this->delVar('heightSecond');
+                
+                $this->delVar('widthThird');
+                $this->delVar('heightThird');                
+                
+            case '1.4.0':
+            	// later update
                 
         // update successful
         return true;                

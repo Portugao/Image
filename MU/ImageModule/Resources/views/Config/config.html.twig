@@ -86,10 +86,11 @@
                     	{% endif %}
                         {{ form_row(form.supportCategoriesForAlbums) }}
                         {{ form_row(form.supportCategoriesForAvatars) }}
+                        {{ form_row(form.supportSubAlbums) }}
                         {% if extended == 0 %}
                             </div>
                         {% endif %}
-                        {{ form_row(form.supportSubAlbums) }}
+                        
                         {{ form_row(form.userDeletePictures) }}
                         {% if extended == 0 %}
                             <div class="hidden">
@@ -106,14 +107,16 @@
                 <div role="tabpanel" class="tab-pane fade" id="tab2" aria-labelledby="vars2Tab">
                     {% set tabTitle = __('Display settings') %}
                     <fieldset>
-                        <legend>{{ tabTitle }}</legend>
-                    
+                        <legend>{{ tabTitle }}</legend>          
                         {{ form_row(form.countImageView) }}
-                        {{ form_row(form.numberParentAlbums) }}
-                        {{ form_row(form.numberSubAlbums) }}
-                        {{ form_row(form.numberPictures) }}
+                        {% if extended == 0 %}
+                            <div class="hidden">
+                        {% endif %}
                         {{ form_row(form.groupForCommonAlbums) }}
                         {{ form_row(form.kindOfShowSubAlbums) }}
+                        {% if extended == 0 %}
+                            </div>
+                        {% endif %}
                         {{ form_row(form.breadcrumbsInFrontend) }}
                         {{ form_row(form.ending) }}
                     </fieldset>
@@ -121,9 +124,16 @@
                 <div role="tabpanel" class="tab-pane fade" id="tab3" aria-labelledby="vars3Tab">
                     {% set tabTitle = __('Upload handler') %}
                     <fieldset>
-                        <legend>{{ tabTitle }}</legend>
-                    
-                    
+                        <legend>{{ tabTitle }}</legend>  
+                        {% if extended == 0 %}
+                            <div class="hidden">
+                        {% endif %}                  
+                        {{ form_row(form.numberParentAlbums) }}
+                        {{ form_row(form.numberSubAlbums) }}
+                        {{ form_row(form.numberPictures) }}
+                        {% if extended == 0 %}
+                            </div>
+                        {% endif %}
                         {{ form_row(form.fileSizeForPictures) }}
                         {{ form_row(form.fileSizeForAvatars) }}
                         {{ form_row(form.fileSizesForZip) }}
@@ -133,6 +143,7 @@
                         {{ form_row(form.minWidthForAvatars) }}
                         {{ form_row(form.maxWidthForAvatars) }}
                         {{ form_row(form.maxHeightForAvatars) }}
+                        {{ form_row(form.createSeveralPictures) }}
                         {{ form_row(form.firstWidth) }}
                         {{ form_row(form.firstHeight) }}
                         {{ form_row(form.secondWidth) }}

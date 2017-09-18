@@ -13,6 +13,8 @@
 {% set categories = getModVar('MUImageModule', 'supportCategoriesForAlbums') %}
 {% set extended = getModVar('MUImageModule', 'useExtendedFeatures') %}
 {% set subalbums = getModVar('MUImageModule', 'supportSubAlbums') %}
+{% set parent = app.request.query.get('album', 0) %}
+
     <div class="muimagemodule-album muimagemodule-edit">
         {% form_theme form with [
             '@MUImageModule/Form/bootstrap_3.html.twig',
@@ -24,11 +26,11 @@
                 <li role="presentation" class="active">
                     <a id="fieldsTab" href="#tabFields" title="{{ __('Fields') }}" role="tab" data-toggle="tab">{{ __('Fields') }}</a>
                 </li>
-                {% if subalbums == 1 and extended == 1 %}
+                {#% if subalbums == 1 and extended == 1 %}
                 <li role="presentation">
                     <a id="albumTab" href="#tabAlbum" title="{{ __('Album') }}" role="tab" data-toggle="tab">{{ __('Album') }}</a>
                 </li>
-                {% endif %}
+                {% endif %#}
                 {% if categories == 1 and extended == 1 %}
                 {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
                     <li role="presentation">
@@ -66,6 +68,11 @@
                     </fieldset>
                 </div>
                 {% if subalbums == 1 and extended == 1 %}
+                {% if parent > 0 %}
+                    <input type="hidden" name="muimagemodule_album[album]" value={{ parent }} />
+                {% else %}
+                    <input type="hidden" name="muimagemodule_album[album]" value='' />
+                {% endif %}
                 {{ include(
                     '@MUImageModule/Album/includeSelectOne.html.twig',
                     { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, tabs: true, displayMode: 'choices' }

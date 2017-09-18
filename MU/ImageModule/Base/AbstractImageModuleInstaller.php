@@ -66,9 +66,9 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('useExtendedFeatures', false);
         $this->setVar('slide1Interval', '4000');
         $this->setVar('slide1Speed', '1000');
-        $this->setVar('fileSizeForPictures', '102400');
-        $this->setVar('fileSizeForAvatars', 0);
-        $this->setVar('fileSizesForZip', 0);
+        $this->setVar('fileSizeForPictures', '200k');
+        $this->setVar('fileSizeForAvatars', '200k');
+        $this->setVar('fileSizesForZip', '2M');
         $this->setVar('minWidthForPictures', '400');
         $this->setVar('maxWidthForPictures', 0);
         $this->setVar('maxHeightForPictures', 0);

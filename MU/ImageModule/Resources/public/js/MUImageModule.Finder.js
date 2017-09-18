@@ -14,22 +14,26 @@ function getMUImageModulePopupAttributes()
     pWidth = screen.width * 0.75;
     pHeight = screen.height * 0.66;
 
-    return 'width=' + pWidth + ',height=' + pHeight + ',scrollbars,resizable';
+    return 'width=' + pWidth + ',height=' + pHeight + ',location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes';
 }
 
 /**
- * Open a popup window with the finder triggered by a CKEditor button.
+ * Open a popup window with the finder triggered by an editor button.
  */
-function MUImageModuleFinderCKEditor(editor, imageUrl)
+function MUImageModuleFinderOpenPopup(editor, editorName)
 {
+    var popupUrl;
+
     // Save editor for access in selector window
     currentMUImageModuleEditor = editor;
 
-    editor.popup(
-        Routing.generate('muimagemodule_external_finder', { objectType: 'album', editor: 'ckeditor' }),
-        /*width*/ '80%', /*height*/ '70%',
-        'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes'
-    );
+    popupUrl = Routing.generate('muimagemodule_external_finder', { objectType: 'album', editor: editorName });
+
+    if (editorName == 'ckeditor') {
+        editor.popup(popupUrl, /*width*/ '80%', /*height*/ '70%', getMUImageModulePopupAttributes());
+    } else {
+        window.open(popupUrl, '_blank', getMUImageModulePopupAttributes());
+    }
 }
 
 
@@ -52,6 +56,10 @@ mUImageModule.finder.onLoad = function (baseId, selectedId)
         jQuery("[id$='pasteAs'] option[value=7]").addClass('hidden');
         jQuery("[id$='pasteAs'] option[value=8]").addClass('hidden');
         jQuery("[id$='pasteAs'] option[value=9]").addClass('hidden');
+        jQuery("[id$='pasteAs'] option[value=10]").addClass('hidden');
+        jQuery("[id$='pasteAs'] option[value=11]").addClass('hidden');
+        jQuery("[id$='pasteAs'] option[value=12]").addClass('hidden');
+        jQuery("[id$='pasteAs'] option[value=13]").addClass('hidden');
     } else {
         jQuery('#searchTermRow').addClass('hidden');
     }
@@ -79,9 +87,13 @@ mUImageModule.finder.handleCancel = function (event)
 
     event.preventDefault();
     editor = jQuery("[id$='editor']").first().val();
-    if ('tinymce' === editor) {
+    if ('ckeditor' === editor) {
         mUImageClosePopup();
-    } else if ('ckeditor' === editor) {
+    } else if ('quill' === editor) {
+        mUImageClosePopup();
+    } else if ('summernote' === editor) {
+        mUImageClosePopup();
+    } else if ('tinymce' === editor) {
         mUImageClosePopup();
     } else {
         alert('Close Editor: ' + editor);
@@ -98,6 +110,9 @@ function mUImageGetPasteSnippet(mode, itemId)
     var itemDescription;
     var imagePath;
     var pasteMode;
+    var tmbPath;
+    var prePath;
+    var fullPath;
 
     quoteFinder = new RegExp('"', 'g');
     itemPath = jQuery('#path' + itemId).val().replace(quoteFinder, '');
@@ -106,6 +121,9 @@ function mUImageGetPasteSnippet(mode, itemId)
     itemDescription = jQuery('#desc' + itemId).val().replace(quoteFinder, '').trim();
     imagePath = jQuery('#imagePath' + itemId).length > 0 ? jQuery('#imagePath' + itemId).val().replace(quoteFinder, '') : '';
     pasteMode = jQuery("[id$='pasteAs']").first().val();
+    tmbPath = jQuery('#pathtmb' + itemId).val().replace(quoteFinder, '');
+    prePath = jQuery('#pathpre' + itemId).val().replace(quoteFinder, '');
+    fullPath = jQuery('#pathfull' + itemId).val().replace(quoteFinder, '');
 
     // item ID
     if (pasteMode === '3') {
@@ -137,6 +155,22 @@ function mUImageGetPasteSnippet(mode, itemId)
         // image tag with absolute url to detail page
         return mode === 'url' ? itemUrl : '<a href="' + itemUrl + '" title="' + itemTitle + '"><img src="' + imagePath + '" alt="' + itemTitle + '" width="300" /></a>';
     }
+    
+    if (pasteMode === '10') {
+    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" />';
+    }
+    
+    if (pasteMode === '11') {
+    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" />';
+    }
+    
+    if (pasteMode === '12') {
+    	return '<a class="image-link" href="' + fullPath + '"><img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" /></a>';
+    }
+    
+    if (pasteMode === '13') {
+    	return '<a class="image-link" href="' + fullPath + '><img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" /></a>';
+    }
 
 
     return '';
@@ -148,17 +182,23 @@ mUImageModule.finder.selectItem = function (itemId)
 {
     var editor, html;
 
+    html = mUImageGetPasteSnippet('html', itemId);
     editor = jQuery("[id$='editor']").first().val();
-    if ('tinymce' === editor) {
-        html = mUImageGetPasteSnippet('html', itemId);
-        tinyMCE.activeEditor.execCommand('mceInsertContent', false, html);
-        // other tinymce commands: mceImage, mceInsertLink, mceReplaceContent, see http://www.tinymce.com/wiki.php/Command_identifiers
-    } else if ('ckeditor' === editor) {
+    if ('ckeditor' === editor) {
         if (null !== window.opener.currentMUImageModuleEditor) {
-            html = mUImageGetPasteSnippet('html', itemId);
-
             window.opener.currentMUImageModuleEditor.insertHtml(html);
         }
+    } else if ('quill' === editor) {
+        if (null !== window.opener.currentMUImageModuleEditor) {
+            window.opener.currentMUImageModuleEditor.clipboard.dangerouslyPasteHTML(window.opener.currentMUImageModuleEditor.getLength(), html);
+        }
+    } else if ('summernote' === editor) {
+        if (null !== window.opener.currentMUImageModuleEditor) {
+            html = jQuery(html).get(0);
+            window.opener.currentMUImageModuleEditor.invoke('insertNode', html);
+        }
+    } else if ('tinymce' === editor) {
+        window.opener.currentMUImageModuleEditor.insertContent(html);
     } else {
         alert('Insert into Editor: ' + editor);
     }

@@ -13,11 +13,124 @@
 namespace MU\ImageModule\Helper;
 
 use MU\ImageModule\Helper\Base\AbstractUploadHelper;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
+use Psr\Log\LoggerInterface;
+
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Zikula\Common\Translator\TranslatorInterface;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 
 /**
  * Helper implementation class for upload handling.
  */
 class UploadHelper extends AbstractUploadHelper
 {
-    // feel free to add your own convenience methods here
+	/**
+	 * @var VariableApiInterface
+	 */
+	protected $variableApi;
+	
+	
+	/**
+	 * UploadHelper constructor.
+	 *
+	 * @param TranslatorInterface     $translator     Translator service instance
+	 * @param Filesystem              $filesystem     Filesystem service instance
+	 * @param SessionInterface        $session        Session service instance
+	 * @param LoggerInterface         $logger         Logger service instance
+	 * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
+	 * @param object                  $moduleVars     Existing module vars
+	 * @param String                  $dataDirectory  The data directory name
+	 * @param VariableApiInterface    $variableApiInterface    VariableApiInterface service instance
+	 */
+	public function __construct(
+			TranslatorInterface $translator,
+			Filesystem $filesystem,
+			SessionInterface $session,
+			LoggerInterface $logger,
+			CurrentUserApiInterface $currentUserApi,
+			$moduleVars,
+			$dataDirectory,
+			$variableApi
+			) {
+				$this->setTranslator($translator);
+				$this->filesystem = $filesystem;
+				$this->session = $session;
+				$this->logger = $logger;
+				$this->currentUserApi = $currentUserApi;
+				$this->moduleVars = $moduleVars;
+				$this->dataDirectory = $dataDirectory;
+				$this->variableApi = $variableApi;
+	
+				$this->allowedObjectTypes = ['picture', 'avatar'];
+				$this->imageFileTypes = ['gif', 'jpeg', 'jpg', 'png', 'swf'];
+				$this->forbiddenFileTypes = ['cgi', 'pl', 'asp', 'phtml', 'php', 'php3', 'php4', 'php5', 'exe', 'com', 'bat', 'jsp', 'cfm', 'shtml'];
+	}
+	
+	/**
+	 * Process a file upload.
+	 *
+	 * @param string       $objectType Currently treated entity type
+	 * @param UploadedFile $file       The uploaded file
+	 * @param string       $fieldName  Name of upload field
+	 *
+	 * @return array Resulting file name and collected meta data
+	 */
+	public function performFileUpload($objectType, $file, $fieldName)
+	{
+		$result = parent::performFileUpload($objectType, $file, $fieldName);
+
+		if ($this->variableApi->get('MUImageModule', 'createSeveralPictures') == true)
+		{
+			$success = $this->createSeveralPictures($objectType, $fieldName, $result['fileName']);
+		}
+	
+		return $result;
+	}
+	
+	/**
+	 * 
+	 */
+    public function createSeveralPictures($objectType, $fieldName, $fileName)
+    {
+    		// retrieve the final file name
+    		$fileNameParts = explode('.', $fileName);
+    		$fileNamePartsWithoutExtension = array_slice($fileNameParts, 0, count($fileNameParts) - 1);
+    		$fileNameWithoutExtension = implode('.', $fileNamePartsWithoutExtension);
+    		
+    		$basePath = $this->getFileBaseFolder($objectType, $fieldName);
+    	
+    		$imagine = new Imagine();
+    		// we create the thumnail
+    		$widthFirst = $this->variableApi->get('MUImageModule', 'firstWidth');
+    		$heightFirst = $this->variableApi->get('MUImageModule', 'firstHeight');
+    		if ($widthFirst > 0 && $heightFirst > 0) {
+    			$nameForThumb = $fileNameWithoutExtension . '_tmb.jpg';
+    			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthFirst, $heightFirst), 'inset')->save($basePath . $nameForThumb);
+    		}
+    		// we create the preview
+    		$widthSecond = $this->variableApi->get('MUImageModule', 'secondWidth');
+    		$heightSecond = $this->variableApi->get('MUImageModule', 'secondHeight');
+    		if ($widthSecond > 0 && $heightSecond > 0) {
+    			$nameForThumb = $fileNameWithoutExtension . '_pre.jpg';
+    			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthSecond, $heightSecond), 'inset')->save($basePath . $nameForThumb);
+    		}
+    		// we create the full image
+    		$widthThird = $this->variableApi->get('MUImageModule', 'thirdWidth');
+    		$heightThird = $this->variableApi->get('MUImageModule', 'thirdHeight');
+    		if ($widthThird > 0 && $heightThird > 0) {
+    			$nameForThumb = $fileNameWithoutExtension . '_full.jpg';
+    			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthThird, $heightThird), 'inset')->save($basePath . $nameForThumb);
+    		}
+
+    	// collect data to return
+    	//$result['fileName'] = $fileName;
+    	//$result['metaData'] = $this->readMetaDataForFile($fileName, $basePath . $fileName);
+    	return true;
+    }
 }
