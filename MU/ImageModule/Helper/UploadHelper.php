@@ -12,9 +12,14 @@
 
 namespace MU\ImageModule\Helper;
 
+require 'vendor/autoload.php';
+
 use MU\ImageModule\Helper\Base\AbstractUploadHelper;
-use Imagine\Gd\Imagine;
+//use Imagine\Gd\Imagine;
+use Imagine\Imagick;
+use Imagine\Imagick\Imagine;
 use Imagine\Image\Box;
+use Imagine\Image\Point;
 use Psr\Log\LoggerInterface;
 
 use Symfony\Component\Filesystem\Filesystem;
@@ -85,9 +90,13 @@ class UploadHelper extends AbstractUploadHelper
 	{
 		$result = parent::performFileUpload($objectType, $file, $fieldName);
 
-		if ($this->variableApi->get('MUImageModule', 'createSeveralPictures') == true)
+		if ($this->variableApi->get('MUImageModule', 'createSeveralPictures') == true && $objectType == 'picture')
 		{
 			$success = $this->createSeveralPictures($objectType, $fieldName, $result['fileName']);
+		}
+		if ($this->variableApi->get('MUImageModule', 'useWatermark') == true && $objectType == 'picture')
+		{
+			$this->createWatermark($objectType, $fieldName, $fileName);
 		}
 	
 		return $result;
@@ -113,12 +122,20 @@ class UploadHelper extends AbstractUploadHelper
     			$nameForThumb = $fileNameWithoutExtension . '_tmb.jpg';
     			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthFirst, $heightFirst), 'inset')->save($basePath . $nameForThumb);
     		}
+    		if ($this->variableApi->get('MUImageModule', 'useWatermark') == true)
+    		{
+    			$this->createWatermark($objectType, $fieldName, $nameForThumb);
+    		}
     		// we create the preview
     		$widthSecond = $this->variableApi->get('MUImageModule', 'secondWidth');
     		$heightSecond = $this->variableApi->get('MUImageModule', 'secondHeight');
     		if ($widthSecond > 0 && $heightSecond > 0) {
     			$nameForThumb = $fileNameWithoutExtension . '_pre.jpg';
     			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthSecond, $heightSecond), 'inset')->save($basePath . $nameForThumb);
+    		}
+    		if ($this->variableApi->get('MUImageModule', 'useWatermark') == true)
+    		{
+    			$this->createWatermark($objectType, $fieldName, $nameForThumb);
     		}
     		// we create the full image
     		$widthThird = $this->variableApi->get('MUImageModule', 'thirdWidth');
@@ -127,10 +144,33 @@ class UploadHelper extends AbstractUploadHelper
     			$nameForThumb = $fileNameWithoutExtension . '_full.jpg';
     			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthThird, $heightThird), 'inset')->save($basePath . $nameForThumb);
     		}
+    		if ($this->variableApi->get('MUImageModule', 'useWatermark') == true)
+    		{
+    			$this->createWatermark($objectType, $fieldName, $nameForThumb);
+    		}
 
     	// collect data to return
     	//$result['fileName'] = $fileName;
     	//$result['metaData'] = $this->readMetaDataForFile($fileName, $basePath . $fileName);
     	return true;
+    }
+    
+    protected function createWatermark($objectType, $fieldName, $fileName)
+    {
+    	$watermarkImage = $this->variableApi->get('MUImageModule', 'watermark');
+    	$basePath = $this->getFileBaseFolder($objectType, $fieldName);
+    	
+    	$imagine2 = new Imagine\Imagick\Imagine();
+    	$watermark = $imagine2->open('http://zik15' . $watermarkImage);
+    	$image     = $imagine2->open($basePath . $fileName);
+    	$size      = $image->getSize();
+    	$wSize     = $watermark->getSize();
+    	
+    	$bottomRight = new Imagine\Image\Point($size->getWidth() - $wSize->getWidth(), $size->getHeight() - $wSize->getHeight());
+    	
+    	$image->paste($watermark, $bottomRight);
+    	
+    	return true;
+
     }
 }
