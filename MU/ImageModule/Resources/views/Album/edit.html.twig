@@ -6,6 +6,8 @@
     {{ parent() }}
     {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.Validation.js'), 98) }}
     {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.EditFunctions.js'), 99) }}
+    {{ pageAddAsset('javascript', zasset('@MUImageModule:js/chosen.jquery.min.js'), 99) }}
+    {{ pageAddAsset('stylesheet', zasset('@MUImageModule:css/chosen.css'), 99) }}
 {% endblock %}
 {% block title mode == 'create' ? __('Create album') : __('Edit album') %}
 {% block admin_page_icon mode == 'create' ? 'plus' : 'pencil-square-o' %}
@@ -26,11 +28,11 @@
                 <li role="presentation" class="active">
                     <a id="fieldsTab" href="#tabFields" title="{{ __('Fields') }}" role="tab" data-toggle="tab">{{ __('Fields') }}</a>
                 </li>
-                {#% if subalbums == 1 and extended == 1 %}
+                {% if subalbums == 1 and extended == 1 and mode != 'create' %}
                 <li role="presentation">
                     <a id="albumTab" href="#tabAlbum" title="{{ __('Album') }}" role="tab" data-toggle="tab">{{ __('Album') }}</a>
                 </li>
-                {% endif %#}
+                {% endif %}
                 {% if categories == 1 and extended == 1 %}
                 {% if featureActivationHelper.isEnabled(constant('MU\\ImageModule\\Helper\\FeatureActivationHelper::CATEGORIES'), 'album') %}
                     <li role="presentation">
@@ -68,15 +70,18 @@
                     </fieldset>
                 </div>
                 {% if subalbums == 1 and extended == 1 %}
+                {% if mode == 'create' %}
                 {% if parent > 0 %}
                     <input type="hidden" name="muimagemodule_album[album]" value={{ parent }} />
                 {% else %}
                     <input type="hidden" name="muimagemodule_album[album]" value='' />
                 {% endif %}
+                {% else %}
                 {{ include(
                     '@MUImageModule/Album/includeSelectOne.html.twig',
-                    { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, tabs: true, displayMode: 'choices' }
+                    { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, tabs: true, displayMode: 'choices', class: 'chzn-select' }
                 ) }}
+                {% endif %}
                 {% else %}
                 <div class="hidden">
                 {{ include(
@@ -169,4 +174,44 @@
         </script>
     {% endset %}
     {{ pageAddAsset('footer', formInitScript) }}
+    <script>
+    var MU = jQuery.noConflict();
+    MU(document).ready( function() {
+    MU(".chzn-select").chosen();
+    });
+    
+    MU(document).ready( function() {
+    MU("#muimagemodule_album_albumAccess option:selected").each(
+        function(){
+            if (MU(this).val() == 'friends') {
+                MU("#muimagemodule_album_myFriends").parents('.form-group').css("display", "block");
+            } else {
+                MU("#muimagemodule_album_myFriends").parents('.form-group').css("display", "none");
+            }
+            if (MU(this).val() == 'known') {
+                MU("#muimagemodule_album_passwordAccess").parents('.form-group').css("display", "block");
+            } else {
+                MU("#muimagemodule_album_passwordAccess").parents('.form-group').css("display", "none");
+            }
+    });
+    MU("#muimagemodule_album_albumAccess").change(
+        function(){
+            MU("#muimagemodule_album_albumAccess option:selected").each(
+                function(){
+                    if (MU(this).val() == 'all' || MU(this).val() == 'users') {
+                        MU("#muimagemodule_album_myFriends").parents('.form-group').slideUp('slow');
+                        MU("#muimagemodule_album_passwordAccess").parents('.form-group').slideUp('slow');
+                    } 
+                    if (MU(this).val() == 'friends') {
+                        MU("#muimagemodule_album_myFriends").parents('.form-group').slideDown('slow');
+                        MU("#muimagemodule_album_passwordAccess").parents('.form-group').slideUp('slow');
+                    }
+                    if (MU(this).val() == 'known') {
+                        MU("#muimagemodule_album_passwordAccess").parents('.form-group').slideDown('slow');
+                        MU("#muimagemodule_album_myFriends").parents('.form-group').slideUp('slow');
+                    } 
+            });        
+    });
+    });
+    </script>
 {% endblock %}
