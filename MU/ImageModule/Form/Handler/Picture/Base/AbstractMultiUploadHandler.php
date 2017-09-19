@@ -13,19 +13,18 @@
 namespace MU\ImageModule\Form\Handler\Picture\Base;
 
 use MU\ImageModule\Form\Handler\Common\EditHandler;
+use MU\ImageModule\Form\Type\MultiPictureType;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use ModUtil;
 use RuntimeException;
-use System;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
  * This handler class handles the page events of editing forms.
  * It aims on the picture object type.
  */
-abstract class AbstractMultiUploadHandler extends MultiUploadHandler
+abstract class AbstractMultiUploadHandler extends EditHandler
 {
     /**
      * Initialise form handler.
@@ -45,38 +44,23 @@ abstract class AbstractMultiUploadHandler extends MultiUploadHandler
         $this->hasPageLockSupport = true;
     
         $result = parent::processForm($templateParameters);
+        if ($result instanceof RedirectResponse) {
+            return $result;
+        }
     
         if ($this->templateParameters['mode'] == 'create') {
-            $modelHelper = $this->container->get('mu_image_module.model_helper');
-            if (!$modelHelper->canBeCreated($this->objectType)) {
+            if (!$this->modelHelper->canBeCreated($this->objectType)) {
                 $this->request->getSession()->getFlashBag()->add('error', $this->__('Sorry, but you can not create the picture yet as other items are required which must be created before!'));
-                $logger = $this->container->get('logger');
-                $logArgs = ['app' => 'MUImageModule', 'user' => $this->container->get('zikula_users_module.current_user')->get('uname'), 'entity' => $this->objectType];
-                $logger->notice('{app}: User {user} tried to create a new {entity}, but failed as it other items are required which must be created before.', $logArgs);
+                $logArgs = ['app' => 'MUImageModule', 'user' => $this->currentUserApi->get('uname'), 'entity' => $this->objectType];
+                $this->logger->notice('{app}: User {user} tried to create a new {entity}, but failed as it other items are required which must be created before.', $logArgs);
     
                 return new RedirectResponse($this->getRedirectUrl(['commandName' => '']), 302);
             }
         }
     
-        $entity = $this->entityRef;
-        $selectionHelper = $this->container->get('mu_image_module.selection_helper');
-        
-        // assign identifiers of predefined incoming relationships
-        // editable relation, we store the id and assign it now to show it in UI
-        $this->relationPresets['album'] = $this->request->get('album', '');
-        if (!empty($this->relationPresets['album'])) {
-            $relObj = $selectionHelper->getEntity('album', $this->relationPresets['album']);
-            if (null !== $relObj) {
-                $relObj->addPictures($entity);
-            }
-        }
+        $entityData = $this->entityRef->toArray();
     
-        // save entity reference for later reuse
-        $this->entityRef = $entity;
-    
-        $entityData = $entity->toArray();
-    
-        // assign data to template as array (makes translatable support easier)
+        // assign data to template as array (for additions like standard fields)
         $this->templateParameters[$this->objectTypeLower] = $entityData;
     
         return $result;
@@ -91,10 +75,12 @@ abstract class AbstractMultiUploadHandler extends MultiUploadHandler
             'entity' => $this->entityRef,
             'mode' => $this->templateParameters['mode'],
             'actions' => $this->templateParameters['actions'],
-            'inlineUsage' => $this->templateParameters['inlineUsage']
+            'has_moderate_permission' => $this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_MODERATE),
+            'filter_by_ownership' => !$this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_ADD),
+            'inline_usage' => $this->templateParameters['inlineUsage']
         ];
     
-        return $this->container->get('form.factory')->create('MU\ImageModule\Form\Type\PictureType', $this->entityRef, $options);
+        return $this->formFactory->create(MultiPictureType::class, $this->entityRef, $options);
     }
 
 
@@ -172,7 +158,7 @@ abstract class AbstractMultiUploadHandler extends MultiUploadHandler
      *
      * @return mixed Redirect or false on errors
      */
-    public function handleCommand($args = [])
+    public function handleCommand(array $args = [])
     {
         $result = parent::handleCommand($args);
         if (false === $result) {
@@ -200,7 +186,7 @@ abstract class AbstractMultiUploadHandler extends MultiUploadHandler
      *
      * @return String desired status or error message
      */
-    protected function getDefaultMessage($args, $success = false)
+    protected function getDefaultMessage(array $args = [], $success = false)
     {
         if (false === $success) {
             return parent::getDefaultMessage($args, $success);
