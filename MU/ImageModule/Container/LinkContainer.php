@@ -79,7 +79,6 @@ class LinkContainer extends AbstractLinkContainer
         $request = $this->request;
         
         $albumId = $request->query->getAlnum('id', 0);
-        die($albumId);
 
         // Create an array of links to return
         $links = [];
