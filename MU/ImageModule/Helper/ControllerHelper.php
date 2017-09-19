@@ -13,6 +13,20 @@
 namespace MU\ImageModule\Helper;
 
 use MU\ImageModule\Helper\Base\AbstractControllerHelper;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Zikula\Common\Translator\TranslatorInterface;
+use Zikula\Common\Translator\TranslatorTrait;
+use Zikula\Component\SortableColumns\SortableColumns;
+use Zikula\Core\RouteUrl;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+use MU\ImageModule\Entity\Factory\EntityFactory;
+use MU\ImageModule\Helper\CollectionFilterHelper;
+use MU\ImageModule\Helper\FeatureActivationHelper;
+use MU\ImageModule\Helper\ImageHelper;
+use MU\ImageModule\Helper\ModelHelper;
+
 use LogUtil;
 use ModUtil;
 use UserUtil;
@@ -22,6 +36,27 @@ use UserUtil;
  */
 class ControllerHelper extends AbstractControllerHelper
 {
+	/**
+	 * Processes the parameters for a view action.
+	 * This includes handling pagination, quick navigation forms and other aspects.
+	 *
+	 * @param string          $objectType         Name of treated entity type
+	 * @param SortableColumns $sortableColumns    Used SortableColumns instance
+	 * @param array           $templateParameters Template data
+	 * @param boolean         $hasHookSubscriber  Whether hook subscribers are supported or not
+	 *
+	 * @return array Enriched template parameters used for creating the response
+	 */
+	public function processViewActionParameters($objectType, SortableColumns $sortableColumns, array $templateParameters = [], $hasHookSubscriber = false)
+	{
+		$templateParameters = parent::processViewActionParameters($objectType, $sortableColumns, $templateParameters);
+		if ($templateParameters['routeArea'] != 'admin' && $objectType == 'avatar') {
+			$templateParameters['own'] = 1;
+		}
+		
+		return $templateParameters;		
+	}
+	
 	/**
 	 * The muimageCheckGroupMember method is checking if the actual user
 	 * is in the same group as user created the relevant item
