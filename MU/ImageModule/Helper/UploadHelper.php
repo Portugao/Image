@@ -28,55 +28,11 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 
-use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
-
 /**
  * Helper implementation class for upload handling.
  */
 class UploadHelper extends AbstractUploadHelper
-{
-	/**
-	 * @var VariableApiInterface
-	 */
-	protected $variableApi;
-	
-	
-	/**
-	 * UploadHelper constructor.
-	 *
-	 * @param TranslatorInterface     $translator     Translator service instance
-	 * @param Filesystem              $filesystem     Filesystem service instance
-	 * @param SessionInterface        $session        Session service instance
-	 * @param LoggerInterface         $logger         Logger service instance
-	 * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
-	 * @param object                  $moduleVars     Existing module vars
-	 * @param String                  $dataDirectory  The data directory name
-	 * @param VariableApiInterface    $variableApiInterface    VariableApiInterface service instance
-	 */
-	public function __construct(
-			TranslatorInterface $translator,
-			Filesystem $filesystem,
-			SessionInterface $session,
-			LoggerInterface $logger,
-			CurrentUserApiInterface $currentUserApi,
-			$moduleVars,
-			$dataDirectory,
-			$variableApi
-			) {
-				$this->setTranslator($translator);
-				$this->filesystem = $filesystem;
-				$this->session = $session;
-				$this->logger = $logger;
-				$this->currentUserApi = $currentUserApi;
-				$this->moduleVars = $moduleVars;
-				$this->dataDirectory = $dataDirectory;
-				$this->variableApi = $variableApi;
-	
-				$this->allowedObjectTypes = ['picture', 'avatar'];
-				$this->imageFileTypes = ['gif', 'jpeg', 'jpg', 'png', 'swf'];
-				$this->forbiddenFileTypes = ['cgi', 'pl', 'asp', 'phtml', 'php', 'php3', 'php4', 'php5', 'exe', 'com', 'bat', 'jsp', 'cfm', 'shtml'];
-	}
-	
+{		
 	/**
 	 * Process a file upload.
 	 *
@@ -90,11 +46,11 @@ class UploadHelper extends AbstractUploadHelper
 	{
 		$result = parent::performFileUpload($objectType, $file, $fieldName);
 
-		if ($this->variableApi->get('MUImageModule', 'createSeveralPictures') == true && $objectType == 'picture')
+		if ($this->moduleVars['createSeveralPictures'] == true && $objectType == 'picture')
 		{
 			$success = $this->createSeveralPictures($objectType, $fieldName, $result['fileName']);
 		}
-		if ($this->variableApi->get('MUImageModule', 'useWatermark') == true && $objectType == 'picture')
+		if ($this->moduleVars['useWatermark'] == true && $objectType == 'picture')
 		{
 			$this->createWatermark($objectType, $fieldName, $fileName);
 		}
@@ -116,35 +72,35 @@ class UploadHelper extends AbstractUploadHelper
     	
     		$imagine = new Imagine();
     		// we create the thumnail
-    		$widthFirst = $this->variableApi->get('MUImageModule', 'firstWidth');
-    		$heightFirst = $this->variableApi->get('MUImageModule', 'firstHeight');
+    		$widthFirst = $this->moduleVars['firstWidth'];
+    		$heightFirst = $this->moduleVars['firstHeight'];
     		if ($widthFirst > 0 && $heightFirst > 0) {
     			$nameForThumb = $fileNameWithoutExtension . '_tmb.jpg';
     			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthFirst, $heightFirst), 'inset')->save($basePath . $nameForThumb);
     		}
-    		if ($this->variableApi->get('MUImageModule', 'useWatermark') == true)
+    		if ($this->moduleVars['useWatermark'] == true)
     		{
     			$this->createWatermark($objectType, $fieldName, $nameForThumb);
     		}
     		// we create the preview
-    		$widthSecond = $this->variableApi->get('MUImageModule', 'secondWidth');
-    		$heightSecond = $this->variableApi->get('MUImageModule', 'secondHeight');
+    		$widthSecond = $this->moduleVars['secondWidth'];
+    		$heightSecond = $this->moduleVars['secondHeight'];
     		if ($widthSecond > 0 && $heightSecond > 0) {
     			$nameForThumb = $fileNameWithoutExtension . '_pre.jpg';
     			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthSecond, $heightSecond), 'inset')->save($basePath . $nameForThumb);
     		}
-    		if ($this->variableApi->get('MUImageModule', 'useWatermark') == true)
+    		if ($this->moduleVars['useWatermark'] == true)
     		{
     			$this->createWatermark($objectType, $fieldName, $nameForThumb);
     		}
     		// we create the full image
-    		$widthThird = $this->variableApi->get('MUImageModule', 'thirdWidth');
-    		$heightThird = $this->variableApi->get('MUImageModule', 'thirdHeight');
+    		$widthThird = $this->moduleVars['thirdWidth'];
+    		$heightThird = $this->moduleVars['thirdHeight'];
     		if ($widthThird > 0 && $heightThird > 0) {
     			$nameForThumb = $fileNameWithoutExtension . '_full.jpg';
     			$imagine->open($basePath . $fileName)->thumbnail(new Box($widthThird, $heightThird), 'inset')->save($basePath . $nameForThumb);
     		}
-    		if ($this->variableApi->get('MUImageModule', 'useWatermark') == true)
+    		if ($this->moduleVars['useWatermark'] == true)
     		{
     			$this->createWatermark($objectType, $fieldName, $nameForThumb);
     		}
@@ -157,7 +113,7 @@ class UploadHelper extends AbstractUploadHelper
     
     protected function createWatermark($objectType, $fieldName, $fileName)
     {
-    	$watermarkImage = $this->variableApi->get('MUImageModule', 'watermark');
+    	$watermarkImage = $this->moduleVars['watermark'];
     	$basePath = $this->getFileBaseFolder($objectType, $fieldName);
     	
     	$imagine2 = new Imagine\Imagick\Imagine();
