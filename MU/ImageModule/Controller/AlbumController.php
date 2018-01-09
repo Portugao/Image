@@ -15,7 +15,7 @@ namespace MU\ImageModule\Controller;
 use MU\ImageModule\Controller\Base\AbstractAlbumController;
 
 use RuntimeException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +35,6 @@ class AlbumController extends AbstractAlbumController
      * @Route("/admin/albums",
      *        methods = {"GET"}
      * )
-     * @Cache(expires="+7 days", public=true)
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -55,7 +54,6 @@ class AlbumController extends AbstractAlbumController
      * @Route("/albums",
      *        methods = {"GET"}
      * )
-     * @Cache(expires="+7 days", public=true)
      *
      * @param Request $request Current request instance
      *
@@ -75,7 +73,6 @@ class AlbumController extends AbstractAlbumController
      *        defaults = {"sort" = "", "sortdir" = "asc", "pos" = 1, "num" = 10, "_format" = "html"},
      *        methods = {"GET"}
      * )
-     * @Cache(expires="+2 hours", public=false)
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -101,7 +98,6 @@ class AlbumController extends AbstractAlbumController
      *        defaults = {"sort" = "", "sortdir" = "asc", "pos" = 1, "num" = 10, "_format" = "html"},
      *        methods = {"GET"}
      * )
-     * @Cache(expires="+2 hours", public=false)
      *
      * @param Request $request Current request instance
      * @param string $sort         Sorting field
@@ -126,7 +122,6 @@ class AlbumController extends AbstractAlbumController
      *        methods = {"GET"}
      * )
      * @ParamConverter("album", class="MUImageModule:AlbumEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
-     * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -151,7 +146,6 @@ class AlbumController extends AbstractAlbumController
      *        methods = {"GET"}
      * )
      * @ParamConverter("album", class="MUImageModule:AlbumEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
-     * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      *
      * @param Request $request Current request instance
      * @param AlbumEntity $album Treated album instance
@@ -173,7 +167,6 @@ class AlbumController extends AbstractAlbumController
      *        defaults = {"id" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
-     * @Cache(expires="+30 minutes", public=false)
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -197,7 +190,6 @@ class AlbumController extends AbstractAlbumController
      *        defaults = {"id" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
-     * @Cache(expires="+30 minutes", public=false)
      *
      * @param Request $request Current request instance
      *
@@ -220,7 +212,6 @@ class AlbumController extends AbstractAlbumController
      *        methods = {"GET", "POST"}
      * )
      * @ParamConverter("album", class="MUImageModule:AlbumEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
-     * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      * @Theme("admin")
      *
      * @param Request $request Current request instance
@@ -246,7 +237,6 @@ class AlbumController extends AbstractAlbumController
      *        methods = {"GET", "POST"}
      * )
      * @ParamConverter("album", class="MUImageModule:AlbumEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
-     * @Cache(lastModified="album.getUpdatedDate()", ETag="'Album' ~ album.getid() ~ album.getUpdatedDate().format('U')")
      *
      * @param Request $request Current request instance
      * @param AlbumEntity $album Treated album instance
