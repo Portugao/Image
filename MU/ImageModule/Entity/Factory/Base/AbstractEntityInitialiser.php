@@ -47,13 +47,12 @@ abstract class AbstractEntityInitialiser
     public function initAlbum(AlbumEntity $entity)
     {
         $listEntries = $this->listEntriesHelper->getEntries('album', 'albumAccess');
-        $items = [];
         foreach ($listEntries as $listEntry) {
             if (true === $listEntry['default']) {
-                $items[] = $listEntry['value'];
+                $entity->setAlbumAccess($listEntry['value']);
+                break;
             }
         }
-        $entity->setAlbumAccess(implode('###', $items));
 
 
         return $entity;
@@ -82,12 +81,13 @@ abstract class AbstractEntityInitialiser
     public function initAvatar(AvatarEntity $entity)
     {
         $listEntries = $this->listEntriesHelper->getEntries('avatar', 'supportedModules');
+        $items = [];
         foreach ($listEntries as $listEntry) {
             if (true === $listEntry['default']) {
-                $entity->setSupportedModules($listEntry['value']);
-                break;
+                $items[] = $listEntry['value'];
             }
         }
+        $entity->setSupportedModules(implode('###', $items));
 
 
         return $entity;

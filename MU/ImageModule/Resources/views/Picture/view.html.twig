@@ -19,7 +19,7 @@
                 {% if routeArea == 'admin' %}
                     <col id="cSelect" />
                 {% endif %}
-                <col id="cItemActions" />
+                <col id="cItemActionsStart" />
                 <col id="cTitle" />
                 <col id="cDescription" />
                 <col id="cImageUpload" />
@@ -30,11 +30,11 @@
             <thead>
             <tr>
                 {% if routeArea == 'admin' %}
-                    <th id="hSelect" scope="col" class="{% if items|length > 0 %}fixed-column {% endif %}text-center z-w02">
+                    <th id="hSelect" scope="col" class="text-center z-w02">
                         <input type="checkbox" class="muimage-mass-toggle" />
                     </th>
                 {% endif %}
-                <th id="hItemActions" scope="col" class="{% if items|length > 0 %}fixed-column {% endif %}z-order-unsorted z-w02">{{ __('Actions') }}</th>
+                <th id="hItemActionsStart" scope="col" class="z-order-unsorted z-w02">{{ __('Actions') }}</th>
                 <th id="hTitle" scope="col" class="text-left">
                     <a href="{{ sort.title.url }}" title="{{ __f('Sort by %s', {'%s': 'title'}) }}" class="{{ sort.title.class }}">{{ __('Title') }}</a>
                 </th>
@@ -60,15 +60,15 @@
         {% for picture in items %}
             <tr>
                 {% if routeArea == 'admin' %}
-                    <td headers="hSelect" class="fixed-column text-center z-w02">
+                    <td headers="hSelect" class="text-center z-w02">
                         <input type="checkbox" name="items[]" value="{{ picture.getKey() }}" class="muimage-toggle-checkbox" />
                     </td>
                 {% endif %}
-                <td id="itemActions{{ picture.getKey() }}" headers="hItemActions" class="fixed-column actions nowrap z-w02">
+                <td id="itemActions{{ picture.getKey() }}Start" headers="hItemActionsStart" class="actions nowrap z-w02">
                     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: picture, area: routeArea, context: 'view'}) %}
                     <div class="dropdown">
-                        <a id="itemActions{{ picture.getKey() }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
-                        {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:actions.html.twig'}) }}
+                        <a id="itemActions{{ picture.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
+                        {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}
                     </div>
                 </td>
                 <td headers="hTitle" class="text-left">
@@ -104,7 +104,7 @@
                         <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId()}) }}">{% spaceless %}
                           {{ picture.album|muimagemodule_formattedTitle }}
                         {% endspaceless %}</a>
-                        <a id="albumItem{{ picture.getKey() }}_rel_{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                        <a id="albumItem{{ picture.getKey() }}_rel_{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><i class="fa fa-id-card-o"></i></a>
                     {% else %}
                         {{ __('Not set.') }}
                     {% endif %}
@@ -150,15 +150,26 @@
         {% if canBeCreated %}
             {% if hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
                 {% set createTitle = __('Create picture') %}
-                <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}" class="fa fa-plus">{{ createTitle }}</a>
+                <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}"><i class="fa fa-plus"></i> {{ createTitle }}</a>
             {% endif %}
         {% endif %}
         {% if all == 1 %}
             {% set linkTitle = __('Back to paginated view') %}
-            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view') }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+            {% set routeArgs = own ? {own: 1} : {} %}
+            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', routeArgs) }}" title="{{ linkTitle|e('html_attr') }}"><i class="fa fa-table"></i> {{ linkTitle }}</a>
         {% else %}
             {% set linkTitle = __('Show all entries') %}
-            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', {all: 1}) }}" title="{{ linkTitle|e('html_attr') }}" class="fa fa-table">{{ linkTitle }}</a>
+            {% set routeArgs = own ? {all: 1, own: 1} : {all: 1} %}
+            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', routeArgs) }}" title="{{ linkTitle|e('html_attr') }}"><i class="fa fa-table"></i> {{ linkTitle }}</a>
+        {% endif %}
+        {% if own == 1 %}
+            {% set linkTitle = __('Show also entries from other users') %}
+            {% set routeArgs = all ? {all: 1} : {} %}
+            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', routeArgs) }}" title="{{ linkTitle|e('html_attr') }}"><i class="fa fa-users"></i> {{ linkTitle }}</a>
+        {% else %}
+            {% set linkTitle = __('Show only own entries') %}
+            {% set routeArgs = all ? {all: 1, own: 1} : {own: 1} %}
+            <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'view', routeArgs) }}" title="{{ linkTitle|e('html_attr') }}"><i class="fa fa-user"></i> {{ linkTitle }}</a>
         {% endif %}
     </p>
 {% endblock %}
@@ -166,6 +177,11 @@
     
     {# here you can activate calling display hooks for the view page if you need it #}
     {# % if routeArea != 'admin' %}
-        {{ notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', urlObject=currentUrlObject) }}
+        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', urlObject=currentUrlObject, outputAsArray=true) %}
+        {% if hooks is iterable and hooks|length > 0 %}
+            {% for area, hook in hooks %}
+                <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
+            {% endfor %}
+        {% endif %}
     {% endif % #}
 {% endblock %}

@@ -62,7 +62,7 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput implements Conta
      * Create event handler.
      *
      * @param Zikula_Form_View $view    Reference to Zikula_Form_View object
-     * @param array            &$params Parameters passed from the Smarty plugin function
+     * @param array            &$params List of parameters passed from the Smarty plugin function
      *
      * @see    Zikula_Form_AbstractPlugin
      *
@@ -107,11 +107,12 @@ class AbstractItemSelector extends Zikula_Form_Plugin_TextInput implements Conta
             $jsAssetBag = $this->container->get('zikula_core.common.theme.assets_js');
             $homePath = $this->container->get('request_stack')->getCurrentRequest()->getBasePath();
 
-            $jsAssetBag->add($homePath . '/web/magnific-popup/jquery.magnific-popup.min.js');
-            $cssAssetBag->add($homePath . '/web/magnific-popup/magnific-popup.css');
+            $jsAssetBag->add([$homePath . '/web/magnific-popup/jquery.magnific-popup.min.js' => 90]);
+            $cssAssetBag->add([$homePath . '/web/magnific-popup/magnific-popup.css' => 90]);
             $jsAssetBag->add($assetHelper->resolve('@MUImageModule:js/MUImageModule.js'));
             $jsAssetBag->add($assetHelper->resolve('@MUImageModule:js/MUImageModule.ItemSelector.js'));
             $cssAssetBag->add($assetHelper->resolve('@MUImageModule:css/style.css'));
+            $cssAssetBag->add($assetHelper->resolve('@MUImageModule:css/custom.css'));
         }
         $firstTime = false;
 

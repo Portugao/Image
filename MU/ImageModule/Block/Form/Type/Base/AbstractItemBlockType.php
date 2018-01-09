@@ -52,6 +52,8 @@ abstract class AbstractItemBlockType extends AbstractType
         EntityDisplayHelper $entityDisplayHelper
     ) {
         $this->setTranslator($translator);
+        $this->entityFactory = $entityFactory;
+        $this->entityDisplayHelper = $entityDisplayHelper;
     }
 
     /**
@@ -80,7 +82,7 @@ abstract class AbstractItemBlockType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addObjectTypeField(FormBuilderInterface $builder, array $options)
+    public function addObjectTypeField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('objectType', ChoiceType::class, [
             'label' => $this->__('Object type') . ':',
@@ -106,7 +108,7 @@ abstract class AbstractItemBlockType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addIdField(FormBuilderInterface $builder, array $options)
+    public function addIdField(FormBuilderInterface $builder, array $options = [])
     {
         $repository = $this->entityFactory->getRepository($options['object_type']);
         // select without joins
@@ -119,7 +121,6 @@ abstract class AbstractItemBlockType extends AbstractType
         ksort($choices);
     
         $builder->add('id', ChoiceType::class, [
-            'choice_label' => $choiceLabelClosure,
             'multiple' => false,
             'expanded' => false,
             'choices' => $choices,
@@ -135,7 +136,7 @@ abstract class AbstractItemBlockType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addTemplateField(FormBuilderInterface $builder, array $options)
+    public function addTemplateField(FormBuilderInterface $builder, array $options = [])
     {
         $builder
             ->add('customTemplate', TextType::class, [

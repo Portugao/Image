@@ -119,14 +119,7 @@
                         {{ form_row(form.moderationSpecificCreationDate) }}
                     </div>
                 {% endif %}
-                
-                {# include return control #}
-                {% if mode == 'create' %}
-                    <fieldset>
-                        <legend>{{ __('Return control') }}</legend>
-                        {{ form_row(form.repeatCreation) }}
-                    </fieldset>
-                {% endif %}
+
             </div>
         </div>
         
@@ -135,6 +128,9 @@
             <div class="col-sm-offset-3 col-sm-9">
                 {% for action in actions %}
                     {{ form_widget(attribute(form, action.id)) }}
+                    {% if mode == 'create' and action.id == 'submit' and form.submitrepeat is defined %}
+                        {{ form_widget(attribute(form, 'submitrepeat')) }}
+                    {% endif %}
                 {% endfor %}
                 {{ form_widget(form.reset) }}
                 {{ form_widget(form.cancel) }}

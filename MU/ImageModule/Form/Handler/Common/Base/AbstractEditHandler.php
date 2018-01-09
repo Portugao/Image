@@ -28,6 +28,7 @@ use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\Core\RouteUrl;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\PageLockModule\Api\ApiInterface\LockingApiInterface;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
@@ -36,6 +37,7 @@ use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ControllerHelper;
 use MU\ImageModule\Helper\HookHelper;
 use MU\ImageModule\Helper\ModelHelper;
+use MU\ImageModule\Helper\TranslatableHelper;
 use MU\ImageModule\Helper\WorkflowHelper;
 
 /**
@@ -138,6 +140,13 @@ abstract class AbstractEditHandler
     protected $hasPageLockSupport = false;
 
     /**
+     * Whether the entity has translatable fields or not.
+     *
+     * @var boolean
+     */
+    protected $hasTranslatableFields = false;
+
+    /**
      * @var ZikulaHttpKernelInterface
      */
     protected $kernel;
@@ -172,6 +181,11 @@ abstract class AbstractEditHandler
     protected $permissionApi;
 
     /**
+     * @var VariableApiInterface
+     */
+    protected $variableApi;
+
+    /**
      * @var CurrentUserApiInterface
      */
     protected $currentUserApi;
@@ -200,6 +214,11 @@ abstract class AbstractEditHandler
      * @var WorkflowHelper
      */
     protected $workflowHelper;
+
+    /**
+     * @var TranslatableHelper
+     */
+    protected $translatableHelper;
 
     /**
      * @var FeatureActivationHelper
@@ -237,12 +256,14 @@ abstract class AbstractEditHandler
      * @param RouterInterface           $router           Router service instance
      * @param LoggerInterface           $logger           Logger service instance
      * @param PermissionApiInterface    $permissionApi    PermissionApi service instance
+     * @param VariableApiInterface      $variableApi      VariableApi service instance
      * @param CurrentUserApiInterface   $currentUserApi   CurrentUserApi service instance
      * @param EntityFactory             $entityFactory    EntityFactory service instance
      * @param ControllerHelper          $controllerHelper ControllerHelper service instance
      * @param ModelHelper               $modelHelper      ModelHelper service instance
      * @param WorkflowHelper            $workflowHelper   WorkflowHelper service instance
      * @param HookHelper                $hookHelper       HookHelper service instance
+     * @param TranslatableHelper        $translatableHelper TranslatableHelper service instance
      * @param FeatureActivationHelper   $featureActivationHelper FeatureActivationHelper service instance
      */
     public function __construct(
@@ -253,12 +274,14 @@ abstract class AbstractEditHandler
         RouterInterface $router,
         LoggerInterface $logger,
         PermissionApiInterface $permissionApi,
+        VariableApiInterface $variableApi,
         CurrentUserApiInterface $currentUserApi,
         EntityFactory $entityFactory,
         ControllerHelper $controllerHelper,
         ModelHelper $modelHelper,
         WorkflowHelper $workflowHelper,
         HookHelper $hookHelper,
+        TranslatableHelper $translatableHelper,
         FeatureActivationHelper $featureActivationHelper
     ) {
         $this->kernel = $kernel;
@@ -268,12 +291,14 @@ abstract class AbstractEditHandler
         $this->router = $router;
         $this->logger = $logger;
         $this->permissionApi = $permissionApi;
+        $this->variableApi = $variableApi;
         $this->currentUserApi = $currentUserApi;
         $this->entityFactory = $entityFactory;
         $this->controllerHelper = $controllerHelper;
         $this->modelHelper = $modelHelper;
         $this->workflowHelper = $workflowHelper;
         $this->hookHelper = $hookHelper;
+        $this->translatableHelper = $translatableHelper;
         $this->featureActivationHelper = $featureActivationHelper;
     }
 
@@ -298,7 +323,7 @@ abstract class AbstractEditHandler
      *
      * @throws RuntimeException Thrown if the workflow actions can not be determined
      */
-    public function processForm(array $templateParameters)
+    public function processForm(array $templateParameters = [])
     {
         $this->templateParameters = $templateParameters;
         $this->templateParameters['inlineUsage'] = $this->request->query->getBoolean('raw', false);
@@ -320,10 +345,9 @@ abstract class AbstractEditHandler
             $this->returnTo = $this->request->getSession()->get($refererSessionVar);
         }
         // store current uri for repeated creations
-        $this->repeatReturnUrl = $this->request->getSchemeAndHttpHost() . $this->request->getBasePath() . $this->request->getPathInfo();
+        $this->repeatReturnUrl = $this->request->getUri();
     
         $this->permissionComponent = 'MUImageModule:' . $this->objectTypeCapital . ':';
-    
         $this->idField = $this->entityFactory->getIdField($this->objectType);
     
         // retrieve identifier of the object we wish to edit
@@ -353,7 +377,7 @@ abstract class AbstractEditHandler
                 if (true === $this->hasPageLockSupport && $this->kernel->isBundle('ZikulaPageLockModule') && null !== $this->lockingApi) {
                     // try to guarantee that only one person at a time can be editing this entity
                     $lockName = 'MUImageModule' . $this->objectTypeCapital . $entity->getKey();
-                    $this->lockingApi->addLock($lockName, $this->getRedirectUrl(null));
+                    $this->lockingApi->addLock($lockName, $this->getRedirectUrl(['commandName' => '']));
                     // reload entity as the addLock call above has triggered the preUpdate event
                     $this->entityFactory->getObjectManager()->refresh($entity);
                 }
@@ -389,6 +413,10 @@ abstract class AbstractEditHandler
         // save entity reference for later reuse
         $this->entityRef = $entity;
     
+        
+        if (true === $this->hasTranslatableFields) {
+            $this->initTranslationsForEditing();
+        }
         
         $this->initRelationPresets();
     
@@ -441,6 +469,17 @@ abstract class AbstractEditHandler
     {
         // to be customised in sub classes
         return null;
+    }
+    
+    /**
+     * Returns the form options.
+     *
+     * @return array
+     */
+    protected function getFormOptions()
+    {
+        // to be customised in sub classes
+        return [];
     }
     
     
@@ -499,6 +538,52 @@ abstract class AbstractEditHandler
     
         return $entity;
     }
+    
+    /**
+     * Initialise translations.
+     */
+    protected function initTranslationsForEditing()
+    {
+        $translationsEnabled = $this->featureActivationHelper->isEnabled(FeatureActivationHelper::TRANSLATIONS, $this->objectType);
+        $this->templateParameters['translationsEnabled'] = $translationsEnabled;
+    
+        $supportedLanguages = $this->translatableHelper->getSupportedLanguages($this->objectType);
+        // assign list of installed languages for translatable extension
+        $this->templateParameters['supportedLanguages'] = $supportedLanguages;
+    
+        if (!$translationsEnabled) {
+            return;
+        }
+    
+        if ($this->variableApi->getSystemVar('multilingual') != 1) {
+            $this->templateParameters['translationsEnabled'] = false;
+    
+            return;
+        }
+        if (count($supportedLanguages) < 2) {
+            $this->templateParameters['translationsEnabled'] = false;
+    
+            return;
+        }
+    
+        $mandatoryFieldsPerLocale = $this->translatableHelper->getMandatoryFields($this->objectType);
+        $localesWithMandatoryFields = [];
+        foreach ($mandatoryFieldsPerLocale as $locale => $fields) {
+            if (count($fields) > 0) {
+                $localesWithMandatoryFields[] = $locale;
+            }
+        }
+        if (!in_array($this->translatableHelper->getCurrentLanguage(), $localesWithMandatoryFields)) {
+            $localesWithMandatoryFields[] = $this->translatableHelper->getCurrentLanguage();
+        }
+        $this->templateParameters['localesWithMandatoryFields'] = $localesWithMandatoryFields;
+    
+        // retrieve and assign translated fields
+        $translations = $this->translatableHelper->prepareEntityForEditing($this->entityRef);
+        foreach ($translations as $language => $translationData) {
+            $this->templateParameters[$this->objectTypeLower . $language] = $translationData;
+        }
+    }
 
     /**
      * Get list of allowed redirect codes.
@@ -528,6 +613,10 @@ abstract class AbstractEditHandler
             if ($this->form->get($action['id'])->isClicked()) {
                 $args['commandName'] = $action['id'];
             }
+        }
+        if ($this->templateParameters['mode'] == 'create' && $this->form->has('submitrepeat') && $this->form->get('submitrepeat')->isClicked()) {
+            $args['commandName'] = 'submit';
+            $this->repeatCreateAction = true;
         }
         if ($this->form->get('cancel')->isClicked()) {
             $args['commandName'] = 'cancel';
@@ -564,6 +653,12 @@ abstract class AbstractEditHandler
                 return false;
             }
     
+            if ($isRegularAction && true === $this->hasTranslatableFields) {
+                if ($this->featureActivationHelper->isEnabled(FeatureActivationHelper::TRANSLATIONS, $this->objectType)) {
+                    $this->processTranslationsForUpdate();
+                }
+            }
+    
             if ($entity->supportsHookSubscribers()) {
                 $routeUrl = null;
                 if ($action != 'delete') {
@@ -591,10 +686,23 @@ abstract class AbstractEditHandler
     }
     
     /**
+     * Prepare update of translations.
+     */
+    protected function processTranslationsForUpdate()
+    {
+        if (!$this->templateParameters['translationsEnabled']) {
+            return;
+        }
+    
+        // persist translated fields
+        $this->translatableHelper->processEntityAfterEditing($this->entityRef, $this->form, $this->entityFactory->getObjectManager());
+    }
+    
+    /**
      * Get success or error message for default operations.
      *
-     * @param array   $args    arguments from handleCommand method
-     * @param Boolean $success true if this is a success, false for default error
+     * @param array   $args    List of arguments from handleCommand method
+     * @param boolean $success Becomes true if this is a success, false for default error
      *
      * @return String desired status or error message
      */
@@ -631,8 +739,8 @@ abstract class AbstractEditHandler
     /**
      * Add success or error message to session.
      *
-     * @param array   $args    arguments from handleCommand method
-     * @param Boolean $success true if this is a success, false for default error
+     * @param array   $args    List of arguments from handleCommand method
+     * @param boolean $success Becomes true if this is a success, false for default error
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
@@ -661,10 +769,6 @@ abstract class AbstractEditHandler
         // fetch posted data input values as an associative array
         $formData = $this->form->getData();
     
-        if ($this->templateParameters['mode'] == 'create' && isset($this->form['repeatCreation']) && $this->form['repeatCreation']->getData() == 1) {
-            $this->repeatCreateAction = true;
-        }
-    
         if (method_exists($this->entityRef, 'getCreatedBy')) {
             if (isset($this->form['moderationSpecificCreator']) && null !== $this->form['moderationSpecificCreator']->getData()) {
                 $this->entityRef->setCreatedBy($this->form['moderationSpecificCreator']->getData());
@@ -674,10 +778,6 @@ abstract class AbstractEditHandler
             }
         }
     
-        if (isset($this->form['additionalNotificationRemarks']) && $this->form['additionalNotificationRemarks']->getData() != '') {
-            $this->request->getSession()->set('MUImageModuleAdditionalNotificationRemarks', $this->form['additionalNotificationRemarks']->getData());
-        }
-    
         // return remaining form data
         return $formData;
     }
@@ -685,9 +785,9 @@ abstract class AbstractEditHandler
     /**
      * This method executes a certain workflow action.
      *
-     * @param array $args Arguments from handleCommand method
+     * @param array $args List of arguments from handleCommand method
      *
-     * @return bool Whether everything worked well or not
+     * @return boolean Whether everything worked well or not
      */
     public function applyAction(array $args = [])
     {

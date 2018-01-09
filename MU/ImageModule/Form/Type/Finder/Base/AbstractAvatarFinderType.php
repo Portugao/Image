@@ -108,7 +108,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addCategoriesField(FormBuilderInterface $builder, array $options)
+    public function addCategoriesField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('categories', CategoriesType::class, [
             'label' => $this->__('Category') . ':',
@@ -122,7 +122,8 @@ abstract class AbstractAvatarFinderType extends AbstractType
             'multiple' => false,
             'module' => 'MUImageModule',
             'entity' => ucfirst($options['object_type']) . 'Entity',
-            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['object_type']) . 'CategoryEntity'
+            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['object_type']) . 'CategoryEntity',
+            'showRegistryLabels' => true
         ]);
     }
 
@@ -132,7 +133,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addImageFields(FormBuilderInterface $builder, array $options)
+    public function addImageFields(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('onlyImages', CheckboxType::class, [
             'label' => $this->__('Only images'),
@@ -151,7 +152,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addPasteAsField(FormBuilderInterface $builder, array $options)
+    public function addPasteAsField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('pasteAs', ChoiceType::class, [
             'label' => $this->__('Paste as') . ':',
@@ -177,7 +178,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSortingFields(FormBuilderInterface $builder, array $options)
+    public function addSortingFields(FormBuilderInterface $builder, array $options = [])
     {
         $builder
             ->add('sort', ChoiceType::class, [
@@ -217,7 +218,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addAmountField(FormBuilderInterface $builder, array $options)
+    public function addAmountField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('num', ChoiceType::class, [
             'label' => $this->__('Page size') . ':',
@@ -246,7 +247,7 @@ abstract class AbstractAvatarFinderType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSearchField(FormBuilderInterface $builder, array $options)
+    public function addSearchField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('q', SearchType::class, [
             'label' => $this->__('Search for') . ':',

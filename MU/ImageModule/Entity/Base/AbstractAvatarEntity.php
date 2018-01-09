@@ -55,6 +55,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
     
     /**
      * the current workflow state
+     *
      * @ORM\Column(length=20)
      * @Assert\NotBlank()
      * @ImageAssert\ListEntry(entityName="avatar", propertyName="workflowState", multiple=false)
@@ -72,6 +73,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
     
     /**
      * Here you can enter, for which use cases this avatar is.
+     *
      * @ORM\Column(type="text", length=2000, nullable=true)
      * @Assert\Length(min="0", max="2000")
      * @var text $description
@@ -117,6 +119,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
     
     /**
      * Be sure that you set the supported module in a logic way!
+     *
      * @ORM\Column(length=255)
      * @Assert\NotBlank()
      * @ImageAssert\ListEntry(entityName="avatar", propertyName="supportedModules", multiple=true)
@@ -377,7 +380,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
     /**
      * Sets the categories.
      *
-     * @param ArrayCollection $categories
+     * @param ArrayCollection $categories List of categories
      *
      * @return void
      */
@@ -398,8 +401,8 @@ abstract class AbstractAvatarEntity extends EntityAccess
     /**
      * Checks if a collection contains an element based only on two criteria (categoryRegistryId, category).
      *
-     * @param ArrayCollection $collection
-     * @param \MU\ImageModule\Entity\AvatarCategoryEntity $element
+     * @param ArrayCollection $collection Given collection
+     * @param \MU\ImageModule\Entity\AvatarCategoryEntity $element Element to search for
      *
      * @return bool|int
      */
@@ -422,7 +425,7 @@ abstract class AbstractAvatarEntity extends EntityAccess
     /**
      * Creates url arguments array for easy creation of display urls.
      *
-     * @return array The resulting arguments list
+     * @return array List of resulting arguments
      */
     public function createUrlArgs()
     {
@@ -454,11 +457,11 @@ abstract class AbstractAvatarEntity extends EntityAccess
     /**
      * Returns an array of all related objects that need to be persisted after clone.
      * 
-     * @param array $objects The objects are added to this array. Default: []
+     * @param array $objects Objects that are added to this array
      * 
-     * @return array of entity objects
+     * @return array List of entity objects
      */
-    public function getRelatedObjectsToPersist(&$objects = []) 
+    public function getRelatedObjectsToPersist(&$objects = [])
     {
         return [];
     }

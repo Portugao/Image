@@ -9,7 +9,58 @@
     <fieldset class="album">
 {% endif %}
     <legend>{{ heading|default ? heading : __('Album') }}</legend>
-    {% if displayMode == 'choices' %}
+    {% if displayMode == 'embedded' %}
+        {% set subFields = attribute(form, alias) %}
+        {% if translationsEnabled == true %}
+            <div class="zikula-bootstrap-tab-container">
+                <ul class="{{ form.vars.id|lower }}-translation-locales nav nav-tabs">
+                    {% for language in supportedLanguages %}
+                        <li{% if language == app.request.locale %} class="active"{% endif %}>
+                            <a href="#" data-toggle="tab" data-target=".{{ form.vars.id|lower }}-translations-fields-{{ language }}">
+                                {% if not form.vars.valid %}
+                                    <span class="label label-danger"><i class="fa fa-warning"></i> <span class="sr-only">{{ __('Errors') }}</span></span>
+                                {% endif %}
+                                {% set hasRequiredFields = language in localesWithMandatoryFields %}
+                                {% if hasRequiredFields %}<span class="required">{% endif %}{{ language|languageName|safeHtml }}{% if hasRequiredFields %}</span>{% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="{{ form.vars.id|lower }}-translation-fields tab-content">
+                    {% for language in supportedLanguages %}
+                        <div class="{{ form.vars.id|lower }}-translations-fields-{{ language }} tab-pane fade{% if language == app.request.locale %} active in{% endif %}">
+                            <fieldset>
+                                <legend>{{ language|languageName|safeHtml }}</legend>
+                                {% if language == app.request.locale %}
+                                    {{ form_row(attribute(subFields, 'title')) }}
+                                    {{ form_row(attribute(subFields, 'description')) }}
+                                {% else %}
+                                    {{ form_row(attribute(form, 'translations' ~ language)) }}
+                                {% endif %}
+                            </fieldset>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            {% set language = app.request.locale %}
+            <fieldset>
+                <legend>{{ language|languageName|safeHtml }}</legend>
+                {{ form_row(attribute(subFields, 'title')) }}
+                {{ form_row(attribute(subFields, 'description')) }}
+            </fieldset>
+        {% endif %}
+        <fieldset>
+            <legend>{{ __('Further properties') }}</legend>
+            {{ form_row(attribute(subFields, 'albumAccess')) }}
+            {{ form_row(attribute(subFields, 'passwordAccess')) }}
+            {{ form_row(attribute(subFields, 'myFriends')) }}
+            {{ form_row(attribute(subFields, 'notInFrontend')) }}
+            <div class="hidden">
+                {{ form_row(attribute(subFields, 'pos')) }}
+            </div>
+        </fieldset>
+    {% elseif displayMode == 'choices' %}
         {{ form_row(attribute(form, alias)) }}
     {% elseif displayMode == 'autocomplete' %}
         {{ form_row(attribute(form, alias)) }}

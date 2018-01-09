@@ -12,6 +12,7 @@
 
 namespace MU\ImageModule\Form\Type\QuickNavigation\Base;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -119,7 +120,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options)
+    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options = [])
     {
         $mainSearchTerm = '';
         if ($this->request->query->has('q')) {
@@ -128,6 +129,10 @@ abstract class AbstractPictureQuickNavType extends AbstractType
             $this->request->query->remove('q');
         }
     
+        $queryBuilder = function(EntityRepository $er) {
+            // select without joins
+            return $er->getListQueryBuilder('', '', false);
+        };
         $entityDisplayHelper = $this->entityDisplayHelper;
         $choiceLabelClosure = function ($entity) use ($entityDisplayHelper) {
             return $entityDisplayHelper->getFormattedTitle($entity);
@@ -135,6 +140,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
         $builder->add('album', EntityType::class, [
             'class' => 'MUImageModule:AlbumEntity',
             'choice_label' => $choiceLabelClosure,
+            'query_builder' => $queryBuilder,
             'placeholder' => $this->__('All'),
             'required' => false,
             'label' => $this->__('Album'),
@@ -155,7 +161,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addListFields(FormBuilderInterface $builder, array $options)
+    public function addListFields(FormBuilderInterface $builder, array $options = [])
     {
         $listEntries = $this->listHelper->getEntries('picture', 'workflowState');
         $choices = [];
@@ -185,7 +191,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSearchField(FormBuilderInterface $builder, array $options)
+    public function addSearchField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('q', SearchType::class, [
             'label' => $this->__('Search'),
@@ -204,7 +210,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSortingFields(FormBuilderInterface $builder, array $options)
+    public function addSortingFields(FormBuilderInterface $builder, array $options = [])
     {
         $builder
             ->add('sort', ChoiceType::class, [
@@ -250,7 +256,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addAmountField(FormBuilderInterface $builder, array $options)
+    public function addAmountField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('num', ChoiceType::class, [
             'label' => $this->__('Page size'),
@@ -279,7 +285,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addBooleanFields(FormBuilderInterface $builder, array $options)
+    public function addBooleanFields(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('albumImage', ChoiceType::class, [
             'label' => $this->__('Album image'),

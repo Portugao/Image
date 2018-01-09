@@ -14,6 +14,7 @@ namespace MU\ImageModule\Entity\Base;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Translatable\Translatable;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Zikula\Core\Doctrine\EntityAccess;
@@ -29,7 +30,7 @@ use MU\ImageModule\Validator\Constraints as ImageAssert;
  *
  * @ORM\MappedSuperclass
  */
-abstract class AbstractPictureEntity extends EntityAccess
+abstract class AbstractPictureEntity extends EntityAccess implements Translatable
 {
     /**
      * Hook standard fields behaviour embedding createdBy, updatedBy, createdDate, updatedDate fields.
@@ -51,6 +52,7 @@ abstract class AbstractPictureEntity extends EntityAccess
     
     /**
      * the current workflow state
+     *
      * @ORM\Column(length=20)
      * @Assert\NotBlank()
      * @ImageAssert\ListEntry(entityName="picture", propertyName="workflowState", multiple=false)
@@ -59,6 +61,7 @@ abstract class AbstractPictureEntity extends EntityAccess
     protected $workflowState = 'initial';
     
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(length=255)
      * @Assert\NotNull()
      * @Assert\Length(min="0", max="255")
@@ -67,6 +70,7 @@ abstract class AbstractPictureEntity extends EntityAccess
     protected $title = '';
     
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(type="text", length=2000)
      * @Assert\NotNull()
      * @Assert\Length(min="0", max="2000")
@@ -136,6 +140,16 @@ abstract class AbstractPictureEntity extends EntityAccess
      */
     protected $pos = 1;
     
+    
+    /**
+     * Used locale to override Translation listener's locale.
+     * this is not a mapped field of entity metadata, just a simple property.
+     *
+     * @Assert\Locale()
+     * @Gedmo\Locale
+     * @var string $locale
+     */
+    protected $locale;
     
     /**
      * Bidirectional - Many pictures [pictures] are linked by one album [album] (OWNING SIDE).
@@ -424,6 +438,30 @@ abstract class AbstractPictureEntity extends EntityAccess
         }
     }
     
+    /**
+     * Returns the locale.
+     *
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+    
+    /**
+     * Sets the locale.
+     *
+     * @param string $locale
+     *
+     * @return void
+     */
+    public function setLocale($locale)
+    {
+        if ($this->locale != $locale) {
+            $this->locale = $locale;
+        }
+    }
+    
     
     /**
      * Returns the album.
@@ -452,7 +490,7 @@ abstract class AbstractPictureEntity extends EntityAccess
     /**
      * Creates url arguments array for easy creation of display urls.
      *
-     * @return array The resulting arguments list
+     * @return array List of resulting arguments
      */
     public function createUrlArgs()
     {
@@ -494,11 +532,11 @@ abstract class AbstractPictureEntity extends EntityAccess
     /**
      * Returns an array of all related objects that need to be persisted after clone.
      * 
-     * @param array $objects The objects are added to this array. Default: []
+     * @param array $objects Objects that are added to this array
      * 
-     * @return array of entity objects
+     * @return array List of entity objects
      */
-    public function getRelatedObjectsToPersist(&$objects = []) 
+    public function getRelatedObjectsToPersist(&$objects = [])
     {
         return [];
     }

@@ -28,22 +28,22 @@ class ExternalController extends AbstractExternalController
      * Displays one item of a certain object type using a separate template for external usages.
      *
      * @Route("/display/{objectType}/{id}/{source}/{displayMode}",
-     *        requirements = {"id" = "\d+", "source" = "contentType|scribite", "displayMode" = "link|embed"},
-     *        defaults = {"source" = "contentType", "contentType" = "embed"},
+     *        requirements = {"id" = "\d+", "source" = "block|contentType|scribite", "displayMode" = "link|embed"},
+     *        defaults = {"source" = "contentType", "displayMode" = "embed"},
      *        methods = {"GET"}
      * )
      *
      * @param Request $request     The current request
      * @param string  $objectType  The currently treated object type
      * @param int     $id          Identifier of the entity to be shown
-     * @param string  $source      Source of this call (contentType or scribite)
+     * @param string  $source      Source of this call (block, contentType, scribite)
      * @param string  $displayMode Display mode (link or embed)
      *
      * @return string Desired data output
      */
     public function displayAction(Request $request, $objectType, $id, $source, $displayMode)
     {
-        return parent::displayAction($objectType, $id, $source, $displayMode);
+        return parent::displayAction($request, $objectType, $id, $source, $displayMode);
     }
 
     /**

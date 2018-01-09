@@ -36,7 +36,7 @@ class AbstractFilterAlbumEvent extends Event
      * @param AlbumEntity $album Processed entity
      * @param array $entityChangeSet Change set for preUpdate events
      */
-    public function __construct(AlbumEntity $album, $entityChangeSet = [])
+    public function __construct(AlbumEntity $album, array $entityChangeSet = [])
     {
         $this->album = $album;
         $this->entityChangeSet = $entityChangeSet;
@@ -55,7 +55,7 @@ class AbstractFilterAlbumEvent extends Event
     /**
      * Returns the change set.
      *
-     * @return array
+     * @return array Entity change set
      */
     public function getEntityChangeSet()
     {

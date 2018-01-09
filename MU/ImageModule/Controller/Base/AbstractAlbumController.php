@@ -153,11 +153,21 @@ abstract class AbstractAlbumController extends AbstractController
         
         $templateParameters = $controllerHelper->processViewActionParameters($objectType, $sortableColumns, $templateParameters, true);
         
+        // filter by permissions
+        $filteredEntities = [];
+        foreach ($templateParameters['items'] as $album) {
+            if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', $album->getKey() . '::', $permLevel)) {
+                continue;
+            }
+            $filteredEntities[] = $album;
+        }
+        $templateParameters['items'] = $filteredEntities;
+        
+        // filter by category permissions
         $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
             $templateParameters['items'] = $this->get('mu_image_module.category_helper')->filterEntitiesByPermission($templateParameters['items']);
         }
-        
         
         // fetch and return the appropriate template
         return $viewHelper->processTemplate($objectType, 'view', $templateParameters);
@@ -211,17 +221,17 @@ abstract class AbstractAlbumController extends AbstractController
             throw new AccessDeniedException();
         }
         
-        $templateParameters = [
-            'routeArea' => $isAdmin ? 'admin' : '',
-            $objectType => $album
-        ];
-        
         $featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
             if (!$this->get('mu_image_module.category_helper')->hasPermission($album)) {
                 throw new AccessDeniedException();
             }
         }
+        
+        $templateParameters = [
+            'routeArea' => $isAdmin ? 'admin' : '',
+            $objectType => $album
+        ];
         
         $controllerHelper = $this->get('mu_image_module.controller_helper');
         $templateParameters = $controllerHelper->processDisplayActionParameters($objectType, $templateParameters, true);
@@ -459,7 +469,7 @@ abstract class AbstractAlbumController extends AbstractController
      * This method includes the common implementation code for adminHandleSelectedEntriesAction() and handleSelectedEntriesAction().
      *
      * @param Request $request Current request instance
-     * @param Boolean $isAdmin Whether the admin area is used or not
+     * @param boolean $isAdmin Whether the admin area is used or not
      */
     protected function handleSelectedEntriesActionInternal(Request $request, $isAdmin = false)
     {

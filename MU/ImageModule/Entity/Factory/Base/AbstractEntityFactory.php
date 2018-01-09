@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityRepository;
 use InvalidArgumentException;
 use MU\ImageModule\Entity\Factory\EntityInitialiser;
 use MU\ImageModule\Helper\CollectionFilterHelper;
+use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
  * Factory class used to create entities and receive entity repositories.
@@ -39,20 +40,28 @@ abstract class AbstractEntityFactory
     protected $collectionFilterHelper;
 
     /**
+     * @var FeatureActivationHelper
+     */
+    protected $featureActivationHelper;
+
+    /**
      * EntityFactory constructor.
      *
      * @param ObjectManager          $objectManager          The object manager to be used for determining the repositories
      * @param EntityInitialiser      $entityInitialiser      The entity initialiser for dynamical application of default values
      * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
+     * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
     public function __construct(
         ObjectManager $objectManager,
         EntityInitialiser $entityInitialiser,
-        CollectionFilterHelper $collectionFilterHelper)
+        CollectionFilterHelper $collectionFilterHelper,
+        FeatureActivationHelper $featureActivationHelper)
     {
         $this->objectManager = $objectManager;
         $this->entityInitialiser = $entityInitialiser;
         $this->collectionFilterHelper = $collectionFilterHelper;
+        $this->featureActivationHelper = $featureActivationHelper;
     }
 
     /**
@@ -68,6 +77,10 @@ abstract class AbstractEntityFactory
 
         $repository = $this->objectManager->getRepository($entityClass);
         $repository->setCollectionFilterHelper($this->collectionFilterHelper);
+
+        if (in_array($objectType, ['album', 'picture'])) {
+            $repository->setTranslationsEnabled($this->featureActivationHelper->isEnabled(FeatureActivationHelper::TRANSLATIONS, $objectType));
+        }
 
         return $repository;
     }

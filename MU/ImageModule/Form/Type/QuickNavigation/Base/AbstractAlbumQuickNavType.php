@@ -12,6 +12,7 @@
 
 namespace MU\ImageModule\Form\Type\QuickNavigation\Base;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -123,7 +124,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addCategoriesField(FormBuilderInterface $builder, array $options)
+    public function addCategoriesField(FormBuilderInterface $builder, array $options = [])
     {
         $objectType = 'album';
     
@@ -139,7 +140,8 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
             'multiple' => false,
             'module' => 'MUImageModule',
             'entity' => ucfirst($objectType) . 'Entity',
-            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($objectType) . 'CategoryEntity'
+            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($objectType) . 'CategoryEntity',
+            'showRegistryLabels' => true
         ]);
     }
 
@@ -149,7 +151,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options)
+    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options = [])
     {
         $mainSearchTerm = '';
         if ($this->request->query->has('q')) {
@@ -158,6 +160,10 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
             $this->request->query->remove('q');
         }
     
+        $queryBuilder = function(EntityRepository $er) {
+            // select without joins
+            return $er->getListQueryBuilder('', '', false);
+        };
         $entityDisplayHelper = $this->entityDisplayHelper;
         $choiceLabelClosure = function ($entity) use ($entityDisplayHelper) {
             return $entityDisplayHelper->getFormattedTitle($entity);
@@ -165,6 +171,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
         $builder->add('album', EntityType::class, [
             'class' => 'MUImageModule:AlbumEntity',
             'choice_label' => $choiceLabelClosure,
+            'query_builder' => $queryBuilder,
             'placeholder' => $this->__('All'),
             'required' => false,
             'label' => $this->__('Album'),
@@ -185,7 +192,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addListFields(FormBuilderInterface $builder, array $options)
+    public function addListFields(FormBuilderInterface $builder, array $options = [])
     {
         $listEntries = $this->listHelper->getEntries('album', 'workflowState');
         $choices = [];
@@ -235,7 +242,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSearchField(FormBuilderInterface $builder, array $options)
+    public function addSearchField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('q', SearchType::class, [
             'label' => $this->__('Search'),
@@ -254,7 +261,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSortingFields(FormBuilderInterface $builder, array $options)
+    public function addSortingFields(FormBuilderInterface $builder, array $options = [])
     {
         $builder
             ->add('sort', ChoiceType::class, [
@@ -303,7 +310,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addAmountField(FormBuilderInterface $builder, array $options)
+    public function addAmountField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('num', ChoiceType::class, [
             'label' => $this->__('Page size'),
@@ -332,7 +339,7 @@ abstract class AbstractAlbumQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addBooleanFields(FormBuilderInterface $builder, array $options)
+    public function addBooleanFields(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('notInFrontend', ChoiceType::class, [
             'label' => $this->__('Not in frontend'),

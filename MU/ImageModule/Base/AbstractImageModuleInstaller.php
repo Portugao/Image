@@ -37,7 +37,15 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         // Check if upload directories exist and if needed create them
         try {
             $container = $this->container;
-            $uploadHelper = new \MU\ImageModule\Helper\UploadHelper($container->get('translator.default'), $container->get('session'), $container->get('logger'), $container->get('zikula_users_module.current_user'), $container->get('zikula_extensions_module.api.variable'), $container->getParameter('datadir'));
+            $uploadHelper = new \MU\ImageModule\Helper\UploadHelper(
+                $container->get('translator.default'),
+                $container->get('filesystem'),
+                $container->get('session'),
+                $container->get('logger'),
+                $container->get('zikula_users_module.current_user'),
+                $container->get('zikula_extensions_module.api.variable'),
+                $container->getParameter('datadir')
+            );
             $uploadHelper->checkAndCreateAllUploadFolders();
         } catch (\Exception $exception) {
             $this->addFlash('error', $exception->getMessage());
@@ -64,12 +72,15 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('useAvatars', false);
         $this->setVar('useWatermark', false);
         $this->setVar('useExtendedFeatures', false);
-        $this->setVar('slide1Interval', '4000');
-        $this->setVar('slide1Speed', '1000');
+        $this->setVar('slide1Interval', 4000);
+        $this->setVar('slide1Speed', 1000);
+        $this->setVar('numberParentAlbums', 1);
+        $this->setVar('numberSubAlbums', 2);
+        $this->setVar('numberPictures', 20);
         $this->setVar('fileSizeForPictures', '200k');
         $this->setVar('fileSizeForAvatars', '200k');
         $this->setVar('fileSizesForZip', '2M');
-        $this->setVar('minWidthForPictures', '400');
+        $this->setVar('minWidthForPictures', 400);
         $this->setVar('maxWidthForPictures', 0);
         $this->setVar('maxHeightForPictures', 0);
         $this->setVar('minWidthForAvatars', 0);
@@ -82,51 +93,48 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('secondHeight', 0);
         $this->setVar('thirdWidth', 0);
         $this->setVar('thirdHeight', 0);
-        $this->setVar('numberHeightAndNameOfAvatars', '200,thumb;400,view;600,normal');
+        $this->setVar('numberWidthAndNameOfAvatars', '200,thumb;400,view;600,normal');
         $this->setVar('shrink', false);
-        $this->setVar('albumEntriesPerPageInBackend', '10');
-        $this->setVar('pictureEntriesPerPageInBackend', '10');
-        $this->setVar('avatarEntriesPerPageInBackend', '10');
+        $this->setVar('albumEntriesPerPageInBackend', 10);
+        $this->setVar('pictureEntriesPerPageInBackend', 10);
+        $this->setVar('avatarEntriesPerPageInBackend', 10);
         $this->setVar('countImageView', false);
-        $this->setVar('numberParentAlbums', '1');
-        $this->setVar('numberSubAlbums', '2');
-        $this->setVar('numberPictures', '20');
-        $this->setVar('groupForCommonAlbums',  'none' );
-        $this->setVar('kindOfShowSubAlbums',  'panel' );
+        $this->setVar('groupForCommonAlbums', '');
+        $this->setVar('kindOfShowSubAlbums', '');
         $this->setVar('breadcrumbsInFrontend', false);
-        $this->setVar('ending', 'html');
+        $this->setVar('endingOfUrl', '');
         $this->setVar('watermark', '');
-        $this->setVar('bottom', 0);
-        $this->setVar('left', 0);
-        $this->setVar('right', 0);
-        $this->setVar('top', 0);
-        $this->setVar('albumEntriesPerPage', '10');
+        $this->setVar('bottomOfImage', 0);
+        $this->setVar('leftSide', 0);
+        $this->setVar('rightSide', 0);
+        $this->setVar('topOfImage', 0);
+        $this->setVar('albumEntriesPerPage', 10);
         $this->setVar('linkOwnAlbumsOnAccountPage', true);
-        $this->setVar('pictureEntriesPerPage', '10');
+        $this->setVar('pictureEntriesPerPage', 10);
         $this->setVar('linkOwnPicturesOnAccountPage', true);
-        $this->setVar('avatarEntriesPerPage', '10');
+        $this->setVar('avatarEntriesPerPage', 10);
         $this->setVar('linkOwnAvatarsOnAccountPage', true);
         $this->setVar('enableShrinkingForPictureImageUpload', false);
-        $this->setVar('shrinkWidthPictureImageUpload', '800');
-        $this->setVar('shrinkHeightPictureImageUpload', '600');
-        $this->setVar('thumbnailModePictureImageUpload',  'inset' );
-        $this->setVar('thumbnailWidthPictureImageUploadView', '32');
-        $this->setVar('thumbnailHeightPictureImageUploadView', '24');
-        $this->setVar('thumbnailWidthPictureImageUploadDisplay', '240');
-        $this->setVar('thumbnailHeightPictureImageUploadDisplay', '180');
-        $this->setVar('thumbnailWidthPictureImageUploadEdit', '240');
-        $this->setVar('thumbnailHeightPictureImageUploadEdit', '180');
+        $this->setVar('shrinkWidthPictureImageUpload', 800);
+        $this->setVar('shrinkHeightPictureImageUpload', 600);
+        $this->setVar('thumbnailModePictureImageUpload', 'inset');
+        $this->setVar('thumbnailWidthPictureImageUploadView', 32);
+        $this->setVar('thumbnailHeightPictureImageUploadView', 24);
+        $this->setVar('thumbnailWidthPictureImageUploadDisplay', 240);
+        $this->setVar('thumbnailHeightPictureImageUploadDisplay', 180);
+        $this->setVar('thumbnailWidthPictureImageUploadEdit', 240);
+        $this->setVar('thumbnailHeightPictureImageUploadEdit', 180);
         $this->setVar('enableShrinkingForAvatarAvatarUpload', false);
-        $this->setVar('shrinkWidthAvatarAvatarUpload', '800');
-        $this->setVar('shrinkHeightAvatarAvatarUpload', '600');
-        $this->setVar('thumbnailModeAvatarAvatarUpload',  'inset' );
-        $this->setVar('thumbnailWidthAvatarAvatarUploadView', '32');
-        $this->setVar('thumbnailHeightAvatarAvatarUploadView', '24');
-        $this->setVar('thumbnailWidthAvatarAvatarUploadDisplay', '240');
-        $this->setVar('thumbnailHeightAvatarAvatarUploadDisplay', '180');
-        $this->setVar('thumbnailWidthAvatarAvatarUploadEdit', '240');
-        $this->setVar('thumbnailHeightAvatarAvatarUploadEdit', '180');
-        $this->setVar('enabledFinderTypes', [ 'album' ,  'picture' ,  'avatar' ]);
+        $this->setVar('shrinkWidthAvatarAvatarUpload', 800);
+        $this->setVar('shrinkHeightAvatarAvatarUpload', 600);
+        $this->setVar('thumbnailModeAvatarAvatarUpload', 'inset');
+        $this->setVar('thumbnailWidthAvatarAvatarUploadView', 32);
+        $this->setVar('thumbnailHeightAvatarAvatarUploadView', 24);
+        $this->setVar('thumbnailWidthAvatarAvatarUploadDisplay', 240);
+        $this->setVar('thumbnailHeightAvatarAvatarUploadDisplay', 180);
+        $this->setVar('thumbnailWidthAvatarAvatarUploadEdit', 240);
+        $this->setVar('thumbnailHeightAvatarAvatarUploadEdit', 180);
+        $this->setVar('enabledFinderTypes', 'album###picture###avatar');
     
         $categoryRegistryIdsPerEntity = [];
     
@@ -140,6 +148,7 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
             $this->container->get('zikula_categories_module.api.category_permission')
         );
         $categoryGlobal = $this->container->get('zikula_categories_module.category_repository')->findOneBy(['name' => 'Global']);
+        $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
     
         $registry = new CategoryRegistryEntity();
         $registry->setModname('MUImageModule');
@@ -148,7 +157,6 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $registry->setCategory($categoryGlobal);
     
         try {
-            $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
             $entityManager->persist($registry);
             $entityManager->flush();
         } catch (\Exception $exception) {
@@ -164,7 +172,6 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $registry->setCategory($categoryGlobal);
     
         try {
-            $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
             $entityManager->persist($registry);
             $entityManager->flush();
         } catch (\Exception $exception) {
@@ -435,14 +442,16 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
     /**
      * Build array with all entity classes for MUImageModule.
      *
-     * @return array list of class names
+     * @return string[] List of class names
      */
     protected function listEntityClasses()
     {
         $classNames = [];
         $classNames[] = 'MU\ImageModule\Entity\AlbumEntity';
+        $classNames[] = 'MU\ImageModule\Entity\AlbumTranslationEntity';
         $classNames[] = 'MU\ImageModule\Entity\AlbumCategoryEntity';
         $classNames[] = 'MU\ImageModule\Entity\PictureEntity';
+        $classNames[] = 'MU\ImageModule\Entity\PictureTranslationEntity';
         $classNames[] = 'MU\ImageModule\Entity\AvatarEntity';
         $classNames[] = 'MU\ImageModule\Entity\AvatarCategoryEntity';
     

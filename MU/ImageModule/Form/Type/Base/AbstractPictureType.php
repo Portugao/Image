@@ -30,13 +30,16 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use MU\ImageModule\Entity\Factory\EntityFactory;
+use MU\ImageModule\Form\Type\Field\TranslationType;
 use MU\ImageModule\Form\Type\Field\UploadType;
 use Zikula\UsersModule\Form\Type\UserLiveSearchType;
 use MU\ImageModule\Helper\CollectionFilterHelper;
 use MU\ImageModule\Helper\EntityDisplayHelper;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
+use MU\ImageModule\Helper\TranslatableHelper;
 
 /**
  * Picture editing form type base class.
@@ -61,6 +64,16 @@ abstract class AbstractPictureType extends AbstractType
     protected $entityDisplayHelper;
 
     /**
+     * @var VariableApiInterface
+     */
+    protected $variableApi;
+
+    /**
+     * @var TranslatableHelper
+     */
+    protected $translatableHelper;
+
+    /**
      * @var ListEntriesHelper
      */
     protected $listHelper;
@@ -73,10 +86,12 @@ abstract class AbstractPictureType extends AbstractType
     /**
      * PictureType constructor.
      *
-     * @param TranslatorInterface $translator    Translator service instance
+     * @param TranslatorInterface $translator     Translator service instance
      * @param EntityFactory $entityFactory EntityFactory service instance
      * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
      * @param EntityDisplayHelper $entityDisplayHelper EntityDisplayHelper service instance
+     * @param VariableApiInterface $variableApi VariableApi service instance
+     * @param TranslatableHelper $translatableHelper TranslatableHelper service instance
      * @param ListEntriesHelper $listHelper ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
@@ -85,6 +100,8 @@ abstract class AbstractPictureType extends AbstractType
         EntityFactory $entityFactory,
         CollectionFilterHelper $collectionFilterHelper,
         EntityDisplayHelper $entityDisplayHelper,
+        VariableApiInterface $variableApi,
+        TranslatableHelper $translatableHelper,
         ListEntriesHelper $listHelper,
         FeatureActivationHelper $featureActivationHelper
     ) {
@@ -92,6 +109,8 @@ abstract class AbstractPictureType extends AbstractType
         $this->entityFactory = $entityFactory;
         $this->collectionFilterHelper = $collectionFilterHelper;
         $this->entityDisplayHelper = $entityDisplayHelper;
+        $this->variableApi = $variableApi;
+        $this->translatableHelper = $translatableHelper;
         $this->listHelper = $listHelper;
         $this->featureActivationHelper = $featureActivationHelper;
     }
@@ -114,7 +133,6 @@ abstract class AbstractPictureType extends AbstractType
         $this->addEntityFields($builder, $options);
         $this->addIncomingRelationshipFields($builder, $options);
         $this->addModerationFields($builder, $options);
-        $this->addReturnControlField($builder, $options);
         $this->addSubmitButtons($builder, $options);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -141,7 +159,7 @@ abstract class AbstractPictureType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addEntityFields(FormBuilderInterface $builder, array $options)
+    public function addEntityFields(FormBuilderInterface $builder, array $options = [])
     {
         
         $builder->add('title', TextType::class, [
@@ -166,6 +184,25 @@ abstract class AbstractPictureType extends AbstractType
             ],
             'required' => false,
         ]);
+        
+        if ($this->variableApi->getSystemVar('multilingual') && $this->featureActivationHelper->isEnabled(FeatureActivationHelper::TRANSLATIONS, 'picture')) {
+            $supportedLanguages = $this->translatableHelper->getSupportedLanguages('picture');
+            if (is_array($supportedLanguages) && count($supportedLanguages) > 1) {
+                $currentLanguage = $this->translatableHelper->getCurrentLanguage();
+                $translatableFields = $this->translatableHelper->getTranslatableFields('picture');
+                $mandatoryFields = $this->translatableHelper->getMandatoryFields('picture');
+                foreach ($supportedLanguages as $language) {
+                    if ($language == $currentLanguage) {
+                        continue;
+                    }
+                    $builder->add('translations' . $language, TranslationType::class, [
+                        'fields' => $translatableFields,
+                        'mandatory_fields' => $mandatoryFields[$language],
+                        'values' => isset($options['translations'][$language]) ? $options['translations'][$language] : []
+                    ]);
+                }
+            }
+        }
         
         $builder->add('imageUpload', UploadType::class, [
             'label' => $this->__('Image upload') . ':',
@@ -220,7 +257,7 @@ abstract class AbstractPictureType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options)
+    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options = [])
     {
         $queryBuilder = function(EntityRepository $er) {
             // select without joins
@@ -251,7 +288,7 @@ abstract class AbstractPictureType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addModerationFields(FormBuilderInterface $builder, array $options)
+    public function addModerationFields(FormBuilderInterface $builder, array $options = [])
     {
         if (!$options['has_moderate_permission']) {
             return;
@@ -288,33 +325,12 @@ abstract class AbstractPictureType extends AbstractType
     }
 
     /**
-     * Adds the return control field.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array                $options The options
-     */
-    public function addReturnControlField(FormBuilderInterface $builder, array $options)
-    {
-        if ($options['mode'] != 'create') {
-            return;
-        }
-        if ($options['inline_usage']) {
-            return;
-        }
-        $builder->add('repeatCreation', CheckboxType::class, [
-            'mapped' => false,
-            'label' => $this->__('Create another item after save'),
-            'required' => false
-        ]);
-    }
-
-    /**
      * Adds submit buttons.
      *
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSubmitButtons(FormBuilderInterface $builder, array $options)
+    public function addSubmitButtons(FormBuilderInterface $builder, array $options = [])
     {
         foreach ($options['actions'] as $action) {
             $builder->add($action['id'], SubmitType::class, [
@@ -324,6 +340,16 @@ abstract class AbstractPictureType extends AbstractType
                     'class' => $action['buttonClass']
                 ]
             ]);
+            if ($options['mode'] == 'create' && $action['id'] == 'submit' && !$options['inline_usage']) {
+                // add additional button to submit item and return to create form
+                $builder->add('submitrepeat', SubmitType::class, [
+                    'label' => $this->__('Submit and repeat'),
+                    'icon' => 'fa-repeat',
+                    'attr' => [
+                        'class' => $action['buttonClass']
+                    ]
+                ]);
+            }
         }
         $builder->add('reset', ResetType::class, [
             'label' => $this->__('Reset'),
@@ -369,6 +395,7 @@ abstract class AbstractPictureType extends AbstractType
                 'mode' => 'create',
                 'actions' => [],
                 'has_moderate_permission' => false,
+                'translations' => [],
                 'filter_by_ownership' => true,
                 'inline_usage' => false
             ])
@@ -376,6 +403,7 @@ abstract class AbstractPictureType extends AbstractType
             ->setAllowedTypes('mode', 'string')
             ->setAllowedTypes('actions', 'array')
             ->setAllowedTypes('has_moderate_permission', 'bool')
+            ->setAllowedTypes('translations', 'array')
             ->setAllowedTypes('filter_by_ownership', 'bool')
             ->setAllowedTypes('inline_usage', 'bool')
             ->setAllowedValues('mode', ['create', 'edit'])

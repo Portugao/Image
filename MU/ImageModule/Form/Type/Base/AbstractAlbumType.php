@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -28,12 +29,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\CategoriesModule\Form\Type\CategoriesType;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use MU\ImageModule\Entity\Factory\EntityFactory;
+use MU\ImageModule\Form\Type\Field\TranslationType;
 use Zikula\UsersModule\Form\Type\UserLiveSearchType;
 use MU\ImageModule\Helper\CollectionFilterHelper;
 use MU\ImageModule\Helper\EntityDisplayHelper;
 use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
+use MU\ImageModule\Helper\TranslatableHelper;
 
 /**
  * Album editing form type base class.
@@ -58,6 +62,16 @@ abstract class AbstractAlbumType extends AbstractType
     protected $entityDisplayHelper;
 
     /**
+     * @var VariableApiInterface
+     */
+    protected $variableApi;
+
+    /**
+     * @var TranslatableHelper
+     */
+    protected $translatableHelper;
+
+    /**
      * @var ListEntriesHelper
      */
     protected $listHelper;
@@ -70,10 +84,12 @@ abstract class AbstractAlbumType extends AbstractType
     /**
      * AlbumType constructor.
      *
-     * @param TranslatorInterface $translator    Translator service instance
+     * @param TranslatorInterface $translator     Translator service instance
      * @param EntityFactory $entityFactory EntityFactory service instance
      * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
      * @param EntityDisplayHelper $entityDisplayHelper EntityDisplayHelper service instance
+     * @param VariableApiInterface $variableApi VariableApi service instance
+     * @param TranslatableHelper $translatableHelper TranslatableHelper service instance
      * @param ListEntriesHelper $listHelper ListEntriesHelper service instance
      * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
      */
@@ -82,6 +98,8 @@ abstract class AbstractAlbumType extends AbstractType
         EntityFactory $entityFactory,
         CollectionFilterHelper $collectionFilterHelper,
         EntityDisplayHelper $entityDisplayHelper,
+        VariableApiInterface $variableApi,
+        TranslatableHelper $translatableHelper,
         ListEntriesHelper $listHelper,
         FeatureActivationHelper $featureActivationHelper
     ) {
@@ -89,6 +107,8 @@ abstract class AbstractAlbumType extends AbstractType
         $this->entityFactory = $entityFactory;
         $this->collectionFilterHelper = $collectionFilterHelper;
         $this->entityDisplayHelper = $entityDisplayHelper;
+        $this->variableApi = $variableApi;
+        $this->translatableHelper = $translatableHelper;
         $this->listHelper = $listHelper;
         $this->featureActivationHelper = $featureActivationHelper;
     }
@@ -114,7 +134,6 @@ abstract class AbstractAlbumType extends AbstractType
         }
         $this->addIncomingRelationshipFields($builder, $options);
         $this->addModerationFields($builder, $options);
-        $this->addReturnControlField($builder, $options);
         $this->addSubmitButtons($builder, $options);
     }
 
@@ -124,7 +143,7 @@ abstract class AbstractAlbumType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addEntityFields(FormBuilderInterface $builder, array $options)
+    public function addEntityFields(FormBuilderInterface $builder, array $options = [])
     {
         
         $builder->add('title', TextType::class, [
@@ -150,6 +169,25 @@ abstract class AbstractAlbumType extends AbstractType
             'required' => false,
         ]);
         
+        if ($this->variableApi->getSystemVar('multilingual') && $this->featureActivationHelper->isEnabled(FeatureActivationHelper::TRANSLATIONS, 'album')) {
+            $supportedLanguages = $this->translatableHelper->getSupportedLanguages('album');
+            if (is_array($supportedLanguages) && count($supportedLanguages) > 1) {
+                $currentLanguage = $this->translatableHelper->getCurrentLanguage();
+                $translatableFields = $this->translatableHelper->getTranslatableFields('album');
+                $mandatoryFields = $this->translatableHelper->getMandatoryFields('album');
+                foreach ($supportedLanguages as $language) {
+                    if ($language == $currentLanguage) {
+                        continue;
+                    }
+                    $builder->add('translations' . $language, TranslationType::class, [
+                        'fields' => $translatableFields,
+                        'mandatory_fields' => $mandatoryFields[$language],
+                        'values' => isset($options['translations'][$language]) ? $options['translations'][$language] : []
+                    ]);
+                }
+            }
+        }
+        
         
         $listEntries = $this->listHelper->getEntries('album', 'albumAccess');
         $choices = [];
@@ -163,7 +201,7 @@ abstract class AbstractAlbumType extends AbstractType
             'empty_data' => '',
             'attr' => [
                 'class' => '',
-                'title' => $this->__('Choose the album access')
+                'title' => $this->__('Choose the album access.')
             ],
             'required' => true,
             'choices' => $choices,
@@ -173,7 +211,7 @@ abstract class AbstractAlbumType extends AbstractType
             'expanded' => false
         ]);
         
-        $builder->add('passwordAccess', TextType::class, [
+        $builder->add('passwordAccess', PasswordType::class, [
             'label' => $this->__('Password access') . ':',
             'empty_data' => '',
             'attr' => [
@@ -223,7 +261,7 @@ abstract class AbstractAlbumType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addCategoriesField(FormBuilderInterface $builder, array $options)
+    public function addCategoriesField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('categories', CategoriesType::class, [
             'label' => $this->__('Category') . ':',
@@ -235,7 +273,8 @@ abstract class AbstractAlbumType extends AbstractType
             'multiple' => false,
             'module' => 'MUImageModule',
             'entity' => 'AlbumEntity',
-            'entityCategoryClass' => 'MU\ImageModule\Entity\AlbumCategoryEntity'
+            'entityCategoryClass' => 'MU\ImageModule\Entity\AlbumCategoryEntity',
+            'showRegistryLabels' => true
         ]);
     }
 
@@ -245,7 +284,7 @@ abstract class AbstractAlbumType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options)
+    public function addIncomingRelationshipFields(FormBuilderInterface $builder, array $options = [])
     {
         $queryBuilder = function(EntityRepository $er) {
             // select without joins
@@ -276,7 +315,7 @@ abstract class AbstractAlbumType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addModerationFields(FormBuilderInterface $builder, array $options)
+    public function addModerationFields(FormBuilderInterface $builder, array $options = [])
     {
         if (!$options['has_moderate_permission']) {
             return;
@@ -313,33 +352,12 @@ abstract class AbstractAlbumType extends AbstractType
     }
 
     /**
-     * Adds the return control field.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array                $options The options
-     */
-    public function addReturnControlField(FormBuilderInterface $builder, array $options)
-    {
-        if ($options['mode'] != 'create') {
-            return;
-        }
-        if ($options['inline_usage']) {
-            return;
-        }
-        $builder->add('repeatCreation', CheckboxType::class, [
-            'mapped' => false,
-            'label' => $this->__('Create another item after save'),
-            'required' => false
-        ]);
-    }
-
-    /**
      * Adds submit buttons.
      *
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSubmitButtons(FormBuilderInterface $builder, array $options)
+    public function addSubmitButtons(FormBuilderInterface $builder, array $options = [])
     {
         foreach ($options['actions'] as $action) {
             $builder->add($action['id'], SubmitType::class, [
@@ -349,6 +367,16 @@ abstract class AbstractAlbumType extends AbstractType
                     'class' => $action['buttonClass']
                 ]
             ]);
+            if ($options['mode'] == 'create' && $action['id'] == 'submit' && !$options['inline_usage']) {
+                // add additional button to submit item and return to create form
+                $builder->add('submitrepeat', SubmitType::class, [
+                    'label' => $this->__('Submit and repeat'),
+                    'icon' => 'fa-repeat',
+                    'attr' => [
+                        'class' => $action['buttonClass']
+                    ]
+                ]);
+            }
         }
         $builder->add('reset', ResetType::class, [
             'label' => $this->__('Reset'),
@@ -393,6 +421,7 @@ abstract class AbstractAlbumType extends AbstractType
                 'mode' => 'create',
                 'actions' => [],
                 'has_moderate_permission' => false,
+                'translations' => [],
                 'filter_by_ownership' => true,
                 'inline_usage' => false
             ])
@@ -400,6 +429,7 @@ abstract class AbstractAlbumType extends AbstractType
             ->setAllowedTypes('mode', 'string')
             ->setAllowedTypes('actions', 'array')
             ->setAllowedTypes('has_moderate_permission', 'bool')
+            ->setAllowedTypes('translations', 'array')
             ->setAllowedTypes('filter_by_ownership', 'bool')
             ->setAllowedTypes('inline_usage', 'bool')
             ->setAllowedValues('mode', ['create', 'edit'])

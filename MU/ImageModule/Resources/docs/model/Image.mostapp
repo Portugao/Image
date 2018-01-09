@@ -1,38 +1,34 @@
-application "Image" {
+application "Image" targets ZK15  {
     vendor "MU"
     author "Michael Ueberschaer"
     email "info@homepages-mit-zikula.de"
     url "https://homepages-mit-zikula.de"
     version "1.4.0"
     prefix "image"
-    generatorSettings {
-        settingsContainer "Einstellungen"
-        targetCoreVersion ZK15
-        generateMailzApi false
-        generateModerationBlock true
-        generateNewsletterPlugin false
-        generatePendingContentSupport true
-        generateAtomTemplates false
-        generateCsvTemplates false
-        generateXmlTemplates false
-        generateJsonTemplates false
-        generateKmlTemplates false
-        generateIcsTemplates false
-        generateOnlyBaseClasses false
-        versionAllGeneratedFiles false
-        generatePoweredByBacklinksIntoFooterTemplates false
-        generateTests false
-        writeModelToDocs true
-        skipFiles "README.md,\r\n.gitignore,\r\nResources/public/images/admin.png"
-        markFiles "ImageModuleInstaller.php,\r\nContainer/LinkContainer.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nEntity/Repository/AlbumRepository.php,\r\nForm/Type/AlbumType.php,\r\nHelper/ControllerHelper.php,\r\nHelper/ViewHelper.php,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,\r\nTwig/TwigExtension.php"
-    }
+    generateMailzApi false
+    generateModerationBlock true
+    generateNewsletterPlugin false
+    generatePendingContentSupport true
+    generateAtomTemplates false
+    generateCsvTemplates false
+    generateXmlTemplates false
+    generateJsonTemplates false
+    generateKmlTemplates false
+    generateIcsTemplates false
+    generateOnlyBaseClasses false
+    versionAllGeneratedFiles false
+    generatePoweredByBacklinksIntoFooterTemplates false
+    generateTests false
+    writeModelToDocs true
+    skipFiles "README.md,\r\n.gitignore,\r\nResources/public/images/admin.png"
+    markFiles "ImageModuleInstaller.php,\r\nContainer/LinkContainer.php,\r\nController/AjaxController.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nEntity/Repository/AlbumRepository.php,\r\nForm/Type/AlbumType.php,\r\nHelper/ControllerHelper.php,\r\nHelper/UploadHelper.php,\r\nHelper/ViewHelper.php,\r\nResources/config/helpers.yml,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,\r\nTwig/TwigExtension.php"
     entities {
         entity "album" leading categorisable {
             nameMultiple "albums"
             displayPattern "#title#"
             fields {
-                string "title" unique,
-                text "description" {
+                string "title" unique translatable,
+                text "description" translatable {
                     mandatory false
                 },
                 integer "parent_id" nullable {
@@ -48,8 +44,9 @@ application "Image" {
                     listItem  "knownPassword" ( "known" )
                     }
                 },
-                string "passwordAccess" password {
+                string "passwordAccess"  {
                     mandatory false
+                role PASSWORD
                 },
                 string "myFriends" {
                     mandatory false
@@ -76,11 +73,11 @@ application "Image" {
             nameMultiple "pictures"
             displayPattern "#title#"
             fields {
-                string "title" {
+                string "title" translatable {
                     defaultValue ""
                     mandatory false
                 },
-                text "description" {
+                text "description" translatable {
                     defaultValue ""
                     mandatory false
                 },
@@ -139,8 +136,7 @@ application "Image" {
                     allowLandscape false
                     allowPortrait false
                 detectCorrupted true
-                }
-            ,
+                },
                 list "supportedModules" multiple {
                     documentation "Be sure that you set the supported module in a logic way!"
                     defaultValue ""
@@ -178,121 +174,163 @@ application "Image" {
         }
     }
     variables {
-        varContainer "General" {
-            vars {
-                boolVar "supportCategoriesForAlbums" ,
-                boolVar "supportCategoriesForAvatars" , boolVar "supportSubAlbums" , boolVar "userDeletePictures" {
-                    value ""
-                }
-            ,
-                boolVar "slideshow1"
-            ,
-                boolVar "useAvatars",
-                boolVar "useWatermark"
-            ,
-                boolVar "useExtendedFeatures" {
+        varContainer  "General" {
+            fields {
+                boolean  "supportCategoriesForAlbums" {
+                    mandatory false
+                },
+                boolean  "supportCategoriesForAvatars" {
+                    mandatory false
+                }, 
+                boolean  "supportSubAlbums" {
+                    mandatory false
+                }, 
+                boolean "userDeletePictures" {
+                    mandatory false
+                },
+                boolean "slideshow1" {
+                    mandatory false
+                },
+                boolean "useAvatars" {
+                    mandatory false
+                },
+                boolean "useWatermark" {
+                    mandatory false
+                },
+                boolean "useExtendedFeatures" {
                     documentation "Do you want to support sub albums?\r\nDo you want to limit creating of albums, subalbums or pictures?\r\nDo you want set a group for common albums?\r\nDo you want to give the option to rule the access to albums?\r\nDo you want to use Categories for Albums or Avatars?\r\n\r\nThen you can enable these features here!"
+                mandatory false
                 }
-            }
+                }
         },
         varContainer "Slideshows" {
             sortOrder 4
-            vars {
-                intVar "slide1Interval" {
-                    value "4000"
+            fields {
+                integer "slide1Interval" {
+                    defaultValue "4000"
                 },
-                intVar "slide1Speed" {
-                    value "1000"
+                integer "slide1Speed" {
+                    defaultValue "1000"
                 }
-            }
-        }
-    , varContainer "uploadHandler" { sortOrder 3 vars {
-                intVar "fileSizeForPictures" {
-                    value "102400"
-                }, intVar "fileSizeForAvatars" , intVar "fileSizesForZip", intVar"minWidthForPictures" {
-                    value "400"
-                }, intVar"maxWidthForPictures", intVar"maxHeightForPictures", intVar "minWidthForAvatars" , intVar "maxWidthForAvatars" ,
-                intVar "maxHeightForAvatars" ,
-                boolVar "createSeveralPictures", intVar "firstWidth" {
+                }
+        } , 
+        varContainer "uploadHandler" { 
+        sortOrder 3 
+        fields {
+                integer "numberParentAlbums" {
+                    documentation "How many main albums may a user create"
+                    defaultValue "1"
+                }, 
+                integer "numberSubAlbums" {
+                    documentation "How many sub albums may a user create"
+                    defaultValue "2"
+                },
+                 integer "numberPictures" {
+                    documentation "How many pictures may a user create"
+                     defaultValue "20"
+                }, 
+               string "fileSizeForPictures" {
+                     defaultValue "200k"
+                },
+                 string "fileSizeForAvatars" {
+                     defaultValue "200k"
+                } , 
+                string "fileSizesForZip" {
+                     defaultValue "2M"
+                },
+               integer "minWidthForPictures" {
+                     defaultValue "400"
+                }, 
+                integer "maxWidthForPictures",
+                integer "maxHeightForPictures", 
+                integer "minWidthForAvatars" , 
+                integer "maxWidthForAvatars" ,
+                integer  "maxHeightForAvatars" ,
+                boolean "createSeveralPictures" {
+                    mandatory false
+                }, 
+                integer "firstWidth" {
                     documentation "Width for the first additional picture"
-                }, intVar "firstHeight" {
+                }, integer "firstHeight" {
                     documentation "Height for the first additional picture"
-                }, intVar "secondWidth" {
+                }, integer "secondWidth" {
                     documentation "Width for the second additional picture"
-                }, intVar "secondHeight" {
+                }, integer "secondHeight" {
                     documentation "Height for the second additional picture"
-                }, intVar "thirdWidth" {
+                }, integer "thirdWidth" {
                     documentation "Width for the third additional picture"
-                }, intVar "thirdHeight" {
+                }, integer "thirdHeight" {
                     documentation "Height for the third additional picture"
                 }
-            }
+                }
         } ,
         varContainer "Avatars" {
             sortOrder 5
-            vars {
-                textVar "numberHeightAndNameOfAvatars" {
+            fields {
+                string "numberWidthAndNameOfAvatars" {
                     documentation "Here you can set, how many avatar sizes with which name you wish."
-                    value "200,thumb;400,view;600,normal"
+                    defaultValue "200,thumb;400,view;600,normal"
+                    mandatory false
                 }
             ,
-                boolVar "shrink"
+                boolean "shrink"
+                {
+                    mandatory false
+                }
             }
         }
     ,
         varContainer "DisplaySettings" {
             sortOrder 2
-            vars {
-                intVar "albumEntriesPerPageInBackend" {
+            fields {
+                integer "albumEntriesPerPageInBackend" {
                     documentation "The amount of albums shown per page in the backend"
-                    value "10"
+                    defaultValue "10"
                 },
-                intVar "pictureEntriesPerPageInBackend" {
+                integer "pictureEntriesPerPageInBackend" {
                     documentation "The amount of pictures shown per page in the backend"
-                    value "10"
+                    defaultValue "10"
                 },
-                intVar "avatarEntriesPerPageInBackend" {
+                integer "avatarEntriesPerPageInBackend" {
                     documentation "The amount of avatars shown per page in the backend"
-                    value "10"
+                    defaultValue "10"
                 },
-                boolVar "countImageView" {
-                    value "1"
+                boolean "countImageView" {
+                    defaultValue "1"
+                mandatory false
                 },
-                intVar "numberParentAlbums" {
-                    documentation "How many main albums may a user create"
-                    value "1"
+                list "groupForCommonAlbums" { items { listItem  "None"}  } ,
+                list "kindOfShowSubAlbums" { items {  listItem "Links" ,  listItem  "Panel" } } ,
+                boolean "breadcrumbsInFrontend" {
+                    mandatory false
                 },
-                intVar "numberSubAlbums" {
-                    documentation "How many sub albums may a user create"
-                    value "2"
-                },
-                intVar "numberPictures" {
-                    documentation "How many pictures may a user create"
-                    value "20"
-                },
-                listVar "groupForCommonAlbums" { items { listVarItem default "None" } } ,
-                listVar "kindOfShowSubAlbums" { items {  listVarItem "Links" ,  listVarItem default "Panel" } } ,
-                boolVar "breadcrumbsInFrontend" ,
-                textVar "ending" {
-                    value "html"
+                string "endingOfUrl"
+                {
+                    mandatory false
                 }
             }
-        }
-    ,
+        } ,
         varContainer "watermark" {
             sortOrder 6
-            vars {
-                textVar "watermark" {
-                    documentation "Path to the image that is for the watermark"
+            fields {
+                string "watermark" {
+                    mandatory false
                 },
-                intVar "bottom" {
+                integer "bottomOfImage" {
                     documentation "If top is set, bottom has no effect"
+                mandatory false
                 },
-                intVar "left" {
+                integer "leftSide" {
                     documentation "If left is set, right has no effect"
+                mandatory false
                 },
-                intVar "right",
-                intVar "top"
+                integer "rightSide" {
+                    mandatory false
+                },
+                integer "topOfImage"
+        {
+                    mandatory false
+                }
             }
         }
     }

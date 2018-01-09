@@ -3,8 +3,7 @@
 /**
  * Resets the value of an upload / file input field.
  */
-function mUImageResetUploadField(fieldName)
-{
+function mUImageResetUploadField(fieldName) {
     jQuery('#' + fieldName).attr('type', 'input');
     jQuery('#' + fieldName).attr('type', 'file');
 }
@@ -12,8 +11,7 @@ function mUImageResetUploadField(fieldName)
 /**
  * Initialises the reset button for a certain upload input.
  */
-function mUImageInitUploadField(fieldName)
-{
+function mUImageInitUploadField(fieldName) {
     jQuery('#' + fieldName + 'ResetVal').click(function (event) {
         event.preventDefault();
         mUImageResetUploadField(fieldName);
@@ -26,8 +24,7 @@ var editForm;
 var formButtons;
 var triggerValidation = true;
 
-function mUImageTriggerFormValidation()
-{
+function mUImageTriggerFormValidation() {
     mUImageExecuteCustomValidationConstraints(editedObjectType, editedEntityId);
 
     if (!editForm.get(0).checkValidity()) {
@@ -57,8 +54,7 @@ function mUImageHandleFormSubmit (event) {
 /**
  * Initialises an entity edit form.
  */
-function mUImageInitEditForm(mode, entityId)
-{
+function mUImageInitEditForm(mode, entityId) {
     if (jQuery('.muimage-edit-form').length < 1) {
         return;
     }
@@ -86,11 +82,13 @@ function mUImageInitEditForm(mode, entityId)
     });
 
     formButtons = editForm.find('.form-buttons input');
-    editForm.find('.btn-danger').first().bind('click keypress', function (event) {
-        if (!window.confirm(Translator.__('Do you really want to delete this entry?'))) {
-            event.preventDefault();
-        }
-    });
+    if (editForm.find('.btn-danger').length > 0) {
+        editForm.find('.btn-danger').first().bind('click keypress', function (event) {
+            if (!window.confirm(Translator.__('Do you really want to delete this entry?'))) {
+                event.preventDefault();
+            }
+        });
+    }
     editForm.find('button[type=submit]').bind('click keypress', function (event) {
         triggerValidation = !jQuery(this).prop('formnovalidate');
     });

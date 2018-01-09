@@ -157,6 +157,25 @@ abstract class AbstractListEntriesHelper
                         break;
                 }
                 break;
+            case 'appSettings':
+                switch ($fieldName) {
+                    case 'groupForCommonAlbums':
+                        $result = false;
+                        break;
+                    case 'kindOfShowSubAlbums':
+                        $result = false;
+                        break;
+                    case 'thumbnailModePictureImageUpload':
+                        $result = false;
+                        break;
+                    case 'thumbnailModeAvatarAvatarUpload':
+                        $result = false;
+                        break;
+                    case 'enabledFinderTypes':
+                        $result = true;
+                        break;
+                }
+                break;
         }
     
         return $result;
@@ -206,6 +225,25 @@ abstract class AbstractListEntriesHelper
                         break;
                 }
                 break;
+            case 'appSettings':
+                switch ($fieldName) {
+                    case 'groupForCommonAlbums':
+                        $entries = $this->getGroupForCommonAlbumsEntriesForAppSettings();
+                        break;
+                    case 'kindOfShowSubAlbums':
+                        $entries = $this->getKindOfShowSubAlbumsEntriesForAppSettings();
+                        break;
+                    case 'thumbnailModePictureImageUpload':
+                        $entries = $this->getThumbnailModePictureImageUploadEntriesForAppSettings();
+                        break;
+                    case 'thumbnailModeAvatarAvatarUpload':
+                        $entries = $this->getThumbnailModeAvatarAvatarUploadEntriesForAppSettings();
+                        break;
+                    case 'enabledFinderTypes':
+                        $entries = $this->getEnabledFinderTypesEntriesForAppSettings();
+                        break;
+                }
+                break;
         }
     
         return $entries;
@@ -228,9 +266,23 @@ abstract class AbstractListEntriesHelper
             'default' => false
         ];
         $states[] = [
+            'value'   => 'trashed',
+            'text'    => $this->__('Trashed'),
+            'title'   => $this->__('Content has been marked as deleted, but is still persisted in the database.'),
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
             'value'   => '!approved',
             'text'    => $this->__('All except approved'),
             'title'   => $this->__('Shows all items except these which are approved'),
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
+            'value'   => '!trashed',
+            'text'    => $this->__('All except trashed'),
+            'title'   => $this->__('Shows all items except these which are trashed'),
             'image'   => '',
             'default' => false
         ];
@@ -269,7 +321,7 @@ abstract class AbstractListEntriesHelper
         ];
         $states[] = [
             'value'   => 'known',
-            'text'    => $this->__('Known password'),
+            'text'    => $this->__('KnownPassword'),
             'title'   => '',
             'image'   => '',
             'default' => false
@@ -294,9 +346,23 @@ abstract class AbstractListEntriesHelper
             'default' => false
         ];
         $states[] = [
+            'value'   => 'trashed',
+            'text'    => $this->__('Trashed'),
+            'title'   => $this->__('Content has been marked as deleted, but is still persisted in the database.'),
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
             'value'   => '!approved',
             'text'    => $this->__('All except approved'),
             'title'   => $this->__('Shows all items except these which are approved'),
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
+            'value'   => '!trashed',
+            'text'    => $this->__('All except trashed'),
+            'title'   => $this->__('Shows all items except these which are trashed'),
             'image'   => '',
             'default' => false
         ];
@@ -320,9 +386,23 @@ abstract class AbstractListEntriesHelper
             'default' => false
         ];
         $states[] = [
+            'value'   => 'trashed',
+            'text'    => $this->__('Trashed'),
+            'title'   => $this->__('Content has been marked as deleted, but is still persisted in the database.'),
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
             'value'   => '!approved',
             'text'    => $this->__('All except approved'),
             'title'   => $this->__('Shows all items except these which are approved'),
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
+            'value'   => '!trashed',
+            'text'    => $this->__('All except trashed'),
+            'title'   => $this->__('Shows all items except these which are trashed'),
             'image'   => '',
             'default' => false
         ];
@@ -347,10 +427,140 @@ abstract class AbstractListEntriesHelper
         ];
         $states[] = [
             'value'   => 'MUImageModule',
-            'text'    => $this->__('M u image module'),
+            'text'    => $this->__('MUImageModule'),
             'title'   => '',
             'image'   => '',
             'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'group for common albums' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getGroupForCommonAlbumsEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'none',
+            'text'    => $this->__('None'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'kind of show sub albums' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getKindOfShowSubAlbumsEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'links',
+            'text'    => $this->__('Links'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+        $states[] = [
+            'value'   => 'panel',
+            'text'    => $this->__('Panel'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'thumbnail mode picture image upload' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getThumbnailModePictureImageUploadEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'inset',
+            'text'    => $this->__('Inset'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
+        ];
+        $states[] = [
+            'value'   => 'outbound',
+            'text'    => $this->__('Outbound'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'thumbnail mode avatar avatar upload' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getThumbnailModeAvatarAvatarUploadEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'inset',
+            'text'    => $this->__('Inset'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
+        ];
+        $states[] = [
+            'value'   => 'outbound',
+            'text'    => $this->__('Outbound'),
+            'title'   => '',
+            'image'   => '',
+            'default' => false
+        ];
+    
+        return $states;
+    }
+    
+    /**
+     * Get 'enabled finder types' list entries.
+     *
+     * @return array Array with desired list entries
+     */
+    public function getEnabledFinderTypesEntriesForAppSettings()
+    {
+        $states = [];
+        $states[] = [
+            'value'   => 'album',
+            'text'    => $this->__('Album'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
+        ];
+        $states[] = [
+            'value'   => 'picture',
+            'text'    => $this->__('Picture'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
+        ];
+        $states[] = [
+            'value'   => 'avatar',
+            'text'    => $this->__('Avatar'),
+            'title'   => '',
+            'image'   => '',
+            'default' => true
         ];
     
         return $states;

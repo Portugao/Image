@@ -46,15 +46,15 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
     /**
      * Display the block content.
      *
-     * @param array $properties The block properties array
+     * @param array $properties The block properties
      *
-     * @return array|string
+     * @return string
      */
-    public function display(array $properties)
+    public function display(array $properties = [])
     {
         // only show block content if the user has the required permissions
         if (!$this->hasPermission('MUImageModule:ItemListBlock:', "$properties[title]::", ACCESS_OVERVIEW)) {
-            return false;
+            return '';
         }
     
         // set default values for all params which are not properly set
@@ -78,7 +78,7 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
     
         // create query
         $orderBy = $this->get('mu_image_module.model_helper')->resolveSortParameter($objectType, $properties['sorting']);
-        $qb = $repository->genericBaseQuery($properties['filter'], $orderBy);
+        $qb = $repository->getListQueryBuilder($properties['filter'], $orderBy);
     
         // fetch category registries
         $catProperties = null;
@@ -132,11 +132,11 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
     /**
      * Returns the template used for output.
      *
-     * @param array $properties The block properties array
+     * @param array $properties The block properties
      *
      * @return string the template path
      */
-    protected function getDisplayTemplate(array $properties)
+    protected function getDisplayTemplate(array $properties = [])
     {
         $templateFile = $properties['template'];
         if ($templateFile == 'custom' && null !== $properties['customTemplate'] && $properties['customTemplate'] != '') {
@@ -236,11 +236,11 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
     /**
      * Resolves category filter ids.
      *
-     * @param array $properties The block properties array
+     * @param array $properties The block properties
      *
      * @return array The updated block properties
      */
-    protected function resolveCategoryIds(array $properties)
+    protected function resolveCategoryIds(array $properties = [])
     {
         if (!isset($properties['catIds'])) {
             $categoryHelper = $this->get('mu_image_module.category_helper');

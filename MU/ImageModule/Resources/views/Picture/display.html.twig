@@ -7,8 +7,8 @@
     {{ templateTitle|notifyFilters('muimagemodule.filter_hooks.pictures.filter')|safeHtml }}
     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: picture, area: routeArea, context: 'display'}) %}
     <div class="dropdown">
-        <a id="itemActions{{ picture.getKey() }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
-        {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:actions.html.twig'}) }}
+        <a id="itemActions{{ picture.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
+        {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}
     </div>
 {% endblock %}
 {% block admin_page_icon 'eye' %}
@@ -63,7 +63,7 @@
                   <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId()}) }}">{% spaceless %}
                     {{ picture.album|muimagemodule_formattedTitle }}
                   {% endspaceless %}</a>
-                  <a id="albumItem{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+                  <a id="albumItem{{ picture.album.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': picture.album.getId(), raw: 1}) }}" title="{{ __('Open quick view window')|e('html_attr') }}" class="muimage-inline-window hidden" data-modal-title="{{ picture.album|muimagemodule_formattedTitle|e('html_attr') }}"><i class="fa fa-id-card-o"></i></a>
               {% else %}
                   {{ picture.album|muimagemodule_formattedTitle }}
               {% endif %}
@@ -78,5 +78,10 @@
 </div>
 {% endblock %}
 {% block display_hooks %}
-    {{ notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', id=picture.getKey(), urlObject=currentUrlObject) }}
+    {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', id=picture.getKey(), urlObject=currentUrlObject, outputAsArray=true) %}
+    {% if hooks is iterable and hooks|length > 0 %}
+        {% for area, hook in hooks %}
+            <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

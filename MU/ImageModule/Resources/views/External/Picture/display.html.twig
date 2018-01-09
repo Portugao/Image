@@ -1,6 +1,6 @@
 {# Purpose of this template: Display one certain picture within an external context #}
-{{ pageAddAsset('javascript', asset('magnific-popup/jquery.magnific-popup.min.js')) }}
-{{ pageAddAsset('stylesheet', asset('magnific-popup/magnific-popup.css')) }}
+{{ pageAddAsset('javascript', asset('magnific-popup/jquery.magnific-popup.min.js'), 90) }}
+{{ pageAddAsset('stylesheet', asset('magnific-popup/magnific-popup.css'), 90) }}
 {{ pageAddAsset('javascript', zasset('@MUImageModule:js/MUImageModule.js')) }}
 <div id="picture{{ picture.getKey() }}" class="muimagemodule-external-picture">
 {% if displayMode == 'link' %}

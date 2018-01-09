@@ -1,0 +1,5 @@
+services:
+    mu_image_module.app_settings:
+        class: MU\ImageModule\AppSettings
+        arguments:
+            - "@zikula_extensions_module.api.variable"

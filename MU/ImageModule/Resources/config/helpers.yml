@@ -76,6 +76,15 @@ services:
             - "@mu_image_module.category_helper"
         tags:
             - { name: zikula.searchable_module, bundleName: MUImageModule }
+            
+    mu_image_module.translatable_helper:
+        class: MU\ImageModule\Helper\TranslatableHelper
+        arguments:
+            - "@translator.default"
+            - "@request_stack"
+            - "@zikula_extensions_module.api.variable"
+            - "@zikula_settings_module.locale_api"
+            - "@mu_image_module.entity_factory"
     
     mu_image_module.upload_helper:
         class: MU\ImageModule\Helper\UploadHelper

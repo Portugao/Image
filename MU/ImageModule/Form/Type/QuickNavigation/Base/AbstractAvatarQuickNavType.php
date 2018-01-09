@@ -102,7 +102,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addCategoriesField(FormBuilderInterface $builder, array $options)
+    public function addCategoriesField(FormBuilderInterface $builder, array $options = [])
     {
         $objectType = 'avatar';
     
@@ -118,7 +118,8 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
             'multiple' => false,
             'module' => 'MUImageModule',
             'entity' => ucfirst($objectType) . 'Entity',
-            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($objectType) . 'CategoryEntity'
+            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($objectType) . 'CategoryEntity',
+            'showRegistryLabels' => true
         ]);
     }
 
@@ -128,7 +129,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addListFields(FormBuilderInterface $builder, array $options)
+    public function addListFields(FormBuilderInterface $builder, array $options = [])
     {
         $listEntries = $this->listHelper->getEntries('avatar', 'workflowState');
         $choices = [];
@@ -178,7 +179,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSearchField(FormBuilderInterface $builder, array $options)
+    public function addSearchField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('q', SearchType::class, [
             'label' => $this->__('Search'),
@@ -197,7 +198,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSortingFields(FormBuilderInterface $builder, array $options)
+    public function addSortingFields(FormBuilderInterface $builder, array $options = [])
     {
         $builder
             ->add('sort', ChoiceType::class, [
@@ -242,7 +243,7 @@ abstract class AbstractAvatarQuickNavType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addAmountField(FormBuilderInterface $builder, array $options)
+    public function addAmountField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('num', ChoiceType::class, [
             'label' => $this->__('Page size'),

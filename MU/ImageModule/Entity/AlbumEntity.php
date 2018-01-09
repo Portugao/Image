@@ -14,12 +14,14 @@ namespace MU\ImageModule\Entity;
 
 use MU\ImageModule\Entity\Base\AbstractAlbumEntity as BaseEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Entity class that defines the entity structure and behaviours.
  *
  * This is the concrete entity class for album entities.
+ * @Gedmo\TranslationEntity(class="MU\ImageModule\Entity\AlbumTranslationEntity")
  * @ORM\Entity(repositoryClass="MU\ImageModule\Entity\Repository\AlbumRepository")
  * @ORM\Table(name="mu_image_album",
  *     indexes={

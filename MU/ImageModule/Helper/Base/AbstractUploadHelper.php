@@ -12,8 +12,11 @@
 
 namespace MU\ImageModule\Helper\Base;
 
+use Imagine\Filter\Basic\Autorotate;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
+use Imagine\Image\ImageInterface;
+use Imagine\Image\Metadata\ExifMetadataReader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -184,29 +187,42 @@ abstract class AbstractUploadHelper
             }
         }
     
+        // collect data to return
+        $result['fileName'] = $fileName;
+        $result['metaData'] = $this->readMetaDataForFile($fileName, $destinationFilePath);
+    
         $isImage = in_array($extension, $this->imageFileTypes);
         if ($isImage) {
+            // fix wrong orientation and shrink too large image if needed
+            @ini_set('memory_limit', '1G');
+            $imagine = new Imagine();
+            $image = $imagine->open($destinationFilePath);
+            $autorotateFilter = new Autorotate();
+            $image = $autorotateFilter->apply($image);
+            $image->save($destinationFilePath);
+    
             // check if shrinking functionality is enabled
             $fieldSuffix = ucfirst($objectType) . ucfirst($fieldName);
             if (isset($this->moduleVars['enableShrinkingFor' . $fieldSuffix]) && true === (bool)$this->moduleVars['enableShrinkingFor' . $fieldSuffix]) {
                 // check for maximum size
                 $maxWidth = isset($this->moduleVars['shrinkWidth' . $fieldSuffix]) ? $this->moduleVars['shrinkWidth' . $fieldSuffix] : 800;
                 $maxHeight = isset($this->moduleVars['shrinkHeight' . $fieldSuffix]) ? $this->moduleVars['shrinkHeight' . $fieldSuffix] : 600;
+                $thumbMode = isset($this->moduleVars['thumbnailMode' . $fieldSuffix]) ? $this->moduleVars['thumbnailMode' . $fieldSuffix] : ImageInterface::THUMBNAIL_INSET;
     
                 $imgInfo = getimagesize($destinationFilePath);
                 if ($imgInfo[0] > $maxWidth || $imgInfo[1] > $maxHeight) {
                     // resize to allowed maximum size
                     $imagine = new Imagine();
                     $image = $imagine->open($destinationFilePath);
-                    $image->resize(new Box($maxWidth, $maxHeight))
-                          ->save($destinationFilePath);
+                    $thumb = $image->thumbnail(new Box($maxWidth, $maxHeight), $thumbMode);
+                    $thumb->save($destinationFilePath);
                 }
             }
-        }
     
-        // collect data to return
-        $result['fileName'] = $fileName;
-        $result['metaData'] = $this->readMetaDataForFile($fileName, $destinationFilePath);
+            // update meta data excluding EXIF
+            $newMetaData = $this->readMetaDataForFile($fileName, $destinationFilePath, false);
+            $result['metaData'] = array_merge($result['metaData'], $newMetaData);
+        }
     
         return $result;
     }
@@ -256,12 +272,13 @@ abstract class AbstractUploadHelper
     /**
      * Read meta data from a certain file.
      *
-     * @param string $fileName  Name of file to be processed
-     * @param string $filePath  Path to file to be processed
+     * @param string  $fileName    Name of file to be processed
+     * @param string  $filePath    Path to file to be processed
+     * @param boolean $includeExif Whether to read out EXIF data or not
      *
-     * @return array collected meta data
+     * @return array Collected meta data
      */
-    public function readMetaDataForFile($fileName, $filePath)
+    protected function readMetaDataForFile($fileName, $filePath, $includeExif = true)
     {
         $meta = [];
         if (empty($fileName)) {
@@ -297,7 +314,51 @@ abstract class AbstractUploadHelper
             $meta['format'] = 'square';
         }
     
+        if (!$includeExif || $meta['extension'] != 'jpg') {
+            return $meta;
+        }
+    
+        // add EXIF data
+        $exifData = $this->readExifData($filePath);
+        $meta = array_merge($meta, $exifData);
+    
         return $meta;
+    }
+    
+    /**
+     * Read EXIF data from a certain file.
+     *
+     * @param string  $filePath Path to file to be processed
+     *
+     * @return array Collected meta data
+     */
+    protected function readExifData($filePath)
+    {
+        $imagine = new Imagine();
+        $image = $imagine
+            ->setMetadataReader(new ExifMetadataReader())
+            ->open($filePath);
+    
+        $exifData = $image->metadata()->toArray();
+    
+        // strip non-utf8 chars to bypass firmware bugs (e.g. Samsung)
+        foreach ($exifData as $k => $v) {
+            if (is_array($v)) {
+                foreach ($v as $kk => $vv) {
+                    $exifData[$k][$kk] = mb_convert_encoding($vv, 'UTF-8', 'UTF-8');
+                    if (false !== strpos($exifData[$k][$kk], '????')) {
+                        unset($exifData[$k][$kk]);
+                    }
+                }
+            } else {
+                $exifData[$k] = mb_convert_encoding($v, 'UTF-8', 'UTF-8');
+                if (false !== strpos($exifData[$k], '????')) {
+                    unset($exifData[$k]);
+                }
+            }
+        }
+    
+        return $exifData;
     }
 
     /**
@@ -307,7 +368,7 @@ abstract class AbstractUploadHelper
      * @param string $fieldName  Name of upload field
      * @param string $extension  Input file extension
      *
-     * @return array the list of allowed file extensions
+     * @return string[] List of allowed file extensions
      */
     protected function isAllowedFileExtension($objectType, $fieldName, $extension)
     {
@@ -350,10 +411,7 @@ abstract class AbstractUploadHelper
      */
     protected function determineFileName($objectType, $fieldName, $basePath, $fileName, $extension)
     {
-        $backupFileName = $fileName;
-    
         $namingScheme = 0;
-    
         switch ($objectType) {
             case 'picture':
                 $namingScheme = 0;
@@ -363,22 +421,25 @@ abstract class AbstractUploadHelper
                     break;
         }
     
+        if ($namingScheme == 0 || $namingScheme == 3) {
+            // clean the given file name
+            $fileNameCharCount = strlen($fileName);
+            for ($y = 0; $y < $fileNameCharCount; $y++) {
+                if (preg_match('/[^0-9A-Za-z_\.]/', $fileName[$y])) {
+                    $fileName[$y] = '_';
+                }
+            }
+        }
+        $backupFileName = $fileName;
     
         $iterIndex = -1;
         do {
-            if ($namingScheme == 0) {
-                // original file name
-                $fileNameCharCount = strlen($fileName);
-                for ($y = 0; $y < $fileNameCharCount; $y++) {
-                    if (preg_match('/[^0-9A-Za-z_\.]/', $fileName[$y])) {
-                        $fileName[$y] = '_';
-                    }
-                }
-                // append incremented number
+            if ($namingScheme == 0 || $namingScheme == 3) {
+                // original (0) or user defined (3) file name with counter
                 if ($iterIndex > 0) {
                     // strip off extension
                     $fileName = str_replace('.' . $extension, '', $backupFileName);
-                    // add iterated number
+                    // append incremented number
                     $fileName .= (string) ++$iterIndex;
                     // readd extension
                     $fileName .= '.' . $extension;
@@ -387,7 +448,7 @@ abstract class AbstractUploadHelper
                 }
             } elseif ($namingScheme == 1) {
                 // md5 name
-                $fileName = md5(uniqid(mt_rand(), TRUE)) . '.' . $extension;
+                $fileName = md5(uniqid(mt_rand(), true)) . '.' . $extension;
             } elseif ($namingScheme == 2) {
                 // prefix with random number
                 $fileName = $fieldName . mt_rand(1, 999999) . '.' . $extension;
@@ -395,13 +456,12 @@ abstract class AbstractUploadHelper
         }
         while (file_exists($basePath . $fileName)); // repeat until we have a new name
     
-        // return the new file name
+        // return the final file name
         return $fileName;
     }
 
     /**
      * Deletes an existing upload file.
-     * For images the thumbnails are removed, too.
      *
      * @param object  $entity    Currently treated entity
      * @param string  $fieldName Name of upload field
@@ -526,7 +586,7 @@ abstract class AbstractUploadHelper
     }
 
     /**
-     * Creates upload folder including a subfolder for thumbnail and an .htaccess file within it.
+     * Creates an upload folder and a .htaccess file within it.
      *
      * @param string $objectType        Name of treated entity type
      * @param string $fieldName         Name of upload field

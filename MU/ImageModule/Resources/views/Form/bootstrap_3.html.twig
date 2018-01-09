@@ -1,6 +1,10 @@
 {# purpose of this template: apply some general form extensions #}
 {% extends 'ZikulaFormExtensionBundle:Form:bootstrap_3_zikula_admin_layout.html.twig' %}
 
+{%- block muimagemodule_field_translation_row -%}
+    {{ block('form_widget_compound') }}
+{%- endblock -%}
+
 {% block muimagemodule_field_upload_label %}{% endblock %}
 {% block muimagemodule_field_upload_row %}
     {% spaceless %}

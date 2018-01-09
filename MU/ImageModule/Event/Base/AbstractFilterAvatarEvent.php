@@ -36,7 +36,7 @@ class AbstractFilterAvatarEvent extends Event
      * @param AvatarEntity $avatar Processed entity
      * @param array $entityChangeSet Change set for preUpdate events
      */
-    public function __construct(AvatarEntity $avatar, $entityChangeSet = [])
+    public function __construct(AvatarEntity $avatar, array $entityChangeSet = [])
     {
         $this->avatar = $avatar;
         $this->entityChangeSet = $entityChangeSet;
@@ -55,7 +55,7 @@ class AbstractFilterAvatarEvent extends Event
     /**
      * Returns the change set.
      *
-     * @return array
+     * @return array Entity change set
      */
     public function getEntityChangeSet()
     {

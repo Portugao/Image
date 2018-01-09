@@ -6,6 +6,7 @@ services:
             - "@doctrine.orm.default_entity_manager"
             - "@mu_image_module.entity_initialiser"
             - "@mu_image_module.collection_filter_helper"
+            - "@mu_image_module.feature_activation_helper"
     
     # Entity initialiser
     mu_image_module.entity_initialiser:

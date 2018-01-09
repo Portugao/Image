@@ -226,7 +226,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
     
         // create query
         $orderBy = $this->container->get('mu_image_module.model_helper')->resolveSortParameter($this->objectType, $this->sorting);
-        $qb = $repository->genericBaseQuery($this->filter, $orderBy);
+        $qb = $repository->getListQueryBuilder($this->filter, $orderBy);
     
         $featureActivationHelper = $this->container->get('mu_image_module.feature_activation_helper');
         if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
@@ -371,7 +371,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
                 }
     
                 $mainCategory = $categoryRepository->find($registryCid);
-                $queryBuilder = $categoryRepository->getChildrenQueryBuilder($registryCid);
+                $queryBuilder = $categoryRepository->getChildrenQueryBuilder($mainCategory);
                 $cats = $queryBuilder->getQuery()->execute();
                 $catsForDropdown = [
                     [
@@ -380,7 +380,7 @@ abstract class AbstractItemList extends \Content_AbstractContentType implements 
                     ]
                 ];
                 foreach ($cats as $category) {
-                    $indent = str_repeat('--', $category->getLvl() - $mainCategory()->getLvl() - 1);
+                    $indent = str_repeat('--', $category->getLvl() - $mainCategory->getLvl() - 1);
                     $categoryName = (!empty($indent) ? '|' : '') . $indent . $category->getName();
                     $catsForDropdown[] = [
                         'value' => $category->getId(),

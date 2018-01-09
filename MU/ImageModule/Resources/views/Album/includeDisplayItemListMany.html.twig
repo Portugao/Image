@@ -16,7 +16,7 @@
     {{ item|muimagemodule_formattedTitle }}
 {% if not noLink %}
     </a>
-    <a id="albumItem{{ item.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': item.getId(), raw: 1}) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item|muimagemodule_formattedTitle|e('html_attr') }}"><span class="fa fa-id-card-o"></span></a>
+    <a id="albumItem{{ item.getKey() }}Display" href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', {'id': item.getId(), raw: 1}) }}" title="{{ __('Open quick view window') }}" class="muimage-inline-window hidden" data-modal-title="{{ item|muimagemodule_formattedTitle|e('html_attr') }}"><i class="fa fa-id-card-o"></i></a>
 {% endif %}
 {% endspaceless %}
 </h4>

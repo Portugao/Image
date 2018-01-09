@@ -23,6 +23,11 @@ abstract class AbstractFeatureActivationHelper
     const CATEGORIES = 'categories';
     
     /**
+     * Translation feature
+     */
+    const TRANSLATIONS = 'translations';
+    
+    /**
      * This method checks whether a certain feature is enabled for a given entity type or not.
      *
      * @param string $feature     Name of requested feature
@@ -39,6 +44,14 @@ abstract class AbstractFeatureActivationHelper
             }
     
             return in_array($objectType, ['album', 'avatar']);
+        }
+        if ($feature == self::TRANSLATIONS) {
+            $method = 'hasTranslations';
+            if (method_exists($this, $method)) {
+                return $this->$method($objectType);
+            }
+    
+            return in_array($objectType, ['album', 'picture']);
         }
     
         return false;

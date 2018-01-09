@@ -47,22 +47,22 @@ abstract class AbstractSearchHelper implements SearchableInterface
     /**
      * @var SessionInterface
      */
-    private $session;
+    protected $session;
     
     /**
      * @var Request
      */
-    private $request;
+    protected $request;
     
     /**
      * @var EntityFactory
      */
-    private $entityFactory;
+    protected $entityFactory;
     
     /**
      * @var ControllerHelper
      */
-    private $controllerHelper;
+    protected $controllerHelper;
     
     /**
      * @var EntityDisplayHelper
@@ -72,12 +72,12 @@ abstract class AbstractSearchHelper implements SearchableInterface
     /**
      * @var FeatureActivationHelper
      */
-    private $featureActivationHelper;
+    protected $featureActivationHelper;
     
     /**
      * @var CategoryHelper
      */
-    private $categoryHelper;
+    protected $categoryHelper;
     
     /**
      * SearchHelper constructor.
@@ -163,23 +163,21 @@ abstract class AbstractSearchHelper implements SearchableInterface
     
         // retrieve list of activated object types
         $searchTypes = $this->getSearchTypes();
+        $entitiesWithDisplayAction = ['album', 'picture', 'avatar'];
     
         foreach ($searchTypes as $searchTypeCode => $typeInfo) {
-            $objectType = $typeInfo['value'];
             $isActivated = false;
-            if ($this->request->isMethod('GET')) {
-                $isActivated = $this->request->query->get('active_' . $searchTypeCode, false);
-            } elseif ($this->request->isMethod('POST')) {
-                $searchSettings = $this->request->request->get('zikulasearchmodule_search', []);
-                $moduleActivationInfo = $searchSettings['modules'];
-                if (isset($moduleActivationInfo['MUImageModule'])) {
-                    $moduleActivationInfo = $moduleActivationInfo['MUImageModule'];
-                    $isActivated = isset($moduleActivationInfo['active_' . $searchTypeCode]);
-                }
+            $searchSettings = $this->request->query->get('zikulasearchmodule_search', []);
+            $moduleActivationInfo = $searchSettings['modules'];
+            if (isset($moduleActivationInfo['MUImageModule'])) {
+                $moduleActivationInfo = $moduleActivationInfo['MUImageModule'];
+                $isActivated = isset($moduleActivationInfo['active_' . $searchTypeCode]);
             }
             if (!$isActivated) {
                 continue;
             }
+    
+            $objectType = $typeInfo['value'];
             $whereArray = [];
             $languageField = null;
             switch ($objectType) {
@@ -229,13 +227,9 @@ abstract class AbstractSearchHelper implements SearchableInterface
             }
     
             $descriptionFieldName = $this->entityDisplayHelper->getDescriptionFieldName($objectType);
-    
-            $entitiesWithDisplayAction = ['album', 'picture', 'avatar'];
+            $hasDisplayAction = in_array($objectType, $entitiesWithDisplayAction);
     
             foreach ($entities as $entity) {
-                $urlArgs = $entity->createUrlArgs();
-                $hasDisplayAction = in_array($objectType, $entitiesWithDisplayAction);
-    
                 // perform permission check
                 if (!$this->permissionApi->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', $entity->getKey() . '::', ACCESS_OVERVIEW)) {
                     continue;
@@ -252,10 +246,13 @@ abstract class AbstractSearchHelper implements SearchableInterface
                 $description = !empty($descriptionFieldName) ? $entity[$descriptionFieldName] : '';
                 $created = isset($entity['createdDate']) ? $entity['createdDate'] : null;
     
-                $urlArgs['_locale'] = (null !== $languageField && !empty($entity[$languageField])) ? $entity[$languageField] : $this->request->getLocale();
-    
                 $formattedTitle = $this->entityDisplayHelper->getFormattedTitle($entity);
-                $displayUrl = $hasDisplayAction ? new RouteUrl('muimagemodule_' . strtolower($objectType) . '_display', $urlArgs) : '';
+                $displayUrl = '';
+                if ($hasDisplayAction) {
+                    $urlArgs = $entity->createUrlArgs();
+                    $urlArgs['_locale'] = (null !== $languageField && !empty($entity[$languageField])) ? $entity[$languageField] : $this->request->getLocale();
+                    $displayUrl = new RouteUrl('muimagemodule_' . strtolower($objectType) . '_display', $urlArgs);
+                }
     
                 $result = new SearchResultEntity();
                 $result->setTitle($formattedTitle)
@@ -274,7 +271,7 @@ abstract class AbstractSearchHelper implements SearchableInterface
     /**
      * Returns list of supported search types.
      *
-     * @return array
+     * @return array List of search types
      */
     protected function getSearchTypes()
     {
@@ -317,13 +314,13 @@ abstract class AbstractSearchHelper implements SearchableInterface
      * Construct a QueryBuilder Where orX|andX Expr instance.
      *
      * @param QueryBuilder $qb
-     * @param array $words the words to query for
-     * @param array $fields
+     * @param string[] $words  List of words to query for
+     * @param string[] $fields List of fields to include into query
      * @param string $searchtype AND|OR|EXACT
      *
      * @return null|Composite
      */
-    protected function formatWhere(QueryBuilder $qb, array $words, array $fields, $searchtype = 'AND')
+    protected function formatWhere(QueryBuilder $qb, array $words = [], array $fields = [], $searchtype = 'AND')
     {
         if (empty($words) || empty($fields)) {
             return null;

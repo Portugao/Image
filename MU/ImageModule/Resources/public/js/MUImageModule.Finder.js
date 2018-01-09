@@ -7,8 +7,7 @@ var currentMUImageModuleInput = null;
  * Returns the attributes used for the popup window. 
  * @return {String}
  */
-function getMUImageModulePopupAttributes()
-{
+function getMUImageModulePopupAttributes() {
     var pWidth, pHeight;
 
     pWidth = screen.width * 0.75;
@@ -20,8 +19,7 @@ function getMUImageModulePopupAttributes()
 /**
  * Open a popup window with the finder triggered by an editor button.
  */
-function MUImageModuleFinderOpenPopup(editor, editorName)
-{
+function MUImageModuleFinderOpenPopup(editor, editorName) {
     var popupUrl;
 
     // Save editor for access in selector window
@@ -41,8 +39,7 @@ var mUImageModule = {};
 
 mUImageModule.finder = {};
 
-mUImageModule.finder.onLoad = function (baseId, selectedId)
-{
+mUImageModule.finder.onLoad = function (baseId, selectedId) {
     var imageModeEnabled;
 
     if (jQuery('#mUImageModuleSelectorForm').length < 1) {
@@ -56,10 +53,6 @@ mUImageModule.finder.onLoad = function (baseId, selectedId)
         jQuery("[id$='pasteAs'] option[value=7]").addClass('hidden');
         jQuery("[id$='pasteAs'] option[value=8]").addClass('hidden');
         jQuery("[id$='pasteAs'] option[value=9]").addClass('hidden');
-        jQuery("[id$='pasteAs'] option[value=10]").addClass('hidden');
-        jQuery("[id$='pasteAs'] option[value=11]").addClass('hidden');
-        jQuery("[id$='pasteAs'] option[value=12]").addClass('hidden');
-        jQuery("[id$='pasteAs'] option[value=13]").addClass('hidden');
     } else {
         jQuery('#searchTermRow').addClass('hidden');
     }
@@ -76,13 +69,11 @@ mUImageModule.finder.onLoad = function (baseId, selectedId)
     });
 };
 
-mUImageModule.finder.onParamChanged = function ()
-{
+mUImageModule.finder.onParamChanged = function () {
     jQuery('#mUImageModuleSelectorForm').submit();
 };
 
-mUImageModule.finder.handleCancel = function (event)
-{
+mUImageModule.finder.handleCancel = function (event) {
     var editor;
 
     event.preventDefault();
@@ -101,8 +92,7 @@ mUImageModule.finder.handleCancel = function (event)
 };
 
 
-function mUImageGetPasteSnippet(mode, itemId)
-{
+function mUImageGetPasteSnippet(mode, itemId) {
     var quoteFinder;
     var itemPath;
     var itemUrl;
@@ -110,9 +100,6 @@ function mUImageGetPasteSnippet(mode, itemId)
     var itemDescription;
     var imagePath;
     var pasteMode;
-    var tmbPath;
-    var prePath;
-    var fullPath;
 
     quoteFinder = new RegExp('"', 'g');
     itemPath = jQuery('#path' + itemId).val().replace(quoteFinder, '');
@@ -121,9 +108,6 @@ function mUImageGetPasteSnippet(mode, itemId)
     itemDescription = jQuery('#desc' + itemId).val().replace(quoteFinder, '').trim();
     imagePath = jQuery('#imagePath' + itemId).length > 0 ? jQuery('#imagePath' + itemId).val().replace(quoteFinder, '') : '';
     pasteMode = jQuery("[id$='pasteAs']").first().val();
-    tmbPath = jQuery('#pathtmb' + itemId).val().replace(quoteFinder, '');
-    prePath = jQuery('#pathpre' + itemId).val().replace(quoteFinder, '');
-    fullPath = jQuery('#pathfull' + itemId).val().replace(quoteFinder, '');
 
     // item ID
     if (pasteMode === '3') {
@@ -155,22 +139,6 @@ function mUImageGetPasteSnippet(mode, itemId)
         // image tag with absolute url to detail page
         return mode === 'url' ? itemUrl : '<a href="' + itemUrl + '" title="' + itemTitle + '"><img src="' + imagePath + '" alt="' + itemTitle + '" width="300" /></a>';
     }
-    
-    if (pasteMode === '10') {
-    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" />';
-    }
-    
-    if (pasteMode === '11') {
-    	return '<img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" />';
-    }
-    
-    if (pasteMode === '12') {
-    	return '<a class="image-link" href="' + fullPath + '"><img class="img-responsive" alt="' + itemTitle + '" src="' + tmbPath + '" /></a>';
-    }
-    
-    if (pasteMode === '13') {
-    	return '<a class="image-link" href="' + fullPath + '><img class="img-responsive" alt="' + itemTitle + '" src="' + prePath + '" /></a>';
-    }
 
 
     return '';
@@ -178,8 +146,7 @@ function mUImageGetPasteSnippet(mode, itemId)
 
 
 // User clicks on "select item" button
-mUImageModule.finder.selectItem = function (itemId)
-{
+mUImageModule.finder.selectItem = function (itemId) {
     var editor, html;
 
     html = mUImageGetPasteSnippet('html', itemId);
@@ -205,12 +172,11 @@ mUImageModule.finder.selectItem = function (itemId)
     mUImageClosePopup();
 };
 
-function mUImageClosePopup()
-{
+function mUImageClosePopup() {
     window.opener.focus();
     window.close();
 }
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     mUImageModule.finder.onLoad();
 });

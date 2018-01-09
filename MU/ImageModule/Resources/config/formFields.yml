@@ -8,6 +8,11 @@ services:
         tags:
             - { name: form.type }
     
+    mu_image_module.form.type.field.translation:
+        class: MU\ImageModule\Form\Type\Field\TranslationType
+        tags:
+            - { name: form.type }
+    
     mu_image_module.form.type.field.upload:
         class: MU\ImageModule\Form\Type\Field\UploadType
         arguments:

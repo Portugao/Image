@@ -13,14 +13,21 @@ workflow:
             places:
                 - initial
                 - approved
+                - trashed
                 - deleted
             transitions:
+                recoverapproved:
+                    from: trashed
+                    to: approved
                 submit:
                     from: initial
                     to: approved
                 updateapproved:
                     from: approved
                     to: approved
-                delete:
+                trashapproved:
                     from: approved
+                    to: trashed
+                delete:
+                    from: [approved, trashed]
                     to: deleted

@@ -32,7 +32,7 @@ abstract class AbstractExternalController extends AbstractController
      * @param Request $request     The current request
      * @param string  $objectType  The currently treated object type
      * @param int     $id          Identifier of the entity to be shown
-     * @param string  $source      Source of this call (contentType or scribite)
+     * @param string  $source      Source of this call (block, contentType, scribite)
      * @param string  $displayMode Display mode (link or embed)
      *
      * @return string Desired data output
@@ -98,6 +98,7 @@ abstract class AbstractExternalController extends AbstractController
         $assetHelper = $this->get('zikula_core.common.theme.asset_helper');
         $cssAssetBag = $this->get('zikula_core.common.theme.assets_css');
         $cssAssetBag->add($assetHelper->resolve('@MUImageModule:css/style.css'));
+        $cssAssetBag->add($assetHelper->resolve('@MUImageModule:css/custom.css'));
         
         $activatedObjectTypes = $this->getVar('enabledFinderTypes', []);
         if (!in_array($objectType, $activatedObjectTypes)) {

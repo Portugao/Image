@@ -17,8 +17,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Zikula\CategoriesModule\Form\Type\CategoriesType;
 use Zikula\Common\Translator\TranslatorInterface;
@@ -68,20 +66,12 @@ abstract class AbstractItemListBlockType extends AbstractType
     }
 
     /**
-     * @inheritDoc
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        $view->vars['isCategorisable'] = $options['is_categorisable'];
-    }
-
-    /**
      * Adds an object type field.
      *
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addObjectTypeField(FormBuilderInterface $builder, array $options)
+    public function addObjectTypeField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('objectType', ChoiceType::class, [
             'label' => $this->__('Object type') . ':',
@@ -107,7 +97,7 @@ abstract class AbstractItemListBlockType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addCategoriesField(FormBuilderInterface $builder, array $options)
+    public function addCategoriesField(FormBuilderInterface $builder, array $options = [])
     {
         if (!$options['is_categorisable'] || null === $options['category_helper']) {
             return;
@@ -126,7 +116,8 @@ abstract class AbstractItemListBlockType extends AbstractType
             'multiple' => $hasMultiSelection,
             'module' => 'MUImageModule',
             'entity' => ucfirst($options['object_type']) . 'Entity',
-            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['object_type']) . 'CategoryEntity'
+            'entityCategoryClass' => 'MU\ImageModule\Entity\\' . ucfirst($options['object_type']) . 'CategoryEntity',
+            'showRegistryLabels' => true
         ]);
     }
 
@@ -136,7 +127,7 @@ abstract class AbstractItemListBlockType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addSortingField(FormBuilderInterface $builder, array $options)
+    public function addSortingField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('sorting', ChoiceType::class, [
             'label' => $this->__('Sorting') . ':',
@@ -158,7 +149,7 @@ abstract class AbstractItemListBlockType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addAmountField(FormBuilderInterface $builder, array $options)
+    public function addAmountField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('amount', IntegerType::class, [
             'label' => $this->__('Amount') . ':',
@@ -178,7 +169,7 @@ abstract class AbstractItemListBlockType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addTemplateFields(FormBuilderInterface $builder, array $options)
+    public function addTemplateFields(FormBuilderInterface $builder, array $options = [])
     {
         $builder
             ->add('template', ChoiceType::class, [
@@ -211,7 +202,7 @@ abstract class AbstractItemListBlockType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function addFilterField(FormBuilderInterface $builder, array $options)
+    public function addFilterField(FormBuilderInterface $builder, array $options = [])
     {
         $builder->add('filter', TextType::class, [
             'label' => $this->__('Filter (expert option)') . ':',
