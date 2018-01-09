@@ -1,12 +1,12 @@
 {# purpose of this template: albums display view #}
 {% set baseTemplate = app.request.query.getBoolean('raw', false) ? 'raw' : (routeArea == 'admin' ? 'adminBase' : 'base') %}
+{% set breadcrumbs = getModVar('MUImageModule', 'breadcrumbsInFrontend') %}
 {% extends 'MUImageModule::' ~ baseTemplate ~ '.html.twig' %}
 {% block pageTitle %}{{ album|muimagemodule_formattedTitle|default(__('Album')) }}{% endblock %}
 {% block title %}
     {% if routeArea == 'admin' %}
     {% set templateTitle = album.getTitleFromDisplayPattern()|default(__('Album')) %}
     {{ templateTitle|notifyFilters('muimagemodule.filter_hooks.albums.filter') }}
-    
     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], { entity: album, area: routeArea, context: 'display' }) %}
     <div class="dropdown">
         <a id="itemActions{{ album.id }}DropDownToggle" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
@@ -14,7 +14,6 @@
     </div>
     {% else %}
     	<div id="album_breadcrump">
-    	{% set breadcrumbs = getModVar('MUImageModule', 'breadcrumbsInFrontend') %}
 		{% if breadcrumbs == 1 %}
 		    {% set breadcrumb = muimagemodule_breadcrumb(albumId=album.id) %}
 		    {{ breadcrumb|raw }}		    	
@@ -76,8 +75,8 @@
             <dd>{{ album.pos }}</dd>
         {% endif %}
         </div>
-        {% if album.album|default %}
-            <dt>{{ __('Album') }}</dt>
+        {% if album.album|default and breadcrumbs == 0 %}
+            <dt>{{ __('Parent album') }}</dt>
             <dd>
               {% if app.request.query.get('theme') != 'ZikulaPrinterTheme' %}
                   <a href="{{ path('muimagemodule_album_' ~ routeArea ~ 'display', { 'id': album.album.id }) }}">{% spaceless %}
