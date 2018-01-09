@@ -296,6 +296,50 @@ class PictureController extends AbstractPictureController
     }
     
     /**
+     * This action provides a handling of edit requests.
+     *
+     * @Route("/picture/multiupload/{albumid}.{_format}",
+     *        requirements = {"albumid" = "\d+", "_format" = "html"},
+     *        defaults = {"albumid" = "0", "_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     *
+     * @param Request  $request      Current request instance
+     *
+     * @return mixed Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function multiuploadAction(Request $request)
+    {
+    	return self::multiuploadInternal($request);
+    }
+    
+    /**
+     * This action provides a handling of edit requests.
+     *
+     * @Route("/picture/zipupload/{albumid}.{_format}",
+     *        requirements = {"albumid" = "\d+", "_format" = "html"},
+     *        defaults = {"albumid" = "0", "_format" = "html"},
+     *        methods = {"GET", "POST"}
+     * )
+     *
+     * @param Request  $request      Current request instance
+     *
+     * @return mixed Output
+     *
+     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
+     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
+     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
+     */
+    public function zipuploadAction(Request $request)
+    {
+    	return self::zipuploadInternal($request);
+    }
+    
+    /**
      * This method includes the common implementation code for adminView() and view().
      */
     protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
