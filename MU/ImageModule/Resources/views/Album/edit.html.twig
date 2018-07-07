@@ -72,8 +72,20 @@
                 {% if subalbums == 1 and extended == 1 %}
                 {% if mode == 'create' %}
                 {% if parent > 0 %}
+                <div class="hidden">
+                    {{ include(
+                    '@MUImageModule/Album/includeSelectOne.html.twig',
+                    { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, tabs: true, displayMode: 'choices', class: 'chzn-select' }
+                ) }}
+                </div>
                     <input type="hidden" name="muimagemodule_album[album]" value={{ parent }} />
                 {% else %}
+                    <div class="hidden">
+                    {{ include(
+                    '@MUImageModule/Album/includeSelectOne.html.twig',
+                    { group: 'album', alias: 'album', aliasReverse: 'albums', mandatory: false, idPrefix: 'muimageAlbum_Album', linkingItem: album, tabs: true, displayMode: 'choices', class: 'chzn-select' }
+                ) }}
+                </div>
                     <input type="hidden" name="muimagemodule_album[album]" value='' />
                 {% endif %}
                 {% else %}
