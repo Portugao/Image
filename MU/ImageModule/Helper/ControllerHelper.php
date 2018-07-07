@@ -27,6 +27,8 @@ use MU\ImageModule\Helper\FeatureActivationHelper;
 use MU\ImageModule\Helper\ImageHelper;
 use MU\ImageModule\Helper\ModelHelper;
 
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+
 use LogUtil;
 use ModUtil;
 use UserUtil;
@@ -36,6 +38,49 @@ use UserUtil;
  */
 class ControllerHelper extends AbstractControllerHelper
 {
+	/**
+	 * @var CurrentUserApiInterface
+	 */
+	protected $currentUserApi;
+	
+	/**
+	 * ControllerHelper constructor.
+	 *
+	 * @param TranslatorInterface $translator      Translator service instance
+	 * @param RequestStack        $requestStack    RequestStack service instance
+	 * @param FormFactoryInterface $formFactory    FormFactory service instance
+	 * @param VariableApiInterface $variableApi     VariableApi service instance
+	 * @param EntityFactory       $entityFactory   EntityFactory service instance
+	 * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
+	 * @param ModelHelper         $modelHelper     ModelHelper service instance
+	 * @param ImageHelper         $imageHelper     ImageHelper service instance
+	 * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
+	 * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
+	 */
+	public function __construct(
+			TranslatorInterface $translator,
+			RequestStack $requestStack,
+			FormFactoryInterface $formFactory,
+			VariableApiInterface $variableApi,
+			EntityFactory $entityFactory,
+			CollectionFilterHelper $collectionFilterHelper,
+			ModelHelper $modelHelper,
+			ImageHelper $imageHelper,
+			FeatureActivationHelper $featureActivationHelper,
+			CurrentUserApiInterface $currentUserApi
+			) {
+				$this->setTranslator($translator);
+				$this->request = $requestStack->getCurrentRequest();
+				$this->formFactory = $formFactory;
+				$this->variableApi = $variableApi;
+				$this->entityFactory = $entityFactory;
+				$this->collectionFilterHelper = $collectionFilterHelper;
+				$this->modelHelper = $modelHelper;
+				$this->imageHelper = $imageHelper;
+				$this->featureActivationHelper = $featureActivationHelper;
+				$this->currentUserApi = $currentUserApi;
+	}
+	
 	/**
 	 * Processes the parameters for a view action.
 	 * This includes handling pagination, quick navigation forms and other aspects.
@@ -64,21 +109,23 @@ class ControllerHelper extends AbstractControllerHelper
 	 * @param unknown $createdBy        	
 	 */
 	public function checkGroupMember($created) {
-		if (\UserUtil::isLoggedIn () === false) {
-			return false;
-		}
-		$uid = \UserUtil::getVar('uid');
-		if ($uid == $created) {
+
+		$uid = $this->currentUserApi->get('uid');
+		
+		if ($uid == $created && $uid > 1) {
 			return true;
+		} else {
+			return false;
 		}
 		
 		$uidGroups = \UserUtil::getGroupListForUser ( $uid );
+		$uidGroups = $this->currentUserApi->get('groups');
 		$uidGroups = explode ( ',', $uidGroups );
 		
 		$createdUserIdGroups = \UserUtil::getGroupListForUser ($created);
 		$createdUserIdGroups = explode ( ',', $createdUserIdGroups );
-		
-		$commonGroup = \ModUtil::getVar ( 'MUImageModule', 'groupForCommonAlbums' );
+
+		$commonGroup = $this->variableApi->get('MUImageModule', 'groupForCommonAlbums');
 		
 		if ($commonGroup != 'notset') {
 			foreach ( $uidGroups as $uidGroup ) {
@@ -106,7 +153,8 @@ class ControllerHelper extends AbstractControllerHelper
 	public function checkAlbumAccess($albumid) 
 	{
 		// we get the actual user id
-		$userid = \UserUtil::getVar('uid');
+		//$userid = \UserUtil::getVar('uid');
+		$userid = 2; //TODO
 		
 		$albumrepository = $this->entityFactory->getRepository('album');
 		
@@ -184,7 +232,7 @@ class ControllerHelper extends AbstractControllerHelper
 		if ($albumpicture) {
 		if (!is_array($albumpicture)) {
 			$where2 = '';
-			$where2 = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
+			$where2 = 'tbl.album = ' . $albumId;
 			$pictures = $this->selectionHelper->getEntities('picture', [], $where2);
 		} else {
 			return $albumpicture[0];
@@ -200,9 +248,7 @@ class ControllerHelper extends AbstractControllerHelper
 	}
 	
 	public function breadcrumb($albumId, $params = array())
-	{
-		//$dom = ZLanguage::getModuleDomain('MUImage');
-		
+	{		
 		$repository = $this->entityFactory->getRepository('album');
 		$album = $repository->selectById($albumId);
 
