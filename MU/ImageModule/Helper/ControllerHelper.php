@@ -17,9 +17,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Zikula\Common\Translator\TranslatorInterface;
-use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Component\SortableColumns\SortableColumns;
-use Zikula\Core\RouteUrl;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use MU\ImageModule\Entity\Factory\EntityFactory;
 use MU\ImageModule\Helper\CollectionFilterHelper;
@@ -28,10 +26,7 @@ use MU\ImageModule\Helper\ImageHelper;
 use MU\ImageModule\Helper\ModelHelper;
 
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
-
-use LogUtil;
-use ModUtil;
-use UserUtil;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Helper implementation class for controller layer methods.
@@ -42,6 +37,12 @@ class ControllerHelper extends AbstractControllerHelper
 	 * @var CurrentUserApiInterface
 	 */
 	protected $currentUserApi;
+	
+	/**
+	 * 
+	 * @var RouterInterface
+	 */
+	protected $router;
 	
 	/**
 	 * ControllerHelper constructor.
@@ -56,6 +57,7 @@ class ControllerHelper extends AbstractControllerHelper
 	 * @param ImageHelper         $imageHelper     ImageHelper service instance
 	 * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
 	 * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
+	 * @param RouterInterface $router RouterInterface service instance
 	 */
 	public function __construct(
 			TranslatorInterface $translator,
@@ -67,7 +69,8 @@ class ControllerHelper extends AbstractControllerHelper
 			ModelHelper $modelHelper,
 			ImageHelper $imageHelper,
 			FeatureActivationHelper $featureActivationHelper,
-			CurrentUserApiInterface $currentUserApi
+			CurrentUserApiInterface $currentUserApi,
+			RouterInterface $router
 			) {
 				$this->setTranslator($translator);
 				$this->request = $requestStack->getCurrentRequest();
@@ -79,6 +82,7 @@ class ControllerHelper extends AbstractControllerHelper
 				$this->imageHelper = $imageHelper;
 				$this->featureActivationHelper = $featureActivationHelper;
 				$this->currentUserApi = $currentUserApi;
+				$this->router = $router;
 	}
 	
 	/**
@@ -271,20 +275,19 @@ class ControllerHelper extends AbstractControllerHelper
 		
 		if ($thisAlbum['parent_id'] != NULL) {
 			$albumParent = $repository->selectById($album['parent_id']);
-			\LogUtil::registerStatus($album['album']['id']);
-				$url = ModUtil::url('MUImage', 'user', 'display', array('ot' => 'album', 'id' => $albumParent['id']));
-				$out = '<li><a href="' . $url . '">' . $albumParent['title'] . '</a></li>' . $out;
+
+			$url = $this->router->generate('muimagemodule_album_display', array('id' => $parentAlbumId['id']));
+			$out = '<li><a href="' . $url . '">' . $albumParent['title'] . '</a></li>' . $out;
 		
-				$parentAlbumId = $albumParent['id'];
-				$params['out'] = $out;
-				$params['loop'] = $loop + 1;
-				$params['thisAlbum'] = $thisAlbum;
-				\LogUtil::registerStatus('Out: ' . $out);
-				\LogUtil::registerStatus('ParentId: ' . $parentAlbumId);
-				self::breadcrumb($parentAlbumId, $params);
+			$parentAlbumId = $albumParent['id'];
+			$params['out'] = $out;
+			$params['loop'] = $loop + 1;
+			$params['thisAlbum'] = $thisAlbum;
+
+			self::breadcrumb($parentAlbumId, $params);
 			} else {
-				$url = ModUtil::url('MUImageModule', 'album', 'view');
-				$out = '<ol class="breadcrumb">' . '<li><a href="' . $url . '">' . __('Albums') . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol>';
+				$url = $this->router->generate('muimagemodule_album_view');
+				$out = '<ol class="breadcrumb">' . '<li><a href="' . $url . '">' . $this->__('Albums') . '</a></li>' . $out . '<li>' . $thisAlbum['title'] . '</li>' . '</ol>';
 
 				return $out;
 			}
