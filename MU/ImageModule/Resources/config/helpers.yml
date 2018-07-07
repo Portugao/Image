@@ -31,6 +31,7 @@ services:
             - "@mu_image_module.model_helper"
             - "@mu_image_module.image_helper"
             - "@mu_image_module.feature_activation_helper"
+            - "@zikula_users_module.current_user"
     
     mu_image_module.entity_display_helper:
         class: MU\ImageModule\Helper\EntityDisplayHelper
