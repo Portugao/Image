@@ -12,4 +12,5 @@ services:
     mu_image_module.entity_initialiser:
         class: MU\ImageModule\Entity\Factory\EntityInitialiser
         arguments:
-        - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.permission_helper"
+            - "@mu_image_module.listentries_helper"

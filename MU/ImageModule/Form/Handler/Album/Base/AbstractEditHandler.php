@@ -107,8 +107,8 @@ abstract class AbstractEditHandler extends EditHandler
         $options = [
             'mode' => $this->templateParameters['mode'],
             'actions' => $this->templateParameters['actions'],
-            'has_moderate_permission' => $this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_ADMIN),
-            'filter_by_ownership' => !$this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_ADD),
+            'has_moderate_permission' => $this->permissionHelper->hasEntityPermission($this->entityRef, ACCESS_ADMIN),
+            'filter_by_ownership' => !$this->permissionHelper->hasEntityPermission($this->entityRef, ACCESS_ADD),
             'inline_usage' => $this->templateParameters['inlineUsage']
         ];
     
@@ -206,9 +206,6 @@ abstract class AbstractEditHandler extends EditHandler
         if ($this->templateParameters['mode'] == 'create' && $this->form->has('submitrepeat') && $this->form->get('submitrepeat')->isClicked()) {
             $args['commandName'] = 'submit';
             $this->repeatCreateAction = true;
-        }
-        if ($this->form->get('cancel')->isClicked()) {
-            $args['commandName'] = 'cancel';
         }
     
         return new RedirectResponse($this->getRedirectUrl($args), 302);

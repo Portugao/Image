@@ -34,7 +34,7 @@ function mUImageTriggerFormValidation() {
     }
 }
 
-function mUImageHandleFormSubmit (event) {
+function mUImageHandleFormSubmit(event) {
     if (triggerValidation) {
         mUImageTriggerFormValidation();
         if (!editForm.get(0).checkValidity()) {
@@ -90,7 +90,7 @@ function mUImageInitEditForm(mode, entityId) {
         });
     }
     editForm.find('button[type=submit]').bind('click keypress', function (event) {
-        triggerValidation = !jQuery(this).prop('formnovalidate');
+        triggerValidation = !jQuery(this).attr('formnovalidate');
     });
     editForm.submit(mUImageHandleFormSubmit);
 

@@ -65,6 +65,7 @@ class AlbumController extends AbstractAlbumController
     {
         return parent::indexAction($request);
     }
+    
     /**
      * @inheritDoc
      *
@@ -113,6 +114,7 @@ class AlbumController extends AbstractAlbumController
     {
         return parent::viewAction($request, $sort, $sortdir, $pos, $num);
     }
+    
     /**
      * @inheritDoc
      *
@@ -159,6 +161,7 @@ class AlbumController extends AbstractAlbumController
     {
         return parent::displayAction($request, $album);
     }
+    
     /**
      * @inheritDoc
      *
@@ -203,6 +206,7 @@ class AlbumController extends AbstractAlbumController
     {
         return parent::editAction($request);
     }
+    
     /**
      * @inheritDoc
      *
@@ -251,7 +255,7 @@ class AlbumController extends AbstractAlbumController
     {
         return parent::deleteAction($request, $album);
     }
-
+    
     /**
      * Process status changes for multiple items.
      *
@@ -294,6 +298,6 @@ class AlbumController extends AbstractAlbumController
     {
         return parent::handleSelectedEntriesAction($request);
     }
-
+    
     // feel free to add your own controller methods here
 }

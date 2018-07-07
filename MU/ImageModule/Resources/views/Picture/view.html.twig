@@ -34,7 +34,7 @@
                         <input type="checkbox" class="muimage-mass-toggle" />
                     </th>
                 {% endif %}
-                <th id="hItemActionsStart" scope="col" class="z-order-unsorted z-w02">{{ __('Actions') }}</th>
+                <th id="hItemActionsStart" scope="col" class="z-w02">{{ __('Actions') }}</th>
                 <th id="hTitle" scope="col" class="text-left">
                     <a href="{{ sort.title.url }}" title="{{ __f('Sort by %s', {'%s': 'title'}) }}" class="{{ sort.title.class }}">{{ __('Title') }}</a>
                 </th>
@@ -67,7 +67,7 @@
                 <td id="itemActions{{ picture.getKey() }}Start" headers="hItemActionsStart" class="actions nowrap z-w02">
                     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: picture, area: routeArea, context: 'view'}) %}
                     <div class="dropdown">
-                        <a id="itemActions{{ picture.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
+                        <a id="itemActions{{ picture.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
                         {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}
                     </div>
                 </td>

@@ -178,7 +178,6 @@ abstract class AbstractPictureQuickNavType extends AbstractType
             'required' => false,
             'placeholder' => $this->__('All'),
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -229,7 +228,6 @@ abstract class AbstractPictureQuickNavType extends AbstractType
                     $this->__('Update date') => 'updatedDate',
                     $this->__('Updater') => 'updatedBy'
                 ],
-                'choices_as_values' => true,
                 'required' => true,
                 'expanded' => false
             ])
@@ -243,7 +241,6 @@ abstract class AbstractPictureQuickNavType extends AbstractType
                     $this->__('Ascending') => 'asc',
                     $this->__('Descending') => 'desc'
                 ],
-                'choices_as_values' => true,
                 'required' => true,
                 'expanded' => false
             ])
@@ -273,7 +270,6 @@ abstract class AbstractPictureQuickNavType extends AbstractType
                 $this->__('50') => 50,
                 $this->__('100') => 100
             ],
-            'choices_as_values' => true,
             'required' => false,
             'expanded' => false
         ]);
@@ -297,8 +293,7 @@ abstract class AbstractPictureQuickNavType extends AbstractType
             'choices' => [
                 $this->__('No') => 'no',
                 $this->__('Yes') => 'yes'
-            ],
-            'choices_as_values' => true
+            ]
         ]);
     }
 

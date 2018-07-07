@@ -5,13 +5,11 @@ services:
         class: MU\ImageModule\Form\Type\Field\MultiListType
         arguments:
             - "@mu_image_module.listentries_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.field.translation:
         class: MU\ImageModule\Form\Type\Field\TranslationType
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.field.upload:
         class: MU\ImageModule\Form\Type\Field\UploadType
@@ -20,5 +18,4 @@ services:
             - "@request_stack"
             - "@mu_image_module.image_helper"
             - "@mu_image_module.upload_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']

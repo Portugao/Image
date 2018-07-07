@@ -14,6 +14,7 @@ services:
         class: MU\ImageModule\Helper\CollectionFilterHelper
         arguments:
             - "@request_stack"
+            - "@mu_image_module.permission_helper"
             - "@zikula_users_module.current_user"
             - "@mu_image_module.category_helper"
             - "@=service('zikula_extensions_module.api.variable').get('MUImageModule', 'showOnlyOwnEntries', false)"
@@ -61,17 +62,26 @@ services:
         class: MU\ImageModule\Helper\ModelHelper
         arguments:
             - "@mu_image_module.entity_factory"
+            
+    mu_image_module.permission_helper:
+        class: MU\ImageModule\Helper\PermissionHelper
+        arguments:
+            - "@service_container"
+            - "@request_stack"
+            - "@zikula_permissions_module.api.permission"
+            - "@zikula_users_module.current_user"
+            - "@zikula_users_module.user_repository"
     
     mu_image_module.search_helper:
         class: MU\ImageModule\Helper\SearchHelper
         arguments:
             - "@translator.default"
-            - "@zikula_permissions_module.api.permission"
             - "@session"
             - "@request_stack"
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.controller_helper"
             - "@mu_image_module.entity_display_helper"
+            - "@mu_image_module.permission_helper"
             - "@mu_image_module.feature_activation_helper"
             - "@mu_image_module.category_helper"
         tags:
@@ -104,10 +114,11 @@ services:
             - "@twig"
             - "@twig.loader"
             - "@request_stack"
-            - "@zikula_permissions_module.api.permission"
             - "@zikula_extensions_module.api.variable"
             - "@zikula_core.common.theme.pagevars"
             - "@mu_image_module.controller_helper"
+            - "@mu_image_module.permission_helper"
+            - "@session"
     
     mu_image_module.workflow_helper:
         class: MU\ImageModule\Helper\WorkflowHelper
@@ -115,7 +126,7 @@ services:
             - "@translator.default"
             - "@workflow.registry"
             - "@logger"
-            - "@zikula_permissions_module.api.permission"
             - "@zikula_users_module.current_user"
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.listentries_helper"
+            - "@mu_image_module.permission_helper"

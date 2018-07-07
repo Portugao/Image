@@ -18,8 +18,8 @@ use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\Core\Doctrine\EntityAccess;
 use Zikula\Core\LinkContainer\LinkContainerInterface;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
-use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use MU\ImageModule\Helper\ControllerHelper;
+use MU\ImageModule\Helper\PermissionHelper;
 
 /**
  * This is the link container service implementation class.
@@ -34,11 +34,6 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
     protected $router;
 
     /**
-     * @var PermissionApiInterface
-     */
-    protected $permissionApi;
-
-    /**
      * @var VariableApiInterface
      */
     protected $variableApi;
@@ -49,26 +44,31 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
     protected $controllerHelper;
 
     /**
+     * @var PermissionHelper
+     */
+    protected $permissionHelper;
+
+    /**
      * LinkContainer constructor.
      *
-     * @param TranslatorInterface    $translator       Translator service instance
-     * @param Routerinterface        $router           Router service instance
-     * @param PermissionApiInterface $permissionApi    PermissionApi service instance
-     * @param VariableApiInterface   $variableApi      VariableApi service instance
-     * @param ControllerHelper       $controllerHelper ControllerHelper service instance
+     * @param TranslatorInterface  $translator       Translator service instance
+     * @param Routerinterface      $router           Router service instance
+     * @param VariableApiInterface $variableApi      VariableApi service instance
+     * @param ControllerHelper     $controllerHelper ControllerHelper service instance
+     * @param PermissionHelper     $permissionHelper PermissionHelper service instance
      */
     public function __construct(
         TranslatorInterface $translator,
         RouterInterface $router,
-        PermissionApiInterface $permissionApi,
         VariableApiInterface $variableApi,
-        ControllerHelper $controllerHelper
+        ControllerHelper $controllerHelper,
+        PermissionHelper $permissionHelper
     ) {
         $this->setTranslator($translator);
         $this->router = $router;
-        $this->permissionApi = $permissionApi;
         $this->variableApi = $variableApi;
         $this->controllerHelper = $controllerHelper;
+        $this->permissionHelper = $permissionHelper;
     }
 
     /**
@@ -99,13 +99,13 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
         $links = [];
 
         if (LinkContainerInterface::TYPE_ACCOUNT == $type) {
-            if (!$this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_OVERVIEW)) {
+            if (!$this->permissionHelper->hasPermission(ACCESS_OVERVIEW)) {
                 return $links;
             }
 
             if (true === $this->variableApi->get('MUImageModule', 'linkOwnAlbumsOnAccountPage', true)) {
                 $objectType = 'album';
-                if ($this->permissionApi->hasPermission($this->getBundleName() . ':' . ucfirst($objectType) . ':', '::', ACCESS_READ)) {
+                if ($this->permissionHelper->hasComponentPermission($objectType, ACCESS_READ)) {
                     $links[] = [
                         'url' => $this->router->generate('muimagemodule_' . strtolower($objectType) . '_view', ['own' => 1]),
                         'text' => $this->__('My albums', 'muimagemodule'),
@@ -116,7 +116,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
 
             if (true === $this->variableApi->get('MUImageModule', 'linkOwnPicturesOnAccountPage', true)) {
                 $objectType = 'picture';
-                if ($this->permissionApi->hasPermission($this->getBundleName() . ':' . ucfirst($objectType) . ':', '::', ACCESS_READ)) {
+                if ($this->permissionHelper->hasComponentPermission($objectType, ACCESS_READ)) {
                     $links[] = [
                         'url' => $this->router->generate('muimagemodule_' . strtolower($objectType) . '_view', ['own' => 1]),
                         'text' => $this->__('My pictures', 'muimagemodule'),
@@ -127,7 +127,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
 
             if (true === $this->variableApi->get('MUImageModule', 'linkOwnAvatarsOnAccountPage', true)) {
                 $objectType = 'avatar';
-                if ($this->permissionApi->hasPermission($this->getBundleName() . ':' . ucfirst($objectType) . ':', '::', ACCESS_READ)) {
+                if ($this->permissionHelper->hasComponentPermission($objectType, ACCESS_READ)) {
                     $links[] = [
                         'url' => $this->router->generate('muimagemodule_' . strtolower($objectType) . '_view', ['own' => 1]),
                         'text' => $this->__('My avatars', 'muimagemodule'),
@@ -136,7 +136,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
                 }
             }
 
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
+            if ($this->permissionHelper->hasPermission(ACCESS_ADMIN)) {
                 $links[] = [
                     'url' => $this->router->generate('muimagemodule_album_adminindex'),
                     'text' => $this->__('Image Backend', 'muimagemodule'),
@@ -150,7 +150,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
 
         $routeArea = LinkContainerInterface::TYPE_ADMIN == $type ? 'admin' : '';
         if (LinkContainerInterface::TYPE_ADMIN == $type) {
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_READ)) {
+            if ($this->permissionHelper->hasPermission(ACCESS_READ)) {
                 $links[] = [
                     'url' => $this->router->generate('muimagemodule_album_index'),
                     'text' => $this->__('Frontend', 'muimagemodule'),
@@ -159,7 +159,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
                 ];
             }
         } else {
-            if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
+            if ($this->permissionHelper->hasPermission(ACCESS_ADMIN)) {
                 $links[] = [
                     'url' => $this->router->generate('muimagemodule_album_adminindex'),
                     'text' => $this->__('Backend', 'muimagemodule'),
@@ -170,7 +170,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
         }
         
         if (in_array('album', $allowedObjectTypes)
-            && $this->permissionApi->hasPermission($this->getBundleName() . ':Album:', '::', $permLevel)) {
+            && $this->permissionHelper->hasComponentPermission('album', $permLevel)) {
             $links[] = [
                 'url' => $this->router->generate('muimagemodule_album_' . $routeArea . 'view'),
                 'text' => $this->__('Albums', 'muimagemodule'),
@@ -178,7 +178,7 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
             ];
         }
         if (in_array('picture', $allowedObjectTypes)
-            && $this->permissionApi->hasPermission($this->getBundleName() . ':Picture:', '::', $permLevel)) {
+            && $this->permissionHelper->hasComponentPermission('picture', $permLevel)) {
             $links[] = [
                 'url' => $this->router->generate('muimagemodule_picture_' . $routeArea . 'view'),
                 'text' => $this->__('Pictures', 'muimagemodule'),
@@ -186,17 +186,17 @@ abstract class AbstractLinkContainer implements LinkContainerInterface
             ];
         }
         if (in_array('avatar', $allowedObjectTypes)
-            && $this->permissionApi->hasPermission($this->getBundleName() . ':Avatar:', '::', $permLevel)) {
+            && $this->permissionHelper->hasComponentPermission('avatar', $permLevel)) {
             $links[] = [
                 'url' => $this->router->generate('muimagemodule_avatar_' . $routeArea . 'view'),
                 'text' => $this->__('Avatars', 'muimagemodule'),
                 'title' => $this->__('Avatars list', 'muimagemodule')
             ];
         }
-        if ($routeArea == 'admin' && $this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
+        if ($routeArea == 'admin' && $this->permissionHelper->hasPermission(ACCESS_ADMIN)) {
             $links[] = [
                 'url' => $this->router->generate('muimagemodule_config_config'),
-                'text' => $this->__('Configuration', 'muimagemodule'),
+                'text' => $this->__('Settings', 'muimagemodule'),
                 'title' => $this->__('Manage settings for this application', 'muimagemodule'),
                 'icon' => 'wrench'
             ];

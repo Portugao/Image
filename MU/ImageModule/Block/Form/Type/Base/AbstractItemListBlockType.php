@@ -85,7 +85,6 @@ abstract class AbstractItemListBlockType extends AbstractType
                 $this->__('Pictures') => 'picture',
                 $this->__('Avatars') => 'avatar'
             ],
-            'choices_as_values' => true,
             'multiple' => false,
             'expanded' => false
         ]);
@@ -137,7 +136,6 @@ abstract class AbstractItemListBlockType extends AbstractType
                 $this->__('Newest') => 'newest',
                 $this->__('Default') => 'default'
             ],
-            'choices_as_values' => true,
             'multiple' => false,
             'expanded' => false
         ]);
@@ -180,7 +178,6 @@ abstract class AbstractItemListBlockType extends AbstractType
                     $this->__('With description') => 'itemlist_display_description.html.twig',
                     $this->__('Custom template') => 'custom'
                 ],
-                'choices_as_values' => true,
                 'multiple' => false,
                 'expanded' => false
             ])

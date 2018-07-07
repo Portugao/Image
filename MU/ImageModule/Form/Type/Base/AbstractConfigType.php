@@ -265,7 +265,6 @@ abstract class AbstractConfigType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -287,7 +286,6 @@ abstract class AbstractConfigType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -304,11 +302,11 @@ abstract class AbstractConfigType extends AbstractType
         
         $builder->add('endingOfUrl', TextType::class, [
             'label' => $this->__('Ending of url') . ':',
-            'empty_data' => '',
+            'empty_data' => 'html',
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the ending of url')
+                'title' => $this->__('Enter the ending of url.')
             ],
             'required' => false,
         ]);
@@ -380,7 +378,7 @@ abstract class AbstractConfigType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the file size for pictures')
+                'title' => $this->__('Enter the file size for pictures.')
             ],
             'required' => true,
         ]);
@@ -391,7 +389,7 @@ abstract class AbstractConfigType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the file size for avatars')
+                'title' => $this->__('Enter the file size for avatars.')
             ],
             'required' => true,
         ]);
@@ -402,7 +400,7 @@ abstract class AbstractConfigType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the file sizes for zip')
+                'title' => $this->__('Enter the file sizes for zip.')
             ],
             'required' => true,
         ]);
@@ -645,7 +643,7 @@ abstract class AbstractConfigType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the number width and name of avatars')
+                'title' => $this->__('Enter the number width and name of avatars.')
             ],
             'required' => false,
         ]);
@@ -675,7 +673,7 @@ abstract class AbstractConfigType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the watermark')
+                'title' => $this->__('Enter the watermark.')
             ],
             'required' => false,
         ]);
@@ -922,7 +920,6 @@ abstract class AbstractConfigType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -1107,7 +1104,6 @@ abstract class AbstractConfigType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -1253,7 +1249,6 @@ abstract class AbstractConfigType extends AbstractType
             'required' => false,
             'placeholder' => $this->__('Choose an option'),
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => true,
             'expanded' => false

@@ -56,7 +56,6 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'module.content.gettypes'                 => ['contentGetTypes', 5],
             'module.scribite.editorhelpers'           => ['getEditorHelpers', 5],
             'moduleplugin.ckeditor.externalplugins'   => ['getCKEditorPlugins', 5],
             'moduleplugin.quill.externalplugins'      => ['getQuillPlugins', 5],
@@ -65,46 +64,6 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
         ];
     }
     
-    
-    /**
-     * Listener for the `module.content.gettypes` event.
-     *
-     * This event occurs when the Content module is 'searching' for Content plugins.
-     * The subject is an instance of Content_Types.
-     * You can register custom content types as well as custom layout types.
-     *
-     * You can access general data available in the event.
-     *
-     * The event name:
-     *     `echo 'Event: ' . $event->getName();`
-     *
-     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
-     * If a listener should only be active for the master request,
-     * be sure to check that at the beginning of your method.
-     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-     *         return;
-     *     }`
-     *
-     * The kernel instance handling the current request:
-     *     `$kernel = $event->getKernel();`
-     *
-     * The currently handled request:
-     *     `$request = $event->getRequest();`
-     *
-     * @param \Zikula_Event $event The event instance
-     */
-    public function contentGetTypes(\Zikula_Event $event)
-    {
-        // intended is using the add() method to add a plugin like below
-        $types = $event->getSubject();
-        
-        
-        // plugin for showing a single item
-        $types->add('MUImageModule_ContentType_Item');
-        
-        // plugin for showing a list of multiple items
-        $types->add('MUImageModule_ContentType_ItemList');
-    }
     
     /**
      * Listener for the `module.scribite.editorhelpers` event.
@@ -116,19 +75,6 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
      *
      * The event name:
      *     `echo 'Event: ' . $event->getName();`
-     *
-     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
-     * If a listener should only be active for the master request,
-     * be sure to check that at the beginning of your method.
-     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-     *         return;
-     *     }`
-     *
-     * The kernel instance handling the current request:
-     *     `$kernel = $event->getKernel();`
-     *
-     * The currently handled request:
-     *     `$request = $event->getRequest();`
      *
      * @param EditorHelperEvent $event The event instance
      */
@@ -168,19 +114,6 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
      * The event name:
      *     `echo 'Event: ' . $event->getName();`
      *
-     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
-     * If a listener should only be active for the master request,
-     * be sure to check that at the beginning of your method.
-     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-     *         return;
-     *     }`
-     *
-     * The kernel instance handling the current request:
-     *     `$kernel = $event->getKernel();`
-     *
-     * The currently handled request:
-     *     `$request = $event->getRequest();`
-     *
      * @param GenericEvent $event The event instance
      */
     public function getCKEditorPlugins(GenericEvent $event)
@@ -203,19 +136,6 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
      * The event name:
      *     `echo 'Event: ' . $event->getName();`
      *
-     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
-     * If a listener should only be active for the master request,
-     * be sure to check that at the beginning of your method.
-     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-     *         return;
-     *     }`
-     *
-     * The kernel instance handling the current request:
-     *     `$kernel = $event->getKernel();`
-     *
-     * The currently handled request:
-     *     `$request = $event->getRequest();`
-     *
      * @param GenericEvent $event The event instance
      */
     public function getQuillPlugins(GenericEvent $event)
@@ -236,19 +156,6 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
      * The event name:
      *     `echo 'Event: ' . $event->getName();`
      *
-     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
-     * If a listener should only be active for the master request,
-     * be sure to check that at the beginning of your method.
-     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-     *         return;
-     *     }`
-     *
-     * The kernel instance handling the current request:
-     *     `$kernel = $event->getKernel();`
-     *
-     * The currently handled request:
-     *     `$request = $event->getRequest();`
-     *
      * @param GenericEvent $event The event instance
      */
     public function getSummernotePlugins(GenericEvent $event)
@@ -268,19 +175,6 @@ abstract class AbstractThirdPartyListener implements EventSubscriberInterface
      *
      * The event name:
      *     `echo 'Event: ' . $event->getName();`
-     *
-     * The current request's type: `MASTER_REQUEST` or `SUB_REQUEST`.
-     * If a listener should only be active for the master request,
-     * be sure to check that at the beginning of your method.
-     *     `if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
-     *         return;
-     *     }`
-     *
-     * The kernel instance handling the current request:
-     *     `$kernel = $event->getKernel();`
-     *
-     * The currently handled request:
-     *     `$request = $event->getRequest();`
      *
      * @param GenericEvent $event The event instance
      */

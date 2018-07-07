@@ -99,10 +99,10 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('pictureEntriesPerPageInBackend', 10);
         $this->setVar('avatarEntriesPerPageInBackend', 10);
         $this->setVar('countImageView', false);
-        $this->setVar('groupForCommonAlbums', '');
-        $this->setVar('kindOfShowSubAlbums', '');
+        $this->setVar('groupForCommonAlbums', 'None');
+        $this->setVar('kindOfShowSubAlbums', 'Panel');
         $this->setVar('breadcrumbsInFrontend', false);
-        $this->setVar('endingOfUrl', '');
+        $this->setVar('endingOfUrl', 'html');
         $this->setVar('watermark', '');
         $this->setVar('bottomOfImage', 0);
         $this->setVar('leftSide', 0);
@@ -136,8 +136,6 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
         $this->setVar('thumbnailHeightAvatarAvatarUploadEdit', 180);
         $this->setVar('enabledFinderTypes', 'album###picture###avatar');
     
-        $categoryRegistryIdsPerEntity = [];
-    
         // add default entry for category registry (property named Main)
         $categoryHelper = new \MU\ImageModule\Helper\CategoryHelper(
             $this->container->get('translator.default'),
@@ -148,37 +146,40 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
             $this->container->get('zikula_categories_module.api.category_permission')
         );
         $categoryGlobal = $this->container->get('zikula_categories_module.category_repository')->findOneBy(['name' => 'Global']);
-        $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
+        if ($categoryGlobal) {
+            $categoryRegistryIdsPerEntity = [];
+            $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
     
-        $registry = new CategoryRegistryEntity();
-        $registry->setModname('MUImageModule');
-        $registry->setEntityname('AlbumEntity');
-        $registry->setProperty($categoryHelper->getPrimaryProperty('Album'));
-        $registry->setCategory($categoryGlobal);
+            $registry = new CategoryRegistryEntity();
+            $registry->setModname('MUImageModule');
+            $registry->setEntityname('AlbumEntity');
+            $registry->setProperty($categoryHelper->getPrimaryProperty('Album'));
+            $registry->setCategory($categoryGlobal);
     
-        try {
-            $entityManager->persist($registry);
-            $entityManager->flush();
-        } catch (\Exception $exception) {
-            $this->addFlash('error', $this->__f('Error! Could not create a category registry for the %entity% entity.', ['%entity%' => 'album']));
-            $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'albums', 'errorMessage' => $exception->getMessage()]);
+            try {
+                $entityManager->persist($registry);
+                $entityManager->flush();
+            } catch (\Exception $exception) {
+                $this->addFlash('warning', $this->__f('Error! Could not create a category registry for the %entity% entity. If you want to use categorisation, register at least one registry in the Categories administration.', ['%entity%' => 'album']));
+                $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'albums', 'errorMessage' => $exception->getMessage()]);
+            }
+            $categoryRegistryIdsPerEntity['album'] = $registry->getId();
+    
+            $registry = new CategoryRegistryEntity();
+            $registry->setModname('MUImageModule');
+            $registry->setEntityname('AvatarEntity');
+            $registry->setProperty($categoryHelper->getPrimaryProperty('Avatar'));
+            $registry->setCategory($categoryGlobal);
+    
+            try {
+                $entityManager->persist($registry);
+                $entityManager->flush();
+            } catch (\Exception $exception) {
+                $this->addFlash('warning', $this->__f('Error! Could not create a category registry for the %entity% entity. If you want to use categorisation, register at least one registry in the Categories administration.', ['%entity%' => 'avatar']));
+                $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'avatars', 'errorMessage' => $exception->getMessage()]);
+            }
+            $categoryRegistryIdsPerEntity['avatar'] = $registry->getId();
         }
-        $categoryRegistryIdsPerEntity['album'] = $registry->getId();
-    
-        $registry = new CategoryRegistryEntity();
-        $registry->setModname('MUImageModule');
-        $registry->setEntityname('AvatarEntity');
-        $registry->setProperty($categoryHelper->getPrimaryProperty('Avatar'));
-        $registry->setCategory($categoryGlobal);
-    
-        try {
-            $entityManager->persist($registry);
-            $entityManager->flush();
-        } catch (\Exception $exception) {
-            $this->addFlash('error', $this->__f('Error! Could not create a category registry for the %entity% entity.', ['%entity%' => 'avatar']));
-            $logger->error('{app}: User {user} could not create a category registry for {entities} during installation. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'user' => $userName, 'entities' => 'avatars', 'errorMessage' => $exception->getMessage()]);
-        }
-        $categoryRegistryIdsPerEntity['avatar'] = $registry->getId();
     
         // initialisation successful
         return true;
@@ -215,189 +216,10 @@ abstract class AbstractImageModuleInstaller extends AbstractExtensionInstaller
                     return false;
                 }
         }
-    
-        // Note there are several helpers available for making migrating your extension from Zikula 1.3 to 1.4 easier.
-        // The following convenience methods are each responsible for a single aspect of upgrading to Zikula 1.4.x.
-    
-        // here is a possible usage example
-        // of course 1.2.3 should match the number you used for the last stable 1.3.x module version.
-        /* if ($oldVersion = '1.2.3') {
-            // rename module for all modvars
-            $this->updateModVarsTo14();
-            
-            // update extension information about this app
-            $this->updateExtensionInfoFor14();
-            
-            // rename existing permission rules
-            $this->renamePermissionsFor14();
-            
-            // rename existing category registries
-            $this->renameCategoryRegistriesFor14();
-            
-            // rename all tables
-            $this->renameTablesFor14();
-            
-            // remove event handler definitions from database
-            $this->dropEventHandlersFromDatabase();
-            
-            // update module name in the hook tables
-            $this->updateHookNamesFor14();
-            
-            // update module name in the workflows table
-            $this->updateWorkflowsFor14();
-        } * /
-    
-        // remove obsolete persisted hooks from the database
-        //$this->hookApi->uninstallSubscriberHooks($this->bundle->getMetaData());
     */
     
         // update successful
         return true;
-    }
-    
-    /**
-     * Renames the module name for variables in the module_vars table.
-     */
-    protected function updateModVarsTo14()
-    {
-        $conn = $this->getConnection();
-        $conn->update('module_vars', ['modname' => 'MUImageModule'], ['modname' => 'Image']);
-    }
-    
-    /**
-     * Renames this application in the core's extensions table.
-     */
-    protected function updateExtensionInfoFor14()
-    {
-        $conn = $this->getConnection();
-        $conn->update('modules', ['name' => 'MUImageModule', 'directory' => 'MU/ImageModule'], ['name' => 'Image']);
-    }
-    
-    /**
-     * Renames all permission rules stored for this app.
-     */
-    protected function renamePermissionsFor14()
-    {
-        $conn = $this->getConnection();
-        $componentLength = strlen('Image') + 1;
-    
-        $conn->executeQuery("
-            UPDATE group_perms
-            SET component = CONCAT('MUImageModule', SUBSTRING(component, $componentLength))
-            WHERE component LIKE 'Image%';
-        ");
-    }
-    
-    /**
-     * Renames all category registries stored for this app.
-     */
-    protected function renameCategoryRegistriesFor14()
-    {
-        $conn = $this->getConnection();
-        $componentLength = strlen('Image') + 1;
-    
-        $conn->executeQuery("
-            UPDATE categories_registry
-            SET modname = CONCAT('MUImageModule', SUBSTRING(modname, $componentLength))
-            WHERE modname LIKE 'Image%';
-        ");
-    }
-    
-    /**
-     * Renames all (existing) tables of this app.
-     */
-    protected function renameTablesFor14()
-    {
-        $conn = $this->getConnection();
-    
-        $oldPrefix = 'image_';
-        $oldPrefixLength = strlen($oldPrefix);
-        $newPrefix = 'mu_image_';
-    
-        $sm = $conn->getSchemaManager();
-        $tables = $sm->listTables();
-        foreach ($tables as $table) {
-            $tableName = $table->getName();
-            if (substr($tableName, 0, $oldPrefixLength) != $oldPrefix) {
-                continue;
-            }
-    
-            $newTableName = str_replace($oldPrefix, $newPrefix, $tableName);
-    
-            $conn->executeQuery("
-                RENAME TABLE $tableName
-                TO $newTableName;
-            ");
-        }
-    }
-    
-    /**
-     * Removes event handlers from database as they are now described by service definitions and managed by dependency injection.
-     */
-    protected function dropEventHandlersFromDatabase()
-    {
-        \EventUtil::unregisterPersistentModuleHandlers('Image');
-    }
-    
-    /**
-     * Updates the module name in the hook tables.
-     */
-    protected function updateHookNamesFor14()
-    {
-        $conn = $this->getConnection();
-    
-        $conn->update('hook_area', ['owner' => 'MUImageModule'], ['owner' => 'Image']);
-    
-        $componentLength = strlen('subscriber.image') + 1;
-        $conn->executeQuery("
-            UPDATE hook_area
-            SET areaname = CONCAT('subscriber.muimagemodule', SUBSTRING(areaname, $componentLength))
-            WHERE areaname LIKE 'subscriber.image%';
-        ");
-    
-        $conn->update('hook_binding', ['sowner' => 'MUImageModule'], ['sowner' => 'Image']);
-    
-        $conn->update('hook_runtime', ['sowner' => 'MUImageModule'], ['sowner' => 'Image']);
-    
-        $componentLength = strlen('image') + 1;
-        $conn->executeQuery("
-            UPDATE hook_runtime
-            SET eventname = CONCAT('muimagemodule', SUBSTRING(eventname, $componentLength))
-            WHERE eventname LIKE 'image%';
-        ");
-    
-        $conn->update('hook_subscriber', ['owner' => 'MUImageModule'], ['owner' => 'Image']);
-    
-        $componentLength = strlen('image') + 1;
-        $conn->executeQuery("
-            UPDATE hook_subscriber
-            SET eventname = CONCAT('muimagemodule', SUBSTRING(eventname, $componentLength))
-            WHERE eventname LIKE 'image%';
-        ");
-    }
-    
-    /**
-     * Updates the module name in the workflows table.
-     */
-    protected function updateWorkflowsFor14()
-    {
-        $conn = $this->getConnection();
-        $conn->update('workflows', ['module' => 'MUImageModule'], ['module' => 'Image']);
-        $conn->update('workflows', ['obj_table' => 'AlbumEntity'], ['module' => 'MUImageModule', 'obj_table' => 'album']);
-        $conn->update('workflows', ['obj_table' => 'PictureEntity'], ['module' => 'MUImageModule', 'obj_table' => 'picture']);
-        $conn->update('workflows', ['obj_table' => 'AvatarEntity'], ['module' => 'MUImageModule', 'obj_table' => 'avatar']);
-    }
-    
-    /**
-     * Returns connection to the database.
-     *
-     * @return Connection the current connection
-     */
-    protected function getConnection()
-    {
-        $entityManager = $this->container->get('doctrine.orm.default_entity_manager');
-    
-        return $entityManager->getConnection();
     }
     
     /**

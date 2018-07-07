@@ -61,15 +61,13 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
         $routeArea = $options['area'];
         $context = $options['context'];
 
-        $permissionApi = $this->container->get('zikula_permissions_module.api.permission');
+        $permissionHelper = $this->container->get('mu_image_module.permission_helper');
         $currentUserApi = $this->container->get('zikula_users_module.current_user');
         $entityDisplayHelper = $this->container->get('mu_image_module.entity_display_helper');
         $menu->setChildrenAttribute('class', 'list-inline item-actions');
 
         $currentUserId = $currentUserApi->isLoggedIn() ? $currentUserApi->get('uid') : UsersConstant::USER_ID_ANONYMOUS;
         if ($entity instanceof AlbumEntity) {
-            $component = 'MUImageModule:Album:';
-            $instance = $entity->getKey() . '::';
             $routePrefix = 'muimagemodule_album_';
             $isOwner = $currentUserId > 0 && null !== $entity->getCreatedBy() && $currentUserId == $entity->getCreatedBy()->getUid();
         
@@ -92,7 +90,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
                 $menu[$title]->setAttribute('icon', 'fa fa-eye');
             }
-            if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
+            if ($permissionHelper->mayEdit($entity)) {
                 $title = $this->__('Edit', 'muimagemodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'edit',
@@ -108,7 +106,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', $this->__('Reuse for new album', 'muimagemodule'));
                 $menu[$title]->setAttribute('icon', 'fa fa-files-o');
             }
-            if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
+            if ($permissionHelper->mayDelete($entity)) {
                 $title = $this->__('Delete', 'muimagemodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'delete',
@@ -128,9 +126,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             
             // more actions for adding new related items
             
-            $relatedComponent = 'MUImageModule:Album:';
-            $relatedInstance = $entity->getKey() . '::';
-            if ($isOwner || $permissionApi->hasPermission($relatedComponent, $relatedInstance, ACCESS_EDIT)) {
+            if ($isOwner || $permissionHelper->hasComponentPermission('album', ACCESS_EDIT)) {
                 $title = $this->__('Create albums', 'muimagemodule');
                 $menu->addChild($title, [
                     'route' => 'muimagemodule_album_' . $routeArea . 'edit',
@@ -140,9 +136,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setAttribute('icon', 'fa fa-plus');
             }
             
-            $relatedComponent = 'MUImageModule:Picture:';
-            $relatedInstance = $entity->getKey() . '::';
-            if ($isOwner || $permissionApi->hasPermission($relatedComponent, $relatedInstance, ACCESS_EDIT)) {
+            if ($isOwner || $permissionHelper->hasComponentPermission('picture', ACCESS_EDIT)) {
                 $title = $this->__('Create pictures', 'muimagemodule');
                 $menu->addChild($title, [
                     'route' => 'muimagemodule_picture_' . $routeArea . 'edit',
@@ -153,8 +147,6 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             }
         }
         if ($entity instanceof PictureEntity) {
-            $component = 'MUImageModule:Picture:';
-            $instance = $entity->getKey() . '::';
             $routePrefix = 'muimagemodule_picture_';
             $isOwner = $currentUserId > 0 && null !== $entity->getCreatedBy() && $currentUserId == $entity->getCreatedBy()->getUid();
         
@@ -177,7 +169,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
                 $menu[$title]->setAttribute('icon', 'fa fa-eye');
             }
-            if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
+            if ($permissionHelper->mayEdit($entity)) {
                 $title = $this->__('Edit', 'muimagemodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'edit',
@@ -193,7 +185,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', $this->__('Reuse for new picture', 'muimagemodule'));
                 $menu[$title]->setAttribute('icon', 'fa fa-files-o');
             }
-            if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
+            if ($permissionHelper->mayDelete($entity)) {
                 $title = $this->__('Delete', 'muimagemodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'delete',
@@ -212,8 +204,6 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
             }
         }
         if ($entity instanceof AvatarEntity) {
-            $component = 'MUImageModule:Avatar:';
-            $instance = $entity->getKey() . '::';
             $routePrefix = 'muimagemodule_avatar_';
             $isOwner = $currentUserId > 0 && null !== $entity->getCreatedBy() && $currentUserId == $entity->getCreatedBy()->getUid();
         
@@ -236,7 +226,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', str_replace('"', '', $entityDisplayHelper->getFormattedTitle($entity)));
                 $menu[$title]->setAttribute('icon', 'fa fa-eye');
             }
-            if ($permissionApi->hasPermission($component, $instance, ACCESS_EDIT)) {
+            if ($permissionHelper->mayEdit($entity)) {
                 $title = $this->__('Edit', 'muimagemodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'edit',
@@ -252,7 +242,7 @@ class AbstractItemActionsMenu implements ContainerAwareInterface
                 $menu[$title]->setLinkAttribute('title', $this->__('Reuse for new avatar', 'muimagemodule'));
                 $menu[$title]->setAttribute('icon', 'fa fa-files-o');
             }
-            if ($permissionApi->hasPermission($component, $instance, ACCESS_DELETE)) {
+            if ($permissionHelper->mayDelete($entity)) {
                 $title = $this->__('Delete', 'muimagemodule');
                 $menu->addChild($title, [
                     'route' => $routePrefix . $routeArea . 'delete',

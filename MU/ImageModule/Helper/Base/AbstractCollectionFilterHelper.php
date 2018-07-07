@@ -21,6 +21,7 @@ use MU\ImageModule\Entity\AlbumEntity;
 use MU\ImageModule\Entity\PictureEntity;
 use MU\ImageModule\Entity\AvatarEntity;
 use MU\ImageModule\Helper\CategoryHelper;
+use MU\ImageModule\Helper\PermissionHelper;
 
 /**
  * Entity collection filter helper base class.
@@ -31,6 +32,11 @@ abstract class AbstractCollectionFilterHelper
      * @var Request
      */
     protected $request;
+
+    /**
+     * @var PermissionHelper
+     */
+    protected $permissionHelper;
 
     /**
      * @var CurrentUserApiInterface
@@ -50,18 +56,21 @@ abstract class AbstractCollectionFilterHelper
     /**
      * CollectionFilterHelper constructor.
      *
-     * @param RequestStack   $requestStack        RequestStack service instance
+     * @param RequestStack $requestStack RequestStack service instance
+     * @param PermissionHelper $permissionHelper PermissionHelper service instance
      * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
-     * @param CategoryHelper $categoryHelper      CategoryHelper service instance
-     * @param boolean        $showOnlyOwnEntries  Fallback value to determine whether only own entries should be selected or not
+     * @param CategoryHelper $categoryHelper CategoryHelper service instance
+     * @param boolean $showOnlyOwnEntries Fallback value to determine whether only own entries should be selected or not
      */
     public function __construct(
         RequestStack $requestStack,
+        PermissionHelper $permissionHelper,
         CurrentUserApiInterface $currentUserApi,
         CategoryHelper $categoryHelper,
         $showOnlyOwnEntries
     ) {
         $this->request = $requestStack->getCurrentRequest();
+        $this->permissionHelper = $permissionHelper;
         $this->currentUserApi = $currentUserApi;
         $this->categoryHelper = $categoryHelper;
         $this->showOnlyOwnEntries = $showOnlyOwnEntries;

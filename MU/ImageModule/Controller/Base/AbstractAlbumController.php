@@ -64,18 +64,21 @@ abstract class AbstractAlbumController extends AbstractController
      */
     protected function indexInternal(Request $request, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'album';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_OVERVIEW;
-        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_image_module.permission_helper');
+        if (!$permissionHelper->hasComponentPermission($objectType, $permLevel)) {
             throw new AccessDeniedException();
         }
+        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
         
         return $this->redirectToRoute('muimagemodule_album_' . $templateParameters['routeArea'] . 'view');
     }
+    
     /**
      * This action provides an item list overview in the admin area.
      *
@@ -117,12 +120,14 @@ abstract class AbstractAlbumController extends AbstractController
      */
     protected function viewInternal(Request $request, $sort, $sortdir, $pos, $num, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'album';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
-        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_image_module.permission_helper');
+        if (!$permissionHelper->hasComponentPermission($objectType, $permLevel)) {
             throw new AccessDeniedException();
         }
+        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
@@ -156,7 +161,7 @@ abstract class AbstractAlbumController extends AbstractController
         // filter by permissions
         $filteredEntities = [];
         foreach ($templateParameters['items'] as $album) {
-            if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', $album->getKey() . '::', $permLevel)) {
+            if (!$permissionHelper->hasEntityPermission($album, $permLevel)) {
                 continue;
             }
             $filteredEntities[] = $album;
@@ -172,6 +177,7 @@ abstract class AbstractAlbumController extends AbstractController
         // fetch and return the appropriate template
         return $viewHelper->processTemplate($objectType, 'view', $templateParameters);
     }
+    
     /**
      * This action provides a item detail view in the admin area.
      *
@@ -209,15 +215,11 @@ abstract class AbstractAlbumController extends AbstractController
      */
     protected function displayInternal(Request $request, AlbumEntity $album, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'album';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
-        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
-            throw new AccessDeniedException();
-        }
-        // create identifier for permission check
-        $instanceId = $album->getKey();
-        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', $instanceId . '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_image_module.permission_helper');
+        if (!$permissionHelper->hasEntityPermission($album, $permLevel)) {
             throw new AccessDeniedException();
         }
         
@@ -241,6 +243,7 @@ abstract class AbstractAlbumController extends AbstractController
         
         return $response;
     }
+    
     /**
      * This action provides a handling of edit requests in the admin area.
      *
@@ -278,12 +281,14 @@ abstract class AbstractAlbumController extends AbstractController
      */
     protected function editInternal(Request $request, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'album';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_EDIT;
-        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_image_module.permission_helper');
+        if (!$permissionHelper->hasComponentPermission($objectType, $permLevel)) {
             throw new AccessDeniedException();
         }
+        
         $templateParameters = [
             'routeArea' => $isAdmin ? 'admin' : ''
         ];
@@ -303,6 +308,7 @@ abstract class AbstractAlbumController extends AbstractController
         // fetch and return the appropriate template
         return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'edit', $templateParameters);
     }
+    
     /**
      * This action provides a handling of simple delete requests in the admin area.
      *
@@ -342,12 +348,14 @@ abstract class AbstractAlbumController extends AbstractController
      */
     protected function deleteInternal(Request $request, AlbumEntity $album, $isAdmin = false)
     {
-        // parameter specifying which type of objects we are treating
         $objectType = 'album';
+        // permission check
         $permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_DELETE;
-        if (!$this->hasPermission('MUImageModule:' . ucfirst($objectType) . ':', '::', $permLevel)) {
+        $permissionHelper = $this->get('mu_image_module.permission_helper');
+        if (!$permissionHelper->hasEntityPermission($album, $permLevel)) {
             throw new AccessDeniedException();
         }
+        
         $logger = $this->get('logger');
         $logArgs = ['app' => 'MUImageModule', 'user' => $this->get('zikula_users_module.current_user')->get('uname'), 'entity' => 'album', 'id' => $album->getKey()];
         
@@ -430,7 +438,7 @@ abstract class AbstractAlbumController extends AbstractController
         // fetch and return the appropriate template
         return $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'delete', $templateParameters);
     }
-
+    
     /**
      * Process status changes for multiple items.
      *
@@ -547,4 +555,5 @@ abstract class AbstractAlbumController extends AbstractController
         
         return $this->redirectToRoute('muimagemodule_album_' . ($isAdmin ? 'admin' : '') . 'index');
     }
+    
 }

@@ -133,7 +133,7 @@ abstract class AbstractAvatarType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the title of the avatar')
+                'title' => $this->__('Enter the title of the avatar.')
             ],
             'required' => true,
         ]);
@@ -149,7 +149,7 @@ abstract class AbstractAvatarType extends AbstractType
             'attr' => [
                 'maxlength' => 2000,
                 'class' => '',
-                'title' => $this->__('Enter the description of the avatar')
+                'title' => $this->__('Enter the description of the avatar.')
             ],
             'required' => false,
         ]);
@@ -159,7 +159,7 @@ abstract class AbstractAvatarType extends AbstractType
             'help' => [$this->__f('Note: the image must have a width between %min% and %max% pixels.', ['%min%' => 200, '%max%' => 600]), $this->__f('Note: the image must have a height between %min% and %max% pixels.', ['%min%' => 200, '%max%' => 600]), $this->__('Note: only square dimension (no portrait or landscape) is allowed.')],
             'attr' => [
                 'class' => ' validate-upload',
-                'title' => $this->__('Enter the avatar upload of the avatar')
+                'title' => $this->__('Enter the avatar upload of the avatar.')
             ],
             'required' => true && $options['mode'] == 'create',
             'entity' => $options['entity'],
@@ -188,7 +188,6 @@ abstract class AbstractAvatarType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => true,
             'expanded' => false
@@ -235,25 +234,25 @@ abstract class AbstractAvatarType extends AbstractType
             'label' => $this->__('Creator') . ':',
             'attr' => [
                 'maxlength' => 11,
-                'title' => $this->__('Here you can choose a user which will be set as creator')
+                'title' => $this->__('Here you can choose a user which will be set as creator.')
             ],
             'empty_data' => 0,
             'required' => false,
-            'help' => $this->__('Here you can choose a user which will be set as creator')
+            'help' => $this->__('Here you can choose a user which will be set as creator.')
         ]);
         $builder->add('moderationSpecificCreationDate', DateTimeType::class, [
             'mapped' => false,
             'label' => $this->__('Creation date') . ':',
             'attr' => [
                 'class' => '',
-                'title' => $this->__('Here you can choose a custom creation date')
+                'title' => $this->__('Here you can choose a custom creation date.')
             ],
             'empty_data' => '',
             'required' => false,
             'with_seconds' => true,
             'date_widget' => 'single_text',
             'time_widget' => 'single_text',
-            'help' => $this->__('Here you can choose a custom creation date')
+            'help' => $this->__('Here you can choose a custom creation date.')
         ]);
     }
 

@@ -137,7 +137,6 @@ abstract class AbstractPictureFinderType extends AbstractType
                 $this->__('Image with relative link to the picture') => 8,
                 $this->__('Image with absolute url to the picture') => 9
             ],
-            'choices_as_values' => true,
             'multiple' => false,
             'expanded' => false
         ]);
@@ -166,7 +165,6 @@ abstract class AbstractPictureFinderType extends AbstractType
                     $this->__('Update date') => 'updatedDate',
                     $this->__('Updater') => 'updatedBy'
                 ],
-                'choices_as_values' => true,
                 'multiple' => false,
                 'expanded' => false
             ])
@@ -177,7 +175,6 @@ abstract class AbstractPictureFinderType extends AbstractType
                     $this->__('Ascending') => 'asc',
                     $this->__('Descending') => 'desc'
                 ],
-                'choices_as_values' => true,
                 'multiple' => false,
                 'expanded' => false
             ])
@@ -207,7 +204,6 @@ abstract class AbstractPictureFinderType extends AbstractType
                 $this->__('50') => 50,
                 $this->__('100') => 100
             ],
-            'choices_as_values' => true,
             'multiple' => false,
             'expanded' => false
         ]);

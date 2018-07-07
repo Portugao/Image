@@ -175,7 +175,7 @@ class ControllerHelper extends AbstractControllerHelper
 	{
 		$where = '';
 		$pictures = '';
-		$where = 'tbl.album = ' . \DataUtil::formatForStore($albumId);
+		$where = 'tbl.album = ' . $albumId;
 		$where .= ' AND ';
 		$where .= 'tbl.albumImage = 1';
 		$pictureRespository = $this->entityFactory->getRepository('picture');

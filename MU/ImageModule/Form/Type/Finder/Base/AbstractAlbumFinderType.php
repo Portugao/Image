@@ -141,7 +141,6 @@ abstract class AbstractAlbumFinderType extends AbstractType
                 $this->__('Absolute url to the album') => 2,
                 $this->__('ID of album') => 3
             ],
-            'choices_as_values' => true,
             'multiple' => false,
             'expanded' => false
         ]);
@@ -173,7 +172,6 @@ abstract class AbstractAlbumFinderType extends AbstractType
                     $this->__('Update date') => 'updatedDate',
                     $this->__('Updater') => 'updatedBy'
                 ],
-                'choices_as_values' => true,
                 'multiple' => false,
                 'expanded' => false
             ])
@@ -184,7 +182,6 @@ abstract class AbstractAlbumFinderType extends AbstractType
                     $this->__('Ascending') => 'asc',
                     $this->__('Descending') => 'desc'
                 ],
-                'choices_as_values' => true,
                 'multiple' => false,
                 'expanded' => false
             ])
@@ -214,7 +211,6 @@ abstract class AbstractAlbumFinderType extends AbstractType
                 $this->__('50') => 50,
                 $this->__('100') => 100
             ],
-            'choices_as_values' => true,
             'multiple' => false,
             'expanded' => false
         ]);

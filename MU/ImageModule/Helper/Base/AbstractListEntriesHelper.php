@@ -449,7 +449,7 @@ abstract class AbstractListEntriesHelper
             'text'    => $this->__('None'),
             'title'   => '',
             'image'   => '',
-            'default' => false
+            'default' => true
         ];
     
         return $states;
@@ -475,7 +475,7 @@ abstract class AbstractListEntriesHelper
             'text'    => $this->__('Panel'),
             'title'   => '',
             'image'   => '',
-            'default' => false
+            'default' => true
         ];
     
         return $states;

@@ -147,9 +147,7 @@ abstract class AbstractItemListBlock extends AbstractBlockHandler
         $templating = $this->get('templating');
     
         $templateOptions = [
-            'ContentType/' . $templateForObjectType,
             'Block/' . $templateForObjectType,
-            'ContentType/' . $templateFile,
             'Block/' . $templateFile,
             'Block/itemlist.html.twig'
         ];

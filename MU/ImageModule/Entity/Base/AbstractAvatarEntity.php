@@ -103,7 +103,8 @@ abstract class AbstractAvatarEntity extends EntityAccess
      *    minHeight = 200,
      *    maxHeight = 600,
      *    allowLandscape = false,
-     *    allowPortrait = false
+     *    allowPortrait = false,
+     *    detectCorrupted = true
      * )
      * @var string $avatarUpload
      */

@@ -86,7 +86,7 @@ abstract class AbstractEditHandler extends EditHandler
             'entity' => $this->entityRef,
             'mode' => $this->templateParameters['mode'],
             'actions' => $this->templateParameters['actions'],
-            'has_moderate_permission' => $this->permissionApi->hasPermission($this->permissionComponent, $this->idValue . '::', ACCESS_ADMIN),
+            'has_moderate_permission' => $this->permissionHelper->hasEntityPermission($this->entityRef, ACCESS_ADMIN),
         ];
     
         return $options;
@@ -178,9 +178,6 @@ abstract class AbstractEditHandler extends EditHandler
         if ($this->templateParameters['mode'] == 'create' && $this->form->has('submitrepeat') && $this->form->get('submitrepeat')->isClicked()) {
             $args['commandName'] = 'submit';
             $this->repeatCreateAction = true;
-        }
-        if ($this->form->get('cancel')->isClicked()) {
-            $args['commandName'] = 'cancel';
         }
     
         return new RedirectResponse($this->getRedirectUrl($args), 302);

@@ -96,7 +96,6 @@ abstract class AbstractItemBlockType extends AbstractType
                 $this->__('Pictures') => 'picture',
                 $this->__('Avatars') => 'avatar'
             ],
-            'choices_as_values' => true,
             'multiple' => false,
             'expanded' => false
         ]);
@@ -124,7 +123,6 @@ abstract class AbstractItemBlockType extends AbstractType
             'multiple' => false,
             'expanded' => false,
             'choices' => $choices,
-            'choices_as_values' => true,
             'required' => true,
             'label' => $this->__('Entry to display') . ':'
         ]);

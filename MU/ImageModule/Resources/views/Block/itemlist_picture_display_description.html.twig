@@ -1,0 +1,13 @@
+{# Purpose of this template: Display pictures within an external context #}
+<dl>
+    {% for picture in items %}
+        <dt>{{ picture|muimagemodule_formattedTitle }}</dt>
+        {% if picture.description %}
+            <dd>{{ picture.description|striptags|truncate(200, true, '&hellip;') }}</dd>
+        {% endif %}
+        <dd><a href="{{ path('muimagemodule_picture_display', {'id': picture.getId()}) }}" title="{{ __('Read more')|e('html_attr') }}">{{ __('Read more') }}</a>
+        </dd>
+    {% else %}
+        <dt>{{ __('No entries found.') }}</dt>
+    {% endfor %}
+</dl>

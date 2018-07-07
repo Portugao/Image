@@ -99,7 +99,8 @@ abstract class AbstractPictureEntity extends EntityAccess implements Translatabl
      *    minWidth = 400,
      *    maxWidth = 1000,
      *    minHeight = 400,
-     *    maxHeight = 1000
+     *    maxHeight = 1000,
+     *    detectCorrupted = true
      * )
      * @var string $imageUpload
      */

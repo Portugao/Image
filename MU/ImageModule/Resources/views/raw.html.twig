@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('jquery-ui/themes/base/jquery-ui.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bootstrap-jqueryui/bootstrap-jqueryui.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('bundles/core/css/core.css') }}" />
     <link rel="stylesheet" href="{{ zasset('@MUImageModule:css/style.css') }}" />
     <link rel="stylesheet" href="{{ zasset('@MUImageModule:css/custom.css') }}" />
@@ -24,13 +23,12 @@
     <script>
         /* <![CDATA[ */
             if (typeof(Zikula) == 'undefined') {var Zikula = {};}
-            Zikula.Config = {'entrypoint': '{{ getModVar('ZConfig', 'entrypoint', 'index.php') }}', 'baseURL': '{{ app.request.getSchemeAndHttpHost() ~ '/' }}', 'baseURI': '{{ app.request.getBasePath() }}'};
+            Zikula.Config = {'entrypoint': '{{ getSystemVar('entrypoint', 'index.php') }}', 'baseURL': '{{ app.request.schemeAndHttpHost ~ '/' }}', 'baseURI': '{{ app.request.basePath }}'};
         /* ]]> */
     </script>
     <script src="{{ asset('jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('bootstrap-jqueryui/bootstrap-jqueryui.min.js') }}"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ asset('js/fos_js_routes.js') }}"></script>
     <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>

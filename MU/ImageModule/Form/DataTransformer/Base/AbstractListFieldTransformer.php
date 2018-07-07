@@ -50,6 +50,10 @@ abstract class AbstractListFieldTransformer implements DataTransformerInterface
             return [];
         }
 
+        if (is_array($values)) {
+            return $values;
+        }
+
         return $this->listHelper->extractMultiList($values);
     }
 

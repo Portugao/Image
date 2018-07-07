@@ -14,8 +14,17 @@ namespace MU\ImageModule\Helper;
 
 use MU\ImageModule\Helper\Base\AbstractViewHelper;
 
+use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Twig_Environment;
 use Zikula\Core\Response\PlainResponse;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
+use Zikula\ThemeModule\Engine\ParameterBag;
+use MU\ImageModule\Helper\ControllerHelper;
+use MU\ImageModule\Helper\PermissionHelper;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 /**
@@ -23,6 +32,45 @@ use Zikula\Core\Response\PlainResponse;
  */
 class ViewHelper extends AbstractViewHelper
 {
+    /**
+     * @var SessionInterface
+     */
+    protected $session;
+    
+    /**
+     * ViewHelper constructor.
+     *
+     * @param Twig_Environment
+     * @param FilesystemLoader     $twigLoader       Twig loader service instance
+     * @param RequestStack         $requestStack     RequestStack service instance
+     * @param VariableApiInterface $variableApi      VariableApi service instance
+     * @param ParameterBag         $pageVars         ParameterBag for theme page variables
+     * @param ControllerHelper     $controllerHelper ControllerHelper service instance
+     * @param PermissionHelper     $permissionHelper PermissionHelper service instance
+     * @param SessionInterface     $session          SessionInterface service instance 
+     *
+     * @return void
+     */
+    public function __construct(
+    		Twig_Environment $twig,
+    		FilesystemLoader $twigLoader,
+    		RequestStack $requestStack,
+    		VariableApiInterface $variableApi,
+    		ParameterBag $pageVars,
+    		ControllerHelper $controllerHelper,
+    		PermissionHelper $permissionHelper,
+    		SessionInterface $session
+    		) {
+    			$this->twig = $twig;
+    			$this->twigLoader = $twigLoader;
+    			$this->request = $requestStack->getCurrentRequest();
+    			$this->variableApi = $variableApi;
+    			$this->pageVars = $pageVars;
+    			$this->controllerHelper = $controllerHelper;
+    			$this->permissionHelper = $permissionHelper;
+    			$this->session = $session;
+    }
+	
     /**
      * Helper method for managing view templates.
      *
@@ -44,7 +92,8 @@ class ViewHelper extends AbstractViewHelper
         if ($type == 'album' && $func == 'display') {
         	$slideshow = $this->variableApi->get('MUImageModule', 'slideshow1');
         	    $templateParameters['slideshow1'] = $slideshow;
-        	    $useTemplate = \SessionUtil::getVar('useTemplate', '');
+        	    $useTemplate = $this->session->get('useTemplate', '');
+        	    //$useTemplate = \SessionUtil::getVar('useTemplate', '');
         	    if ($useTemplate == '') {
         		    $templateParameters['useTemplate'] = '1';
         	    } else {

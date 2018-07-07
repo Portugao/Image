@@ -7,7 +7,7 @@
     {{ templateTitle|notifyFilters('muimagemodule.filter_hooks.pictures.filter')|safeHtml }}
     {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: picture, area: routeArea, context: 'display'}) %}
     <div class="dropdown">
-        <a id="itemActions{{ picture.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
+        <a id="itemActions{{ picture.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
         {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}
     </div>
 {% endblock %}

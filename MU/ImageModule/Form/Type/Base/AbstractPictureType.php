@@ -168,7 +168,7 @@ abstract class AbstractPictureType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the title of the picture')
+                'title' => $this->__('Enter the title of the picture.')
             ],
             'required' => false,
         ]);
@@ -180,7 +180,7 @@ abstract class AbstractPictureType extends AbstractType
             'attr' => [
                 'maxlength' => 2000,
                 'class' => '',
-                'title' => $this->__('Enter the description of the picture')
+                'title' => $this->__('Enter the description of the picture.')
             ],
             'required' => false,
         ]);
@@ -209,7 +209,7 @@ abstract class AbstractPictureType extends AbstractType
             'help' => [$this->__f('Note: the image must have a width between %min% and %max% pixels.', ['%min%' => 400, '%max%' => 1000]), $this->__f('Note: the image must have a height between %min% and %max% pixels.', ['%min%' => 400, '%max%' => 1000])],
             'attr' => [
                 'class' => ' validate-upload',
-                'title' => $this->__('Enter the image upload of the picture')
+                'title' => $this->__('Enter the image upload of the picture.')
             ],
             'required' => true && $options['mode'] == 'create',
             'entity' => $options['entity'],
@@ -273,11 +273,11 @@ abstract class AbstractPictureType extends AbstractType
             'multiple' => false,
             'expanded' => false,
             'query_builder' => $queryBuilder,
-            'placeholder' => $this->__('Please choose an option'),
+            'placeholder' => $this->__('Please choose an option.'),
             'required' => false,
             'label' => $this->__('Album'),
             'attr' => [
-                'title' => $this->__('Choose the album')
+                'title' => $this->__('Choose the album.')
             ]
         ]);
     }
@@ -302,25 +302,25 @@ abstract class AbstractPictureType extends AbstractType
             'label' => $this->__('Creator') . ':',
             'attr' => [
                 'maxlength' => 11,
-                'title' => $this->__('Here you can choose a user which will be set as creator')
+                'title' => $this->__('Here you can choose a user which will be set as creator.')
             ],
             'empty_data' => 0,
             'required' => false,
-            'help' => $this->__('Here you can choose a user which will be set as creator')
+            'help' => $this->__('Here you can choose a user which will be set as creator.')
         ]);
         $builder->add('moderationSpecificCreationDate', DateTimeType::class, [
             'mapped' => false,
             'label' => $this->__('Creation date') . ':',
             'attr' => [
                 'class' => '',
-                'title' => $this->__('Here you can choose a custom creation date')
+                'title' => $this->__('Here you can choose a custom creation date.')
             ],
             'empty_data' => '',
             'required' => false,
             'with_seconds' => true,
             'date_widget' => 'single_text',
             'time_widget' => 'single_text',
-            'help' => $this->__('Here you can choose a custom creation date')
+            'help' => $this->__('Here you can choose a custom creation date.')
         ]);
     }
 

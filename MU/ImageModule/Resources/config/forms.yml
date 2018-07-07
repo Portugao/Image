@@ -9,8 +9,7 @@ services:
             - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.picturequicknav:
         class: MU\ImageModule\Form\Type\QuickNavigation\PictureQuickNavType
@@ -20,8 +19,7 @@ services:
             - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.avatarquicknav:
         class: MU\ImageModule\Form\Type\QuickNavigation\AvatarQuickNavType
@@ -29,8 +27,7 @@ services:
             - "@translator.default"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.handler.common:
         abstract: true
@@ -41,13 +38,15 @@ services:
             - "@request_stack"
             - "@router"
             - "@logger"
-            - "@zikula_permissions_module.api.permission"
+            - "@zikula_extensions_module.api.variable"
             - "@zikula_users_module.current_user"
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.controller_helper"
             - "@mu_image_module.model_helper"
+            - "@mu_image_module.permission_helper"
             - "@mu_image_module.workflow_helper"
             - "@mu_image_module.hook_helper"
+            - "@mu_image_module.translatable_helper"
             - "@mu_image_module.feature_activation_helper"
         calls:
             - [setLockingApi, ["@?zikula_pagelock_module.api.locking"]]
@@ -64,10 +63,11 @@ services:
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.collection_filter_helper"
             - "@mu_image_module.entity_display_helper"
+            - "@zikula_extensions_module.api.variable"
+            - "@mu_image_module.translatable_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.handler.picture:
         class: MU\ImageModule\Form\Handler\Picture\EditHandler
@@ -84,11 +84,12 @@ services:
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.collection_filter_helper"
             - "@mu_image_module.entity_display_helper"
+            - "@zikula_extensions_module.api.variable"
+            - "@mu_image_module.translatable_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
-            
+        tags: ['form.type']
+        
     mu_image_module.form.type.multipicture:
         class: MU\ImageModule\Form\Type\MultiPictureType
         arguments:
@@ -98,8 +99,7 @@ services:
             - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.handler.avatar:
         class: MU\ImageModule\Form\Handler\Avatar\EditHandler
@@ -112,15 +112,13 @@ services:
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.block.itemlist:
         class: MU\ImageModule\Block\Form\Type\ItemListBlockType
         arguments:
             - "@translator.default"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.block.item:
         class: MU\ImageModule\Block\Form\Type\ItemBlockType
@@ -128,37 +126,32 @@ services:
             - "@translator.default"
             - "@mu_image_module.entity_factory"
             - "@mu_image_module.entity_display_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.albumfinder:
         class: MU\ImageModule\Form\Type\Finder\AlbumFinderType
         arguments:
             - "@translator.default"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.picturefinder:
         class: MU\ImageModule\Form\Type\Finder\PictureFinderType
         arguments:
             - "@translator.default"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.avatarfinder:
         class: MU\ImageModule\Form\Type\Finder\AvatarFinderType
         arguments:
             - "@translator.default"
             - "@mu_image_module.feature_activation_helper"
-        tags:
-            - { name: form.type }
+        tags: ['form.type']
     
     mu_image_module.form.type.config:
         class: MU\ImageModule\Form\Type\ConfigType
         arguments:
             - "@translator.default"
-            - "@=service('zikula_extensions_module.api.variable').getAll('MUImageModule')"
-        tags:
-            - { name: form.type }
+            - "@mu_image_module.listentries_helper"
+        tags: ['form.type']

@@ -22,10 +22,17 @@ use Doctrine\ORM\Mapping as ORM;
  * This is the concrete translation class for album entities.
  *
  * @ORM\Entity(repositoryClass="MU\ImageModule\Entity\Repository\AlbumTranslationRepository")
- * @ORM\Table(name="mu_image_album_translation",
+ * @ORM\Table(
+ *     name="mu_image_album_translation",
+ *     options={"row_format":"DYNAMIC"},
  *     indexes={
  *         @ORM\Index(name="translations_lookup_idx", columns={
  *             "locale", "object_class", "foreign_key"
+ *         })
+ *     },
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="lookup_unique_idx", columns={
+ *             "locale", "object_class", "field", "foreign_key"
  *         })
  *     }
  * )

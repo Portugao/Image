@@ -78,7 +78,7 @@ abstract class AbstractAppSettings
     /**
      * Do you want to support sub albums?
      Do you want to limit creating of albums, subalbums or pictures?
-     Do you want set a group for common albums?
+     Do you want to set a group for common albums?
      Do you want to give the option to rule the access to albums?
      Do you want to use Categories for Albums or Avatars?
      
@@ -135,14 +135,14 @@ abstract class AbstractAppSettings
      * @ImageAssert\ListEntry(entityName="appSettings", propertyName="groupForCommonAlbums", multiple=false)
      * @var string $groupForCommonAlbums
      */
-    protected $groupForCommonAlbums = '';
+    protected $groupForCommonAlbums = 'None';
     
     /**
      * @Assert\NotBlank()
      * @ImageAssert\ListEntry(entityName="appSettings", propertyName="kindOfShowSubAlbums", multiple=false)
      * @var string $kindOfShowSubAlbums
      */
-    protected $kindOfShowSubAlbums = '';
+    protected $kindOfShowSubAlbums = 'Panel';
     
     /**
      * @Assert\NotNull()
@@ -156,7 +156,7 @@ abstract class AbstractAppSettings
      * @Assert\Length(min="0", max="255")
      * @var string $endingOfUrl
      */
-    protected $endingOfUrl = '';
+    protected $endingOfUrl = 'html';
     
     /**
      * How many main albums may a user create
@@ -317,6 +317,8 @@ abstract class AbstractAppSettings
     
     /**
      * @Assert\Type(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\NotEqualTo(value=0)
      * @Assert\LessThan(value=100000000000)
      * @var integer $slide1Interval
      */
@@ -324,6 +326,8 @@ abstract class AbstractAppSettings
     
     /**
      * @Assert\Type(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\NotEqualTo(value=0)
      * @Assert\LessThan(value=100000000000)
      * @var integer $slide1Speed
      */

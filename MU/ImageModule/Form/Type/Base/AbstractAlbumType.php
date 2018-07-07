@@ -152,7 +152,7 @@ abstract class AbstractAlbumType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => 'validate-unique',
-                'title' => $this->__('Enter the title of the album')
+                'title' => $this->__('Enter the title of the album.')
             ],
             'required' => true,
         ]);
@@ -164,7 +164,7 @@ abstract class AbstractAlbumType extends AbstractType
             'attr' => [
                 'maxlength' => 2000,
                 'class' => '',
-                'title' => $this->__('Enter the description of the album')
+                'title' => $this->__('Enter the description of the album.')
             ],
             'required' => false,
         ]);
@@ -188,7 +188,6 @@ abstract class AbstractAlbumType extends AbstractType
             }
         }
         
-        
         $listEntries = $this->listHelper->getEntries('album', 'albumAccess');
         $choices = [];
         $choiceAttributes = [];
@@ -205,7 +204,6 @@ abstract class AbstractAlbumType extends AbstractType
             ],
             'required' => true,
             'choices' => $choices,
-            'choices_as_values' => true,
             'choice_attr' => $choiceAttributes,
             'multiple' => false,
             'expanded' => false
@@ -217,7 +215,7 @@ abstract class AbstractAlbumType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the password access of the album')
+                'title' => $this->__('Enter the password access of the album.')
             ],
             'required' => false,
         ]);
@@ -228,7 +226,7 @@ abstract class AbstractAlbumType extends AbstractType
             'attr' => [
                 'maxlength' => 255,
                 'class' => '',
-                'title' => $this->__('Enter the my friends of the album')
+                'title' => $this->__('Enter the my friends of the album.')
             ],
             'required' => false,
         ]);
@@ -300,11 +298,11 @@ abstract class AbstractAlbumType extends AbstractType
             'multiple' => false,
             'expanded' => false,
             'query_builder' => $queryBuilder,
-            'placeholder' => $this->__('Please choose an option'),
+            'placeholder' => $this->__('Please choose an option.'),
             'required' => false,
             'label' => $this->__('Album'),
             'attr' => [
-                'title' => $this->__('Choose the album')
+                'title' => $this->__('Choose the album.')
             ]
         ]);
     }
@@ -329,25 +327,25 @@ abstract class AbstractAlbumType extends AbstractType
             'label' => $this->__('Creator') . ':',
             'attr' => [
                 'maxlength' => 11,
-                'title' => $this->__('Here you can choose a user which will be set as creator')
+                'title' => $this->__('Here you can choose a user which will be set as creator.')
             ],
             'empty_data' => 0,
             'required' => false,
-            'help' => $this->__('Here you can choose a user which will be set as creator')
+            'help' => $this->__('Here you can choose a user which will be set as creator.')
         ]);
         $builder->add('moderationSpecificCreationDate', DateTimeType::class, [
             'mapped' => false,
             'label' => $this->__('Creation date') . ':',
             'attr' => [
                 'class' => '',
-                'title' => $this->__('Here you can choose a custom creation date')
+                'title' => $this->__('Here you can choose a custom creation date.')
             ],
             'empty_data' => '',
             'required' => false,
             'with_seconds' => true,
             'date_widget' => 'single_text',
             'time_widget' => 'single_text',
-            'help' => $this->__('Here you can choose a custom creation date')
+            'help' => $this->__('Here you can choose a custom creation date.')
         ]);
     }
 

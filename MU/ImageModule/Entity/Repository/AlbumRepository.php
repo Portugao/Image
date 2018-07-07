@@ -31,12 +31,12 @@ class AlbumRepository extends AbstractAlbumRepository
      *
      * @return QueryBuilder Query builder instance to be further processed
      */
-    public function genericBaseQuery($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
+    /*public function genericBaseQuery($where = '', $orderBy = '', $useJoins = true, $slimMode = false)
     {
         $qb = parent::genericBaseQuery($where, $orderBy, $useJoins, $slimMode);
         
         $qb->andWhere('tbl.album is NULL');
     
         return $qb;
-    }
+    }*/
 }

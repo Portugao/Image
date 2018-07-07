@@ -179,20 +179,7 @@ abstract class AbstractControllerHelper
         $repository = $this->entityFactory->getRepository($objectType);
     
         // parameter for used sorting field
-        $sort = $request->query->get('sort', '');
-        if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
-            $sort = $repository->getDefaultSortingField();
-            $request->query->set('sort', $sort);
-            // set default sorting in route parameters (e.g. for the pager)
-            $routeParams = $request->attributes->get('_route_params');
-            $routeParams['sort'] = $sort;
-            $request->attributes->set('_route_params', $routeParams);
-        }
-        $sortdir = $request->query->get('sortdir', 'ASC');
-        if (false !== strpos($sort, ' DESC')) {
-            $sort = str_replace(' DESC', '', $sort);
-            $sortdir = 'desc';
-        }
+        list ($sort, $sortdir) = $this->determineDefaultViewSorting($objectType);
         $templateParameters['sort'] = $sort;
         $templateParameters['sortdir'] = strtolower($sortdir);
     
@@ -245,8 +232,6 @@ abstract class AbstractControllerHelper
             unset($urlParameters[$parameterName]);
         }
     
-        $sort = $sortableColumns->getSortColumn()->getName();
-        $sortdir = $sortableColumns->getSortDirection();
         $sortableColumns->setAdditionalUrlParameters($urlParameters);
     
         $where = '';
@@ -282,7 +267,45 @@ abstract class AbstractControllerHelper
     
         $templateParameters['canBeCreated'] = $this->modelHelper->canBeCreated($objectType);
     
+        $request->query->set('sort', $sort);
+        $request->query->set('sortdir', $sortdir);
+        // set current sorting in route parameters (e.g. for the pager)
+        $routeParams = $request->attributes->get('_route_params');
+        $routeParams['sort'] = $sort;
+        $routeParams['sortdir'] = $sortdir;
+        $request->attributes->set('_route_params', $routeParams);
+    
         return $templateParameters;
+    }
+    
+    /**
+     * Determines the default sorting criteria.
+     *
+     * @param string $objectType Name of treated entity type
+     *
+     * @return array with sort field and sort direction
+     */
+    protected function determineDefaultViewSorting($objectType)
+    {
+        $request = $this->request;
+        $repository = $this->entityFactory->getRepository($objectType);
+    
+        $sort = $request->query->get('sort', '');
+        if (empty($sort) || !in_array($sort, $repository->getAllowedSortingFields())) {
+            $sort = $repository->getDefaultSortingField();
+            $request->query->set('sort', $sort);
+            // set default sorting in route parameters (e.g. for the pager)
+            $routeParams = $request->attributes->get('_route_params');
+            $routeParams['sort'] = $sort;
+            $request->attributes->set('_route_params', $routeParams);
+        }
+        $sortdir = $request->query->get('sortdir', 'ASC');
+        if (false !== strpos($sort, ' DESC')) {
+            $sort = str_replace(' DESC', '', $sort);
+            $sortdir = 'desc';
+        }
+    
+        return [$sort, $sortdir];
     }
 
     /**

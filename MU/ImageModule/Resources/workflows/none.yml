@@ -1,4 +1,4 @@
-workflow:
+framework:
     workflows:
         muimagemodule_none:
             type: state_machine
@@ -16,18 +16,15 @@ workflow:
                 - trashed
                 - deleted
             transitions:
-                recoverapproved:
-                    from: trashed
-                    to: approved
-                submit:
-                    from: initial
-                    to: approved
-                updateapproved:
-                    from: approved
-                    to: approved
-                trashapproved:
-                    from: approved
-                    to: trashed
-                delete:
-                    from: [approved, trashed]
-                    to: deleted
+                - name: submit
+                  from: initial
+                  to: approved
+                - name: update
+                  from: approved
+                  to: approved
+                - name: trash
+                  from: approved
+                  to: trashed
+                - name: delete
+                  from: [approved, trashed]
+                  to: deleted

@@ -15,6 +15,7 @@ namespace MU\ImageModule\Entity\Factory\Base;
 use MU\ImageModule\Entity\AlbumEntity;
 use MU\ImageModule\Entity\PictureEntity;
 use MU\ImageModule\Entity\AvatarEntity;
+use MU\ImageModule\Helper\PermissionHelper;
 use MU\ImageModule\Helper\ListEntriesHelper;
 
 /**
@@ -23,6 +24,11 @@ use MU\ImageModule\Helper\ListEntriesHelper;
 abstract class AbstractEntityInitialiser
 {
     /**
+     * @var PermissionHelper
+     */
+    protected $permissionHelper;
+
+    /**
      * @var ListEntriesHelper Helper service for managing list entries
      */
     protected $listEntriesHelper;
@@ -30,10 +36,14 @@ abstract class AbstractEntityInitialiser
     /**
      * EntityInitialiser constructor.
      *
+     * @param PermissionHelper $permissionHelper PermissionHelper service instance
      * @param ListEntriesHelper $listEntriesHelper Helper service for managing list entries
      */
-    public function __construct(ListEntriesHelper $listEntriesHelper)
-    {
+    public function __construct(
+        PermissionHelper $permissionHelper,
+        ListEntriesHelper $listEntriesHelper
+    ) {
+        $this->permissionHelper = $permissionHelper;
         $this->listEntriesHelper = $listEntriesHelper;
     }
 
@@ -54,7 +64,6 @@ abstract class AbstractEntityInitialiser
             }
         }
 
-
         return $entity;
     }
 
@@ -67,7 +76,6 @@ abstract class AbstractEntityInitialiser
      */
     public function initPicture(PictureEntity $entity)
     {
-
         return $entity;
     }
 
@@ -88,7 +96,6 @@ abstract class AbstractEntityInitialiser
             }
         }
         $entity->setSupportedModules(implode('###', $items));
-
 
         return $entity;
     }
