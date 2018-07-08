@@ -6,7 +6,6 @@
     <div class="container">
         <div class="zikula-bootstrap-tab-container">
             <ul class="nav nav-tabs">
-            {% set activatedObjectTypes = getModVar('MUImageModule', 'enabledFinderTypes', []) %}
             {% if 'album' in activatedObjectTypes %}
                 <li{{ objectType == 'album' ? ' class="active"' : '' }}><a href="{{ path('muimagemodule_external_finder', {objectType: 'album', editor: editorName}) }}" title="{{ __('Search and select album') }}">{{ __('Albums') }}</a></li>
             {% endif %}

@@ -17,19 +17,18 @@ use MU\ImageModule\Controller\Base\AbstractAlbumController;
 use RuntimeException;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 use MU\ImageModule\Entity\AlbumEntity;
-use MU\ImageModule\Helper\FeatureActivationHelper;
 
 /**
  * Album controller class providing navigation and interaction functionality.
  */
 class AlbumController extends AbstractAlbumController
-{	
+{
     /**
      * @inheritDoc
      *
@@ -298,94 +297,6 @@ class AlbumController extends AbstractAlbumController
     public function handleSelectedEntriesAction(Request $request)
     {
         return parent::handleSelectedEntriesAction($request);
-    }
-    
-    /**
-     * @inheritDoc
-     *
-     * @Route("/album/template/{id}.{_format}",
-     *        requirements = {"id" = "\d+", "_format" = "html"},
-     *        defaults = {"id" = "0", "_format" = "html"},
-     *        methods = {"GET", "POST"}
-     * )
-     *
-     * @param Request $request Current request instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if album to be edited isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
-     */
-    public function templateAction(Request $request)
-    {
-        return $this->templateFrontend($request);
-    }
-    
-    /**
-     * This method includes the common implementation code for adminIndex() and index().
-     */
-    protected function templateFrontend(Request $request, $isAdmin = false)
-    {
-    	$objectType = 'album';
-    	// permission check
-    	$permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_OVERVIEW;
-    	$permissionHelper = $this->get('mu_image_module.permission_helper');
-    	if (!$permissionHelper->hasComponentPermission($objectType, $permLevel)) {
-    		throw new AccessDeniedException();
-    	}
-    
-    	$templateParameters = [
-    			'routeArea' => $isAdmin ? 'admin' : ''
-    	];
-    	
-     	// we get the album id from request
-    	$albumId = $request->request->get('albumid');
-    	$template = $request->request->get('template');
-
-    	$session = $request->getSession();
-    	$session->set('templateForAlbums', $template);
-    
-    	return $this->redirectToRoute('muimagemodule_album_' . $templateParameters['routeArea'] . 'display', array('id' => $albumId));
-    }
-    
-    /**
-     * This method includes the common implementation code for adminDisplay() and display().
-     */
-    protected function displayInternal(Request $request, AlbumEntity $album, $isAdmin = false)
-    {
-    	$objectType = 'album';
-    	// permission check
-    	$permLevel = $isAdmin ? ACCESS_ADMIN : ACCESS_READ;
-    	$permissionHelper = $this->get('mu_image_module.permission_helper');
-    	if (!$permissionHelper->hasEntityPermission($album, $permLevel)) {
-    		throw new AccessDeniedException();
-    	}
-    
-    	$featureActivationHelper = $this->get('mu_image_module.feature_activation_helper');
-    	if ($featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $objectType)) {
-    		if (!$this->get('mu_image_module.category_helper')->hasPermission($album)) {
-    			throw new AccessDeniedException();
-    		}
-    	}
-    
-    	$templateParameters = [
-    			'routeArea' => $isAdmin ? 'admin' : '',
-    			$objectType => $album
-    	];
-    
-    	$controllerHelper = $this->get('mu_image_module.controller_helper');
-    	$templateParameters = $controllerHelper->processDisplayActionParameters($objectType, $templateParameters, true);
-    	
-    	$session = $request->getSession();
-    	$useTemplate = $session->get('templateForAlbums');
-
-    	$templateParameters['useTemplate'] = $useTemplate;
-    
-    	// fetch and return the appropriate template
-    	$response = $this->get('mu_image_module.view_helper')->processTemplate($objectType, 'display', $templateParameters);
-    
-    	return $response;
     }
     
     // feel free to add your own controller methods here
