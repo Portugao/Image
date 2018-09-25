@@ -23,10 +23,10 @@
         #}
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <copyright>Copyright (c) {{ 'now'|date('Y') }}, {{ app.request.schemeAndHttpHost }}</copyright>
-        <webMaster>{{ pageGetVar('adminmail') }}</webMaster>
+        <webMaster>{{ getSystemVar('adminmail') }}</webMaster>
 {% for avatar in items %}
     <item>
-        <title><![CDATA[{% if avatar.updatedDate|default %}{{ avatar.updatedDate|localizeddate('medium', 'short') }} - {% endif %}{{ avatar|muimagemodule_formattedTitle }}]]></title>
+        <title><![CDATA[{{ avatar|muimagemodule_formattedTitle }}]]></title>
         <link>{{ url('muimagemodule_avatar_' ~ routeArea ~ 'display', {'id': avatar.getId()}) }}</link>
         <guid>{{ url('muimagemodule_avatar_' ~ routeArea ~ 'display', {'id': avatar.getId()}) }}</guid>
         {% if avatar.createdBy|default and avatar.createdBy.getUid() > 0 %}

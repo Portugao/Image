@@ -61,9 +61,9 @@
             </div>
         </fieldset>
     {% elseif displayMode == 'choices' %}
-        {{ form_row(attribute(form, alias)) }}
+        {{ form_row(attribute(form, alias), {required: mandatory}) }}
     {% elseif displayMode == 'autocomplete' %}
-        {{ form_row(attribute(form, alias)) }}
+        {{ form_row(attribute(form, alias), {required: mandatory}) }}
         <div class="muimagemodule-relation-leftside">
             {{ include(
                 '@MUImageModule/Album/includeSelectItemListOne.html.twig',

@@ -5,7 +5,7 @@
 {% block title %}
     {% set templateTitle = avatar|muimagemodule_formattedTitle|default(__('Avatar')) %}
     {{ templateTitle }}
-    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: avatar, area: routeArea, context: 'display'}) %}
+    {% set itemActions = knp_menu_get('mUImageMenuItemActions', [], {entity: avatar, area: routeArea, context: 'display'}) %}
     <div class="dropdown">
         <a id="itemActions{{ avatar.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
         {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}

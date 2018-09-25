@@ -5,7 +5,7 @@
 {% block title %}
     {% set templateTitle = picture|muimagemodule_formattedTitle|default(__('Picture')) %}
     {{ templateTitle|notifyFilters('muimagemodule.filter_hooks.pictures.filter')|safeHtml }}
-    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: picture, area: routeArea, context: 'display'}) %}
+    {% set itemActions = knp_menu_get('mUImageMenuItemActions', [], {entity: picture, area: routeArea, context: 'display'}) %}
     <div class="dropdown">
         <a id="itemActions{{ picture.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> {{ __('Actions') }} <span class="caret"></span></a>
         {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}
@@ -43,15 +43,13 @@
             <dt>{{ __('Image view') }}</dt>
             <dd>{{ picture.imageView }}</dd>
         {% endif %}
-        {% if picture.albumImage is not empty %}
-            <dt>{{ __('Album image') }}</dt>
-            <dd>{% if picture.albumImage %}
-                <i class="fa fa-check" title="{{ __('Yes') }}"></i>
-            {% else %}
-                <i class="fa fa-times" title="{{ __('No') }}"></i>
-            {% endif %}
-            </dd>
+        <dt>{{ __('Album image') }}</dt>
+        <dd>{% if picture.albumImage %}
+            <i class="fa fa-check text-success" title="{{ __('Yes') }}"></i>
+        {% else %}
+            <i class="fa fa-times text-danger" title="{{ __('No') }}"></i>
         {% endif %}
+        </dd>
         {% if picture.pos is not empty %}
             <dt>{{ __('Pos') }}</dt>
             <dd>{{ picture.pos }}</dd>
@@ -78,10 +76,12 @@
 </div>
 {% endblock %}
 {% block display_hooks %}
-    {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', id=picture.getKey(), urlObject=currentUrlObject, outputAsArray=true) %}
-    {% if hooks is iterable and hooks|length > 0 %}
-        {% for area, hook in hooks %}
-            <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
-        {% endfor %}
+    {% if picture.supportsHookSubscribers() %}
+        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.display_view', id=picture.getKey(), urlObject=currentUrlObject, outputAsArray=true) %}
+        {% if hooks is iterable and hooks|length > 0 %}
+            {% for area, hook in hooks %}
+                <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 {% endblock %}

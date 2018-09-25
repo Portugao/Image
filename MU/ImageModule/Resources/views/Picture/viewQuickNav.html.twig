@@ -1,5 +1,5 @@
 {# purpose of this template: pictures view filter form #}
-{% if hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
+{% if permissionHelper.hasComponentPermission('picture', constant('ACCESS_EDIT')) %}
     {% form_theme quickNavForm with [
         'bootstrap_3_layout.html.twig'
     ] %}

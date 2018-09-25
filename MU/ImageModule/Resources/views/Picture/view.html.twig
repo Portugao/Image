@@ -65,7 +65,7 @@
                     </td>
                 {% endif %}
                 <td id="itemActions{{ picture.getKey() }}Start" headers="hItemActionsStart" class="actions nowrap z-w02">
-                    {% set itemActions = knp_menu_get('MUImageModule:ItemActionsMenu:menu', [], {entity: picture, area: routeArea, context: 'view'}) %}
+                    {% set itemActions = knp_menu_get('mUImageMenuItemActions', [], {entity: picture, area: routeArea, context: 'view'}) %}
                     <div class="dropdown">
                         <a id="itemActions{{ picture.getKey() }}DropDownToggleStart" role="button" data-toggle="dropdown" href="javascript:void(0);" class="hidden dropdown-toggle"><i class="fa fa-tasks"></i> <span class="caret"></span></a>
                         {{ knp_menu_render(itemActions, {template: 'ZikulaMenuModule:Override:bootstrap_fontawesome.html.twig'}) }}
@@ -91,9 +91,9 @@
                 </td>
                 <td headers="hAlbumImage" class="text-center">
                     {% if picture.albumImage %}
-                        <i class="fa fa-check" title="{{ __('Yes') }}"></i>
+                        <i class="fa fa-check text-success" title="{{ __('Yes') }}"></i>
                     {% else %}
-                        <i class="fa fa-times" title="{{ __('No') }}"></i>
+                        <i class="fa fa-times text-danger" title="{{ __('No') }}"></i>
                     {% endif %}
                 </td>
                 <td headers="hPos" class="text-right">
@@ -148,7 +148,7 @@
 {% block page_nav_links %}
     <p>
         {% if canBeCreated %}
-            {% if hasPermission('MUImageModule:Picture:', '::', 'ACCESS_EDIT') %}
+            {% if permissionHelper.hasComponentPermission('picture', constant('ACCESS_EDIT')) %}
                 {% set createTitle = __('Create picture') %}
                 <a href="{{ path('muimagemodule_picture_' ~ routeArea ~ 'edit') }}" title="{{ createTitle|e('html_attr') }}"><i class="fa fa-plus"></i> {{ createTitle }}</a>
             {% endif %}

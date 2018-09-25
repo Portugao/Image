@@ -1,7 +1,9 @@
 {# purpose of this template: albums index view #}
 {% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
-{% block title __('albums') %}
+{% block title __('Albums') %}
 {% block admin_page_icon 'home' %}
 {% block content %}
-    <p>{{ __('Welcome to the album section of the Image application.') }}</p>
+    <div class="muimagemodule-album muimagemodule-index">
+        <p>{{ __('Welcome to the album section of the Image application.') }}</p>
+    </div>
 {% endblock %}

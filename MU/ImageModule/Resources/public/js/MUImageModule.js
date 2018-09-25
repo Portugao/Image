@@ -48,9 +48,9 @@ function mUImageToggleFlag(objectType, fieldName, itemId) {
             idSuffix = mUImageCapitaliseFirstLetter(fieldName) + itemId;
             toggleLink = jQuery('#toggle' + idSuffix);
 
-            if (data.message) {
+            /*if (data.message) {
                 mUImageSimpleAlert(toggleLink, Translator.__('Success'), data.message, 'toggle' + idSuffix + 'DoneAlert', 'success');
-            }
+            }*/
 
             toggleLink.find('.fa-check').toggleClass('hidden', true !== data.state);
             toggleLink.find('.fa-times').toggleClass('hidden', true === data.state);
@@ -133,11 +133,15 @@ function mUImageInitItemActions(context) {
     
     containers.find('.dropdown > ul').removeClass('list-inline').addClass('list-unstyled dropdown-menu');
     containers.find('.dropdown > ul a i').addClass('fa-fw');
-    containers.find('.dropdown-toggle').removeClass('hidden').dropdown();
+    if (containers.find('.dropdown-toggle').length > 0) {
+        containers.find('.dropdown-toggle').removeClass('hidden').dropdown();
+    }
 }
 
 /**
- * Helper function to create new Bootstrap modal window instances.
+ * Helper function to create new dialog window instances.
+ * Note we use jQuery UI dialogs instead of Bootstrap modals here
+ * because we want to be able to open multiple windows simultaneously.
  */
 function mUImageInitInlineWindow(containerElem) {
     var newWindowId;
@@ -198,7 +202,21 @@ function mUImageInitQuickViewModals() {
  * Initialises image viewing behaviour.
  */
 function mUImageInitImageViewer() {
-    if (typeof(magnificPopup) === 'undefined') {
+    var scripts;
+    var magnificPopupAvailable;
+
+    // check if magnific popup is available
+    scripts = jQuery('script');
+    magnificPopupAvailable = false;
+    jQuery.each(scripts, function (index, elem) {
+        if (elem.hasAttribute('src')) {
+            elem = jQuery(elem);
+            if (-1 !== elem.attr('src').indexOf('jquery.magnific-popup')) {
+                magnificPopupAvailable = true;
+            }
+        }
+    });
+    if (!magnificPopupAvailable) {
         return;
     }
     jQuery('a.image-link').magnificPopup({

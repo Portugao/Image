@@ -1,5 +1,5 @@
 {# purpose of this template: avatars view filter form #}
-{% if hasPermission('MUImageModule:Avatar:', '::', 'ACCESS_EDIT') %}
+{% if permissionHelper.hasComponentPermission('avatar', constant('ACCESS_EDIT')) %}
     {% form_theme quickNavForm with [
         'bootstrap_3_layout.html.twig'
     ] %}

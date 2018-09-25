@@ -1,8 +1,10 @@
 'use strict';
 
 function imageToggleShrinkSettings(fieldName) {
-    var idSuffix = fieldName.replace('muimagemodule_appsettings_', '');
-    jQuery('#shrinkDetails' + idSuffix).toggleClass('hidden', !jQuery('#muimagemodule_appsettings_enableShrinkingFor' + idSuffix).prop('checked'));
+    var idSuffix;
+
+    idSuffix = fieldName.replace('muimagemodule_config_', '');
+    jQuery('#shrinkDetails' + idSuffix).toggleClass('hidden', !jQuery('#muimagemodule_config_enableShrinkingFor' + idSuffix).prop('checked'));
 }
 
 jQuery(document).ready(function () {

@@ -72,10 +72,6 @@ services:
     mu_image_module.form.handler.picture:
         class: MU\ImageModule\Form\Handler\Picture\EditHandler
         parent: mu_image_module.form.handler.common
-        
-    mu_image_module.form.handler.multipicture:
-        class: MU\ImageModule\Form\Handler\Picture\MultiUploadHandler
-        parent: mu_image_module.form.handler.common
     
     mu_image_module.form.type.picture:
         class: MU\ImageModule\Form\Type\PictureType
@@ -86,17 +82,6 @@ services:
             - "@mu_image_module.entity_display_helper"
             - "@zikula_extensions_module.api.variable"
             - "@mu_image_module.translatable_helper"
-            - "@mu_image_module.listentries_helper"
-            - "@mu_image_module.feature_activation_helper"
-        tags: ['form.type']
-        
-    mu_image_module.form.type.multipicture:
-        class: MU\ImageModule\Form\Type\MultiPictureType
-        arguments:
-            - "@translator.default"
-            - "@mu_image_module.entity_factory"
-            - "@mu_image_module.collection_filter_helper"
-            - "@mu_image_module.entity_display_helper"
             - "@mu_image_module.listentries_helper"
             - "@mu_image_module.feature_activation_helper"
         tags: ['form.type']
@@ -118,6 +103,7 @@ services:
         class: MU\ImageModule\Block\Form\Type\ItemListBlockType
         arguments:
             - "@translator.default"
+            - "@zikula_categories_module.category_repository"
         tags: ['form.type']
     
     mu_image_module.form.type.block.item:

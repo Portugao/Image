@@ -34,6 +34,10 @@
         {% endif %}
     </div>
 
+    {# you can embed the display template like this: #}
+    {#{ app.request.query.set('raw', 1) }}
+    {{ include('@MUImageModule/Avatar/display.html.twig', {avatar: avatar, routeArea: ''}) }#}
+
     {# you can distinguish the context like this: #}
     {# % if source == 'block' %}
         ... detail block

@@ -1,0 +1,29 @@
+services:
+    # Content types
+    MU\ImageModule\ContentType\ItemListType:
+        parent: zikula.content_type.base
+        shared: false
+        calls:
+            - [setControllerHelper, ['@mu_image_module.controller_helper']]
+            - [setModelHelper, ['@mu_image_module.model_helper']]
+            - [setEntityFactory, ['@mu_image_module.entity_factory']]
+            - [setCategoryDependencies, ['@mu_image_module.feature_activation_helper', '@mu_image_module.category_helper']]
+        tags: ['zikula.content_type']
+    MU\ImageModule\ContentType\Form\Type\ItemListType:
+        parent: zikula.content_type.form.base
+        arguments:
+            - "@zikula_categories_module.category_repository"
+        tags: ['form.type']
+    MU\ImageModule\ContentType\ItemType:
+        parent: zikula.content_type.base
+        shared: false
+        calls:
+            - [setControllerHelper, ['@mu_image_module.controller_helper']]
+            - [setFragmentHandler, ['@fragment.handler']]
+        tags: ['zikula.content_type']
+    MU\ImageModule\ContentType\Form\Type\ItemType:
+        parent: zikula.content_type.form.base
+        arguments:
+            - "@mu_image_module.entity_factory"
+            - "@mu_image_module.entity_display_helper"
+        tags: ['form.type']

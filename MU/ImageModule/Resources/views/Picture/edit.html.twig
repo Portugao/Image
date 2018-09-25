@@ -71,7 +71,7 @@
             {{ include('@MUImageModule/Helper/includeStandardFieldsEdit.html.twig', {obj: picture}) }}
         {% endif %}
         
-        {% if formHookTemplates|length > 0 %}
+        {% if supportsHookSubscribers and formHookTemplates|length > 0 %}
             <fieldset>
                 {% for hookTemplate in formHookTemplates %}
                     {{ include(hookTemplate.0, hookTemplate.1, ignore_missing = true) }}
@@ -79,12 +79,16 @@
             </fieldset>
         {% endif %}
         
-        {% if form.moderationSpecificCreator is defined %}
+        {% if form.moderationSpecificCreator is defined or form.moderationSpecificCreationDate is defined %}
             <fieldset id="moderationFieldsSection">
                 <legend>{{ __('Moderation') }} <i class="fa fa-expand"></i></legend>
                 <div id="moderationFieldsContent">
-                    {{ form_row(form.moderationSpecificCreator) }}
-                    {{ form_row(form.moderationSpecificCreationDate) }}
+                    {% if form.moderationSpecificCreator is defined %}
+                        {{ form_row(form.moderationSpecificCreator) }}
+                    {% endif %}
+                    {% if form.moderationSpecificCreationDate is defined %}
+                        {{ form_row(form.moderationSpecificCreationDate) }}
+                    {% endif %}
                 </div>
             </fieldset>
         {% endif %}
@@ -104,12 +108,14 @@
             </div>
         </div>
         {{ form_end(form) }}
-        {% set hookId = mode != 'create' ? picture.id : null %}
-        {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.form_edit', id=hookId, outputAsArray=true) %}
-        {% if hooks is iterable and hooks|length > 0 %}
-            {% for area, hook in hooks %}
-                <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
-            {% endfor %}
+        {% if supportsHookSubscribers %}
+            {% set hookId = mode != 'create' ? picture.id : null %}
+            {% set hooks = notifyDisplayHooks(eventName='muimagemodule.ui_hooks.pictures.form_edit', id=hookId, outputAsArray=true) %}
+            {% if hooks is iterable and hooks|length > 0 %}
+                {% for area, hook in hooks %}
+                    <div class="z-displayhook" data-area="{{ area|e('html_attr') }}">{{ hook|raw }}</div>
+                {% endfor %}
+            {% endif %}
         {% endif %}
         
     </div>

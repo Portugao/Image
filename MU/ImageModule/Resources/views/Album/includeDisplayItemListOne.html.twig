@@ -1,5 +1,5 @@
 {# purpose of this template: inclusion template for display of related albums #}
-{% set hasAdminPermission = hasPermission('MUImageModule:Album:', '::', 'ACCESS_EDIT') %}
+{% set hasAdminPermission = permissionHelper.hasComponentPermission('album', constant('ACCESS_EDIT')) %}
 {% if noLink is not defined %}
     {% set noLink = false %}
 {% endif %}

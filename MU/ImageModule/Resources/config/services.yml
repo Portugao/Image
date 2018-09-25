@@ -1,6 +1,6 @@
 imports:
   - { resource: 'appSettings.yml' }
-  - { resource: 'linkContainer.yml' }
+  - { resource: 'menu.yml' }
   - { resource: 'entityFactory.yml' }
   - { resource: 'eventSubscriber.yml' }
   - { resource: 'validators.yml' }
@@ -10,6 +10,7 @@ imports:
   - { resource: 'hooks.yml' }
   - { resource: 'twig.yml' }
   - { resource: 'logger.yml' }
+  - { resource: 'contentTypes.yml' }
 
 parameters:
     liip_imagine.cache.signer.class: MU\ImageModule\Imagine\Cache\DummySigner

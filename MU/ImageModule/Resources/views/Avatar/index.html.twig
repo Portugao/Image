@@ -1,7 +1,9 @@
 {# purpose of this template: avatars index view #}
 {% extends routeArea == 'admin' ? 'MUImageModule::adminBase.html.twig' : 'MUImageModule::base.html.twig' %}
-{% block title __('avatars') %}
+{% block title __('Avatars') %}
 {% block admin_page_icon 'home' %}
 {% block content %}
-    <p>{{ __('Welcome to the avatar section of the Image application.') }}</p>
+    <div class="muimagemodule-avatar muimagemodule-index">
+        <p>{{ __('Welcome to the avatar section of the Image application.') }}</p>
+    </div>
 {% endblock %}

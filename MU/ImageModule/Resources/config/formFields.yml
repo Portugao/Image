@@ -15,7 +15,6 @@ services:
         class: MU\ImageModule\Form\Type\Field\UploadType
         arguments:
             - "@translator.default"
-            - "@request_stack"
             - "@mu_image_module.image_helper"
             - "@mu_image_module.upload_helper"
         tags: ['form.type']
