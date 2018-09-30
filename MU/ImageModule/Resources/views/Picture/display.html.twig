@@ -50,7 +50,7 @@
             <i class="fa fa-times text-danger" title="{{ __('No') }}"></i>
         {% endif %}
         </dd>
-        {% if picture.pos is not empty %}
+        {% if picture.pos is not empty and routeArea == 'admin' %}
             <dt>{{ __('Pos') }}</dt>
             <dd>{{ picture.pos }}</dd>
         {% endif %}
