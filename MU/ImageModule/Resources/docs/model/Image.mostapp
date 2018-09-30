@@ -20,8 +20,8 @@ application "Image" targets ZK20  {
     generatePoweredByBacklinksIntoFooterTemplates false
     generateTests false
     writeModelToDocs true
-    skipFiles "README.md,\r\n.gitignore,\r\nResources/public/images/admin.png,\r\nImageModuleInstaller.php,\r\nContainer/LinkContainer.php,\r\nController/AjaxController.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nEntity/Repository/AlbumRepository.php,\r\nForm/Type/AlbumType.php,\r\nHelper/ControllerHelper.php,\r\nHelper/UploadHelper.php,\r\nHelper/ViewHelper.php,\r\nTwig/TwigExtension.php"
-    markFiles "Resources/config/helpers.yml,\r\nResources/config/linkContainer.yml,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig,"
+    skipFiles "ImageModuleInstaller.php,\r\nContainer/LinkContainer.php,\r\nController/AjaxController.php,\r\nController/AvatarController.php,\r\nController/PictureController.php,\r\nEntity/Repository/AlbumRepository.php,\r\nForm/Type/AlbumType.php,\r\nHelper/ControllerHelper.php,\r\nHelper/UploadHelper.php,\r\nHelper/ViewHelper.php,\r\nTwig/TwigExtension.php"
+    markFiles "README.md,\r\n.gitignore,\r\nResources/public/images/admin.png,\r\nResources/config/helpers.yml,\r\nResources/config/linkContainer.yml,\r\nResources/config/twig.yml,\r\nResources/views/helper/includeCategoriesDisplay.html.twig,\r\nResources/public/css/style.css,\r\nResources/views/Album/display.html.twig,\r\nResources/views/Album/edit.html.twig,\r\nResources/views/Album/view.html.twig,\r\nResources/views/Avatar/view.html.twig,\r\nResources/views/Config/config.html.twig,\r\nResources/views/Picture/includeDisplayItemListMany.html.twig"
     entities {
         entity "album" leading categorisable {
             nameMultiple "albums"

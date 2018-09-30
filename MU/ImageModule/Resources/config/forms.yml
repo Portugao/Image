@@ -72,7 +72,7 @@ services:
     mu_image_module.form.handler.picture:
         class: MU\ImageModule\Form\Handler\Picture\EditHandler
         parent: mu_image_module.form.handler.common
-        
+            
     mu_image_module.form.handler.multipicture:
         class: MU\ImageModule\Form\Handler\Picture\EditHandler
         parent: mu_image_module.form.handler.common
