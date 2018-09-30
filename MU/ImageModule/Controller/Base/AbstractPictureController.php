@@ -176,7 +176,6 @@ abstract class AbstractPictureController extends AbstractController
      * @param Request $request Current request instance
      * @param integer $id Identifier of treated picture instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown if picture to be displayed isn't found

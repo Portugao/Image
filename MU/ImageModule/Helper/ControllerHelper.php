@@ -47,40 +47,43 @@ class ControllerHelper extends AbstractControllerHelper
 	/**
 	 * ControllerHelper constructor.
 	 *
-	 * @param TranslatorInterface $translator      Translator service instance
-	 * @param RequestStack        $requestStack    RequestStack service instance
-	 * @param FormFactoryInterface $formFactory    FormFactory service instance
-	 * @param VariableApiInterface $variableApi     VariableApi service instance
-	 * @param EntityFactory       $entityFactory   EntityFactory service instance
-	 * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
-	 * @param ModelHelper         $modelHelper     ModelHelper service instance
-	 * @param ImageHelper         $imageHelper     ImageHelper service instance
-	 * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
+     * @param TranslatorInterface $translator       Translator service instance
+     * @param RequestStack        $requestStack     RequestStack service instance
+     * @param FormFactoryInterface $formFactory     FormFactory service instance
+     * @param VariableApiInterface $variableApi     VariableApi service instance
+     * @param EntityFactory       $entityFactory    EntityFactory service instance
+     * @param CollectionFilterHelper $collectionFilterHelper CollectionFilterHelper service instance
+     * @param PermissionHelper    $permissionHelper PermissionHelper service instance
+     * @param ModelHelper         $modelHelper      ModelHelper service instance
+     * @param ImageHelper         $imageHelper      ImageHelper service instance
+     * @param FeatureActivationHelper $featureActivationHelper FeatureActivationHelper service instance
 	 * @param CurrentUserApiInterface $currentUserApi CurrentUserApi service instance
 	 * @param RouterInterface $router RouterInterface service instance
 	 */
 	public function __construct(
-			TranslatorInterface $translator,
-			RequestStack $requestStack,
-			FormFactoryInterface $formFactory,
-			VariableApiInterface $variableApi,
-			EntityFactory $entityFactory,
-			CollectionFilterHelper $collectionFilterHelper,
-			ModelHelper $modelHelper,
-			ImageHelper $imageHelper,
-			FeatureActivationHelper $featureActivationHelper,
+	    TranslatorInterface $translator,
+	    RequestStack $requestStack,
+	    FormFactoryInterface $formFactory,
+	    VariableApiInterface $variableApi,
+	    EntityFactory $entityFactory,
+	    CollectionFilterHelper $collectionFilterHelper,
+	    PermissionHelper $permissionHelper,
+	    ModelHelper $modelHelper,
+	    ImageHelper $imageHelper,
+	    FeatureActivationHelper $featureActivationHelper,
 			CurrentUserApiInterface $currentUserApi,
 			RouterInterface $router
 			) {
-				$this->setTranslator($translator);
-				$this->request = $requestStack->getCurrentRequest();
-				$this->formFactory = $formFactory;
-				$this->variableApi = $variableApi;
-				$this->entityFactory = $entityFactory;
-				$this->collectionFilterHelper = $collectionFilterHelper;
-				$this->modelHelper = $modelHelper;
-				$this->imageHelper = $imageHelper;
-				$this->featureActivationHelper = $featureActivationHelper;
+			    $this->setTranslator($translator);
+			    $this->requestStack = $requestStack;
+			    $this->formFactory = $formFactory;
+			    $this->variableApi = $variableApi;
+			    $this->entityFactory = $entityFactory;
+			    $this->collectionFilterHelper = $collectionFilterHelper;
+			    $this->permissionHelper = $permissionHelper;
+			    $this->modelHelper = $modelHelper;
+			    $this->imageHelper = $imageHelper;
+			    $this->featureActivationHelper = $featureActivationHelper;
 				$this->currentUserApi = $currentUserApi;
 				$this->router = $router;
 	}

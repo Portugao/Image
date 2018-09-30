@@ -20,8 +20,8 @@ use Symfony\Component\Routing\RouterInterface;
 use Zikula\Common\Translator\TranslatorInterface;
 
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
-use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use MU\ImageModule\Helper\ControllerHelper;
+use MU\ImageModule\Helper\PermissionHelper;
 
 /**
  * This is the link container service implementation class.
@@ -36,27 +36,27 @@ class LinkContainer extends AbstractLinkContainer
 	/**
 	 * LinkContainer constructor.
 	 *
-	 * @param TranslatorInterface    $translator       Translator service instance
-	 * @param Routerinterface        $router           Router service instance
-	 * @param PermissionApiInterface $permissionApi    PermissionApi service instance
-	 * @param VariableApiInterface   $variableApi      VariableApi service instance
-	 * @param ControllerHelper       $controllerHelper ControllerHelper service instance
-	 * @param RequestStack           $requestStack     RequestStack service instance
+	 * @param TranslatorInterface  $translator       Translator service instance
+	 * @param Routerinterface      $router           Router service instance
+	 * @param VariableApiInterface $variableApi      VariableApi service instance
+	 * @param ControllerHelper     $controllerHelper ControllerHelper service instance
+	 * @param PermissionHelper     $permissionHelper PermissionHelper service instance
+	 * @param RequestStack         $request          RequestStack service instance
 	 */
-	public function __construct(
-			TranslatorInterface $translator,
-			RouterInterface $router,
-			PermissionApiInterface $permissionApi,
-			VariableApiInterface $variableApi,
-			ControllerHelper $controllerHelper,
-			RequestStack $requestStack
-			) {
-				$this->setTranslator($translator);
-				$this->router = $router;
-				$this->permissionApi = $permissionApi;
-				$this->variableApi = $variableApi;
-				$this->controllerHelper = $controllerHelper;
-				$this->request = $requestStack->getCurrentRequest();
+	/*public function __construct(
+	    TranslatorInterface $translator,
+	    RouterInterface $router,
+	    VariableApiInterface $variableApi,
+	    ControllerHelper $controllerHelper,
+	    PermissionHelper $permissionHelper,
+	    RequestStack $request
+	    ) {
+	        $this->setTranslator($translator);
+	        $this->router = $router;
+	        $this->variableApi = $variableApi;
+	        $this->controllerHelper = $controllerHelper;
+	        $this->permissionHelper = $permissionHelper;
+	        $this->request = $request;
 	}
 	
     /**
@@ -66,7 +66,7 @@ class LinkContainer extends AbstractLinkContainer
      *
      * @return array Array of header links
      */
-    public function getLinks($type = LinkContainerInterface::TYPE_ADMIN)
+    /*public function getLinks($type = LinkContainerInterface::TYPE_ADMIN)
     {
         $contextArgs = ['api' => 'linkContainer', 'action' => 'getLinks'];
         $allowedObjectTypes = $this->controllerHelper->getObjectTypes('api', $contextArgs);
@@ -110,7 +110,7 @@ class LinkContainer extends AbstractLinkContainer
                 }
             }*/
 
-            if (true === $this->variableApi->get('MUImageModule', 'linkOwnAvatarsOnAccountPage', true)) {
+            /*if (true === $this->variableApi->get('MUImageModule', 'linkOwnAvatarsOnAccountPage', true)) {
                 $objectType = 'avatar';
                 if ($this->permissionApi->hasPermission($this->getBundleName() . ':' . ucfirst($objectType) . ':', '::', ACCESS_READ)
                     && $extended == true
@@ -208,5 +208,5 @@ class LinkContainer extends AbstractLinkContainer
         }
 
         return $links;
-    }
+    }*/
 }

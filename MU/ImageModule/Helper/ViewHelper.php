@@ -52,22 +52,22 @@ class ViewHelper extends AbstractViewHelper
      * @return void
      */
     public function __construct(
-    		Twig_Environment $twig,
-    		FilesystemLoader $twigLoader,
-    		RequestStack $requestStack,
-    		VariableApiInterface $variableApi,
-    		ParameterBag $pageVars,
-    		ControllerHelper $controllerHelper,
-    		PermissionHelper $permissionHelper,
-    		SessionInterface $session
+        Twig_Environment $twig,
+        FilesystemLoader $twigLoader,
+        RequestStack $requestStack,
+        VariableApiInterface $variableApi,
+        ParameterBag $pageVars,
+        ControllerHelper $controllerHelper,
+        PermissionHelper $permissionHelper,
+    	SessionInterface $session
     		) {
-    			$this->twig = $twig;
-    			$this->twigLoader = $twigLoader;
-    			$this->request = $requestStack->getCurrentRequest();
-    			$this->variableApi = $variableApi;
-    			$this->pageVars = $pageVars;
-    			$this->controllerHelper = $controllerHelper;
-    			$this->permissionHelper = $permissionHelper;
+    		    $this->twig = $twig;
+    		    $this->twigLoader = $twigLoader;
+    		    $this->requestStack = $requestStack;
+    		    $this->variableApi = $variableApi;
+    		    $this->pageVars = $pageVars;
+    		    $this->controllerHelper = $controllerHelper;
+    		    $this->permissionHelper = $permissionHelper;
     			$this->session = $session;
     }
 	
@@ -108,7 +108,7 @@ class ViewHelper extends AbstractViewHelper
         }
     
         // look whether we need output with or without the theme
-        $raw = $this->request->query->getBoolean('raw', false);
+        $raw = $this->requestStack->getCurrentRequest()->query->getBoolean('raw', false);
         if (!$raw && $templateExtension != 'html.twig') {
             $raw = true;
         }

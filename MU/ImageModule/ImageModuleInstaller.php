@@ -14,6 +14,8 @@ namespace MU\ImageModule;
 
 use MU\ImageModule\Base\AbstractImageModuleInstaller;
 
+use RuntimeException;
+
 /**
  * Installer implementation class.
  */
@@ -71,13 +73,14 @@ class ImageModuleInstaller extends AbstractImageModuleInstaller
                 $this->setVar('heightThird', 800);
                  
                 // update the database schema
+                // update the database schema
                 try {
-                    DoctrineHelper::updateSchema($this->entityManager, $this->listEntityClasses());
-                } catch (Exception $e) {
-                    if (System::isDevelopmentMode()) {
-                        LogUtil::registerError($this->__('Doctrine Exception: ') . $e->getMessage());
-                    }
-                    return LogUtil::registerError($this->__f('An error was encountered while dropping the tables for the %s module.', array($this->getName())));
+                    $this->schemaTool->update($this->listEntityClasses());
+                } catch (\Exception $exception) {
+                    $this->addFlash('error', $this->__('Doctrine Exception') . ': ' . $exception->getMessage());
+                    $logger->error('{app}: Could not update the database tables during the upgrade. Error details: {errorMessage}.', ['app' => 'MUImageModule', 'errorMessage' => $exception->getMessage()]);
+                    
+                    return false;
                 }
                  
                 // we get serviceManager

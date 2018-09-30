@@ -39,7 +39,6 @@ class PictureController extends AbstractPictureController
      *
      * @param Request $request Current request instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -57,7 +56,6 @@ class PictureController extends AbstractPictureController
      *
      * @param Request $request Current request instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -81,7 +79,6 @@ class PictureController extends AbstractPictureController
      * @param int    $pos          Current pager position
      * @param int    $num          Amount of entries to display
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -105,7 +102,6 @@ class PictureController extends AbstractPictureController
      * @param int    $pos          Current pager position
      * @param int    $num          Amount of entries to display
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -125,16 +121,15 @@ class PictureController extends AbstractPictureController
      * @Theme("admin")
      *
      * @param Request $request Current request instance
-     * @param PictureEntity $picture Treated picture instance
+     * @param integer $id Identifier of treated picture instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if picture to be displayed isn't found
      */
-    public function adminDisplayAction(Request $request, PictureEntity $picture)
+    public function adminDisplayAction(Request $request, $id)
     {
-        return parent::adminDisplayAction($request, $picture);
+        return parent::adminDisplayAction($request, $id);
     }
     
     /**
@@ -148,16 +143,15 @@ class PictureController extends AbstractPictureController
      * @ParamConverter("picture", class="MUImageModule:PictureEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      *
      * @param Request $request Current request instance
-     * @param PictureEntity $picture Treated picture instance
+     * @param integer $id Identifier of treated picture instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by param converter if picture to be displayed isn't found
      */
-    public function displayAction(Request $request, PictureEntity $picture)
+    public function displayAction(Request $request, $id)
     {
-        return parent::displayAction($request, $picture);
+        return parent::displayAction($request, $id);
     }
     /**
      * @inheritDoc
@@ -168,14 +162,6 @@ class PictureController extends AbstractPictureController
      *        methods = {"GET", "POST"}
      * )
      * @Theme("admin")
-     *
-     * @param Request $request Current request instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if picture to be edited isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function adminEditAction(Request $request)
     {
@@ -190,14 +176,6 @@ class PictureController extends AbstractPictureController
      *        defaults = {"id" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
-     *
-     * @param Request $request Current request instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if picture to be edited isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function editAction(Request $request)
     {
@@ -213,19 +191,10 @@ class PictureController extends AbstractPictureController
      * )
      * @ParamConverter("picture", class="MUImageModule:PictureEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      * @Theme("admin")
-     *
-     * @param Request $request Current request instance
-     * @param PictureEntity $picture Treated picture instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if picture to be deleted isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
-    public function adminDeleteAction(Request $request, PictureEntity $picture)
+    public function adminDeleteAction(Request $request, $id)
     {
-        return parent::adminDeleteAction($request, $picture);
+        return parent::adminDeleteAction($request, $id);
     }
     
     /**
@@ -236,20 +205,10 @@ class PictureController extends AbstractPictureController
      *        defaults = {"_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
-     * @ParamConverter("picture", class="MUImageModule:PictureEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
-     *
-     * @param Request $request Current request instance
-     * @param PictureEntity $picture Treated picture instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if picture to be deleted isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
-    public function deleteAction(Request $request, PictureEntity $picture)
+    public function deleteAction(Request $request, $id)
     {
-        return parent::deleteAction($request, $picture);
+        return parent::deleteAction($request, $id);
     }
 
     /**
@@ -262,12 +221,6 @@ class PictureController extends AbstractPictureController
      *        methods = {"POST"}
      * )
      * @Theme("admin")
-     *
-     * @param Request $request Current request instance
-     *
-     * @return RedirectResponse
-     *
-     * @throws RuntimeException Thrown if executing the workflow action fails
      */
     public function adminHandleSelectedEntriesAction(Request $request)
     {
@@ -284,11 +237,6 @@ class PictureController extends AbstractPictureController
      *        methods = {"POST"}
      * )
      *
-     * @param Request $request Current request instance
-     *
-     * @return RedirectResponse
-     *
-     * @throws RuntimeException Thrown if executing the workflow action fails
      */
     public function handleSelectedEntriesAction(Request $request)
     {
@@ -303,14 +251,6 @@ class PictureController extends AbstractPictureController
      *        defaults = {"albumid" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
-     *
-     * @param Request  $request      Current request instance
-     *
-     * @return mixed Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function multiuploadAction(Request $request)
     {
@@ -325,14 +265,6 @@ class PictureController extends AbstractPictureController
      *        defaults = {"albumid" = "0", "_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
-     *
-     * @param Request  $request      Current request instance
-     *
-     * @return mixed Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if item to be edited isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function zipuploadAction(Request $request)
     {

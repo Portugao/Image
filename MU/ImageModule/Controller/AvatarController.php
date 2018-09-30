@@ -36,12 +36,6 @@ class AvatarController extends AbstractAvatarController
      *        methods = {"GET"}
      * )
      * @Theme("admin")
-     *
-     * @param Request $request Current request instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
     public function adminIndexAction(Request $request)
     {
@@ -54,12 +48,6 @@ class AvatarController extends AbstractAvatarController
      * @Route("/avatars",
      *        methods = {"GET"}
      * )
-     *
-     * @param Request $request Current request instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
     public function indexAction(Request $request)
     {
@@ -74,16 +62,6 @@ class AvatarController extends AbstractAvatarController
      *        methods = {"GET"}
      * )
      * @Theme("admin")
-     *
-     * @param Request $request Current request instance
-     * @param string $sort         Sorting field
-     * @param string $sortdir      Sorting direction
-     * @param int    $pos          Current pager position
-     * @param int    $num          Amount of entries to display
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
     public function adminViewAction(Request $request, $sort, $sortdir, $pos, $num)
     {
@@ -99,15 +77,6 @@ class AvatarController extends AbstractAvatarController
      *        methods = {"GET"}
      * )
      *
-     * @param Request $request Current request instance
-     * @param string $sort         Sorting field
-     * @param string $sortdir      Sorting direction
-     * @param int    $pos          Current pager position
-     * @param int    $num          Amount of entries to display
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
     public function viewAction(Request $request, $sort, $sortdir, $pos, $num)
     {
@@ -121,20 +90,11 @@ class AvatarController extends AbstractAvatarController
      *        defaults = {"_format" = "html"},
      *        methods = {"GET"}
      * )
-     * @ParamConverter("avatar", class="MUImageModule:AvatarEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      * @Theme("admin")
-     *
-     * @param Request $request Current request instance
-     * @param AvatarEntity $avatar Treated avatar instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if avatar to be displayed isn't found
      */
-    public function adminDisplayAction(Request $request, AvatarEntity $avatar)
+    public function adminDisplayAction(Request $request, $id)
     {
-        return parent::adminDisplayAction($request, $avatar);
+        return parent::adminDisplayAction($request, $id);
     }
     
     /**
@@ -145,19 +105,10 @@ class AvatarController extends AbstractAvatarController
      *        defaults = {"_format" = "html"},
      *        methods = {"GET"}
      * )
-     * @ParamConverter("avatar", class="MUImageModule:AvatarEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
-     *
-     * @param Request $request Current request instance
-     * @param AvatarEntity $avatar Treated avatar instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if avatar to be displayed isn't found
      */
-    public function displayAction(Request $request, AvatarEntity $avatar)
+    public function displayAction(Request $request, $id)
     {
-        return parent::displayAction($request, $avatar);
+        return parent::displayAction($request, $id);
     }
     /**
      * @inheritDoc
@@ -168,14 +119,6 @@ class AvatarController extends AbstractAvatarController
      *        methods = {"GET", "POST"}
      * )
      * @Theme("admin")
-     *
-     * @param Request $request Current request instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by form handler if avatar to be edited isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
     public function adminEditAction(Request $request)
     {
@@ -193,7 +136,6 @@ class AvatarController extends AbstractAvatarController
      *
      * @param Request $request Current request instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown by form handler if avatar to be edited isn't found
@@ -213,19 +155,10 @@ class AvatarController extends AbstractAvatarController
      * )
      * @ParamConverter("avatar", class="MUImageModule:AvatarEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
      * @Theme("admin")
-     *
-     * @param Request $request Current request instance
-     * @param AvatarEntity $avatar Treated avatar instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if avatar to be deleted isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
-    public function adminDeleteAction(Request $request, AvatarEntity $avatar)
+    public function adminDeleteAction(Request $request, $id)
     {
-        return parent::adminDeleteAction($request, $avatar);
+        return parent::adminDeleteAction($request, $id);
     }
     
     /**
@@ -236,20 +169,10 @@ class AvatarController extends AbstractAvatarController
      *        defaults = {"_format" = "html"},
      *        methods = {"GET", "POST"}
      * )
-     * @ParamConverter("avatar", class="MUImageModule:AvatarEntity", options = {"repository_method" = "selectById", "mapping": {"id": "id"}, "map_method_signature" = true})
-     *
-     * @param Request $request Current request instance
-     * @param AvatarEntity $avatar Treated avatar instance
-     *
-     * @return Response Output
-     *
-     * @throws AccessDeniedException Thrown if the user doesn't have required permissions
-     * @throws NotFoundHttpException Thrown by param converter if avatar to be deleted isn't found
-     * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
      */
-    public function deleteAction(Request $request, AvatarEntity $avatar)
+    public function deleteAction(Request $request, $id)
     {
-        return parent::deleteAction($request, $avatar);
+        return parent::deleteAction($request, $id);
     }
 
     /**
@@ -265,7 +188,6 @@ class AvatarController extends AbstractAvatarController
      *
      * @param Request $request Current request instance
      *
-     * @return RedirectResponse
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */
@@ -286,7 +208,6 @@ class AvatarController extends AbstractAvatarController
      *
      * @param Request $request Current request instance
      *
-     * @return RedirectResponse
      *
      * @throws RuntimeException Thrown if executing the workflow action fails
      */

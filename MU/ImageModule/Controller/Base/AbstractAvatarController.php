@@ -34,7 +34,6 @@ abstract class AbstractAvatarController extends AbstractController
      *
      * @param Request $request Current request instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -48,7 +47,6 @@ abstract class AbstractAvatarController extends AbstractController
      *
      * @param Request $request Current request instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -86,7 +84,6 @@ abstract class AbstractAvatarController extends AbstractController
      * @param int    $pos          Current pager position
      * @param int    $num          Amount of entries to display
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -104,7 +101,6 @@ abstract class AbstractAvatarController extends AbstractController
      * @param int    $pos          Current pager position
      * @param int    $num          Amount of entries to display
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      */
@@ -177,7 +173,6 @@ abstract class AbstractAvatarController extends AbstractController
      * @param Request $request Current request instance
      * @param integer $id Identifier of treated avatar instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown if avatar to be displayed isn't found
@@ -198,7 +193,6 @@ abstract class AbstractAvatarController extends AbstractController
      * @param Request $request Current request instance
      * @param integer $id Identifier of treated avatar instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown if avatar to be displayed isn't found
@@ -252,7 +246,6 @@ abstract class AbstractAvatarController extends AbstractController
      *
      * @param Request $request Current request instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
@@ -267,7 +260,6 @@ abstract class AbstractAvatarController extends AbstractController
      *
      * @param Request $request Current request instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws RuntimeException      Thrown if another critical error occurs (e.g. workflow actions not available)
@@ -316,7 +308,6 @@ abstract class AbstractAvatarController extends AbstractController
      * @param Request $request Current request instance
      * @param integer $id Identifier of treated avatar instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown if avatar to be deleted isn't found
@@ -333,7 +324,6 @@ abstract class AbstractAvatarController extends AbstractController
      * @param Request $request Current request instance
      * @param integer $id Identifier of treated avatar instance
      *
-     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown if avatar to be deleted isn't found
