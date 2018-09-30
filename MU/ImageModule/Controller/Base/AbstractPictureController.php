@@ -15,6 +15,7 @@ namespace MU\ImageModule\Controller\Base;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Bundle\FormExtensionBundle\Form\Type\DeletionType;
@@ -176,6 +177,7 @@ abstract class AbstractPictureController extends AbstractController
      * @param Request $request Current request instance
      * @param integer $id Identifier of treated picture instance
      *
+     * @return Response Output
      *
      * @throws AccessDeniedException Thrown if the user doesn't have required permissions
      * @throws NotFoundHttpException Thrown if picture to be displayed isn't found
