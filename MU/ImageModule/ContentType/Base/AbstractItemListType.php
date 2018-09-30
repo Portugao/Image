@@ -177,11 +177,6 @@ abstract class AbstractItemListType extends AbstractContentType
         $data = $this->data;
         $data['items'] = $entities;
     
-        if ($this->featureActivationHelper->isEnabled(FeatureActivationHelper::CATEGORIES, $this->objectType)) {
-            $data['registries'] = $this->catRegistries;
-            $data['properties'] = $this->catProperties;
-        }
-    
         $data = $this->controllerHelper->addTemplateParameters($objectType, $data, 'contentType', []);
         $this->data = $data;
     
