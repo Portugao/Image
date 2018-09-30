@@ -84,7 +84,7 @@ abstract class AbstractPictureEntity extends EntityAccess implements Translatabl
      * @ORM\Column(type="text", length=2000)
      * @Assert\NotNull()
      * @Assert\Length(min="0", max="2000")
-     * @var string $description
+     * @var text $description
      */
     protected $description = '';
     
@@ -339,7 +339,7 @@ abstract class AbstractPictureEntity extends EntityAccess implements Translatabl
     /**
      * Returns the description.
      *
-     * @return string
+     * @return text
      */
     public function getDescription()
     {
@@ -349,7 +349,7 @@ abstract class AbstractPictureEntity extends EntityAccess implements Translatabl
     /**
      * Sets the description.
      *
-     * @param string $description
+     * @param text $description
      *
      * @return void
      */
